@@ -11,7 +11,10 @@ import SwiftUI
 struct PhishQSApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationStack {
+                YearListView()
+            }
         }
     }
 }
+

@@ -6,6 +6,18 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */; };
+		F406475A2DEE881500A8D5F9 /* SetlistModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647592DEE880D00A8D5F9 /* SetlistModels.swift */; };
+		F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4D557C02DEE7CBF002A5961 /* Secrets.plist */; };
+		F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */; };
+		F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BC2DEE7CBF002A5961 /* ContentView.swift */; };
+		F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C12DEE7CBF002A5961 /* SetlistView.swift */; };
+		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
+		F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C22DEE7CBF002A5961 /* YearListView.swift */; };
+		F4D557C92DEE7CBF002A5961 /* DayListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BD2DEE7CBF002A5961 /* DayListView.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		F418FFC62DE7ED0B00240D34 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -24,17 +36,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistViewModel.swift; sourceTree = "<group>"; };
+		F40647592DEE880D00A8D5F9 /* SetlistModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistModels.swift; sourceTree = "<group>"; };
+		F406475B2DEE884800A8D5F9 /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
 		F418FFB82DE7ED0A00240D34 /* PhishQS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhishQS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFC52DE7ED0B00240D34 /* PhishQSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4D557BC2DEE7CBF002A5961 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		F4D557BD2DEE7CBF002A5961 /* DayListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayListView.swift; sourceTree = "<group>"; };
+		F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListView.swift; sourceTree = "<group>"; };
+		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
+		F4D557C02DEE7CBF002A5961 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
+		F4D557C12DEE7CBF002A5961 /* SetlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistView.swift; sourceTree = "<group>"; };
+		F4D557C22DEE7CBF002A5961 /* YearListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F418FFBA2DE7ED0A00240D34 /* PhishQS */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PhishQS;
-			sourceTree = "<group>";
-		};
 		F418FFC82DE7ED0B00240D34 /* PhishQSTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = PhishQSTests;
@@ -75,7 +92,7 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
-				F418FFBA2DE7ED0A00240D34 /* PhishQS */,
+				F4D557BB2DEE7CAB002A5961 /* PhishQS */,
 				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
 				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
@@ -92,6 +109,95 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		F4D557BB2DEE7CAB002A5961 /* PhishQS */ = {
+			isa = PBXGroup;
+			children = (
+				F4D557D32DEE7DF2002A5961 /* App */,
+				F4D557D22DEE7DA0002A5961 /* Assets */,
+				F4D557D12DEE7D8E002A5961 /* Utilities */,
+				F4D557D02DEE7D88002A5961 /* Extensions */,
+				F4D557CF2DEE7D83002A5961 /* Resources */,
+				F4D557CE2DEE7D7A002A5961 /* Networking */,
+				F4D557CD2DEE7D76002A5961 /* Models */,
+				F4D557CC2DEE7D70002A5961 /* ViewModels */,
+				F4D557CB2DEE7D67002A5961 /* VIews */,
+			);
+			path = PhishQS;
+			sourceTree = "<group>";
+		};
+		F4D557CB2DEE7D67002A5961 /* VIews */ = {
+			isa = PBXGroup;
+			children = (
+				F4D557BC2DEE7CBF002A5961 /* ContentView.swift */,
+				F4D557BD2DEE7CBF002A5961 /* DayListView.swift */,
+				F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */,
+				F4D557C12DEE7CBF002A5961 /* SetlistView.swift */,
+				F4D557C22DEE7CBF002A5961 /* YearListView.swift */,
+			);
+			path = VIews;
+			sourceTree = "<group>";
+		};
+		F4D557CC2DEE7D70002A5961 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F4D557CD2DEE7D76002A5961 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				F40647592DEE880D00A8D5F9 /* SetlistModels.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F4D557CE2DEE7D7A002A5961 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				F406475B2DEE884800A8D5F9 /* Untitled.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		F4D557CF2DEE7D83002A5961 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F4D557C02DEE7CBF002A5961 /* Secrets.plist */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F4D557D02DEE7D88002A5961 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		F4D557D12DEE7D8E002A5961 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		F4D557D22DEE7DA0002A5961 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		F4D557D32DEE7DF2002A5961 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -106,9 +212,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				F418FFBA2DE7ED0A00240D34 /* PhishQS */,
 			);
 			name = PhishQS;
 			packageProductDependencies = (
@@ -175,6 +278,7 @@
 				TargetAttributes = {
 					F418FFB72DE7ED0A00240D34 = {
 						CreatedOnToolsVersion = 16.3;
+						LastSwiftMigration = 1640;
 					};
 					F418FFC42DE7ED0B00240D34 = {
 						CreatedOnToolsVersion = 16.3;
@@ -212,6 +316,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,6 +341,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */,
+				F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */,
+				F406475A2DEE881500A8D5F9 /* SetlistModels.swift in Sources */,
+				F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */,
+				F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */,
+				F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */,
+				F4D557C92DEE7CBF002A5961 /* DayListView.swift in Sources */,
+				F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +506,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -410,6 +524,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.lotusmaine.PhishQS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -420,6 +536,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -437,6 +554,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.lotusmaine.PhishQS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
