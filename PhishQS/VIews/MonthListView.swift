@@ -24,12 +24,3 @@ struct MonthListView: View {
         .navigationTitle("\(year)")
     }
 }
-
-class MonthListViewModel: ObservableObject {
-    @Published var months: [String] = []
-
-    func fetchMonths(for year: String) {
-        // TODO: Replace with actual API call to get shows in year and extract months
-        self.months = ["December", "November", "October"] // Dummy data
-    }
-}

@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */; };
 		F406475A2DEE881500A8D5F9 /* SetlistModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647592DEE880D00A8D5F9 /* SetlistModels.swift */; };
+		F4CCA1402E0F754500483D23 /* YearListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */; };
+		F4CCA1422E0F799500483D23 /* ShowModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1412E0F799100483D23 /* ShowModels.swift */; };
+		F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */; };
 		F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4D557C02DEE7CBF002A5961 /* Secrets.plist */; };
 		F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */; };
 		F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BC2DEE7CBF002A5961 /* ContentView.swift */; };
@@ -16,6 +19,7 @@
 		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
 		F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C22DEE7CBF002A5961 /* YearListView.swift */; };
 		F4D557C92DEE7CBF002A5961 /* DayListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BD2DEE7CBF002A5961 /* DayListView.swift */; };
+		F4DF04EF2E0F2839002BADF7 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DF04EE2E0F2839002BADF7 /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -38,10 +42,13 @@
 /* Begin PBXFileReference section */
 		F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistViewModel.swift; sourceTree = "<group>"; };
 		F40647592DEE880D00A8D5F9 /* SetlistModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistModels.swift; sourceTree = "<group>"; };
-		F406475B2DEE884800A8D5F9 /* Untitled.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Untitled.swift; sourceTree = "<group>"; };
+		F406475B2DEE884800A8D5F9 /* PhishAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishAPIClient.swift; sourceTree = "<group>"; };
 		F418FFB82DE7ED0A00240D34 /* PhishQS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhishQS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFC52DE7ED0B00240D34 /* PhishQSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListViewModel.swift; sourceTree = "<group>"; };
+		F4CCA1412E0F799100483D23 /* ShowModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowModels.swift; sourceTree = "<group>"; };
+		F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListViewModel.swift; sourceTree = "<group>"; };
 		F4D557BC2DEE7CBF002A5961 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F4D557BD2DEE7CBF002A5961 /* DayListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayListView.swift; sourceTree = "<group>"; };
 		F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListView.swift; sourceTree = "<group>"; };
@@ -49,6 +56,7 @@
 		F4D557C02DEE7CBF002A5961 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
 		F4D557C12DEE7CBF002A5961 /* SetlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistView.swift; sourceTree = "<group>"; };
 		F4D557C22DEE7CBF002A5961 /* YearListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListView.swift; sourceTree = "<group>"; };
+		F4DF04EE2E0F2839002BADF7 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -96,6 +104,7 @@
 				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
 				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
+				F4D557D22DEE7DA0002A5961 /* Assets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,7 +122,6 @@
 			isa = PBXGroup;
 			children = (
 				F4D557D32DEE7DF2002A5961 /* App */,
-				F4D557D22DEE7DA0002A5961 /* Assets */,
 				F4D557D12DEE7D8E002A5961 /* Utilities */,
 				F4D557D02DEE7D88002A5961 /* Extensions */,
 				F4D557CF2DEE7D83002A5961 /* Resources */,
@@ -140,6 +148,8 @@
 		F4D557CC2DEE7D70002A5961 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */,
+				F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */,
 				F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */,
 			);
 			path = ViewModels;
@@ -148,6 +158,7 @@
 		F4D557CD2DEE7D76002A5961 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F4CCA1412E0F799100483D23 /* ShowModels.swift */,
 				F40647592DEE880D00A8D5F9 /* SetlistModels.swift */,
 			);
 			path = Models;
@@ -156,7 +167,7 @@
 		F4D557CE2DEE7D7A002A5961 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				F406475B2DEE884800A8D5F9 /* Untitled.swift */,
+				F406475B2DEE884800A8D5F9 /* PhishAPIClient.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -179,15 +190,16 @@
 		F4D557D12DEE7D8E002A5961 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				F4DF04EE2E0F2839002BADF7 /* Secrets.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		F4D557D22DEE7DA0002A5961 /* Assets */ = {
+		F4D557D22DEE7DA0002A5961 /* Assets.xcassets */ = {
 			isa = PBXGroup;
 			children = (
 			);
-			path = Assets;
+			path = Assets.xcassets;
 			sourceTree = "<group>";
 		};
 		F4D557D32DEE7DF2002A5961 /* App */ = {
@@ -342,13 +354,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */,
+				F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */,
+				F4DF04EF2E0F2839002BADF7 /* Secrets.swift in Sources */,
 				F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */,
+				F4CCA1422E0F799500483D23 /* ShowModels.swift in Sources */,
 				F406475A2DEE881500A8D5F9 /* SetlistModels.swift in Sources */,
 				F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */,
 				F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */,
 				F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */,
 				F4D557C92DEE7CBF002A5961 /* DayListView.swift in Sources */,
 				F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */,
+				F4CCA1402E0F754500483D23 /* YearListViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,6 +525,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUBFJ9JQ59;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -539,6 +556,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = HUBFJ9JQ59;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

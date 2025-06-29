@@ -15,7 +15,9 @@ struct DayListView: View {
 
     var body: some View {
         List(viewModel.days, id: \.self) { day in
-            NavigationLink(destination: SetlistView(date: day)) {
+            let formattedDay = String(format: "%02d", Int(day) ?? 1)
+            let formattedDate = "\(year)-\(monthNumber(from: month))-\(formattedDay)"
+            NavigationLink(destination: SetlistView(date: formattedDate)) {
                 Text(day)
             }
         }
@@ -24,6 +26,16 @@ struct DayListView: View {
         }
         .navigationTitle("\(month) \(year)")
     }
+
+    private func monthNumber(from name: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        if let date = formatter.date(from: name) {
+            formatter.dateFormat = "MM"
+            return formatter.string(from: date)
+        }
+        return "01" // default fallback
+    }
 }
 
 class DayListViewModel: ObservableObject {
@@ -31,6 +43,7 @@ class DayListViewModel: ObservableObject {
 
     func fetchDays(for year: String, month: String) {
         // TODO: Replace with actual API call to get shows in year+month and extract days
-        self.days = ["December 30", "December 31"] // Dummy data
+        self.days = ["30", "31"] // Dummy day values — no month names here
     }
 }
+

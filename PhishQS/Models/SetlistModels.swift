@@ -7,16 +7,13 @@
 
 import Foundation
 
-struct SetlistResponse: Codable {
-    let data: [SetlistData]
-}
-
-struct SetlistData: Codable {
-    let setlistData: String
+struct SetlistItem: Codable {
+    let set: String
+    let song: String
+    let transMark: String?
 
     enum CodingKeys: String, CodingKey {
-        case setlistData = "setlistdata"
+        case set, song
+        case transMark = "trans_mark"
     }
 }
-
-

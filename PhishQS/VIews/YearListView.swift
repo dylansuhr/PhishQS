@@ -23,12 +23,3 @@ struct YearListView: View {
     }
 }
 
-class YearListViewModel: ObservableObject {
-    @Published var years: [String] = []
-
-    func fetchYears() {
-        // TODO: Replace with actual Phish.net API call
-        self.years = ["2024", "2023", "2022", "2021"] // Dummy data
-    }
-}
-

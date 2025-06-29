@@ -26,6 +26,7 @@ struct SetlistView: View {
             }
         }
         .onAppear {
+            print("📅 Fetching setlist for date: \(date)")
             viewModel.fetchSetlist(for: date)
         }
         .navigationTitle(date)
