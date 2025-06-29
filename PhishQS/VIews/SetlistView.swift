@@ -1,18 +1,17 @@
-//
-//  SetlistView.swift
-//  PhishQS
-//
-//  Created by Dylan Suhr on 5/29/25.
-//
-
-
 import SwiftUI
 
 struct SetlistView: View {
-    let date: String
+    let year: String
+    let month: String
+    let day: String
+
     @StateObject private var viewModel = SetlistViewModel()
 
     var body: some View {
+        let paddedMonth = month.count == 1 ? "0\(month)" : month
+        let paddedDay = day.count == 1 ? "0\(day)" : day
+        let date = "\(year)-\(paddedMonth)-\(paddedDay)"
+
         ScrollView {
             if viewModel.setlist.isEmpty {
                 ProgressView()
@@ -26,10 +25,9 @@ struct SetlistView: View {
             }
         }
         .onAppear {
-            print("📅 Fetching setlist for date: \(date)")
+            print("🗓️ Fetching setlist for date: \(date)")
             viewModel.fetchSetlist(for: date)
         }
         .navigationTitle(date)
     }
 }
-

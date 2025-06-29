@@ -16,4 +16,5 @@ struct ShowResponse: Codable {
 struct Show: Codable {
     let showyear: String
     let showdate: String
+    let artist_name: String
 }

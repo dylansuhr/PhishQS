@@ -1,11 +1,3 @@
-//
-//  MonthListViewModel.swift
-//  PhishQS
-//
-//  Created by Dylan Suhr on 6/27/25.
-//
-
-
 import Foundation
 
 class MonthListViewModel: ObservableObject {
@@ -14,7 +6,7 @@ class MonthListViewModel: ObservableObject {
     func fetchMonths(for year: String) {
         let apiKey = Secrets.value(for: "PhishNetAPIKey")
 
-        guard let url = URL(string: "https://api.phish.net/v5/setlists/showyear/\(year).json?apikey=\(apiKey)") else {
+        guard let url = URL(string: "https://api.phish.net/v5/setlists/showyear/\(year).json?apikey=\(apiKey)&artist=phish") else {
             print("Invalid URL or missing API key")
             return
         }
@@ -33,23 +25,14 @@ class MonthListViewModel: ObservableObject {
             do {
                 let decoded = try JSONDecoder().decode(ShowResponse.self, from: data)
 
-                let monthNumbers = Set(decoded.data.compactMap { show in
-                    let components = show.showdate.split(separator: "-")
-                    return components.count > 1 ? String(components[1]) : nil
-                })
+                let monthInts = Set(decoded.data
+                    .filter { $0.artist_name.lowercased() == "phish" }
+                    .compactMap { show in
+                        let components = show.showdate.split(separator: "-")
+                        return components.count > 1 ? Int(components[1]) : nil
+                    })
 
-                let formatter = DateFormatter()
-                formatter.dateFormat = "MM"
-                let sortedMonths = monthNumbers.compactMap { num -> (String, Int)? in
-                    guard let date = formatter.date(from: num) else { return nil }
-                    formatter.dateFormat = "MMMM"
-                    let name = formatter.string(from: date)
-                    formatter.dateFormat = "MM"
-                    let index = Int(num) ?? 0
-                    return (name, index)
-                }
-                .sorted { $0.1 < $1.1 }
-                .map { $0.0 }
+                let sortedMonths = monthInts.sorted().map { String(format: "%02d", $0) }
 
                 DispatchQueue.main.async {
                     self.months = sortedMonths

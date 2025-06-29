@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */; };
 		F406475A2DEE881500A8D5F9 /* SetlistModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647592DEE880D00A8D5F9 /* SetlistModels.swift */; };
+		F4A5DD122E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
+		F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
+		F4A5DD152E119D5D00B5D172 /* DayListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A5DD142E119D5D00B5D172 /* DayListViewModel.swift */; };
 		F4CCA1402E0F754500483D23 /* YearListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */; };
 		F4CCA1422E0F799500483D23 /* ShowModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1412E0F799100483D23 /* ShowModels.swift */; };
 		F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */; };
@@ -46,6 +49,8 @@
 		F418FFB82DE7ED0A00240D34 /* PhishQS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhishQS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFC52DE7ED0B00240D34 /* PhishQSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4A5DD112E1199DE00B5D172 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F4A5DD142E119D5D00B5D172 /* DayListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayListViewModel.swift; sourceTree = "<group>"; };
 		F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListViewModel.swift; sourceTree = "<group>"; };
 		F4CCA1412E0F799100483D23 /* ShowModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowModels.swift; sourceTree = "<group>"; };
 		F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListViewModel.swift; sourceTree = "<group>"; };
@@ -100,11 +105,11 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
+				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
 				F4D557BB2DEE7CAB002A5961 /* PhishQS */,
 				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
 				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
-				F4D557D22DEE7DA0002A5961 /* Assets.xcassets */,
 			);
 			sourceTree = "<group>";
 		};
@@ -148,6 +153,7 @@
 		F4D557CC2DEE7D70002A5961 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				F4A5DD142E119D5D00B5D172 /* DayListViewModel.swift */,
 				F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */,
 				F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */,
 				F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */,
@@ -193,13 +199,6 @@
 				F4DF04EE2E0F2839002BADF7 /* Secrets.swift */,
 			);
 			path = Utilities;
-			sourceTree = "<group>";
-		};
-		F4D557D22DEE7DA0002A5961 /* Assets.xcassets */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Assets.xcassets;
 			sourceTree = "<group>";
 		};
 		F4D557D32DEE7DF2002A5961 /* App */ = {
@@ -328,6 +327,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */,
 				F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -336,6 +336,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4A5DD122E1199DE00B5D172 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -358,6 +359,7 @@
 				F4DF04EF2E0F2839002BADF7 /* Secrets.swift in Sources */,
 				F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */,
 				F4CCA1422E0F799500483D23 /* ShowModels.swift in Sources */,
+				F4A5DD152E119D5D00B5D172 /* DayListViewModel.swift in Sources */,
 				F406475A2DEE881500A8D5F9 /* SetlistModels.swift in Sources */,
 				F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */,
 				F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */,
