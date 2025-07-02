@@ -7,14 +7,15 @@
 
 import SwiftUI
 
+// entry point for the app
 @main
 struct PhishQSApp: App {
     var body: some Scene {
         WindowGroup {
+            // embed the entire app in a NavigationStack for easy push-style navigation
             NavigationStack {
-                YearListView()
+                YearListView() // start at the top level: select a year
             }
         }
     }
 }
-
