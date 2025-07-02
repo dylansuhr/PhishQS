@@ -17,7 +17,6 @@
 		F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */; };
 		F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4D557C02DEE7CBF002A5961 /* Secrets.plist */; };
 		F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */; };
-		F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BC2DEE7CBF002A5961 /* ContentView.swift */; };
 		F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C12DEE7CBF002A5961 /* SetlistView.swift */; };
 		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
 		F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C22DEE7CBF002A5961 /* YearListView.swift */; };
@@ -54,7 +53,6 @@
 		F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListViewModel.swift; sourceTree = "<group>"; };
 		F4CCA1412E0F799100483D23 /* Show.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Show.swift; sourceTree = "<group>"; };
 		F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListViewModel.swift; sourceTree = "<group>"; };
-		F4D557BC2DEE7CBF002A5961 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F4D557BD2DEE7CBF002A5961 /* DayListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayListView.swift; sourceTree = "<group>"; };
 		F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListView.swift; sourceTree = "<group>"; };
 		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
@@ -105,13 +103,15 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
-				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
-				F4D557BB2DEE7CAB002A5961 /* PhishQS */,
-				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
-				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
-				F418FFB92DE7ED0A00240D34 /* Products */,
 				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
-				F4D557BC2DEE7CBF002A5961 /* ContentView.swift */,
+				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
+				F4CCA14D2E14C1A300483D23 /* Features */,
+				F4D557CD2DEE7D76002A5961 /* Models */,
+				F4D557D12DEE7D8E002A5961 /* Resources */,
+				F4D557CF2DEE7D83002A5961 /* Utilities */,
+				F4CCA15F2E14CB9200483D23 /* Tests */,
+				F418FFB92DE7ED0A00240D34 /* Products */,
+				F4D557D02DEE7D88002A5961 /* Extensions */,
 			);
 			sourceTree = "<group>";
 		};
@@ -172,16 +172,13 @@
 			path = Setlist;
 			sourceTree = "<group>";
 		};
-		F4D557BB2DEE7CAB002A5961 /* PhishQS */ = {
+		F4CCA15F2E14CB9200483D23 /* Tests */ = {
 			isa = PBXGroup;
 			children = (
-				F4CCA14D2E14C1A300483D23 /* Features */,
-				F4D557D12DEE7D8E002A5961 /* Resources */,
-				F4D557CD2DEE7D76002A5961 /* Models */,
-				F4D557D02DEE7D88002A5961 /* Extensions */,
-				F4D557CF2DEE7D83002A5961 /* Utilities */,
+				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
+				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
 			);
-			path = PhishQS;
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		F4D557CD2DEE7D76002A5961 /* Models */ = {
@@ -365,7 +362,6 @@
 				F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */,
 				F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */,
 				F4DF04EF2E0F2839002BADF7 /* Secrets.swift in Sources */,
-				F4D557C52DEE7CBF002A5961 /* ContentView.swift in Sources */,
 				F4CCA1422E0F799500483D23 /* Show.swift in Sources */,
 				F4A5DD152E119D5D00B5D172 /* DayListViewModel.swift in Sources */,
 				F406475A2DEE881500A8D5F9 /* SetlistItem.swift in Sources */,
