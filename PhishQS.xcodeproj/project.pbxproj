@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F4A5DD122E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
 		F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
 		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
 /* End PBXBuildFile section */
@@ -35,6 +34,8 @@
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4A5DD112E1199DE00B5D172 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
+		F4D8B98C2E1EB7EC00EB140A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		F4D8B98D2E1EB81E00EB140A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -68,6 +69,8 @@
 			membershipExceptions = (
 				DaySelection/DayListView.swift,
 				DaySelection/DayListViewModel.swift,
+				LatestSetlist/LatestSetlistView.swift,
+				LatestSetlist/LatestSetlistViewModel.swift,
 				MonthSelection/MonthListView.swift,
 				MonthSelection/MonthListViewModel.swift,
 				Setlist/SetlistView.swift,
@@ -95,6 +98,7 @@
 		F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				PhishAPIClient.swift,
 				Secrets.swift,
 			);
 			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
@@ -152,11 +156,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		F42265062E1E78A700891DED /* Products */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Products;
-			sourceTree = "<group>";
-		};
 		F42265082E1E78ED00891DED /* Extensions */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Extensions;
@@ -192,15 +191,16 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
+				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
+				F4D8B98C2E1EB7EC00EB140A /* README.md */,
+				F4D8B98D2E1EB81E00EB140A /* .gitignore */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264D92E1E77A300891DED /* Tests */,
-				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
 				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
 				F42264E52E1E77F200891DED /* Features */,
 				F42264E72E1E780E00891DED /* Models */,
 				F42264EA2E1E783200891DED /* Utilities */,
-				F42265062E1E78A700891DED /* Products */,
 				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			sourceTree = "<group>";
@@ -236,7 +236,6 @@
 				F42264E72E1E780E00891DED /* Models */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
-				F42265062E1E78A700891DED /* Products */,
 				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			name = PhishQS;
@@ -265,7 +264,6 @@
 				F42264E72E1E780E00891DED /* Models */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
-				F42265062E1E78A700891DED /* Products */,
 				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			name = PhishQSTests;
@@ -353,7 +351,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4A5DD122E1199DE00B5D172 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
