@@ -1,55 +1,185 @@
 import Foundation
 
-// represents a single Phish show returned from the showyear endpoint
-struct Show: Codable, Identifiable {
-    let id: Int                    // unique show ID
-    let showdate: String           // "YYYY-MM-DD"
-    let venue: String?             // venue name (optional)
-    let city: String?              // city name (optional)
-    let state: String?             // state abbreviation (optional)
-    let country: String?           // country name (optional)
-    let setlistdata: String?       // full setlist as string (optional)
+// MARK: - API Service Protocol
+
+/// Protocol defining all Phish.net API operations
+protocol PhishAPIService {
+    func fetchShows(forYear year: String) async throws -> [Show]
+    func fetchLatestShow() async throws -> Show?
+    func fetchSetlist(for date: String) async throws -> [SetlistItem]
+    func searchShows(query: String) async throws -> [Show]
+    func fetchVenueInfo(for venueId: String) async throws -> Venue
 }
 
-// handles making API requests to phish.net
-class PhishAPIClient {
+// MARK: - API Error Types
+
+enum APIError: Error, LocalizedError {
+    case invalidURL
+    case networkError(Error)
+    case httpError(Int)
+    case noData
+    case decodingError(Error)
+    case invalidResponse
+    
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL"
+        case .networkError(let error):
+            return "Network error: \(error.localizedDescription)"
+        case .httpError(let statusCode):
+            return "HTTP error: \(statusCode)"
+        case .noData:
+            return "No data received"
+        case .decodingError(let error):
+            return "Failed to parse response: \(error.localizedDescription)"
+        case .invalidResponse:
+            return "Invalid response from server"
+        }
+    }
+}
+
+// MARK: - Venue Model
+
+struct Venue: Codable, Identifiable {
+    let id: String
+    let name: String
+    let city: String
+    let state: String?
+    let country: String
+    let latitude: Double?
+    let longitude: Double?
+}
+
+// MARK: - Enhanced API Client
+
+/// Modern async/await API client for Phish.net API
+class PhishAPIClient: PhishAPIService {
     static let shared = PhishAPIClient()  // singleton instance
 
     private let baseURL = "https://api.phish.net/v5"
     private let apiKey = Secrets.value(for: "PhishNetAPIKey")
-
-    // fetch all shows for a given year
-    func fetchShows(forYear year: String, completion: @escaping ([Show]) -> Void) {
-        guard let url = URL(string: "\(baseURL)/setlists/showyear/\(year).json?apikey=\(apiKey)") else {
-            print("Invalid URL")
-            return
+    
+    // MARK: - Show Methods
+    
+    /// Fetch all shows for a given year
+    func fetchShows(forYear year: String) async throws -> [Show] {
+        guard let url = URL(string: "\(baseURL)/setlists/showyear/\(year).json?apikey=\(apiKey)&artist=phish") else {
+            throw APIError.invalidURL
         }
 
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            // handle networking errors
-            if let error = error {
-                print("API error:", error)
-                return
-            }
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
 
-            // make sure we got a response
-            guard let data = data else {
-                print("No data received.")
-                return
-            }
-
-            do {
-                // parse response into [String: [Show]], then grab the 'data' array
-                let decoded = try JSONDecoder().decode([String: [Show]].self, from: data)
-                let shows = decoded["data"] ?? []
-
-                // send shows back on main thread
-                DispatchQueue.main.async {
-                    completion(shows)
-                }
-            } catch {
-                print("JSON decoding failed:", error)
-            }
-        }.resume()
+        do {
+            let showResponse = try JSONDecoder().decode(ShowResponse.self, from: data)
+            return showResponse.data
+        } catch {
+            throw APIError.decodingError(error)
+        }
     }
+    
+    /// Fetch the latest show (most recent from current or previous year)
+    func fetchLatestShow() async throws -> Show? {
+        let currentYear = Calendar.current.component(.year, from: Date())
+        
+        do {
+            let shows = try await fetchShows(forYear: String(currentYear))
+            return shows.first
+        } catch {
+            // Try previous year if no shows this year
+            let previousYear = currentYear - 1
+            let previousShows = try await fetchShows(forYear: String(previousYear))
+            return previousShows.first
+        }
+    }
+    
+    /// Search shows by query (venue, city, etc.)
+    func searchShows(query: String) async throws -> [Show] {
+        guard let url = URL(string: "\(baseURL)/setlists/search.json?apikey=\(apiKey)&artist=phish&query=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")") else {
+            throw APIError.invalidURL
+        }
+
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+
+        do {
+            let showResponse = try JSONDecoder().decode(ShowResponse.self, from: data)
+            return showResponse.data
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+
+    // MARK: - Setlist Methods
+    
+    /// Fetch setlist for a specific show date
+    func fetchSetlist(for date: String) async throws -> [SetlistItem] {
+        guard let url = URL(string: "\(baseURL)/setlists/showdate/\(date).json?apikey=\(apiKey)&artist=phish") else {
+            throw APIError.invalidURL
+        }
+
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+
+        do {
+            let setlistResponse = try JSONDecoder().decode(SetlistResponse.self, from: data)
+            return setlistResponse.data
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
+    // MARK: - Venue Methods
+    
+    /// Fetch venue information by venue ID
+    func fetchVenueInfo(for venueId: String) async throws -> Venue {
+        guard let url = URL(string: "\(baseURL)/venues/\(venueId).json?apikey=\(apiKey)") else {
+            throw APIError.invalidURL
+        }
+
+        let (data, response) = try await URLSession.shared.data(from: url)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+
+        do {
+            let venueResponse = try JSONDecoder().decode(VenueResponse.self, from: data)
+            return venueResponse.data
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+}
+
+// MARK: - Response Models
+
+struct VenueResponse: Codable {
+    let data: Venue
 }

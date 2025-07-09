@@ -6,11 +6,18 @@ struct YearListView: View {
     @StateObject private var viewModel = YearListViewModel()
 
     var body: some View {
-        // list of all valid years
-        List(viewModel.years, id: \.self) { year in
-            // when user taps a year, navigate to MonthListView
-            NavigationLink(destination: MonthListView(year: year)) {
-                Text(year)
+        VStack(spacing: 0) {
+            // Latest setlist at the top
+            LatestSetlistView()
+                .padding(.horizontal)
+                .padding(.top)
+            
+            // list of all valid years
+            List(viewModel.years, id: \.self) { year in
+                // when user taps a year, navigate to MonthListView
+                NavigationLink(destination: MonthListView(year: year)) {
+                    Text(year)
+                }
             }
         }
         .onAppear {
