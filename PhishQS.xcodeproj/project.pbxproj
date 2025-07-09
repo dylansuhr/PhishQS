@@ -156,11 +156,6 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
-		F42265082E1E78ED00891DED /* Extensions */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,14 +189,13 @@
 				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
 				F4D8B98C2E1EB7EC00EB140A /* README.md */,
 				F4D8B98D2E1EB81E00EB140A /* .gitignore */,
-				F42264E82E1E781600891DED /* Resources */,
-				F42264D92E1E77A300891DED /* Tests */,
 				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
+				F42264E82E1E781600891DED /* Resources */,
+				F42264D92E1E77A300891DED /* Tests */,
+				F42264EA2E1E783200891DED /* Utilities */,
 				F42264E52E1E77F200891DED /* Features */,
 				F42264E72E1E780E00891DED /* Models */,
-				F42264EA2E1E783200891DED /* Utilities */,
-				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			sourceTree = "<group>";
 		};
@@ -236,7 +230,6 @@
 				F42264E72E1E780E00891DED /* Models */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
-				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			name = PhishQS;
 			packageProductDependencies = (
@@ -264,7 +257,6 @@
 				F42264E72E1E780E00891DED /* Models */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
-				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			name = PhishQSTests;
 			packageProductDependencies = (
