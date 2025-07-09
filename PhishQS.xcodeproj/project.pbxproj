@@ -7,21 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */; };
-		F406475A2DEE881500A8D5F9 /* SetlistItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F40647592DEE880D00A8D5F9 /* SetlistItem.swift */; };
 		F4A5DD122E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
 		F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
-		F4A5DD152E119D5D00B5D172 /* DayListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4A5DD142E119D5D00B5D172 /* DayListViewModel.swift */; };
-		F4CCA1402E0F754500483D23 /* YearListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */; };
-		F4CCA1422E0F799500483D23 /* Show.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1412E0F799100483D23 /* Show.swift */; };
-		F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */; };
-		F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = F4D557C02DEE7CBF002A5961 /* Secrets.plist */; };
-		F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */; };
-		F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C12DEE7CBF002A5961 /* SetlistView.swift */; };
 		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
-		F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557C22DEE7CBF002A5961 /* YearListView.swift */; };
-		F4D557C92DEE7CBF002A5961 /* DayListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BD2DEE7CBF002A5961 /* DayListView.swift */; };
-		F4DF04EF2E0F2839002BADF7 /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DF04EE2E0F2839002BADF7 /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,35 +30,136 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistViewModel.swift; sourceTree = "<group>"; };
-		F40647592DEE880D00A8D5F9 /* SetlistItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistItem.swift; sourceTree = "<group>"; };
-		F406475B2DEE884800A8D5F9 /* PhishAPIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishAPIClient.swift; sourceTree = "<group>"; };
 		F418FFB82DE7ED0A00240D34 /* PhishQS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhishQS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFC52DE7ED0B00240D34 /* PhishQSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F4A5DD112E1199DE00B5D172 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		F4A5DD142E119D5D00B5D172 /* DayListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayListViewModel.swift; sourceTree = "<group>"; };
-		F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListViewModel.swift; sourceTree = "<group>"; };
-		F4CCA1412E0F799100483D23 /* Show.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Show.swift; sourceTree = "<group>"; };
-		F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListViewModel.swift; sourceTree = "<group>"; };
-		F4D557BD2DEE7CBF002A5961 /* DayListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayListView.swift; sourceTree = "<group>"; };
-		F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthListView.swift; sourceTree = "<group>"; };
 		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
-		F4D557C02DEE7CBF002A5961 /* Secrets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
-		F4D557C12DEE7CBF002A5961 /* SetlistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetlistView.swift; sourceTree = "<group>"; };
-		F4D557C22DEE7CBF002A5961 /* YearListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YearListView.swift; sourceTree = "<group>"; };
-		F4DF04EE2E0F2839002BADF7 /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Secrets.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F42264E22E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PhishQSTests/PhishQSTests.swift,
+				PhishQSUITests/PhishQSUITests.swift,
+				PhishQSUITests/PhishQSUITestsLaunchTests.swift,
+			);
+			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
+		};
+		F42264E32E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQSTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PhishQSUITests/PhishQSUITests.swift,
+				PhishQSUITests/PhishQSUITestsLaunchTests.swift,
+			);
+			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
+		};
+		F42264E42E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQSUITests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				PhishQSUITests/PhishQSUITests.swift,
+				PhishQSUITests/PhishQSUITestsLaunchTests.swift,
+			);
+			target = F418FFCE2DE7ED0B00240D34 /* PhishQSUITests */;
+		};
+		F42264FF2E1E784B00891DED /* Exceptions for "Features" folder in "PhishQSTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DaySelection/DayListView.swift,
+				DaySelection/DayListViewModel.swift,
+				MonthSelection/MonthListView.swift,
+				MonthSelection/MonthListViewModel.swift,
+				Setlist/SetlistView.swift,
+				Setlist/SetlistViewModel.swift,
+				YearSelection/YearListView.swift,
+				YearSelection/YearListViewModel.swift,
+			);
+			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
+		};
+		F42265002E1E786F00891DED /* Exceptions for "Models" folder in "PhishQSTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				SetlistItem.swift,
+				Show.swift,
+			);
+			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
+		};
+		F42265012E1E787B00891DED /* Exceptions for "Resources" folder in "PhishQSTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Secrets.plist,
+			);
+			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
+		};
+		F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Secrets.swift,
+			);
+			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
+		};
+		F42265142E1EAE6C00891DED /* Exceptions for "Utilities" folder in "PhishQS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MockPhishAPIClient.swift,
+			);
+			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F418FFC82DE7ED0B00240D34 /* PhishQSTests */ = {
+		F42264D92E1E77A300891DED /* Tests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PhishQSTests;
+			exceptions = (
+				F42264E22E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQS" target */,
+				F42264E32E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQSTests" target */,
+				F42264E42E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQSUITests" target */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
-		F418FFD22DE7ED0B00240D34 /* PhishQSUITests */ = {
+		F42264E52E1E77F200891DED /* Features */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = PhishQSUITests;
+			exceptions = (
+				F42264FF2E1E784B00891DED /* Exceptions for "Features" folder in "PhishQSTests" target */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		F42264E72E1E780E00891DED /* Models */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F42265002E1E786F00891DED /* Exceptions for "Models" folder in "PhishQSTests" target */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F42264E82E1E781600891DED /* Resources */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F42265012E1E787B00891DED /* Exceptions for "Resources" folder in "PhishQSTests" target */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		F42264EA2E1E783200891DED /* Utilities */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F42265142E1EAE6C00891DED /* Exceptions for "Utilities" folder in "PhishQS" target */,
+				F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
+		F42265062E1E78A700891DED /* Products */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Products;
+			sourceTree = "<group>";
+		};
+		F42265082E1E78ED00891DED /* Extensions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -103,15 +192,16 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
+				F42264E82E1E781600891DED /* Resources */,
+				F42264D92E1E77A300891DED /* Tests */,
 				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
 				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
-				F4CCA14D2E14C1A300483D23 /* Features */,
-				F4D557CD2DEE7D76002A5961 /* Models */,
-				F4D557D12DEE7D8E002A5961 /* Resources */,
-				F4D557CF2DEE7D83002A5961 /* Utilities */,
-				F4CCA15F2E14CB9200483D23 /* Tests */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
-				F4D557D02DEE7D88002A5961 /* Extensions */,
+				F42264E52E1E77F200891DED /* Features */,
+				F42264E72E1E780E00891DED /* Models */,
+				F42264EA2E1E783200891DED /* Utilities */,
+				F42265062E1E78A700891DED /* Products */,
+				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,95 +213,6 @@
 				F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		F4CCA14D2E14C1A300483D23 /* Features */ = {
-			isa = PBXGroup;
-			children = (
-				F4CCA1512E14C1E300483D23 /* Setlist */,
-				F4CCA1502E14C1D600483D23 /* DaySelection */,
-				F4CCA14F2E14C1C300483D23 /* MonthSelection */,
-				F4CCA14E2E14C1B100483D23 /* YearSelection */,
-			);
-			path = Features;
-			sourceTree = "<group>";
-		};
-		F4CCA14E2E14C1B100483D23 /* YearSelection */ = {
-			isa = PBXGroup;
-			children = (
-				F4CCA13F2E0F754500483D23 /* YearListViewModel.swift */,
-				F4D557C22DEE7CBF002A5961 /* YearListView.swift */,
-			);
-			path = YearSelection;
-			sourceTree = "<group>";
-		};
-		F4CCA14F2E14C1C300483D23 /* MonthSelection */ = {
-			isa = PBXGroup;
-			children = (
-				F4CCA1432E0F7DD200483D23 /* MonthListViewModel.swift */,
-				F4D557BE2DEE7CBF002A5961 /* MonthListView.swift */,
-			);
-			path = MonthSelection;
-			sourceTree = "<group>";
-		};
-		F4CCA1502E14C1D600483D23 /* DaySelection */ = {
-			isa = PBXGroup;
-			children = (
-				F4A5DD142E119D5D00B5D172 /* DayListViewModel.swift */,
-				F4D557BD2DEE7CBF002A5961 /* DayListView.swift */,
-			);
-			path = DaySelection;
-			sourceTree = "<group>";
-		};
-		F4CCA1512E14C1E300483D23 /* Setlist */ = {
-			isa = PBXGroup;
-			children = (
-				F4D557C12DEE7CBF002A5961 /* SetlistView.swift */,
-				F40647572DEE87D000A8D5F9 /* SetlistViewModel.swift */,
-			);
-			path = Setlist;
-			sourceTree = "<group>";
-		};
-		F4CCA15F2E14CB9200483D23 /* Tests */ = {
-			isa = PBXGroup;
-			children = (
-				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
-				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
-			);
-			path = Tests;
-			sourceTree = "<group>";
-		};
-		F4D557CD2DEE7D76002A5961 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				F4CCA1412E0F799100483D23 /* Show.swift */,
-				F40647592DEE880D00A8D5F9 /* SetlistItem.swift */,
-			);
-			path = Models;
-			sourceTree = "<group>";
-		};
-		F4D557CF2DEE7D83002A5961 /* Utilities */ = {
-			isa = PBXGroup;
-			children = (
-				F4DF04EE2E0F2839002BADF7 /* Secrets.swift */,
-				F406475B2DEE884800A8D5F9 /* PhishAPIClient.swift */,
-			);
-			path = Utilities;
-			sourceTree = "<group>";
-		};
-		F4D557D02DEE7D88002A5961 /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
-		F4D557D12DEE7D8E002A5961 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-				F4D557C02DEE7CBF002A5961 /* Secrets.plist */,
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -228,6 +229,15 @@
 			buildRules = (
 			);
 			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F42264D92E1E77A300891DED /* Tests */,
+				F42264E52E1E77F200891DED /* Features */,
+				F42264E72E1E780E00891DED /* Models */,
+				F42264E82E1E781600891DED /* Resources */,
+				F42264EA2E1E783200891DED /* Utilities */,
+				F42265062E1E78A700891DED /* Products */,
+				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			name = PhishQS;
 			packageProductDependencies = (
@@ -250,7 +260,13 @@
 				F418FFC72DE7ED0B00240D34 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				F418FFC82DE7ED0B00240D34 /* PhishQSTests */,
+				F42264D92E1E77A300891DED /* Tests */,
+				F42264E52E1E77F200891DED /* Features */,
+				F42264E72E1E780E00891DED /* Models */,
+				F42264E82E1E781600891DED /* Resources */,
+				F42264EA2E1E783200891DED /* Utilities */,
+				F42265062E1E78A700891DED /* Products */,
+				F42265082E1E78ED00891DED /* Extensions */,
 			);
 			name = PhishQSTests;
 			packageProductDependencies = (
@@ -271,9 +287,6 @@
 			);
 			dependencies = (
 				F418FFD12DE7ED0B00240D34 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				F418FFD22DE7ED0B00240D34 /* PhishQSUITests */,
 			);
 			name = PhishQSUITests;
 			packageProductDependencies = (
@@ -333,7 +346,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */,
-				F4D557C32DEE7CBF002A5961 /* Secrets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -359,18 +371,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F4D557C42DEE7CBF002A5961 /* MonthListView.swift in Sources */,
-				F4CCA1442E0F7DD800483D23 /* MonthListViewModel.swift in Sources */,
-				F4DF04EF2E0F2839002BADF7 /* Secrets.swift in Sources */,
-				F4CCA1422E0F799500483D23 /* Show.swift in Sources */,
-				F4A5DD152E119D5D00B5D172 /* DayListViewModel.swift in Sources */,
-				F406475A2DEE881500A8D5F9 /* SetlistItem.swift in Sources */,
-				F4D557C62DEE7CBF002A5961 /* SetlistView.swift in Sources */,
 				F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */,
-				F4D557C82DEE7CBF002A5961 /* YearListView.swift in Sources */,
-				F4D557C92DEE7CBF002A5961 /* DayListView.swift in Sources */,
-				F40647582DEE87D000A8D5F9 /* SetlistViewModel.swift in Sources */,
-				F4CCA1402E0F754500483D23 /* YearListViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

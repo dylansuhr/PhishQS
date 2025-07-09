@@ -36,19 +36,21 @@ struct LatestSetlistView: View {
                 if !viewModel.setlistItems.isEmpty {
                     VStack(alignment: .leading, spacing: 2) {
                         ForEach(Array(viewModel.formattedSetlist.prefix(8).enumerated()), id: \.offset) { index, line in
-                            if !line.isEmpty {
-                                if line.hasPrefix("Set") {
-                                    Text(line)
-                                        .font(.caption)
-                                        .fontWeight(.semibold)
-                                        .foregroundColor(.blue)
-                                } else {
-                                    Text(line)
-                                        .font(.caption)
-                                        .foregroundColor(.primary)
-                                }
+                            if line.isEmpty {
+                                // Skip empty lines in preview
+                                continue
+                            } else if line.hasPrefix("Set") {
+                                Text(line)
+                                    .font(.caption)
+                                    .fontWeight(.semibold)
+                                    .foregroundColor(.blue)
+                            } else {
+                                Text(line)
+                                    .font(.caption)
+                                    .foregroundColor(.primary)
                             }
                         }
+                        
                         // Show "..." if there are more songs
                         if viewModel.setlistItems.count > 8 {
                             Text("...")
