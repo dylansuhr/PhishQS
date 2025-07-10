@@ -11,6 +11,7 @@ struct YearListView: View {
             LatestSetlistView()
                 .padding(.horizontal)
                 .padding(.top)
+                .padding(.bottom)
             
             // list of all valid years
             List(viewModel.years, id: \.self) { year in
