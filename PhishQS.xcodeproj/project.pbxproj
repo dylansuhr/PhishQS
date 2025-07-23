@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F4A55E8C2E313C8800C4AB42 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */; };
+		F4A55E8D2E313C8800C4AB42 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */; };
 		F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
 		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
 /* End PBXBuildFile section */
@@ -32,6 +34,7 @@
 		F418FFB82DE7ED0A00240D34 /* PhishQS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhishQS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFC52DE7ED0B00240D34 /* PhishQSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		F4A5DD112E1199DE00B5D172 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
 		F4D8B98C2E1EB7EC00EB140A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -186,6 +189,7 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
+				F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */,
 				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
 				F4D8B98C2E1EB7EC00EB140A /* README.md */,
 				F4D8B98D2E1EB81E00EB140A /* .gitignore */,
@@ -336,6 +340,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */,
+				F4A55E8D2E313C8800C4AB42 /* CLAUDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -343,6 +348,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F4A55E8C2E313C8800C4AB42 /* CLAUDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

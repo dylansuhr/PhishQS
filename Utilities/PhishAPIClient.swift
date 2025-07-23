@@ -86,19 +86,28 @@ class PhishAPIClient: PhishAPIService {
         }
     }
     
-    /// Fetch the latest show (most recent from current or previous year)
+    /// Fetch the latest show (most recent chronologically)
     func fetchLatestShow() async throws -> Show? {
         let currentYear = Calendar.current.component(.year, from: Date())
         
+        // Try current year first
         do {
             let shows = try await fetchShows(forYear: String(currentYear))
-            return shows.first
+            let phishShows = APIUtilities.filterPhishShows(shows)
+            let sortedShows = phishShows.sorted { $0.showdate > $1.showdate }
+            if let latestShow = sortedShows.first {
+                return latestShow
+            }
         } catch {
-            // Try previous year if no shows this year
-            let previousYear = currentYear - 1
-            let previousShows = try await fetchShows(forYear: String(previousYear))
-            return previousShows.first
+            // Continue to try previous year
         }
+        
+        // Try previous year if no Phish shows this year
+        let previousYear = currentYear - 1
+        let previousShows = try await fetchShows(forYear: String(previousYear))
+        let phishShows = APIUtilities.filterPhishShows(previousShows)
+        let sortedShows = phishShows.sorted { $0.showdate > $1.showdate }
+        return sortedShows.first
     }
     
     /// Search shows by query (venue, city, etc.)

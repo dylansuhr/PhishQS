@@ -7,25 +7,50 @@ struct YearListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Latest setlist at the top
-            LatestSetlistView()
-                .padding(.horizontal)
-                .padding(.top)
-                .padding(.bottom)
+            // Latest Show section (no header, positioned higher)
+            VStack(alignment: .leading, spacing: 8) {
+                LatestSetlistView()
+            }
+            .padding(.horizontal)
+            .padding(.top, 8)
+            .padding(.bottom)
             
-            // list of all valid years
-            List(viewModel.years, id: \.self) { year in
-                // when user taps a year, navigate to MonthListView
-                NavigationLink(destination: MonthListView(year: year)) {
-                    Text(year)
+            // Select Year section  
+            VStack(spacing: 0) {
+                HStack {
+                    Text("Select Year")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 8)
+                    Spacer()
                 }
+                
+                // list of all valid years
+                List(viewModel.years, id: \.self) { year in
+                    // when user taps a year, navigate to MonthListView
+                    NavigationLink(destination: MonthListView(year: year)) {
+                        Text(year)
+                    }
+                }
+                .listStyle(PlainListStyle())
+                .background(Color(.systemGray6))
             }
         }
+        .background(Color(.systemGray6))
         .onAppear {
             // load the list of valid Phish touring years
             viewModel.fetchYears()
         }
-        // screen title
-        .navigationTitle("Select Year")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Image("QS_trasnparent")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: 28)
+            }
+        }
     }
 }

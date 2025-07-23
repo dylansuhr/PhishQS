@@ -8,11 +8,33 @@ struct MonthListView: View {
     @StateObject private var viewModel = MonthListViewModel()
 
     var body: some View {
-        // list of tappable months
-        List(viewModel.months, id: \.self) { month in
-            // tap month to navigate to list of days in that month
-            NavigationLink(destination: DayListView(year: year, month: month)) {
-                Text(month) // display raw month string like "01"
+        VStack {
+            if viewModel.isLoading {
+                ProgressView("Loading months...")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if let errorMessage = viewModel.errorMessage {
+                VStack(spacing: 16) {
+                    Text("Error loading months")
+                        .font(.headline)
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                    Button("Retry") {
+                        viewModel.fetchMonths(for: year)
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                // list of tappable months
+                List(viewModel.months, id: \.self) { month in
+                    // tap month to navigate to list of days in that month
+                    NavigationLink(destination: DayListView(year: year, month: month)) {
+                        Text(month) // display raw month string like "01"
+                    }
+                }
             }
         }
         .onAppear {

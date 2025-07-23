@@ -44,23 +44,6 @@ class LatestSetlistViewModel: ObservableObject {
     
     // Format the setlist for display
     var formattedSetlist: [String] {
-        var formatted: [String] = []
-        var currentSet = ""
-        
-        for item in setlistItems {
-            if item.set != currentSet {
-                currentSet = item.set
-                formatted.append("")
-                formatted.append("Set \(item.set):")
-            }
-            
-            var line = item.song
-            if let transMark = item.transMark {
-                line += " \(transMark)"
-            }
-            formatted.append(line)
-        }
-        
-        return formatted
+        return StringFormatters.formatSetlist(setlistItems)
     }
 } 
