@@ -12,7 +12,7 @@ struct YearListView: View {
                 LatestSetlistView()
             }
             .padding(.horizontal)
-            .padding(.top, 8)
+            .padding(.top, 4)
             .padding(.bottom)
             
             // Select Year section  
@@ -34,8 +34,6 @@ struct YearListView: View {
                         Text(year)
                     }
                 }
-                .listStyle(PlainListStyle())
-                .background(Color(.systemGray6))
             }
         }
         .background(Color(.systemGray6))
@@ -46,7 +44,7 @@ struct YearListView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                Image("QS_trasnparent")
+                Image("QS_transparent")
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(height: 28)

@@ -21,13 +21,14 @@ struct LatestSetlistView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(show.showdate)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.primary)
                     
                     // Show venue info if available from setlist items
                     if let firstItem = viewModel.setlistItems.first {
-                        Text("\(firstItem.venue), \(firstItem.city)")
+                        let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
+                        Text("\(firstItem.venue), \(firstItem.city)\(stateText)")
                             .font(.caption)
-                            .foregroundColor(.secondary)
+                            .foregroundColor(.primary)
                     }
                 }
                 
@@ -36,10 +37,7 @@ struct LatestSetlistView: View {
                     VStack(alignment: .leading, spacing: 2) {
                         ForEach(Array(viewModel.formattedSetlist.enumerated()), id: \.offset) { index, line in
                             if !line.isEmpty {
-                                Text(line)
-                                    .font(.caption)
-                                    .fontWeight(line.contains("Set ") || line.contains("Encore:") ? .semibold : .regular)
-                                    .foregroundColor(line.contains("Set ") || line.contains("Encore:") ? .blue : .primary)
+                                SetlistLineView(line, fontSize: .caption)
                             }
                         }
                     }

@@ -14,13 +14,14 @@ struct SetlistItem: Codable {
     let transMark: String?    // transition marker (e.g. "->", ",")
     let venue: String         // venue name
     let city: String          // city name
+    let state: String?        // state/province name (e.g. "NY", "PA")
     let showdate: String      // full show date, e.g. "2025-01-28"
 
     // match Swift property names to JSON keys
     enum CodingKeys: String, CodingKey {
         case set, song
         case transMark = "trans_mark"
-        case venue, city, showdate
+        case venue, city, state, showdate
     }
 }
 

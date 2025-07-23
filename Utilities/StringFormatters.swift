@@ -21,7 +21,7 @@ struct StringFormatters {
                 // Finish previous set if it exists
                 if !currentSet.isEmpty && !currentSetSongs.isEmpty {
                     let setHeader = formatSetName(currentSet)
-                    let songsLine = currentSetSongs.joined(separator: ", ")
+                    let songsLine = currentSetSongs.joined(separator: " ")
                     formatted.append("\(setHeader) \(songsLine)")
                     formatted.append("")
                 }
@@ -40,7 +40,7 @@ struct StringFormatters {
         // Add the final set
         if !currentSet.isEmpty && !currentSetSongs.isEmpty {
             let setHeader = formatSetName(currentSet)
-            let songsLine = currentSetSongs.joined(separator: ", ")
+            let songsLine = currentSetSongs.joined(separator: " ")
             formatted.append("\(setHeader) \(songsLine)")
         }
         

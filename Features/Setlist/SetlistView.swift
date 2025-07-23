@@ -14,6 +14,7 @@ struct SetlistView: View {
         let date = DateUtilities.padDateComponents(year: year, month: month, day: day)
 
         ScrollView {
+            Color.clear
             if viewModel.isLoading {
                 ProgressView("Loading setlist...")
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -45,27 +46,26 @@ struct SetlistView: View {
                             Text("\(firstItem.venue)")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                            Text("\(firstItem.city)")
+                            let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
+                            Text("\(firstItem.city)\(stateText)")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
                         .padding(.bottom, 16)
                     }
                     
-                    // Display setlist with inline songs
+                    // Display setlist with inline songs using shared component
                     ForEach(viewModel.setlist, id: \.self) { line in
                         if !line.isEmpty {
-                            Text(line)
-                                .font(line.contains("Set ") || line.contains("Encore:") ? .headline : .body)
-                                .fontWeight(line.contains("Set ") || line.contains("Encore:") ? .semibold : .regular)
-                                .foregroundColor(line.contains("Set ") || line.contains("Encore:") ? .blue : .primary)
-                                .padding(.top, (line.contains("Set ") || line.contains("Encore:")) && line != viewModel.setlist.first ? 16 : 0)
+                            SetlistLineView(line)
+                                .padding(.top, (line.hasPrefix("Set ") || line.hasPrefix("Encore:")) && line != viewModel.setlist.first ? 16 : 0)
                         }
                     }
                 }
                 .padding()
             }
         }
+        .phishBackground()
         .onAppear {
             viewModel.fetchSetlist(for: date)
         }
