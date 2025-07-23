@@ -55,7 +55,7 @@ struct SetlistView: View {
                     }
                     
                     // Display setlist with inline songs using shared component
-                    ForEach(viewModel.setlist, id: \.self) { line in
+                    ForEach(Array(viewModel.setlist.enumerated()), id: \.offset) { index, line in
                         if !line.isEmpty {
                             SetlistLineView(line)
                                 .padding(.top, (line.hasPrefix("Set ") || line.hasPrefix("Encore:")) && line != viewModel.setlist.first ? 16 : 0)

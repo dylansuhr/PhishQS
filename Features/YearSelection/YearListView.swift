@@ -12,27 +12,14 @@ struct YearListView: View {
                 LatestSetlistView()
             }
             .padding(.horizontal)
-            .padding(.top, 4)
-            .padding(.bottom)
+            .padding(.top, 8)
+            .padding(.bottom, 12)
             
-            // Select Year section  
-            VStack(spacing: 0) {
-                HStack {
-                    Text("Select Year")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .padding(.horizontal)
-                        .padding(.top, 8)
-                        .padding(.bottom, 8)
-                    Spacer()
-                }
-                
-                // list of all valid years
-                List(viewModel.years, id: \.self) { year in
-                    // when user taps a year, navigate to MonthListView
-                    NavigationLink(destination: MonthListView(year: year)) {
-                        Text(year)
-                    }
+            // List of all valid years
+            List(viewModel.years, id: \.self) { year in
+                // when user taps a year, navigate to MonthListView
+                NavigationLink(destination: MonthListView(year: year)) {
+                    Text(year)
                 }
             }
         }

@@ -26,7 +26,7 @@ struct LatestSetlistView: View {
                     // Show venue info if available from setlist items
                     if let firstItem = viewModel.setlistItems.first {
                         let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
-                        Text("\(firstItem.venue), \(firstItem.city)\(stateText)")
+                        Text("\(firstItem.venue) - \(firstItem.city)\(stateText)")
                             .font(.caption)
                             .foregroundColor(.primary)
                     }
@@ -41,7 +41,7 @@ struct LatestSetlistView: View {
                             }
                         }
                     }
-                    .padding(.top, 4)
+                    .padding(.top, 0)
                 }
             } else if let errorMessage = viewModel.errorMessage {
                 Text(errorMessage)

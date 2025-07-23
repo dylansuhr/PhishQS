@@ -22,7 +22,8 @@ struct StringFormatters {
                 if !currentSet.isEmpty && !currentSetSongs.isEmpty {
                     let setHeader = formatSetName(currentSet)
                     let songsLine = currentSetSongs.joined(separator: " ")
-                    formatted.append("\(setHeader) \(songsLine)")
+                    formatted.append(setHeader)  // Header on its own line
+                    formatted.append(songsLine)  // Songs on separate line
                     formatted.append("")
                 }
                 
@@ -32,7 +33,8 @@ struct StringFormatters {
             
             var songWithTransition = item.song
             if let transMark = item.transMark, !transMark.isEmpty {
-                songWithTransition += " \(transMark)"
+                // API already includes proper spacing in transition markers, just append directly
+                songWithTransition += transMark
             }
             currentSetSongs.append(songWithTransition)
         }
@@ -41,7 +43,8 @@ struct StringFormatters {
         if !currentSet.isEmpty && !currentSetSongs.isEmpty {
             let setHeader = formatSetName(currentSet)
             let songsLine = currentSetSongs.joined(separator: " ")
-            formatted.append("\(setHeader) \(songsLine)")
+            formatted.append(setHeader)  // Header on its own line
+            formatted.append(songsLine)  // Songs on separate line
         }
         
         return formatted

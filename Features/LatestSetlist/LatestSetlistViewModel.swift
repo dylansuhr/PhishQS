@@ -1,11 +1,9 @@
 import Foundation
 
 // ViewModel for fetching and managing the latest Phish setlist
-class LatestSetlistViewModel: ObservableObject {
+class LatestSetlistViewModel: BaseViewModel {
     @Published var latestShow: Show?
     @Published var setlistItems: [SetlistItem] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
     
     private let apiClient: PhishAPIService
     
@@ -18,8 +16,7 @@ class LatestSetlistViewModel: ObservableObject {
     // Fetch the latest show and its setlist
     @MainActor
     func fetchLatestSetlist() async {
-        isLoading = true
-        errorMessage = nil
+        setLoading(true)
         
         do {
             if let show = try await apiClient.fetchLatestShow() {
@@ -29,10 +26,11 @@ class LatestSetlistViewModel: ObservableObject {
                 errorMessage = "No recent shows found"
             }
         } catch {
-            errorMessage = error.localizedDescription
+            handleError(error)
+            return
         }
         
-        isLoading = false
+        setLoading(false)
     }
     
     // Non-async wrapper for SwiftUI compatibility
