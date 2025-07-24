@@ -64,11 +64,18 @@ class PhishAPIClient: PhishAPIService {
     
     /// Fetch all shows for a given year
     func fetchShows(forYear year: String) async throws -> [Show] {
-        guard let url = URL(string: "\(baseURL)/setlists/showyear/\(year).json?apikey=\(apiKey)&artist=phish") else {
+        // Add cache-busting with timestamp and random component for fresh data
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let random = Int.random(in: 1000...9999)
+        guard let url = URL(string: "\(baseURL)/setlists/showyear/\(year).json?apikey=\(apiKey)&artist=phish&_t=\(timestamp)&_r=\(random)") else {
             throw APIError.invalidURL
         }
 
-        let (data, response) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse
@@ -138,11 +145,18 @@ class PhishAPIClient: PhishAPIService {
     
     /// Fetch setlist for a specific show date
     func fetchSetlist(for date: String) async throws -> [SetlistItem] {
-        guard let url = URL(string: "\(baseURL)/setlists/showdate/\(date).json?apikey=\(apiKey)&artist=phish") else {
+        // Add cache-busting with timestamp and random component for fresh data
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let random = Int.random(in: 1000...9999)
+        guard let url = URL(string: "\(baseURL)/setlists/showdate/\(date).json?apikey=\(apiKey)&artist=phish&_t=\(timestamp)&_r=\(random)") else {
             throw APIError.invalidURL
         }
 
-        let (data, response) = try await URLSession.shared.data(from: url)
+        var request = URLRequest(url: url)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse

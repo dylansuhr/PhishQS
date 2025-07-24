@@ -10,9 +10,13 @@ PhishQS (Phish Quick Setlist) is a minimalist iOS app built with SwiftUI that al
 
 This is a standard Xcode iOS project. Use these commands:
 
-- **Build**: Open `PhishQS.xcodeproj` in Xcode and use Cmd+B, or use `xcodebuild` from command line
+- **Build** (default - build-only, no simulator): `xcodebuild -project PhishQS.xcodeproj -scheme PhishQS -destination 'generic/platform=iOS' build`
+- **Build** (with xcbeautify if installed): `xcodebuild -project PhishQS.xcodeproj -scheme PhishQS -destination 'generic/platform=iOS' build | xcbeautify --quiet`
+- **Build** (alternative): Open `PhishQS.xcodeproj` in Xcode and use Cmd+B
 - **Run Tests**: Use Cmd+U in Xcode, or `xcodebuild test -scheme PhishQS -destination 'platform=iOS Simulator,name=iPhone 15'`
 - **Run App**: Use Cmd+R in Xcode or build and run on simulator/device
+
+**Note**: Default to build-only command for compilation checks. Use physical device for testing due to Cloudflare networking issues in simulator.
 
 The project uses the new Swift Testing framework (not XCTest), so test files use `@Test` annotations instead of `XCTestCase`.
 

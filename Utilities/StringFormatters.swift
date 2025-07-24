@@ -24,7 +24,7 @@ struct StringFormatters {
                     let songsLine = currentSetSongs.joined(separator: " ")
                     formatted.append(setHeader)  // Header on its own line
                     formatted.append(songsLine)  // Songs on separate line
-                    formatted.append("")
+                    formatted.append("")  // Add spacing after each set
                 }
                 
                 currentSet = item.set
@@ -45,6 +45,7 @@ struct StringFormatters {
             let songsLine = currentSetSongs.joined(separator: " ")
             formatted.append(setHeader)  // Header on its own line
             formatted.append(songsLine)  // Songs on separate line
+            formatted.append("")  // Add consistent spacing after final set too
         }
         
         return formatted
