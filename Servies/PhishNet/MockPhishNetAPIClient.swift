@@ -14,11 +14,11 @@ class MockPhishAPIClient: PhishAPIService {
     ]
     
     private let mockSetlistItems: [SetlistItem] = [
-        SetlistItem(set: "1", song: "Sample in a Jar", transMark: nil, venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28"),
-        SetlistItem(set: "1", song: "Divided Sky", transMark: "->", venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28"),
-        SetlistItem(set: "1", song: "Free", transMark: nil, venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28"),
-        SetlistItem(set: "2", song: "Tweezer", transMark: nil, venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28"),
-        SetlistItem(set: "2", song: "Harry Hood", transMark: nil, venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28")
+        SetlistItem(set: "1", song: "Sample in a Jar", transMark: nil, venue: "Madison Square Garden", city: "New York", showdate: "2025-01-28"),
+        SetlistItem(set: "1", song: "Divided Sky", transMark: "->", venue: "Madison Square Garden", city: "New York", showdate: "2025-01-28"),
+        SetlistItem(set: "1", song: "Free", transMark: nil, venue: "Madison Square Garden", city: "New York", showdate: "2025-01-28"),
+        SetlistItem(set: "2", song: "Tweezer", transMark: nil, venue: "Madison Square Garden", city: "New York", showdate: "2025-01-28"),
+        SetlistItem(set: "2", song: "Harry Hood", transMark: nil, venue: "Madison Square Garden", city: "New York", showdate: "2025-01-28")
     ]
     
     private let mockVenue = Venue(

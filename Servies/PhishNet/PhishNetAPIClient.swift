@@ -11,33 +11,6 @@ protocol PhishAPIService {
     func fetchVenueInfo(for venueId: String) async throws -> Venue
 }
 
-// MARK: - API Error Types
-
-enum APIError: Error, LocalizedError {
-    case invalidURL
-    case networkError(Error)
-    case httpError(Int)
-    case noData
-    case decodingError(Error)
-    case invalidResponse
-    
-    var errorDescription: String? {
-        switch self {
-        case .invalidURL:
-            return "Invalid URL"
-        case .networkError(let error):
-            return "Network error: \(error.localizedDescription)"
-        case .httpError(let statusCode):
-            return "HTTP error: \(statusCode)"
-        case .noData:
-            return "No data received"
-        case .decodingError(let error):
-            return "Failed to parse response: \(error.localizedDescription)"
-        case .invalidResponse:
-            return "Invalid response from server"
-        }
-    }
-}
 
 // MARK: - Venue Model
 
