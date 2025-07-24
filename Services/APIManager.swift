@@ -18,11 +18,11 @@ class APIManager: ObservableObject {
     // MARK: - API Clients
     
     /// Primary setlist data provider (Phish.net)
-    private let phishNetClient: PhishNetAPIService
+    private let phishNetClient: PhishAPIService
     
     // MARK: - Initialization
     
-    init(phishNetClient: PhishNetAPIService = PhishNetAPIClient.shared) {
+    init(phishNetClient: PhishAPIService = PhishAPIClient.shared) {
         self.phishNetClient = phishNetClient
     }
     

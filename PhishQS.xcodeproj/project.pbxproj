@@ -150,6 +150,11 @@
 			path = Utilities;
 			sourceTree = "<group>";
 		};
+		F46ACF932E32C865009CF6FB /* Services */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Services;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -191,6 +196,7 @@
 				F42264EA2E1E783200891DED /* Utilities */,
 				F42264E52E1E77F200891DED /* Features */,
 				F42264E72E1E780E00891DED /* Models */,
+				F46ACF932E32C865009CF6FB /* Services */,
 			);
 			sourceTree = "<group>";
 		};
@@ -225,6 +231,7 @@
 				F42264E72E1E780E00891DED /* Models */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
+				F46ACF932E32C865009CF6FB /* Services */,
 			);
 			name = PhishQS;
 			packageProductDependencies = (
@@ -252,6 +259,7 @@
 				F42264E72E1E780E00891DED /* Models */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
+				F46ACF932E32C865009CF6FB /* Services */,
 			);
 			name = PhishQSTests;
 			packageProductDependencies = (
