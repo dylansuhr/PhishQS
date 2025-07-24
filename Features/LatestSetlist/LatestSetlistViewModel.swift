@@ -168,13 +168,9 @@ class LatestSetlistViewModel: BaseViewModel {
         setLoading(true)
         let previousYear = String(yearInt - 1)
         
-        do {
-            await loadShowsForYear(previousYear)
-            if let latestShowOfYear = cachedShows.first {
-                await loadShow(latestShowOfYear, at: 0)
-            }
-        } catch {
-            handleError(error)
+        await loadShowsForYear(previousYear)
+        if let latestShowOfYear = cachedShows.first {
+            await loadShow(latestShowOfYear, at: 0)
         }
         
         setLoading(false)

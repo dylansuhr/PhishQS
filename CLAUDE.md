@@ -83,3 +83,75 @@ The project uses the new Swift Testing framework (not XCTest), so test files use
 - **Physical Device**: Full functionality including API calls
 - **Simulator**: Use MockPhishAPIClient for UI testing when network calls fail
 - **Unit Tests**: Run on both simulator (with mocks) and device (with real API)
+
+## Feature Roadmap
+
+### High Priority
+- [ ] Add link to stream show on LivePhish app
+- [ ] Add Phish.net link so user can get more information on the show
+- [ ] Add future tour dates button on home screen and pull future tour date data
+- [ ] Add day of the week to each show (Monday, Tuesday, etc.)
+- [ ] For month view, add month names (January, February) in addition to numbers for easy reading
+- [ ] When user is not on latest setlist card, add "Return to Latest" button for quick navigation
+- [ ] Remove all loading animations throughout the app for cleaner, more professional appearance
+
+### Medium Priority
+- [ ] For venue "runs" (same venue multiple nights), show N1/3, N2/3, N3/3 format
+- [ ] Indicate show number in tour (e.g., "Summer Tour 2025 15/23")
+- [ ] Implement categorization of shows by tour within year/month/day (maintain efficiency)
+- [ ] Build functionality to pull data from Phish.in API and research available information
+- [ ] Access song lengths for each song in a show
+- [ ] Implement color scale for song lengths (green=shortest, red=longest, gradient between)
+- [ ] Consider removing year list from home screen, replace with button leading to dedicated full-page year view
+
+### Long Term Goals
+- [ ] OCR feature: Take photo of any date, read date from image, open that show
+- [ ] Notes section for each show with sharing capability
+- [ ] Collaborative notes with friends and notifications ("listen to this Tweezer - it's fire!")
+
+## Multi-API Architecture Plan
+
+### Overview
+Modular architecture to integrate multiple Phish data sources while maintaining clean separation of concerns and easy extensibility.
+
+### API Priority Strategy
+1. **Phish.net** - Primary source for setlist data (current implementation)
+2. **Phish.in** - Song lengths, tour metadata, venue run information
+
+### Directory Structure
+```
+/Services/
+├── PhishNet/          # Phish.net API client (primary setlist source)
+├── PhishIn/           # Phish.in API client (song lengths, tours, venue runs)
+├── Core/              # Shared protocols, errors, utilities
+└── APIManager.swift   # Central coordinator between all APIs
+```
+
+### Data Strategy
+- **Phish.net**: Master setlist data (maintain current approach as single source of truth)
+- **Phish.in**: Supplement with song durations, tour metadata, N1/N2/N3 venue run info
+
+### Implementation Phases
+**Phase 1: Foundation Restructure**
+1. Create Services directory structure  
+2. Move existing PhishAPIClient to Services/PhishNet/
+3. Create core protocols and shared utilities
+4. Update imports throughout app
+
+**Phase 2: Phish.in Integration**
+1. Implement Phish.in client focusing on tracks/tours endpoints
+2. Create models for song durations and tour metadata
+3. Test data integration without UI changes
+
+**Phase 3: Central Coordination**
+1. Build APIManager to coordinate between APIs
+2. Update ViewModels to use new APIManager
+
+### Benefits
+- Provides song length and tour data from Phish.in
+- Maintains Phish.net as setlist authority
+- Modular design for easy future API additions
+- Clean separation of concerns
+
+### Completed ✅
+- [x] Fix LatestSetlistView swipe animations (horizontal-only movement, proper slide transitions)

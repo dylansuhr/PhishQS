@@ -101,17 +101,9 @@
 		F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				PhishAPIClient.swift,
 				Secrets.swift,
 			);
 			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
-		};
-		F42265142E1EAE6C00891DED /* Exceptions for "Utilities" folder in "PhishQS" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				MockPhishAPIClient.swift,
-			);
-			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -153,7 +145,6 @@
 		F42264EA2E1E783200891DED /* Utilities */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				F42265142E1EAE6C00891DED /* Exceptions for "Utilities" folder in "PhishQS" target */,
 				F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */,
 			);
 			path = Utilities;
