@@ -81,3 +81,36 @@ struct Playlist: Codable, Identifiable {
     let createdAt: Date
     let updatedAt: Date
 }
+
+// MARK: - Enhanced Data Models
+
+/// Enhanced setlist combining data from multiple APIs
+struct EnhancedSetlist: Codable {
+    let showDate: String
+    let setlistItems: [SetlistItem]
+    let trackDurations: [TrackDuration]
+    let venueRun: VenueRun?
+    let recordings: [Recording]
+    
+    /// Get duration for a specific song in the setlist
+    func getDuration(for songName: String) -> TrackDuration? {
+        return trackDurations.first { duration in
+            duration.songName.lowercased() == songName.lowercased()
+        }
+    }
+    
+    /// Get formatted venue run display text
+    var venueRunDisplayText: String {
+        return venueRun?.runDisplayText ?? ""
+    }
+    
+    /// Check if recordings are available for this show
+    var hasRecordings: Bool {
+        return !recordings.isEmpty && recordings.contains { $0.isAvailable }
+    }
+    
+    /// Get primary recording URL if available
+    var primaryRecordingURL: String? {
+        return recordings.first { $0.isAvailable }?.url
+    }
+}

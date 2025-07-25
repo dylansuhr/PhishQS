@@ -20,6 +20,7 @@ enum APIError: Error, LocalizedError {
     case rateLimitExceeded
     case unauthorized
     case serviceUnavailable
+    case notImplemented
     
     var errorDescription: String? {
         switch self {
@@ -43,6 +44,8 @@ enum APIError: Error, LocalizedError {
             return "Unauthorized access"
         case .serviceUnavailable:
             return "Service temporarily unavailable"
+        case .notImplemented:
+            return "Feature not yet implemented"
         }
     }
 }

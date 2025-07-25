@@ -45,6 +45,8 @@
 		F42264E22E1E77DE00891DED /* Exceptions for "Tests" folder in "PhishQS" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				PhishQSTests/Mocks/MockPhishAPIClient.swift,
+				PhishQSTests/Mocks/MockPhishInAPIClient.swift,
 				PhishQSTests/PhishQSTests.swift,
 				PhishQSUITests/PhishQSUITests.swift,
 				PhishQSUITests/PhishQSUITestsLaunchTests.swift,
