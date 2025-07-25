@@ -65,13 +65,17 @@ class APIManager: ObservableObject {
         var venueRun: VenueRun? = nil
         var recordings: [Recording] = []
         
-        if let phishInClient = phishInClient {
+        if let phishInClient = phishInClient, phishInClient.isAvailable {
             // Fetch track durations (song lengths)
             do {
                 trackDurations = try await phishInClient.fetchTrackDurations(for: date)
+                print("DEBUG: Successfully fetched \(trackDurations.count) track durations from Phish.in for \(date)")
+                for duration in trackDurations {
+                    print("DEBUG: Track - \(duration.songName): \(duration.formattedDuration)")
+                }
             } catch {
                 // Continue without durations if Phish.in is unavailable
-                print("Warning: Could not fetch track durations from Phish.in: \(error)")
+                print("Warning: Could not fetch track durations from Phish.in for \(date): \(error)")
             }
             
             // Fetch venue run information (N1/N2/N3)
@@ -89,6 +93,8 @@ class APIManager: ObservableObject {
                 // Continue without recording info if unavailable
                 print("Warning: Could not fetch recording info from Phish.in: \(error)")
             }
+        } else {
+            print("DEBUG: Phish.in client unavailable - likely missing API key")
         }
         
         return EnhancedSetlist(

@@ -18,12 +18,13 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     
     let baseURL = "https://phish.in/api/v1"
     private let session = URLSession.shared
+    private let apiKey = Secrets.value(for: "PhishInAPIKey")
     
     // MARK: - API Client Protocol
     
     var isAvailable: Bool {
-        // Simple availability check - could be enhanced with actual network test
-        return true
+        // Check if API key is configured and not empty
+        return !apiKey.isEmpty
     }
     
     private init() {}
@@ -35,6 +36,11 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         responseType: T.Type,
         queryParameters: [String: String] = [:]
     ) async throws -> T {
+        // Check if API key is available
+        guard !apiKey.isEmpty else {
+            throw APIError.apiKeyMissing
+        }
+        
         var urlComponents = URLComponents(string: "\(baseURL)/\(endpoint)")!
         
         if !queryParameters.isEmpty {
@@ -47,7 +53,11 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
             throw APIError.invalidURL
         }
         
-        let (data, response) = try await session.data(from: url)
+        // Create request with API key header
+        var request = URLRequest(url: url)
+        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        
+        let (data, response) = try await session.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.invalidResponse

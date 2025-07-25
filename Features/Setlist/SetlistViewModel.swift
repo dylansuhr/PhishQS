@@ -42,12 +42,12 @@ class SetlistViewModel: BaseViewModel {
     
     /// Get song duration for a specific song, if available (in seconds)
     func songDuration(for song: String) -> Int? {
-        return enhancedSetlist?.trackDurations.first { $0.songName == song }?.durationSeconds
+        return enhancedSetlist?.trackDurations.first { $0.songName.lowercased() == song.lowercased() }?.durationSeconds
     }
     
     /// Get formatted duration string for a specific song, if available
     func formattedDuration(for song: String) -> String? {
-        return enhancedSetlist?.trackDurations.first { $0.songName == song }?.formattedDuration
+        return enhancedSetlist?.trackDurations.first { $0.songName.lowercased() == song.lowercased() }?.formattedDuration
     }
     
     /// Get venue run information (N1/N2/N3), if available
@@ -62,6 +62,11 @@ class SetlistViewModel: BaseViewModel {
     
     /// Check if enhanced data is available
     var hasEnhancedData: Bool {
-        return enhancedSetlist != nil
+        return enhancedSetlist != nil && !(enhancedSetlist?.trackDurations.isEmpty ?? true)
+    }
+    
+    /// Debug: Get available track duration song names for troubleshooting
+    var availableTrackNames: [String] {
+        return enhancedSetlist?.trackDurations.map { $0.songName } ?? []
     }
 }

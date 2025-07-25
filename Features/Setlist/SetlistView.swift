@@ -51,15 +51,20 @@ struct SetlistView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
-                        .padding(.bottom, 16)
+                        .padding(.bottom, 8)
                     }
                     
-                    // Display setlist with inline songs using shared component
-                    ForEach(Array(viewModel.setlist.enumerated()), id: \.offset) { index, line in
-                        if !line.isEmpty {
-                            SetlistLineView(line)
-                                .padding(.top, (line.hasPrefix("Set ") || line.hasPrefix("Encore:")) && line != viewModel.setlist.first ? 16 : 0)
-                        }
+                    // Duration availability status
+                    if !viewModel.hasEnhancedData {
+                        Text("Song durations unavailable (Phish.in API key required)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(.bottom, 12)
+                    }
+                    
+                    // Display setlist with individual songs and durations
+                    ForEach(groupedSetlistContent(), id: \.id) { item in
+                        DetailedSetlistLineView(content: item.content)
                     }
                 }
                 .padding()
@@ -72,4 +77,68 @@ struct SetlistView: View {
         // set the navigation title to the current date
         .navigationTitle(date)
     }
+    
+    // MARK: - Helper Methods
+    
+    private func groupedSetlistContent() -> [SetlistContentItem] {
+        var content: [SetlistContentItem] = []
+        var currentSet = ""
+        var itemIndex = 0
+        
+        for setlistItem in viewModel.setlistItems {
+            // Add set header when we encounter a new set
+            if setlistItem.set != currentSet {
+                currentSet = setlistItem.set
+                let setHeader = formatSetName(currentSet)
+                content.append(SetlistContentItem(
+                    id: "header_\(currentSet)",
+                    content: .setHeader(setHeader)
+                ))
+            }
+            
+            // Parse individual songs from this setlist item
+            var songLine = setlistItem.song
+            if let transMark = setlistItem.transMark, !transMark.isEmpty {
+                songLine += transMark
+            }
+            
+            let songs = SongParser.parseSongs(from: songLine)
+            
+            for song in songs {
+                let cleanSong = SongParser.cleanSongName(song)
+                let duration = viewModel.formattedDuration(for: cleanSong)
+                
+                content.append(SetlistContentItem(
+                    id: "song_\(itemIndex)_\(cleanSong)",
+                    content: .song(name: cleanSong, duration: duration)
+                ))
+            }
+            
+            itemIndex += 1
+        }
+        
+        return content
+    }
+    
+    private func formatSetName(_ setIdentifier: String) -> String {
+        switch setIdentifier.uppercased() {
+        case "E", "ENCORE":
+            return "Encore:"
+        case "1":
+            return "Set 1:"
+        case "2":
+            return "Set 2:"
+        case "3":
+            return "Set 3:"
+        default:
+            return "Set \(setIdentifier):"
+        }
+    }
+}
+
+// MARK: - Supporting Types
+
+struct SetlistContentItem {
+    let id: String
+    let content: DetailedSetlistLineView.LineContent
 }
