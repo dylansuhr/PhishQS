@@ -1,17 +1,5 @@
 import Foundation
 
-// MARK: - API Service Protocol
-
-/// Protocol defining all Phish.net API operations
-protocol PhishAPIService {
-    func fetchShows(forYear year: String) async throws -> [Show]
-    func fetchLatestShow() async throws -> Show?
-    func fetchSetlist(for date: String) async throws -> [SetlistItem]
-    func searchShows(query: String) async throws -> [Show]
-    func fetchVenueInfo(for venueId: String) async throws -> Venue
-}
-
-
 // MARK: - Venue Model
 
 struct Venue: Codable, Identifiable {

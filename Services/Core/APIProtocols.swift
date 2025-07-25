@@ -25,6 +25,14 @@ protocol SetlistProviderProtocol: APIClientProtocol {
     func searchShows(query: String) async throws -> [Show]
 }
 
+/// Legacy protocol for backward compatibility with existing ViewModels
+protocol PhishAPIService {
+    func fetchShows(forYear year: String) async throws -> [Show]
+    func fetchLatestShow() async throws -> Show?
+    func fetchSetlist(for date: String) async throws -> [SetlistItem]
+    func searchShows(query: String) async throws -> [Show]
+}
+
 // MARK: - Audio Provider Protocol
 
 /// Protocol for APIs that provide audio/recording information

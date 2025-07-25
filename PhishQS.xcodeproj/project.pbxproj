@@ -85,28 +85,6 @@
 			);
 			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
 		};
-		F42265002E1E786F00891DED /* Exceptions for "Models" folder in "PhishQSTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				SetlistItem.swift,
-				Show.swift,
-			);
-			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
-		};
-		F42265012E1E787B00891DED /* Exceptions for "Resources" folder in "PhishQSTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Secrets.plist,
-			);
-			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
-		};
-		F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Secrets.swift,
-			);
-			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -130,25 +108,16 @@
 		};
 		F42264E72E1E780E00891DED /* Models */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F42265002E1E786F00891DED /* Exceptions for "Models" folder in "PhishQSTests" target */,
-			);
 			path = Models;
 			sourceTree = "<group>";
 		};
 		F42264E82E1E781600891DED /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F42265012E1E787B00891DED /* Exceptions for "Resources" folder in "PhishQSTests" target */,
-			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
 		F42264EA2E1E783200891DED /* Utilities */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F42265032E1E788300891DED /* Exceptions for "Utilities" folder in "PhishQSTests" target */,
-			);
 			path = Utilities;
 			sourceTree = "<group>";
 		};

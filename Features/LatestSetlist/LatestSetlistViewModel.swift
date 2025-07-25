@@ -16,11 +16,11 @@ class LatestSetlistViewModel: BaseViewModel {
     private var cachedYear: String?
     private var showsCache: [String: [Show]] = [:]
     
-    private let apiClient: PhishAPIService
+    private let apiClient: any PhishAPIService
     
     // MARK: - Initialization
     
-    init(apiClient: PhishAPIService = PhishAPIClient.shared) {
+    init(apiClient: any PhishAPIService = PhishAPIClient.shared) {
         self.apiClient = apiClient
     }
     

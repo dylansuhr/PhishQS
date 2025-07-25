@@ -6,6 +6,7 @@
 //
 
 import Testing
+import Foundation
 @testable import PhishQS
 
 struct PhishQSTests {
@@ -109,18 +110,6 @@ struct PhishQSTests {
         #expect(shows.allSatisfy { $0.artist_name == "Phish" })
     }
     
-    @Test func testPhishAPIClientFetchVenueInfo() async throws {
-        // Given: Mock API client
-        let mockClient = MockPhishAPIClient()
-        
-        // When: Fetch venue info
-        let venue = try await mockClient.fetchVenueInfo(for: "1")
-        
-        // Then: Should return venue data
-        #expect(venue.name == "Madison Square Garden")
-        #expect(venue.city == "New York")
-        #expect(venue.state == "NY")
-    }
     
     // MARK: - Error Handling Tests
     

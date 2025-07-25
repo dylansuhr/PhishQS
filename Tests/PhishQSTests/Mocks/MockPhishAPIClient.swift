@@ -1,10 +1,14 @@
 import Foundation
 @testable import PhishQS
 
+// MARK: - Type Aliases for Testing
+
+typealias TestPhishAPIService = PhishAPIService
+
 // MARK: - Mock API Client for Testing
 
 /// Mock implementation of PhishAPIService for unit testing
-class MockPhishAPIClient: PhishAPIService {
+class MockPhishAPIClient {
     
     // MARK: - Mock Data
     
@@ -21,16 +25,6 @@ class MockPhishAPIClient: PhishAPIService {
         SetlistItem(set: "2", song: "Tweezer", transMark: nil, venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28"),
         SetlistItem(set: "2", song: "Harry Hood", transMark: nil, venue: "Madison Square Garden", city: "New York", state: "NY", showdate: "2025-01-28")
     ]
-    
-    private let mockVenue = Venue(
-        id: "1",
-        name: "Madison Square Garden",
-        city: "New York",
-        state: "NY",
-        country: "USA",
-        latitude: 40.7505,
-        longitude: -73.9934
-    )
     
     // MARK: - Simulated Network Delay
     
@@ -76,16 +70,12 @@ class MockPhishAPIClient: PhishAPIService {
         }
     }
     
-    func fetchVenueInfo(for venueId: String) async throws -> Venue {
-        await simulateNetworkDelay()
-        
-        // Simulate venue not found
-        if venueId == "999" {
-            throw APIError.httpError(404)
-        }
-        
-        return mockVenue
-    }
+}
+
+// MARK: - Protocol Conformance
+
+extension MockPhishAPIClient: TestPhishAPIService {
+    // Explicit protocol method implementations to ensure conformance
 }
 
 // MARK: - Testing Utilities
@@ -105,4 +95,4 @@ extension MockPhishAPIClient {
         // Override mock data with custom data
         return mock
     }
-} 
+}

@@ -4,11 +4,11 @@ import Foundation
 class MonthListViewModel: BaseViewModel {
     @Published var months: [String] = []
     
-    private let apiClient: PhishAPIService
+    private let apiClient: any PhishAPIService
     
     // MARK: - Initialization
     
-    init(apiClient: PhishAPIService = PhishAPIClient.shared) {
+    init(apiClient: any PhishAPIService = PhishAPIClient.shared) {
         self.apiClient = apiClient
     }
 

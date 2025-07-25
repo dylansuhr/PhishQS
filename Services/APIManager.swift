@@ -52,10 +52,6 @@ class APIManager: ObservableObject {
         return try await phishNetClient.searchShows(query: query)
     }
     
-    /// Fetch venue information
-    func fetchVenueInfo(for venueId: String) async throws -> Venue {
-        return try await phishNetClient.fetchVenueInfo(for: venueId)
-    }
     
     // MARK: - Enhanced Data Operations (Multi-API Coordination)
     
