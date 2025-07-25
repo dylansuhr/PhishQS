@@ -1,4 +1,5 @@
 import Foundation
+@testable import PhishQS
 
 // MARK: - Mock API Client for Testing
 
