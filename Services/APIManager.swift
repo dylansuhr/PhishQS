@@ -7,9 +7,6 @@
 
 import Foundation
 
-// Re-export all the core types and protocols for easy access
-@_exported import Foundation
-
 // MARK: - Central API Coordinator
 
 /// Central manager that coordinates between different API services

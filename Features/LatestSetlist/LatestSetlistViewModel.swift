@@ -38,7 +38,7 @@ class LatestSetlistViewModel: BaseViewModel {
                 await loadShowsForYear(show.showyear)
                 updateNavigationState()
             } else {
-                errorMessage = "No recent shows found"
+                errorMessage = "Still waiting..."
             }
         } catch {
             handleError(error)
