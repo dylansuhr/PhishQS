@@ -9,13 +9,50 @@ import Foundation
 
 // MARK: - Phish.in API Response Models
 
-/// Base response wrapper for Phish.in API
+/// Base response wrapper for Phish.in API v1 (deprecated)
 struct PhishInResponse<T: Codable>: Codable {
     let data: T
     let success: Bool?
     let total_entries: Int?
     let total_pages: Int?
     let page: Int?
+}
+
+// MARK: - v2 API Response Wrappers
+
+struct PhishInShowsResponse: Codable {
+    let shows: [PhishInShow]
+    let total_entries: Int
+    let total_pages: Int
+    let current_page: Int
+}
+
+struct PhishInToursResponse: Codable {
+    let tours: [PhishInTour]
+    let total_entries: Int
+    let total_pages: Int
+    let current_page: Int
+}
+
+struct PhishInVenuesResponse: Codable {
+    let venues: [PhishInVenue]
+    let total_entries: Int
+    let total_pages: Int
+    let current_page: Int
+}
+
+struct PhishInSongsResponse: Codable {
+    let songs: [PhishInSong]
+    let total_entries: Int
+    let total_pages: Int
+    let current_page: Int
+}
+
+struct PhishInErasResponse: Codable {
+    let eras: [PhishInEra]
+    let total_entries: Int
+    let total_pages: Int
+    let current_page: Int
 }
 
 // MARK: - Show Models
@@ -77,7 +114,7 @@ struct PhishInTrack: Codable, Identifiable {
         return TrackDuration(
             id: String(id),
             songName: title,
-            durationSeconds: duration,
+            durationSeconds: duration / 1000, // Convert milliseconds to seconds
             showDate: showDate,
             setNumber: set_name ?? "1"
         )

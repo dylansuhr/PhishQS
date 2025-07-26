@@ -16,15 +16,15 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     
     static let shared = PhishInAPIClient()
     
-    let baseURL = "https://phish.in/api/v1"
+    let baseURL = "https://phish.in/api/v2"
     private let session = URLSession.shared
-    private let apiKey = Secrets.value(for: "PhishInAPIKey")
+    // No API key required for v2 API
     
     // MARK: - API Client Protocol
     
     var isAvailable: Bool {
-        // Check if API key is configured and not empty
-        return !apiKey.isEmpty
+        // v2 API doesn't require authentication
+        return true
     }
     
     private init() {}
@@ -36,10 +36,7 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         responseType: T.Type,
         queryParameters: [String: String] = [:]
     ) async throws -> T {
-        // Check if API key is available
-        guard !apiKey.isEmpty else {
-            throw APIError.apiKeyMissing
-        }
+        // v2 API doesn't require authentication
         
         var urlComponents = URLComponents(string: "\(baseURL)/\(endpoint)")!
         
@@ -53,9 +50,8 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
             throw APIError.invalidURL
         }
         
-        // Create request with API key header
-        var request = URLRequest(url: url)
-        request.setValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        // Create request (no authentication required for v2)
+        let request = URLRequest(url: url)
         
         let (data, response) = try await session.data(for: request)
         
@@ -111,14 +107,14 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     
     /// Fetch tours for a specific year
     func fetchTours(forYear year: String) async throws -> [Tour] {
-        let tours: [PhishInTour] = try await makeRequest(
-            endpoint: "tours.json",
-            responseType: [PhishInTour].self,
+        let response: PhishInToursResponse = try await makeRequest(
+            endpoint: "tours",
+            responseType: PhishInToursResponse.self,
             queryParameters: ["per_page": "2000"]
         )
         
         // Filter tours by year
-        return tours.filter { tour in
+        return response.tours.filter { tour in
             tour.starts_on?.hasPrefix(year) == true
         }.map { $0.toTour() }
     }
@@ -133,8 +129,8 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         }
         
         // Get all shows in the same tour at the same venue
-        let tourPhishInShows = try await fetchPhishInShowsInTour(String(tourId))
-        let venueShows = tourPhishInShows.filter { $0.venue?.id == venue.id }
+        let tourResponse = try await fetchPhishInShowsInTour(String(tourId))
+        let venueShows = tourResponse.shows.filter { $0.venue?.id == venue.id }
             .sorted(by: { $0.date < $1.date })
         
         guard let currentShowIndex = venueShows.firstIndex(where: { $0.date == showDate }) else {
@@ -153,22 +149,22 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     
     /// Fetch all shows in a specific tour (returns standard Show models)
     func fetchShowsInTour(_ tourId: String) async throws -> [Show] {
-        let phishInShows = try await fetchPhishInShowsInTour(tourId)
-        return phishInShows.map { $0.toShow() }
+        let response = try await fetchPhishInShowsInTour(tourId)
+        return response.shows.map { $0.toShow() }
     }
     
     /// Fetch all PhishIn shows in a specific tour (returns PhishInShow models with full data)
-    private func fetchPhishInShowsInTour(_ tourId: String) async throws -> [PhishInShow] {
-        let shows: [PhishInShow] = try await makeRequest(
-            endpoint: "shows.json",
-            responseType: [PhishInShow].self,
+    private func fetchPhishInShowsInTour(_ tourId: String) async throws -> PhishInShowsResponse {
+        let response: PhishInShowsResponse = try await makeRequest(
+            endpoint: "shows",
+            responseType: PhishInShowsResponse.self,
             queryParameters: [
                 "tour_id": tourId,
                 "per_page": "2000"
             ]
         )
         
-        return shows
+        return response
     }
     
     // MARK: - User Data Provider Protocol Implementation
@@ -197,51 +193,51 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     /// Fetch show data by date
     func fetchShowByDate(_ date: String) async throws -> PhishInShow {
         let show: PhishInShow = try await makeRequest(
-            endpoint: "show-on-date/\(date).json",
+            endpoint: "shows/\(date)",
             responseType: PhishInShow.self
         )
         return show
     }
     
     /// Fetch all shows with pagination
-    func fetchShows(page: Int = 1, perPage: Int = 50) async throws -> [PhishInShow] {
-        let shows: [PhishInShow] = try await makeRequest(
-            endpoint: "shows.json",
-            responseType: [PhishInShow].self,
+    func fetchShows(page: Int = 1, perPage: Int = 50) async throws -> PhishInShowsResponse {
+        let response: PhishInShowsResponse = try await makeRequest(
+            endpoint: "shows",
+            responseType: PhishInShowsResponse.self,
             queryParameters: [
                 "page": String(page),
                 "per_page": String(perPage)
             ]
         )
-        return shows
+        return response
     }
     
     /// Fetch all venues
     func fetchVenues() async throws -> [PhishInVenue] {
-        let venues: [PhishInVenue] = try await makeRequest(
-            endpoint: "venues.json",
-            responseType: [PhishInVenue].self,
+        let response: PhishInVenuesResponse = try await makeRequest(
+            endpoint: "venues",
+            responseType: PhishInVenuesResponse.self,
             queryParameters: ["per_page": "2000"]
         )
-        return venues
+        return response.venues
     }
     
     /// Fetch all songs
     func fetchSongs() async throws -> [PhishInSong] {
-        let songs: [PhishInSong] = try await makeRequest(
-            endpoint: "songs.json",
-            responseType: [PhishInSong].self,
+        let response: PhishInSongsResponse = try await makeRequest(
+            endpoint: "songs",
+            responseType: PhishInSongsResponse.self,
             queryParameters: ["per_page": "2000"]
         )
-        return songs
+        return response.songs
     }
     
     /// Fetch all eras
     func fetchEras() async throws -> [PhishInEra] {
-        let eras: [PhishInEra] = try await makeRequest(
-            endpoint: "eras.json",
-            responseType: [PhishInEra].self
+        let response: PhishInErasResponse = try await makeRequest(
+            endpoint: "eras",
+            responseType: PhishInErasResponse.self
         )
-        return eras
+        return response.eras
     }
 }

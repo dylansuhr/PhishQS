@@ -15,7 +15,7 @@ class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDat
     
     // MARK: - Properties
     
-    let baseURL = "https://mock.phish.in/api/v1"
+    let baseURL = "https://mock.phish.in/api/v2"
     var isAvailable: Bool = true
     
     // Mock data
