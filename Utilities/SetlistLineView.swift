@@ -20,7 +20,18 @@ struct SetlistLineView: View {
     
     /// Determines if the line is a set header (Set 1:, Set 2:, Encore:)
     private var isSetHeader: Bool {
-        line.hasPrefix("Set ") || line.hasPrefix("Encore:")
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        
+        // Match exact patterns: "Set X:" where X is a number, or "Encore:"
+        if trimmed.hasPrefix("Encore:") {
+            return true
+        }
+        
+        // Use regex to match "Set [number]:" pattern exactly
+        let setPattern = "^Set\\s+\\d+:$"
+        let regex = try? NSRegularExpression(pattern: setPattern, options: .caseInsensitive)
+        let range = NSRange(location: 0, length: trimmed.utf16.count)
+        return regex?.firstMatch(in: trimmed, options: [], range: range) != nil
     }
     
     var body: some View {

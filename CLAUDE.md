@@ -193,20 +193,20 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 └── APIManager.swift   # Central coordinator between APIs ✅
 ```
 
-### **Session Complete ✅ - Song Duration Display Implementation**
+### **Session Complete ✅ - Transition Mark Display & Duration Matching Fix**
 
 **Date**: August 21, 2025
-**Status**: Song duration display fully functional with Phish.in v2 API
+**Status**: Song duration display and transition marks fully functional
 
 ### **Latest Session Accomplishments ✅**
+- [x] **Transition Mark Display Fix**: Fixed `->` and `>` symbols now display properly next to song names
+- [x] **Song Duration Matching Fix**: Fixed duration lookup between Phish.net setlist and Phish.in track data
+- [x] **Venue Model Fix**: Fixed PhishInVenue decoding error for venues without `id` field 
+- [x] **Enhanced UI Components**: Updated `DetailedSetlistLineView` with separate transition mark parameter
+- [x] **Simplified Parsing Logic**: Removed complex song parsing that stripped transition marks
+- [x] **Fuzzy Matching**: Added intelligent song name matching with exact + partial fallback
 - [x] **Phish.in v2 API**: Updated to use Phish.in API v2 - no authentication required
-- [x] **Song Duration Display**: Complete implementation with individual song line-by-line display (matching LivePhish format)
-- [x] **UI Components**: Created `DetailedSetlistLineView` for song + duration display with right-aligned times
-- [x] **Song Parsing**: Built `SongParser` utility for extracting individual songs from combined setlist lines  
 - [x] **Enhanced Data Integration**: ViewModels now use `APIManager.fetchEnhancedSetlist()` for combined data
-- [x] **API Authentication**: Phish.in v2 requires no API key - fully functional
-- [x] **Error Handling**: Proper fallback messaging when enhanced data unavailable
-- [x] **Debug Infrastructure**: Added comprehensive logging for API troubleshooting
 
 ### **Current Architecture Status ✅**
 ```
@@ -238,10 +238,11 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 - **API Authentication**: Phish.in v2 requires no authentication; Phish.net uses existing key
 
 ### **Ready for Next Session:**
-1. **Color Scale Implementation**: Implement color coding for song lengths in SetlistView
-2. **Venue Run Display**: Show N1/N2/N3 information in UI using existing VenueRun data
+1. **Color Scale Implementation**: Implement color coding for song lengths in SetlistView (green=short, red=long)
+2. **Venue Run Display**: Show N1/N2/N3 information in UI using existing VenueRun data  
 3. **Recording Links**: Add links to available recordings where applicable
 4. **Performance Optimization**: Consider caching strategies for enhanced setlist data
+5. **Remove Loading Animations**: Per roadmap - remove all loading animations for cleaner appearance
 
 ### **Immediate Action Items 🚨**
 1. **AccentColor Warning**: Add AccentColor to Assets.xcassets or remove reference  
@@ -259,4 +260,5 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 - [x] Multi-API Architecture Phase 1: Foundation Restructure
 - [x] Multi-API Architecture Phase 2: Phish.in Integration  
 - [x] Multi-API Architecture Phase 3: Central Coordination
-- [x] **Phase 4: Song Duration Display Implementation**
+- [x] Phase 4: Song Duration Display Implementation
+- [x] **Transition Mark Display & Duration Matching Fixes**
