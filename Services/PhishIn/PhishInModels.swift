@@ -141,7 +141,7 @@ struct PhishInSong: Codable, Identifiable {
 // MARK: - Venue Models
 
 struct PhishInVenue: Codable, Identifiable {
-    let id: Int
+    let venue_id: Int?
     let name: String
     let other_names: [String]?
     let latitude: Double?
@@ -151,6 +151,17 @@ struct PhishInVenue: Codable, Identifiable {
     let updated_at: String?
     let slug: String?
     
+    // Identifiable protocol requirement - use slug as fallback identifier
+    var id: String {
+        return slug ?? name.lowercased().replacingOccurrences(of: " ", with: "-")
+    }
+    
+    // Custom CodingKeys to handle missing 'id' field
+    private enum CodingKeys: String, CodingKey {
+        case venue_id = "id"
+        case name, other_names, latitude, longitude, shows_count, location, updated_at, slug
+    }
+    
     /// Convert to our standard Venue model
     func toVenue() -> Venue {
         let locationParts = location?.components(separatedBy: ", ") ?? []
@@ -159,7 +170,7 @@ struct PhishInVenue: Codable, Identifiable {
         let country = locationParts.count > 2 ? locationParts[2] : "USA"
         
         return Venue(
-            id: String(id),
+            id: venue_id.map(String.init) ?? slug ?? name,
             name: name,
             city: city,
             state: state,

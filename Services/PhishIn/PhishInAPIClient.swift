@@ -130,7 +130,7 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         
         // Get all shows in the same tour at the same venue
         let tourResponse = try await fetchPhishInShowsInTour(String(tourId))
-        let venueShows = tourResponse.shows.filter { $0.venue?.id == venue.id }
+        let venueShows = tourResponse.shows.filter { $0.venue?.slug == venue.slug }
             .sorted(by: { $0.date < $1.date })
         
         guard let currentShowIndex = venueShows.firstIndex(where: { $0.date == showDate }) else {

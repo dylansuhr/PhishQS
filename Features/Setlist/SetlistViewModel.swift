@@ -47,7 +47,22 @@ class SetlistViewModel: BaseViewModel {
     
     /// Get formatted duration string for a specific song, if available
     func formattedDuration(for song: String) -> String? {
-        return enhancedSetlist?.trackDurations.first { $0.songName.lowercased() == song.lowercased() }?.formattedDuration
+        guard let trackDurations = enhancedSetlist?.trackDurations else { return nil }
+        
+        let cleanSong = song.lowercased()
+        
+        // First try exact match
+        if let match = trackDurations.first(where: { $0.songName.lowercased() == cleanSong }) {
+            return match.formattedDuration
+        }
+        
+        // Try fuzzy matching for common variations
+        let fuzzyMatch = trackDurations.first { trackDuration in
+            let trackName = trackDuration.songName.lowercased()
+            return trackName.contains(cleanSong) || cleanSong.contains(trackName)
+        }
+        
+        return fuzzyMatch?.formattedDuration
     }
     
     /// Get venue run information (N1/N2/N3), if available

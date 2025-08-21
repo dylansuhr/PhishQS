@@ -13,7 +13,7 @@ struct DetailedSetlistLineView: View {
     
     enum LineContent {
         case setHeader(String)
-        case song(name: String, duration: String?)
+        case song(name: String, duration: String?, transitionMark: String?)
     }
     
     var body: some View {
@@ -26,11 +26,19 @@ struct DetailedSetlistLineView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, 16)
             
-        case .song(let name, let duration):
+        case .song(let name, let duration, let transitionMark):
             HStack {
-                Text(name)
-                    .font(.body)
-                    .foregroundColor(.primary)
+                HStack(spacing: 2) {
+                    Text(name)
+                        .font(.body)
+                        .foregroundColor(.primary)
+                    
+                    if let transitionMark = transitionMark, !transitionMark.isEmpty {
+                        Text(transitionMark)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+                }
                 
                 Spacer()
                 
@@ -49,11 +57,11 @@ struct DetailedSetlistLineView: View {
 #Preview {
     VStack(alignment: .leading, spacing: 4) {
         DetailedSetlistLineView(content: .setHeader("Set 1:"))
-        DetailedSetlistLineView(content: .song(name: "The Moma Dance", duration: "8:45"))
-        DetailedSetlistLineView(content: .song(name: "Rift", duration: "4:23"))
-        DetailedSetlistLineView(content: .song(name: "Sigma Oasis", duration: nil))
+        DetailedSetlistLineView(content: .song(name: "The Moma Dance", duration: "8:45", transitionMark: " >"))
+        DetailedSetlistLineView(content: .song(name: "Rift", duration: "4:23", transitionMark: nil))
+        DetailedSetlistLineView(content: .song(name: "Sigma Oasis", duration: nil, transitionMark: " ->"))
         DetailedSetlistLineView(content: .setHeader("Encore:"))
-        DetailedSetlistLineView(content: .song(name: "I Am the Walrus", duration: "4:56"))
+        DetailedSetlistLineView(content: .song(name: "I Am the Walrus", duration: "4:56", transitionMark: nil))
     }
     .padding()
 }

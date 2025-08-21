@@ -195,23 +195,24 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 
 ### **Session Complete ✅ - Song Duration Display Implementation**
 
-**Date**: July 25, 2025
-**Status**: Phase 4 complete - Song duration display fully implemented and functional
+**Date**: August 21, 2025
+**Status**: Song duration display fully functional with Phish.in v2 API
 
 ### **Latest Session Accomplishments ✅**
+- [x] **Phish.in v2 API**: Updated to use Phish.in API v2 - no authentication required
 - [x] **Song Duration Display**: Complete implementation with individual song line-by-line display (matching LivePhish format)
 - [x] **UI Components**: Created `DetailedSetlistLineView` for song + duration display with right-aligned times
 - [x] **Song Parsing**: Built `SongParser` utility for extracting individual songs from combined setlist lines  
 - [x] **Enhanced Data Integration**: ViewModels now use `APIManager.fetchEnhancedSetlist()` for combined data
-- [x] **Phish.in API Authentication**: Fixed API key handling and graceful degradation when key missing
-- [x] **Error Handling**: Proper fallback messaging for unavailable enhanced data
+- [x] **API Authentication**: Phish.in v2 requires no API key - fully functional
+- [x] **Error Handling**: Proper fallback messaging when enhanced data unavailable
 - [x] **Debug Infrastructure**: Added comprehensive logging for API troubleshooting
 
 ### **Current Architecture Status ✅**
 ```
 /Services/
 ├── PhishNet/          # Phish.net API client (primary setlist source) ✅
-├── PhishIn/           # Phish.in API client (song lengths, tours, venue runs) ✅  
+├── PhishIn/           # Phish.in API client v2 (song lengths, tours, venue runs) ✅  
 ├── Core/              # Shared protocols, errors, utilities ✅
 └── APIManager.swift   # Central coordinator between APIs ✅
 
@@ -226,26 +227,25 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 
 ### **Key Implementation Details**
 - **Individual Song Display**: SetlistView now shows songs line-by-line with right-aligned durations (like LivePhish)
-- **Data Pipeline**: PhishNet provides setlists → PhishIn provides song durations → Combined in EnhancedSetlist
-- **API Key Management**: PhishIn API key support added to Secrets.plist with graceful fallback
-- **User Feedback**: Clear messaging when song durations unavailable due to missing API key
+- **Data Pipeline**: PhishNet provides setlists → PhishIn v2 provides song durations → Combined in EnhancedSetlist
+- **API v2 Benefits**: No authentication required, full song duration data available
+- **User Feedback**: Clear messaging when song durations unavailable (should be rare now)
 
 ### **Research Findings - API Relationship**
 - **Phish.net**: Primary setlist and metadata source (API v5) - authoritative database
-- **Phish.in**: Audio recording archive with timing data (API v1) - complementary enhancement
+- **Phish.in**: Audio recording archive with timing data (API v2) - complementary enhancement
 - **Data Flow**: Services complement rather than duplicate - our multi-API architecture is correctly designed
-- **API Authentication**: Phish.in requires API key; Phish.net uses existing key
+- **API Authentication**: Phish.in v2 requires no authentication; Phish.net uses existing key
 
 ### **Ready for Next Session:**
-1. **Obtain Phish.in API Key**: Contact phish.in for API access to enable song durations
-2. **Color Scale Implementation**: Implement color coding for song lengths in LatestSetlistView
-3. **Venue Run Display**: Show N1/N2/N3 information in UI using existing VenueRun data
-4. **Recording Links**: Add links to available recordings where applicable
+1. **Color Scale Implementation**: Implement color coding for song lengths in SetlistView
+2. **Venue Run Display**: Show N1/N2/N3 information in UI using existing VenueRun data
+3. **Recording Links**: Add links to available recordings where applicable
+4. **Performance Optimization**: Consider caching strategies for enhanced setlist data
 
 ### **Immediate Action Items 🚨**
-1. **Phish.in API Key**: Research how to obtain API key from phish.in (main blocker for song durations)
-2. **AccentColor Warning**: Add AccentColor to Assets.xcassets or remove reference  
-3. **Test Target Fix**: Add `Show.swift` and `SetlistItem.swift` to test target in Xcode
+1. **AccentColor Warning**: Add AccentColor to Assets.xcassets or remove reference  
+2. **Test Target Fix**: Add `Show.swift` and `SetlistItem.swift` to test target in Xcode
 
 ### **Technical Debt Items**
 - Mock client helper methods have placeholder implementations (low priority)

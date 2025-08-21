@@ -96,23 +96,15 @@ struct SetlistView: View {
                 ))
             }
             
-            // Parse individual songs from this setlist item
-            var songLine = setlistItem.song
-            if let transMark = setlistItem.transMark, !transMark.isEmpty {
-                songLine += transMark
-            }
+            // Display the song with its transition mark preserved
+            let cleanSongName = SongParser.cleanSongName(setlistItem.song)
+            let duration = viewModel.formattedDuration(for: cleanSongName)
+            let transitionMark = setlistItem.transMark?.isEmpty == false ? setlistItem.transMark : nil
             
-            let songs = SongParser.parseSongs(from: songLine)
-            
-            for song in songs {
-                let cleanSong = SongParser.cleanSongName(song)
-                let duration = viewModel.formattedDuration(for: cleanSong)
-                
-                content.append(SetlistContentItem(
-                    id: "song_\(itemIndex)_\(cleanSong)",
-                    content: .song(name: cleanSong, duration: duration)
-                ))
-            }
+            content.append(SetlistContentItem(
+                id: "song_\(itemIndex)_\(cleanSongName)",
+                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark)
+            ))
             
             itemIndex += 1
         }
