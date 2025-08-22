@@ -49,6 +49,27 @@ struct Tour: Codable, Identifiable {
     let showCount: Int
 }
 
+struct TourShowPosition: Codable {
+    let tourName: String
+    let showNumber: Int
+    let totalShows: Int
+    let tourYear: String
+    
+    var displayText: String {
+        if totalShows > 1 {
+            return "\(tourName) (\(showNumber)/\(totalShows))"
+        }
+        return tourName
+    }
+    
+    var shortDisplayText: String {
+        if totalShows > 1 {
+            return "Show \(showNumber)/\(totalShows)"
+        }
+        return ""
+    }
+}
+
 struct VenueRun: Codable {
     let venue: String
     let city: String
@@ -90,6 +111,7 @@ struct EnhancedSetlist: Codable {
     let setlistItems: [SetlistItem]
     let trackDurations: [TrackDuration]
     let venueRun: VenueRun?
+    let tourPosition: TourShowPosition?
     let recordings: [Recording]
     
     /// Get duration for a specific song in the setlist
@@ -102,6 +124,16 @@ struct EnhancedSetlist: Codable {
     /// Get formatted venue run display text
     var venueRunDisplayText: String {
         return venueRun?.runDisplayText ?? ""
+    }
+    
+    /// Get formatted tour position display text
+    var tourPositionDisplayText: String {
+        return tourPosition?.displayText ?? ""
+    }
+    
+    /// Get short tour position display text (Show X/Y)
+    var tourPositionShortText: String {
+        return tourPosition?.shortDisplayText ?? ""
     }
     
     /// Check if recordings are available for this show

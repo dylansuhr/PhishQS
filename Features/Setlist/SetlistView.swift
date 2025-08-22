@@ -43,13 +43,37 @@ struct SetlistView: View {
                     // Show venue info if available
                     if let firstItem = viewModel.setlistItems.first {
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("\(firstItem.venue)")
-                                .font(.headline)
-                                .fontWeight(.semibold)
+                            HStack {
+                                Text("\(firstItem.venue)")
+                                    .font(.headline)
+                                    .fontWeight(.semibold)
+                                
+                                // Show venue run info if available
+                                if let venueRun = viewModel.venueRunInfo {
+                                    Spacer()
+                                    Text(venueRun.runDisplayText)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                        .foregroundColor(.blue)
+                                        .padding(.horizontal, 8)
+                                        .padding(.vertical, 2)
+                                        .background(Color.blue.opacity(0.1))
+                                        .cornerRadius(4)
+                                }
+                            }
+                            
                             let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
                             Text("\(firstItem.city)\(stateText)")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
+                            
+                            // Show tour position info if available
+                            if let tourPosition = viewModel.tourPositionInfo {
+                                Text(tourPosition.displayText)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .padding(.top, 2)
+                            }
                         }
                         .padding(.bottom, 8)
                     }

@@ -47,6 +47,7 @@ protocol AudioProviderProtocol: APIClientProtocol {
 protocol TourProviderProtocol: APIClientProtocol {
     func fetchTours(forYear year: String) async throws -> [Tour]
     func fetchVenueRuns(for showDate: String) async throws -> VenueRun?
+    func fetchTourPosition(for showDate: String) async throws -> TourShowPosition?
     func fetchShowsInTour(_ tourId: String) async throws -> [Show]
 }
 

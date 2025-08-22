@@ -55,7 +55,7 @@ class APIManager: ObservableObject {
     
     // MARK: - Enhanced Data Operations (Multi-API Coordination)
     
-    /// Fetch setlist with enhanced data (song durations, venue runs, etc.)
+    /// Fetch setlist with enhanced data (song durations, venue runs, tour position, etc.)
     func fetchEnhancedSetlist(for date: String) async throws -> EnhancedSetlist {
         // Get base setlist from Phish.net
         let setlistItems = try await phishNetClient.fetchSetlist(for: date)
@@ -63,6 +63,7 @@ class APIManager: ObservableObject {
         // Try to get enhanced data from Phish.in
         var trackDurations: [TrackDuration] = []
         var venueRun: VenueRun? = nil
+        var tourPosition: TourShowPosition? = nil
         var recordings: [Recording] = []
         
         if let phishInClient = phishInClient, phishInClient.isAvailable {
@@ -86,6 +87,17 @@ class APIManager: ObservableObject {
                 print("Warning: Could not fetch venue run info from Phish.in: \(error)")
             }
             
+            // Fetch tour position information (Show X/Y)
+            do {
+                tourPosition = try await phishInClient.fetchTourPosition(for: date)
+                if let tourPos = tourPosition {
+                    print("DEBUG: Successfully fetched tour position: \(tourPos.displayText)")
+                }
+            } catch {
+                // Continue without tour position info if unavailable
+                print("Warning: Could not fetch tour position from Phish.in: \(error)")
+            }
+            
             // Fetch recording information
             do {
                 recordings = try await phishInClient.fetchRecordings(for: date)
@@ -102,6 +114,7 @@ class APIManager: ObservableObject {
             setlistItems: setlistItems,
             trackDurations: trackDurations,
             venueRun: venueRun,
+            tourPosition: tourPosition,
             recordings: recordings
         )
     }
@@ -136,6 +149,14 @@ class APIManager: ObservableObject {
             return []
         }
         return try await phishInClient.fetchRecordings(for: showDate)
+    }
+    
+    /// Fetch tour position information for a specific show
+    func fetchTourPosition(for showDate: String) async throws -> TourShowPosition? {
+        guard let phishInClient = phishInClient else {
+            return nil
+        }
+        return try await phishInClient.fetchTourPosition(for: showDate)
     }
 }
 

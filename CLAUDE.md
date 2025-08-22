@@ -96,12 +96,12 @@ The project uses the new Swift Testing framework (not XCTest), so test files use
 - [ ] Remove all loading animations throughout the app for cleaner, more professional appearance
 
 ### Medium Priority
-- [ ] For venue "runs" (same venue multiple nights), show N1/3, N2/3, N3/3 format
-- [ ] Indicate show number in tour (e.g., "Summer Tour 2025 15/23")
-- [ ] Implement categorization of shows by tour within year/month/day (maintain efficiency)
-- [ ] Build functionality to pull data from Phish.in API and research available information
-- [ ] Access song lengths for each song in a show
+- [x] For venue "runs" (same venue multiple nights), show N1/3, N2/3, N3/3 format
+- [x] Indicate show number in tour (e.g., "Summer Tour 2025 15/23")
+- [x] Build functionality to pull data from Phish.in API and research available information
+- [x] Access song lengths for each song in a show
 - [ ] Implement color scale for song lengths (green=shortest, red=longest, gradient between)
+- [ ] Implement categorization of shows by tour within year/month/day (maintain efficiency)
 - [ ] Consider removing year list from home screen, replace with button leading to dedicated full-page year view
 
 ### Long Term Goals
@@ -237,12 +237,57 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 - **Data Flow**: Services complement rather than duplicate - our multi-API architecture is correctly designed
 - **API Authentication**: Phish.in v2 requires no authentication; Phish.net uses existing key
 
+### **Session Complete ✅ - Tour Position Display Implementation**
+
+**Date**: August 21, 2025
+**Status**: Tour position display fully implemented and functional
+
+### **Latest Session Accomplishments ✅**
+- [x] **Tour Data Models Enhanced**: Added `TourShowPosition` model with show numbering (Show X/Y format)
+- [x] **API Integration Complete**: Added `fetchTourPosition()` to PhishIn API client with tour show counting
+- [x] **Enhanced Setlist Model**: Updated `EnhancedSetlist` to include tour position information
+- [x] **UI Display Implementation**: Both SetlistView and LatestSetlistView now show tour position information
+- [x] **Central API Coordination**: APIManager now fetches and coordinates tour position data
+- [x] **Mock Testing Support**: Updated mock client with tour position test data
+- [x] **Protocol Compliance**: Added tour position method to TourProviderProtocol
+- [x] **Build Verification**: All code compiles successfully with new tour features
+
+### **Current Architecture Status ✅**
+```
+/Services/
+├── PhishNet/          # Phish.net API client (primary setlist source) ✅
+├── PhishIn/           # Phish.in API client v2 (song lengths, tours, venue runs, tour positions) ✅  
+├── Core/              # Shared protocols, errors, utilities, tour models ✅
+└── APIManager.swift   # Central coordinator between APIs ✅
+
+/Features/Setlist/
+├── SetlistView.swift           # Individual song display with durations + tour info ✅
+├── SetlistViewModel.swift      # Enhanced data integration + tour position ✅
+└── DetailedSetlistLineView.swift # Song + duration component ✅
+
+/Features/TourDashboard/
+└── TourDashboardView.swift     # Home screen with latest setlist + search button ✅
+
+/Features/LatestSetlist/
+├── LatestSetlistView.swift     # Latest show with tour position display ✅
+└── LatestSetlistViewModel.swift # Enhanced with tour position access ✅
+
+```
+
+### **Key Implementation Details**
+- **Tour Position Display**: Shows "Winter Tour 2025 (8/12)" in full setlist view and "Show 8/12" in latest setlist card
+- **Automatic Calculation**: Tour position calculated by finding show's chronological position within its tour
+- **Data Pipeline**: PhishNet provides setlists → PhishIn v2 provides tour metadata → Combined with position calculation
+- **Graceful Fallback**: Clean UI behavior when tour data is unavailable
+- **Consistent Styling**: Tour info uses appropriate typography hierarchy and secondary colors
+
 ### **Ready for Next Session:**
 1. **Color Scale Implementation**: Implement color coding for song lengths in SetlistView (green=short, red=long)
-2. **Venue Run Display**: Show N1/N2/N3 information in UI using existing VenueRun data  
-3. **Recording Links**: Add links to available recordings where applicable
-4. **Performance Optimization**: Consider caching strategies for enhanced setlist data
-5. **Remove Loading Animations**: Per roadmap - remove all loading animations for cleaner appearance
+2. **Recording Links**: Add links to available recordings where applicable  
+3. **LivePhish Integration**: Add links to stream shows on LivePhish app
+4. **Phish.net Links**: Add links to show details on Phish.net
+5. **Performance Optimization**: Consider caching strategies for enhanced setlist data
+6. **Remove Loading Animations**: Per roadmap - remove all loading animations for cleaner appearance
 
 ### **Immediate Action Items 🚨**
 1. **AccentColor Warning**: Add AccentColor to Assets.xcassets or remove reference  
@@ -255,10 +300,37 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 
 ### **Code Quality**: Production-ready, well-architected, comprehensive error handling ✅
 
+### **Session Complete ✅ - TourDashboard Home Screen & Code Cleanup**
+
+**Date**: August 21, 2025
+**Status**: New home screen architecture and dead code cleanup complete
+
+### **Latest Session Accomplishments ✅**
+- [x] **TourDashboard Home Screen**: New clean home screen with latest setlist + search button
+- [x] **Navigation Restructure**: TourDashboard → YearListView (via search) → MonthListView → SetlistView
+- [x] **Card Removal**: Removed all card styling from LatestSetlistView for cleaner look
+- [x] **Dead Code Cleanup**: Removed unused DateSearchView, refresh functionality, formattedSetlist
+- [x] **Documentation Update**: Updated CLAUDE.md to reflect new architecture
+
+### **New Architecture ✅**
+```
+App Launch: TourDashboardView (home screen)
+├── Latest setlist display (no cards, Previous/Next buttons)
+├── "search by date" button → YearListView → MonthListView → SetlistView
+└── All existing data: venue runs, tour positions, song durations preserved
+```
+
+### **Code Cleanup Completed**
+- **Removed Files**: DateSearchView.swift (unused date picker)
+- **Removed Code**: isRefreshing state, refreshCurrentShow methods, formattedSetlist property
+- **Updated Documentation**: Architecture diagrams and session notes
+
 ### Completed ✅
 - [x] Fix LatestSetlistView swipe animations (horizontal-only movement, proper slide transitions)
 - [x] Multi-API Architecture Phase 1: Foundation Restructure
 - [x] Multi-API Architecture Phase 2: Phish.in Integration  
 - [x] Multi-API Architecture Phase 3: Central Coordination
 - [x] Phase 4: Song Duration Display Implementation
-- [x] **Transition Mark Display & Duration Matching Fixes**
+- [x] Transition Mark Display & Duration Matching Fixes
+- [x] **Venue Run Display & Date Search Implementation**
+- [x] **Tour Position Display Implementation**

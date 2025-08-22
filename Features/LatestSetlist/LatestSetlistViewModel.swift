@@ -4,12 +4,12 @@ import Foundation
 class LatestSetlistViewModel: BaseViewModel {
     @Published var latestShow: Show?
     @Published var setlistItems: [SetlistItem] = []
+    @Published var enhancedSetlist: EnhancedSetlist?
     
     // Navigation state
     @Published var currentShowIndex: Int = 0
     @Published var canNavigateNext: Bool = false
     @Published var canNavigatePrevious: Bool = false
-    @Published var isRefreshing: Bool = false
     
     // Cached data for efficient navigation
     private var cachedShows: [Show] = []
@@ -17,11 +17,13 @@ class LatestSetlistViewModel: BaseViewModel {
     private var showsCache: [String: [Show]] = [:]
     
     private let apiClient: any PhishAPIService
+    private let apiManager: APIManager
     
     // MARK: - Initialization
     
-    init(apiClient: any PhishAPIService = PhishAPIClient.shared) {
+    init(apiClient: any PhishAPIService = PhishAPIClient.shared, apiManager: APIManager = APIManager()) {
         self.apiClient = apiClient
+        self.apiManager = apiManager
     }
     
     // Fetch the latest show and its setlist, and cache shows for navigation
@@ -32,7 +34,11 @@ class LatestSetlistViewModel: BaseViewModel {
         do {
             if let show = try await apiClient.fetchLatestShow() {
                 latestShow = show
-                setlistItems = try await apiClient.fetchSetlist(for: show.showdate)
+                
+                // Fetch enhanced setlist data with venue run info
+                let enhanced = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
+                enhancedSetlist = enhanced
+                setlistItems = enhanced.setlistItems
                 
                 // Cache shows for navigation
                 await loadShowsForYear(show.showyear)
@@ -55,9 +61,15 @@ class LatestSetlistViewModel: BaseViewModel {
         }
     }
     
-    // Format the setlist for display
-    var formattedSetlist: [String] {
-        return StringFormatters.formatSetlist(setlistItems)
+    
+    /// Get venue run information (N1/N2/N3), if available
+    var venueRunInfo: VenueRun? {
+        return enhancedSetlist?.venueRun
+    }
+    
+    /// Get tour position information (Show X/Y), if available
+    var tourPositionInfo: TourShowPosition? {
+        return enhancedSetlist?.tourPosition
     }
     
     // MARK: - Navigation Methods
@@ -151,7 +163,12 @@ class LatestSetlistViewModel: BaseViewModel {
     private func loadShow(_ show: Show, at index: Int) async {
         do {
             latestShow = show
-            setlistItems = try await apiClient.fetchSetlist(for: show.showdate)
+            
+            // Fetch enhanced setlist data with venue run info and tour positions
+            let enhanced = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
+            enhancedSetlist = enhanced
+            setlistItems = enhanced.setlistItems
+            
             currentShowIndex = index
             updateNavigationState()
         } catch {
@@ -176,22 +193,6 @@ class LatestSetlistViewModel: BaseViewModel {
         setLoading(false)
     }
     
-    // Refresh current show's setlist (efficient for live updates)
-    @MainActor
-    func refreshCurrentShow() async {
-        guard let currentShow = latestShow else { return }
-        
-        isRefreshing = true
-        
-        do {
-            setlistItems = try await apiClient.fetchSetlist(for: currentShow.showdate)
-        } catch {
-            handleError(error)
-        }
-        
-        isRefreshing = false
-    }
-    
     // Non-async wrapper for navigation methods
     func navigateToNextShow() {
         Task { await navigateToNextShow() }
@@ -199,9 +200,5 @@ class LatestSetlistViewModel: BaseViewModel {
     
     func navigateToPreviousShow() {
         Task { await navigateToPreviousShow() }
-    }
-    
-    func refreshCurrentShow() {
-        Task { await refreshCurrentShow() }
     }
 } 

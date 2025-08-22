@@ -52,6 +52,13 @@ class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDat
         showDates: ["2025-01-26", "2025-01-27", "2025-01-28", "2025-01-29"]
     )
     
+    private let mockTourPosition = TourShowPosition(
+        tourName: "Winter Tour 2025",
+        showNumber: 8,
+        totalShows: 12,
+        tourYear: "2025"
+    )
+    
     // MARK: - Simulated Network Delay
     
     private func simulateNetworkDelay() async {
@@ -101,6 +108,17 @@ class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDat
         // Return mock venue run for test dates
         if showDate.hasPrefix("2025-01") {
             return mockVenueRun
+        }
+        
+        return nil
+    }
+    
+    func fetchTourPosition(for showDate: String) async throws -> TourShowPosition? {
+        await simulateNetworkDelay()
+        
+        // Return mock tour position for test dates
+        if showDate.hasPrefix("2025-01") {
+            return mockTourPosition
         }
         
         return nil

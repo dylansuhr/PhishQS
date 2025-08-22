@@ -14,7 +14,7 @@ struct PhishQSApp: App {
         WindowGroup {
             // embed the entire app in a NavigationStack for easy push-style navigation
             NavigationStack {
-                YearListView() // start at the top level: select a year
+                TourDashboardView() // start at the tour dashboard home screen
             }
         }
     }

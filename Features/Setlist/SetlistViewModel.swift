@@ -70,6 +70,11 @@ class SetlistViewModel: BaseViewModel {
         return enhancedSetlist?.venueRun
     }
     
+    /// Get tour position information (Show X/Y), if available
+    var tourPositionInfo: TourShowPosition? {
+        return enhancedSetlist?.tourPosition
+    }
+    
     /// Get available recordings, if any
     var recordings: [Recording] {
         return enhancedSetlist?.recordings ?? []

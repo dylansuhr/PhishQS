@@ -147,6 +147,31 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         )
     }
     
+    /// Fetch tour position information for a specific show date
+    func fetchTourPosition(for showDate: String) async throws -> TourShowPosition? {
+        let phishInShow = try await fetchShowByDate(showDate)
+        
+        guard let tour = phishInShow.tour,
+              let tourId = phishInShow.tour_id else {
+            return nil
+        }
+        
+        // Get all shows in the same tour
+        let tourResponse = try await fetchPhishInShowsInTour(String(tourId))
+        let tourShows = tourResponse.shows.sorted(by: { $0.date < $1.date })
+        
+        guard let currentShowIndex = tourShows.firstIndex(where: { $0.date == showDate }) else {
+            return nil
+        }
+        
+        return TourShowPosition(
+            tourName: tour.name,
+            showNumber: currentShowIndex + 1,
+            totalShows: tourShows.count,
+            tourYear: String(tour.starts_on?.prefix(4) ?? "")
+        )
+    }
+    
     /// Fetch all shows in a specific tour (returns standard Show models)
     func fetchShowsInTour(_ tourId: String) async throws -> [Show] {
         let response = try await fetchPhishInShowsInTour(tourId)
