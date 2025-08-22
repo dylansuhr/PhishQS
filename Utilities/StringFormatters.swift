@@ -24,7 +24,14 @@ struct StringFormatters {
                     let songsLine = currentSetSongs.joined(separator: " ")
                     formatted.append(setHeader)  // Header on its own line
                     formatted.append(songsLine)  // Songs on separate line
-                    formatted.append("")  // Add spacing after each set
+                    
+                    // Add extra spacing before Set 2 and Encore (but not Set 1)
+                    if item.set == "2" || item.set.uppercased() == "E" || item.set.uppercased() == "ENCORE" {
+                        formatted.append("")  // Regular spacing
+                        formatted.append("")  // Extra spacing
+                    } else {
+                        formatted.append("")  // Regular spacing only
+                    }
                 }
                 
                 currentSet = item.set

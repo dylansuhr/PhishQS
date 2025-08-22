@@ -64,7 +64,7 @@ struct TourShowPosition: Codable {
     
     var shortDisplayText: String {
         if totalShows > 1 {
-            return "Show \(showNumber)/\(totalShows)"
+            return "\(tourName) \(showNumber)/\(totalShows)"
         }
         return ""
     }

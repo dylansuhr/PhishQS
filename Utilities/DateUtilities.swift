@@ -67,6 +67,37 @@ struct DateUtilities {
         return "\(monthName) \(Int(parsed.day) ?? 0), \(parsed.year)"
     }
     
+    /// Format a date string with day of week (e.g., "2025-07-27" → "Sunday, July 27th")
+    static func formatDateWithDayOfWeek(_ dateString: String) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let date = formatter.date(from: dateString) else { return dateString }
+        
+        formatter.dateFormat = "EEEE, MMMM d"
+        let formattedDate = formatter.string(from: date)
+        
+        // Add ordinal suffix to day
+        let day = Calendar.current.component(.day, from: date)
+        let dayWithSuffix = "\(day)\(ordinalSuffix(for: day))"
+        
+        return formattedDate.replacingOccurrences(of: "\(day)", with: dayWithSuffix)
+    }
+    
+    /// Get ordinal suffix for day (1st, 2nd, 3rd, 4th, etc.)
+    private static func ordinalSuffix(for day: Int) -> String {
+        switch day {
+        case 11, 12, 13: return "th"
+        default:
+            switch day % 10 {
+            case 1: return "st"
+            case 2: return "nd" 
+            case 3: return "rd"
+            default: return "th"
+            }
+        }
+    }
+    
     /// Ensure date components are properly padded (e.g., "1" → "01")
     static func padDateComponents(year: String, month: String, day: String) -> String {
         let paddedMonth = month.count == 1 ? "0\(month)" : month

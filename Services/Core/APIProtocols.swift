@@ -48,14 +48,5 @@ protocol TourProviderProtocol: APIClientProtocol {
     func fetchTours(forYear year: String) async throws -> [Tour]
     func fetchVenueRuns(for showDate: String) async throws -> VenueRun?
     func fetchTourPosition(for showDate: String) async throws -> TourShowPosition?
-    func fetchShowsInTour(_ tourId: String) async throws -> [Show]
 }
 
-// MARK: - User Data Provider Protocol
-
-/// Protocol for APIs that provide user interaction features
-protocol UserDataProviderProtocol: APIClientProtocol {
-    func authenticateUser(username: String, password: String) async throws -> UserSession
-    func fetchUserLikes() async throws -> [String] // show IDs
-    func fetchUserPlaylists() async throws -> [Playlist]
-}

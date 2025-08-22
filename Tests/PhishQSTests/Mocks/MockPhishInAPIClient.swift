@@ -11,7 +11,7 @@ import Foundation
 // MARK: - Mock PhishIn API Client for Testing
 
 /// Mock implementation of PhishIn API for unit testing
-class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataProviderProtocol {
+class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     
     // MARK: - Properties
     
@@ -124,56 +124,7 @@ class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDat
         return nil
     }
     
-    func fetchShowsInTour(_ tourId: String) async throws -> [Show] {
-        await simulateNetworkDelay()
-        
-        // Return mock shows for valid tour IDs
-        if tourId == "1" {
-            return [
-                Show(showyear: "2025", showdate: "2025-01-28", artist_name: "Phish"),
-                Show(showyear: "2025", showdate: "2025-01-29", artist_name: "Phish")
-            ]
-        }
-        
-        return []
-    }
     
-    // MARK: - User Data Provider Protocol Implementation
-    
-    func authenticateUser(username: String, password: String) async throws -> UserSession {
-        await simulateNetworkDelay()
-        
-        // Simulate authentication
-        if username == "testuser" && password == "testpass" {
-            return UserSession(
-                userId: "1",
-                username: username,
-                token: "mock_token_123",
-                expiresAt: Date().addingTimeInterval(3600)
-            )
-        }
-        
-        throw APIError.unauthorized
-    }
-    
-    func fetchUserLikes() async throws -> [String] {
-        await simulateNetworkDelay()
-        return ["2025-01-28", "2024-12-31"]
-    }
-    
-    func fetchUserPlaylists() async throws -> [Playlist] {
-        await simulateNetworkDelay()
-        
-        let mockPlaylist = Playlist(
-            id: "1",
-            name: "Favorite Jams",
-            showIds: ["2025-01-28", "2024-12-31"],
-            createdAt: Date(),
-            updatedAt: Date()
-        )
-        
-        return [mockPlaylist]
-    }
 }
 
 // MARK: - Testing Utilities

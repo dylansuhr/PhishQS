@@ -32,38 +32,52 @@ struct LatestSetlistView: View {
             // Show info
             if let show = viewModel.latestShow {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(show.showdate)
-                        .font(.subheadline)
-                        .foregroundColor(.primary)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text(show.showdate)
+                            .font(.subheadline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                        
+                        Text(DateUtilities.formatDateWithDayOfWeek(show.showdate))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
                     
                     // Show venue info if available from setlist items
                     if let firstItem = viewModel.setlistItems.first {
-                        HStack {
-                            let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
-                            Text("\(firstItem.venue) - \(firstItem.city)\(stateText)")
-                                .font(.caption)
-                                .foregroundColor(.primary)
-                            
-                            // Show venue run info if available
-                            if let venueRun = viewModel.venueRunInfo {
-                                Spacer()
-                                Text(venueRun.runDisplayText)
+                        VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: 1) {
+                                HStack {
+                                    Text(firstItem.venue)
+                                        .font(.caption)
+                                        .foregroundColor(.primary)
+                                    
+                                    // Show venue run info if available
+                                    if let venueRun = viewModel.venueRunInfo {
+                                        Spacer()
+                                        Text(venueRun.runDisplayText)
+                                            .font(.caption)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.blue)
+                                            .padding(.horizontal, 6)
+                                            .padding(.vertical, 1)
+                                            .background(Color.blue.opacity(0.1))
+                                            .cornerRadius(3)
+                                    }
+                                }
+                                
+                                let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
+                                Text("\(firstItem.city)\(stateText)")
                                     .font(.caption)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(.blue)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 1)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(3)
+                                    .foregroundColor(.secondary)
                             }
-                        }
-                        
-                        // Show tour position info if available
-                        if let tourPosition = viewModel.tourPositionInfo {
-                            Text(tourPosition.shortDisplayText)
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                                .padding(.top, 1)
+                            
+                            // Show tour position info if available
+                            if let tourPosition = viewModel.tourPositionInfo {
+                                Text(tourPosition.shortDisplayText)
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
                         }
                     }
                 }

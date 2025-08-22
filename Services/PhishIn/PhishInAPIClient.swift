@@ -10,7 +10,7 @@ import Foundation
 // MARK: - PhishIn API Client
 
 /// API client for Phish.in - provides song durations, tour metadata, and audio recordings
-class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataProviderProtocol {
+class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     
     // MARK: - Properties
     
@@ -19,6 +19,10 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     let baseURL = "https://phish.in/api/v2"
     private let session = URLSession.shared
     // No API key required for v2 API
+    
+    // Simple cache to avoid duplicate API calls for same tour
+    private var tourShowsCache: [String: [PhishInShow]] = [:]
+    private let cacheQueue = DispatchQueue(label: "phishin.cache", attributes: .concurrent)
     
     // MARK: - API Client Protocol
     
@@ -50,6 +54,7 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
             throw APIError.invalidURL
         }
         
+        
         // Create request (no authentication required for v2)
         let request = URLRequest(url: url)
         
@@ -64,7 +69,10 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         }
         
         do {
-            return try JSONDecoder().decode(T.self, from: data)
+            let result = try JSONDecoder().decode(T.self, from: data)
+            
+            
+            return result
         } catch {
             throw APIError.decodingError(error)
         }
@@ -124,18 +132,26 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
         let phishInShow = try await fetchShowByDate(showDate)
         
         guard let venue = phishInShow.venue,
-              let tourId = phishInShow.tour_id else {
+              let tourName = phishInShow.tour_name else {
             return nil
         }
         
-        // Get all shows in the same tour at the same venue
-        let tourResponse = try await fetchPhishInShowsInTour(String(tourId))
-        let venueShows = tourResponse.shows.filter { $0.venue?.slug == venue.slug }
+        let venueSlug = venue.slug ?? venue.name.lowercased().replacingOccurrences(of: " ", with: "-")
+        
+        // Get tour shows with caching to avoid duplicate API calls
+        let allTourShows = try await getCachedTourShows(tourName: tourName)
+        
+        // Filter tour shows to this venue only (already filtered by exact tour name)
+        let venueShows = allTourShows
+            .filter { $0.venue?.slug == venue.slug || $0.venue?.name == venue.name }
             .sorted(by: { $0.date < $1.date })
         
-        guard let currentShowIndex = venueShows.firstIndex(where: { $0.date == showDate }) else {
+        // Only create venue run if there are multiple nights
+        guard venueShows.count > 1,
+              let currentShowIndex = venueShows.firstIndex(where: { $0.date == showDate }) else {
             return nil
         }
+        
         
         return VenueRun(
             venue: venue.name,
@@ -151,67 +167,29 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
     func fetchTourPosition(for showDate: String) async throws -> TourShowPosition? {
         let phishInShow = try await fetchShowByDate(showDate)
         
-        guard let tour = phishInShow.tour,
-              let tourId = phishInShow.tour_id else {
+        guard let tourName = phishInShow.tour_name else {
             return nil
         }
         
-        // Get all shows in the same tour
-        let tourResponse = try await fetchPhishInShowsInTour(String(tourId))
-        let tourShows = tourResponse.shows.sorted(by: { $0.date < $1.date })
+        // Get tour shows with caching to avoid duplicate API calls
+        let tourShows = try await getCachedTourShows(tourName: tourName)
         
         guard let currentShowIndex = tourShows.firstIndex(where: { $0.date == showDate }) else {
             return nil
         }
         
+        // Extract year from date or tour name
+        let tourYear = String(showDate.prefix(4))
+        
         return TourShowPosition(
-            tourName: tour.name,
+            tourName: tourName,
             showNumber: currentShowIndex + 1,
             totalShows: tourShows.count,
-            tourYear: String(tour.starts_on?.prefix(4) ?? "")
+            tourYear: tourYear
         )
     }
     
-    /// Fetch all shows in a specific tour (returns standard Show models)
-    func fetchShowsInTour(_ tourId: String) async throws -> [Show] {
-        let response = try await fetchPhishInShowsInTour(tourId)
-        return response.shows.map { $0.toShow() }
-    }
     
-    /// Fetch all PhishIn shows in a specific tour (returns PhishInShow models with full data)
-    private func fetchPhishInShowsInTour(_ tourId: String) async throws -> PhishInShowsResponse {
-        let response: PhishInShowsResponse = try await makeRequest(
-            endpoint: "shows",
-            responseType: PhishInShowsResponse.self,
-            queryParameters: [
-                "tour_id": tourId,
-                "per_page": "2000"
-            ]
-        )
-        
-        return response
-    }
-    
-    // MARK: - User Data Provider Protocol Implementation
-    
-    /// Authenticate user with Phish.in
-    func authenticateUser(username: String, password: String) async throws -> UserSession {
-        // Note: This would require POST request implementation
-        // For now, return a placeholder implementation
-        throw APIError.notImplemented
-    }
-    
-    /// Fetch user's liked shows
-    func fetchUserLikes() async throws -> [String] {
-        // Requires authentication - placeholder implementation
-        throw APIError.notImplemented
-    }
-    
-    /// Fetch user's playlists
-    func fetchUserPlaylists() async throws -> [Playlist] {
-        // Requires authentication - placeholder implementation
-        throw APIError.notImplemented
-    }
     
     // MARK: - Additional Public Methods
     
@@ -245,6 +223,44 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol, UserDataPro
             queryParameters: ["per_page": "2000"]
         )
         return response.venues
+    }
+    
+    // MARK: - Caching Methods
+    
+    /// Get tour shows with caching to avoid duplicate API calls
+    private func getCachedTourShows(tourName: String) async throws -> [PhishInShow] {
+        // Check cache first (thread-safe)
+        if let cached = await withCheckedContinuation({ continuation in
+            cacheQueue.async {
+                continuation.resume(returning: self.tourShowsCache[tourName])
+            }
+        }) {
+            return cached
+        }
+        
+        let tourShowsResponse: PhishInShowsResponse = try await makeRequest(
+            endpoint: "shows",
+            responseType: PhishInShowsResponse.self,
+            queryParameters: [
+                "tour_name": tourName,
+                "per_page": "500"
+            ]
+        )
+        
+        // Filter to EXACT tour name match only and cache the result
+        let exactTourShows = tourShowsResponse.shows
+            .filter { $0.tour_name == tourName }
+            .sorted(by: { $0.date < $1.date })
+        
+        // Cache the result (thread-safe)
+        await withCheckedContinuation { continuation in
+            cacheQueue.async(flags: .barrier) {
+                self.tourShowsCache[tourName] = exactTourShows
+                continuation.resume()
+            }
+        }
+        
+        return exactTourShows
     }
     
     /// Fetch all songs

@@ -9,15 +9,6 @@ import Foundation
 
 // MARK: - Phish.in API Response Models
 
-/// Base response wrapper for Phish.in API v1 (deprecated)
-struct PhishInResponse<T: Codable>: Codable {
-    let data: T
-    let success: Bool?
-    let total_entries: Int?
-    let total_pages: Int?
-    let page: Int?
-}
-
 // MARK: - v2 API Response Wrappers
 
 struct PhishInShowsResponse: Codable {
@@ -65,13 +56,13 @@ struct PhishInShow: Codable, Identifiable {
     let missing: Bool?
     let sbd: Bool?
     let remastered: Bool?
-    let tour_id: Int?
     let venue_id: Int?
     let likes_count: Int?
     let taper_notes: String?
     let updated_at: String?
     let venue: PhishInVenue?
-    let tour: PhishInTour?
+    let tour_name: String?
+    let venue_name: String?
     let tracks: [PhishInTrack]?
     
     /// Convert to our standard Show model for compatibility

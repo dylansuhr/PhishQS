@@ -70,10 +70,6 @@ class APIManager: ObservableObject {
             // Fetch track durations (song lengths)
             do {
                 trackDurations = try await phishInClient.fetchTrackDurations(for: date)
-                print("DEBUG: Successfully fetched \(trackDurations.count) track durations from Phish.in for \(date)")
-                for duration in trackDurations {
-                    print("DEBUG: Track - \(duration.songName): \(duration.formattedDuration)")
-                }
             } catch {
                 // Continue without durations if Phish.in is unavailable
                 print("Warning: Could not fetch track durations from Phish.in for \(date): \(error)")
@@ -90,9 +86,6 @@ class APIManager: ObservableObject {
             // Fetch tour position information (Show X/Y)
             do {
                 tourPosition = try await phishInClient.fetchTourPosition(for: date)
-                if let tourPos = tourPosition {
-                    print("DEBUG: Successfully fetched tour position: \(tourPos.displayText)")
-                }
             } catch {
                 // Continue without tour position info if unavailable
                 print("Warning: Could not fetch tour position from Phish.in: \(error)")
@@ -105,8 +98,6 @@ class APIManager: ObservableObject {
                 // Continue without recording info if unavailable
                 print("Warning: Could not fetch recording info from Phish.in: \(error)")
             }
-        } else {
-            print("DEBUG: Phish.in client unavailable - likely missing API key")
         }
         
         return EnhancedSetlist(
