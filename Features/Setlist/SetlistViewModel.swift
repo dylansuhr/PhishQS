@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 // ViewModel that fetches and holds the setlist data for a specific show date
 class SetlistViewModel: BaseViewModel {
@@ -45,25 +46,6 @@ class SetlistViewModel: BaseViewModel {
         return enhancedSetlist?.trackDurations.first { $0.songName.lowercased() == song.lowercased() }?.durationSeconds
     }
     
-    /// Get formatted duration string for a specific song, if available
-    func formattedDuration(for song: String) -> String? {
-        guard let trackDurations = enhancedSetlist?.trackDurations else { return nil }
-        
-        let cleanSong = song.lowercased()
-        
-        // First try exact match
-        if let match = trackDurations.first(where: { $0.songName.lowercased() == cleanSong }) {
-            return match.formattedDuration
-        }
-        
-        // Try fuzzy matching for common variations
-        let fuzzyMatch = trackDurations.first { trackDuration in
-            let trackName = trackDuration.songName.lowercased()
-            return trackName.contains(cleanSong) || cleanSong.contains(trackName)
-        }
-        
-        return fuzzyMatch?.formattedDuration
-    }
     
     /// Get venue run information (N1/N2/N3), if available
     var venueRunInfo: VenueRun? {
@@ -89,4 +71,58 @@ class SetlistViewModel: BaseViewModel {
     var availableTrackNames: [String] {
         return enhancedSetlist?.trackDurations.map { $0.songName } ?? []
     }
+    
+    // MARK: - Color Calculation
+    
+    /// Get relative color for a song at a specific position (preferred method)
+    /// Uses position-based matching for accurate color assignment with duplicate song names
+    func colorForSong(at position: Int, expectedName: String? = nil) -> Color? {
+        guard let trackDurations = enhancedSetlist?.trackDurations, !trackDurations.isEmpty else {
+            return nil
+        }
+        
+        let trackDuration: TrackDuration?
+        if let expectedName = expectedName {
+            trackDuration = enhancedSetlist?.getDuration(at: position, expectedName: expectedName)
+        } else {
+            trackDuration = enhancedSetlist?.getDuration(at: position)
+        }
+        
+        guard let track = trackDuration else { return nil }
+        
+        let allDurations = trackDurations.map { $0.durationSeconds }
+        return RelativeDurationColors.colorForDuration(track.durationSeconds, in: allDurations)
+    }
+    
+    /// Get relative color for a song by name (fallback method)  
+    /// Note: This may return incorrect results for duplicate song names like "Tweezer Reprise"
+    func colorForSong(_ songName: String) -> Color? {
+        guard let trackDurations = enhancedSetlist?.trackDurations, !trackDurations.isEmpty else {
+            return nil
+        }
+        
+        let track = enhancedSetlist?.getDuration(for: songName)
+        guard let track = track else { return nil }
+        
+        let allDurations = trackDurations.map { $0.durationSeconds }
+        return RelativeDurationColors.colorForDuration(track.durationSeconds, in: allDurations)
+    }
+    
+    /// Get formatted duration for a song at a specific position (preferred method)
+    func formattedDuration(at position: Int, expectedName: String? = nil) -> String? {
+        guard let enhancedSetlist = enhancedSetlist else { return nil }
+        
+        if let expectedName = expectedName {
+            return enhancedSetlist.getDuration(at: position, expectedName: expectedName)?.formattedDuration
+        } else {
+            return enhancedSetlist.getDuration(at: position)?.formattedDuration
+        }
+    }
+    
+    /// Get formatted duration for a song by name (fallback method)
+    func formattedDuration(for song: String) -> String? {
+        guard let enhancedSetlist = enhancedSetlist else { return nil }
+        return enhancedSetlist.getDuration(for: song)?.formattedDuration
+    }
+    
 }

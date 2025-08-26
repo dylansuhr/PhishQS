@@ -67,35 +67,34 @@ class APIManager: ObservableObject {
         var recordings: [Recording] = []
         
         if let phishInClient = phishInClient, phishInClient.isAvailable {
-            // Fetch track durations (song lengths)
+            // Execute all Phish.in API calls in parallel for better performance
+            async let trackDurationsTask = phishInClient.fetchTrackDurations(for: date)
+            async let venueRunTask = phishInClient.fetchVenueRuns(for: date)
+            async let tourPositionTask = phishInClient.fetchTourPosition(for: date)
+            async let recordingsTask = phishInClient.fetchRecordings(for: date)
+            
+            // Await results with individual error handling
             do {
-                trackDurations = try await phishInClient.fetchTrackDurations(for: date)
+                trackDurations = try await trackDurationsTask
             } catch {
-                // Continue without durations if Phish.in is unavailable
                 print("Warning: Could not fetch track durations from Phish.in for \(date): \(error)")
             }
             
-            // Fetch venue run information (N1/N2/N3)
             do {
-                venueRun = try await phishInClient.fetchVenueRuns(for: date)
+                venueRun = try await venueRunTask
             } catch {
-                // Continue without venue run info if unavailable
                 print("Warning: Could not fetch venue run info from Phish.in: \(error)")
             }
             
-            // Fetch tour position information (Show X/Y)
             do {
-                tourPosition = try await phishInClient.fetchTourPosition(for: date)
+                tourPosition = try await tourPositionTask
             } catch {
-                // Continue without tour position info if unavailable
                 print("Warning: Could not fetch tour position from Phish.in: \(error)")
             }
             
-            // Fetch recording information
             do {
-                recordings = try await phishInClient.fetchRecordings(for: date)
+                recordings = try await recordingsTask
             } catch {
-                // Continue without recording info if unavailable
                 print("Warning: Could not fetch recording info from Phish.in: \(error)")
             }
         }

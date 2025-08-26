@@ -122,12 +122,14 @@ struct SetlistView: View {
             
             // Display the song with its transition mark preserved
             let cleanSongName = SongParser.cleanSongName(setlistItem.song)
-            let duration = viewModel.formattedDuration(for: cleanSongName)
+            // Use position-based matching for accurate durations with duplicate song names
+            let duration = viewModel.formattedDuration(at: itemIndex, expectedName: cleanSongName)
             let transitionMark = setlistItem.transMark?.isEmpty == false ? setlistItem.transMark : nil
+            let durationColor = viewModel.colorForSong(at: itemIndex, expectedName: cleanSongName)
             
             content.append(SetlistContentItem(
                 id: "song_\(itemIndex)_\(cleanSongName)",
-                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark)
+                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark, durationColor: durationColor)
             ))
             
             itemIndex += 1

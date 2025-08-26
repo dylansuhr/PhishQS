@@ -12,10 +12,12 @@ import SwiftUI
 struct SetlistLineView: View {
     let line: String
     let fontSize: Font
+    let songColor: Color?
     
-    init(_ line: String, fontSize: Font = .body) {
+    init(_ line: String, fontSize: Font = .body, songColor: Color? = nil) {
         self.line = line
         self.fontSize = fontSize
+        self.songColor = songColor
     }
     
     /// Determines if the line is a set header (Set 1:, Set 2:, Encore:)
@@ -38,7 +40,7 @@ struct SetlistLineView: View {
         Text(line)
             .font(isSetHeader ? .headline : fontSize)
             .fontWeight(isSetHeader ? .semibold : .regular)
-            .foregroundColor(isSetHeader ? .blue : .primary)
+            .foregroundColor(isSetHeader ? .blue : (songColor ?? .primary))
     }
 }
 
