@@ -12,6 +12,7 @@ import Foundation
 struct TrackDuration: Codable, Identifiable {
     let id: String
     let songName: String
+    let songId: Int?          // optional songid for reliable cross-API matching
     let durationSeconds: Int
     let showDate: String
     let setNumber: String
@@ -101,6 +102,66 @@ struct Playlist: Codable, Identifiable {
     let showIds: [String]
     let createdAt: Date
     let updatedAt: Date
+}
+
+// MARK: - Tour Statistics Models
+
+/// Song gap information from Phish.net API
+struct SongGapInfo: Codable, Identifiable {
+    let id: Int               // Use songId as unique identifier
+    let songId: Int           // Phish.net songid
+    let songName: String      // Song name
+    let gap: Int             // Shows since last performance (0 = most recent)
+    let lastPlayed: String   // Date last performed ("2024-07-12")
+    let timesPlayed: Int     // Total times performed
+    
+    /// Formatted gap display text
+    var gapDisplayText: String {
+        if gap == 0 {
+            return "Most recent"
+        } else if gap == 1 {
+            return "1 show ago"
+        } else {
+            return "\(gap) shows ago"
+        }
+    }
+    
+    /// Formatted last played date
+    var lastPlayedFormatted: String {
+        // Use DateFormatter to parse the date string
+        let inputFormatter = DateFormatter()
+        inputFormatter.dateFormat = "yyyy-MM-dd"
+        
+        guard let date = inputFormatter.date(from: lastPlayed) else {
+            return "Last: \(lastPlayed)"
+        }
+        
+        let outputFormatter = DateFormatter()
+        outputFormatter.dateStyle = .medium
+        return "Last: \(outputFormatter.string(from: date))"
+    }
+    
+    /// Initialize with songId as id
+    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int) {
+        self.id = songId
+        self.songId = songId
+        self.songName = songName
+        self.gap = gap
+        self.lastPlayed = lastPlayed
+        self.timesPlayed = timesPlayed
+    }
+}
+
+/// Combined tour statistics for display
+struct TourSongStatistics: Codable {
+    let longestSongs: [TrackDuration]   // Top 3 longest songs by duration
+    let rarestSongs: [SongGapInfo]      // Top 3 rarest songs by gap
+    let tourName: String?               // Current tour name for context
+    
+    /// Check if statistics data is available
+    var hasData: Bool {
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty
+    }
 }
 
 // MARK: - Enhanced Data Models

@@ -148,6 +148,14 @@ class APIManager: ObservableObject {
         }
         return try await phishInClient.fetchTourPosition(for: showDate)
     }
+    
+    /// Fetch all track durations for an entire tour
+    func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration] {
+        guard let phishInClient = phishInClient else {
+            return []
+        }
+        return try await phishInClient.fetchTourTrackDurations(tourName: tourName)
+    }
 }
 
 // MARK: - Convenience Extensions

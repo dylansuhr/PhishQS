@@ -89,6 +89,13 @@ class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
         return mockRecordings.filter { $0.showDate == showDate }
     }
     
+    func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration] {
+        await simulateNetworkDelay()
+        
+        // Return mock tour-wide track durations
+        return mockTrackDurations
+    }
+    
     // MARK: - Tour Provider Protocol Implementation
     
     func fetchTours(forYear year: String) async throws -> [Tour] {

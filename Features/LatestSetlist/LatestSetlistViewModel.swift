@@ -6,6 +6,7 @@ class LatestSetlistViewModel: BaseViewModel {
     @Published var latestShow: Show?
     @Published var setlistItems: [SetlistItem] = []
     @Published var enhancedSetlist: EnhancedSetlist?
+    @Published var tourStatistics: TourSongStatistics?
     
     // Navigation state
     @Published var currentShowIndex: Int = 0
@@ -40,6 +41,9 @@ class LatestSetlistViewModel: BaseViewModel {
                 let enhanced = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
                 enhancedSetlist = enhanced
                 setlistItems = enhanced.setlistItems
+                
+                // Fetch tour statistics in background
+                await fetchTourStatistics()
                 
                 // Cache shows for navigation
                 await loadShowsForYear(show.showyear)
@@ -170,6 +174,9 @@ class LatestSetlistViewModel: BaseViewModel {
             enhancedSetlist = enhanced
             setlistItems = enhanced.setlistItems
             
+            // Update tour statistics for new show
+            await fetchTourStatistics()
+            
             currentShowIndex = index
             updateNavigationState()
         } catch {
@@ -260,6 +267,56 @@ class LatestSetlistViewModel: BaseViewModel {
     /// Check if enhanced data is available
     var hasEnhancedData: Bool {
         return enhancedSetlist != nil && !(enhancedSetlist?.trackDurations.isEmpty ?? true)
+    }
+    
+    // MARK: - Tour Statistics Methods
+    
+    /// Fetch tour statistics based on current show
+    @MainActor
+    private func fetchTourStatistics() async {
+        // Only fetch if we have enhanced setlist data
+        guard let enhanced = enhancedSetlist else { return }
+        
+        do {
+            // Fetch gap data from Phish.net API
+            let allSongGaps = try await apiClient.fetchAllSongsWithGaps()
+            
+            // Fetch tour-wide track durations if we have tour information
+            var tourTrackDurations: [TrackDuration]? = nil
+            if let tourName = enhanced.tourPosition?.tourName {
+                do {
+                    print("Attempting to fetch tour data for: '\(tourName)'")
+                    
+                    // First, let's see what tours are actually available in 2025
+                    let availableTours = try await apiManager.fetchTours(forYear: "2025")
+                    print("Available 2025 tours: \(availableTours.map { $0.name })")
+                    
+                    tourTrackDurations = try await apiManager.fetchTourTrackDurations(tourName: tourName)
+                    print("Fetched \(tourTrackDurations?.count ?? 0) track durations for tour: \(tourName)")
+                } catch {
+                    print("Warning: Could not fetch tour track durations for \(tourName): \(error)")
+                }
+            } else {
+                print("No tour name available from enhanced setlist")
+            }
+            
+            // Calculate tour statistics using the service
+            let tourName = enhanced.tourPosition?.tourName
+            let statistics = TourStatisticsService.calculateTourStatistics(
+                enhancedSetlist: enhanced,
+                tourTrackDurations: tourTrackDurations,
+                allSongGaps: allSongGaps,
+                tourName: tourName
+            )
+            
+            // Update published property on main actor
+            tourStatistics = statistics
+            
+        } catch {
+            // Log error but don't block main functionality
+            print("Failed to fetch tour statistics: \(error)")
+            tourStatistics = nil
+        }
     }
     
 } 

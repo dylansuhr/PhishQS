@@ -2,7 +2,7 @@ import SwiftUI
 
 // View for displaying the latest Phish setlist with simple navigation
 struct LatestSetlistView: View {
-    @StateObject private var viewModel = LatestSetlistViewModel()
+    @ObservedObject var viewModel: LatestSetlistViewModel
     
     
     var body: some View {
@@ -231,5 +231,5 @@ struct LatestSetlistView: View {
 }
 
 #Preview {
-    LatestSetlistView()
+    LatestSetlistView(viewModel: LatestSetlistViewModel())
 } 

@@ -281,4 +281,33 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
         )
         return response.eras
     }
+    
+    /// Fetch all track durations for an entire tour
+    func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration] {
+        print("PhishIn: Searching for tour: '\(tourName)'")
+        
+        // Get all shows in the tour using existing caching
+        let tourShows = try await getCachedTourShows(tourName: tourName)
+        
+        print("PhishIn: Found \(tourShows.count) shows for tour '\(tourName)'")
+        
+        var allTourTracks: [TrackDuration] = []
+        
+        // Collect track durations from all shows in the tour
+        for show in tourShows {
+            guard let tracks = show.tracks else { 
+                print("PhishIn: No tracks found for show \(show.date)")
+                continue 
+            }
+            
+            let showTracks = tracks.compactMap { track in
+                track.toTrackDuration(showDate: show.date)
+            }
+            allTourTracks.append(contentsOf: showTracks)
+            print("PhishIn: Added \(showTracks.count) tracks from \(show.date)")
+        }
+        
+        print("PhishIn: Total tour tracks collected: \(allTourTracks.count)")
+        return allTourTracks
+    }
 }

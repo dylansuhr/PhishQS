@@ -31,6 +31,7 @@ protocol PhishAPIService {
     func fetchLatestShow() async throws -> Show?
     func fetchSetlist(for date: String) async throws -> [SetlistItem]
     func searchShows(query: String) async throws -> [Show]
+    func fetchAllSongsWithGaps() async throws -> [SongGapInfo]
 }
 
 // MARK: - Audio Provider Protocol
@@ -38,6 +39,7 @@ protocol PhishAPIService {
 /// Protocol for APIs that provide audio/recording information
 protocol AudioProviderProtocol: APIClientProtocol {
     func fetchTrackDurations(for showDate: String) async throws -> [TrackDuration]
+    func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration]
     func fetchRecordings(for showDate: String) async throws -> [Recording]
 }
 

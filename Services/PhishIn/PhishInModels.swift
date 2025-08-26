@@ -105,6 +105,7 @@ struct PhishInTrack: Codable, Identifiable {
         return TrackDuration(
             id: String(id),
             songName: title,
+            songId: nil, // Phish.in doesn't provide songid mapping yet
             durationSeconds: duration / 1000, // Convert milliseconds to seconds
             showDate: showDate,
             setNumber: set_name ?? "1"

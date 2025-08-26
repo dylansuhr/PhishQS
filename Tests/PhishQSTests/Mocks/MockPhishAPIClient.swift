@@ -70,6 +70,19 @@ class MockPhishAPIClient {
         }
     }
     
+    func fetchAllSongsWithGaps() async throws -> [SongGapInfo] {
+        await simulateNetworkDelay()
+        
+        // Mock song gap data for testing
+        return [
+            SongGapInfo(songId: 627, songName: "Tweezer", gap: 0, lastPlayed: "2025-07-27", timesPlayed: 412),
+            SongGapInfo(songId: 251, songName: "Fluffhead", gap: 47, lastPlayed: "2023-08-15", timesPlayed: 87),
+            SongGapInfo(songId: 342, songName: "Icculus", gap: 23, lastPlayed: "2024-02-18", timesPlayed: 45),
+            SongGapInfo(songId: 294, songName: "Ghost", gap: 5, lastPlayed: "2025-07-20", timesPlayed: 156),
+            SongGapInfo(songId: 45, songName: "Back on the Train", gap: 3, lastPlayed: "2025-07-23", timesPlayed: 164)
+        ]
+    }
+    
 }
 
 // MARK: - Protocol Conformance

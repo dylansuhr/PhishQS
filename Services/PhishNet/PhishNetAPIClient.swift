@@ -135,6 +135,51 @@ class PhishAPIClient: PhishAPIService {
         }
     }
     
+    // MARK: - Song Gap Methods
+    
+    /// Fetch all songs with gap information for tour statistics
+    func fetchAllSongsWithGaps() async throws -> [SongGapInfo] {
+        // Add cache-busting with timestamp for fresh data
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let random = Int.random(in: 1000...9999)
+        guard let url = URL(string: "\(baseURL)/songs.json?apikey=\(apiKey)&_t=\(timestamp)&_r=\(random)") else {
+            throw APIError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+
+        do {
+            let songsResponse = try JSONDecoder().decode(SongsResponse.self, from: data)
+            
+            // Convert API response to SongGapInfo objects
+            let gapInfo = songsResponse.data.map { songData in
+                SongGapInfo(
+                    songId: songData.songid,
+                    songName: songData.song,
+                    gap: songData.gap,
+                    lastPlayed: songData.last_played,
+                    timesPlayed: songData.times_played
+                )
+            }
+            
+            return gapInfo
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
     // MARK: - Venue Methods
     
     /// Fetch venue information by venue ID
@@ -166,4 +211,21 @@ class PhishAPIClient: PhishAPIService {
 
 struct VenueResponse: Codable {
     let data: Venue
+}
+
+// MARK: - Song Gap Response Models
+
+struct SongData: Codable {
+    let songid: Int
+    let song: String
+    let slug: String
+    let artist: String
+    let debut: String
+    let last_played: String
+    let times_played: Int
+    let gap: Int
+}
+
+struct SongsResponse: Codable {
+    let data: [SongData]
 }

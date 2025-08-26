@@ -11,6 +11,7 @@ import Foundation
 struct SetlistItem: Codable {
     let set: String           // set number or label (e.g. "1", "Encore")
     let song: String          // song name
+    let songId: Int?          // optional songid for reliable cross-API matching
     let transMark: String?    // transition marker (e.g. "->", ",")
     let venue: String         // venue name
     let city: String          // city name
@@ -20,6 +21,7 @@ struct SetlistItem: Codable {
     // match Swift property names to JSON keys
     enum CodingKeys: String, CodingKey {
         case set, song
+        case songId = "songid"   // map to Phish.net API songid field
         case transMark = "trans_mark"
         case venue, city, state, showdate
     }

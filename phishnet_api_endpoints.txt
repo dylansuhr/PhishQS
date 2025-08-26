@@ -1,0 +1,313 @@
+PHISH.NET API V5 - COMPLETE ENDPOINT DOCUMENTATION
+================================================================
+
+BASE URL: https://api.phish.net/v5
+
+AUTHENTICATION
+--------------
+- API Key required for all requests
+- Include via GET or POST parameter: ?apikey=YOUR_API_KEY
+- Get API key at: https://phish.net/api/keys/
+- Requests are rate-limited
+
+MAIN ENDPOINTS
+==============
+
+1. ARTISTS
+----------
+Purpose: Return artist data
+Endpoints:
+- /v5/artists.json                              // All artists
+- /v5/artists.xml                               // All artists (XML format)
+- /v5/artists/[artist_id].json                  // Specific artist by ID
+- /v5/artists/[column]/[value].json             // Query by field
+
+Data Structure (Fields Returned - based on v3 API structure):
+- artistid: Unique identifier for the artist
+- name: Name of the artist  
+- link: Link to artist's setlist page
+
+Examples:
+- https://api.phish.net/v5/artists.json?apikey=YOUR_API_KEY
+- https://api.phish.net/v5/artists/2.json?apikey=YOUR_API_KEY  // Trey shows
+
+2. ATTENDANCE ⚠️ SPECIAL METHOD
+--------------------------------
+Purpose: Return information about show attendance
+⚠️ IMPORTANT: This is a "special method" that requires specific parameters
+
+Endpoints:
+- /v5/attendance/uid/[user_id].json             // Attendance by user ID
+- /v5/attendance/showid/[show_id].json          // Attendance for specific show
+- /v5/attendance/username/[username].json       // Attendance by username
+- /v5/attendance/showdate/YYYY-MM-DD.json       // Attendance for show date
+
+⚠️ Cannot use: /v5/attendance.json (will return error)
+Must specify one of: uid, showid, username, or showdate
+
+Data Structure (Fields Returned - estimated based on v3 API):
+- uid: User ID
+- showid: Show ID
+- username: Username of attendee
+- showdate: Date of show attended
+- shows_seen: Total shows seen count (when applicable)
+
+3. JAMCHARTS
+------------
+Purpose: Return jam chart data
+Endpoints:
+- /v5/jamcharts.json                            // All jam charts
+- /v5/jamcharts.html                            // All jam charts (HTML)
+- /v5/jamcharts/[jamchart_id].json              // Specific jam chart
+- /v5/jamcharts/[column]/[value].json           // Query by field
+- /v5/jamcharts/song/[song_name].html           // Jam charts for specific song
+
+Data Structure (Fields Returned - estimated based on v3 API):
+- jamchart_id: Unique identifier for jam chart entry
+- songid: ID of the song
+- song: Name of the song
+- showdate: Date of the show
+- showid: ID of the show
+- venue: Venue name
+- city: City of show
+- state: State/province of show
+- jamchart_description: Description of the jam
+- permalink: Link to the show
+
+Examples:
+- https://api.phish.net/v5/jamcharts/song/YEM.html?apikey=YOUR_API_KEY
+
+4. REVIEWS ⚠️ SPECIAL METHOD
+---------------------------
+Purpose: Return data about show reviews  
+⚠️ IMPORTANT: This is a "special method" that requires specific parameters
+
+Endpoints:
+- /v5/reviews/uid/[user_id].json                // Reviews by user ID
+- /v5/reviews/showid/[show_id].json             // Reviews for specific show
+- /v5/reviews/username/[username].json          // Reviews by username  
+- /v5/reviews/showdate/YYYY-MM-DD.json          // Reviews for show date
+
+⚠️ Cannot use: /v5/reviews.json (will return error)
+Must specify one of: uid, showid, username, or showdate
+
+Data Structure (Fields Returned - estimated):
+- review_id: Unique identifier for review
+- uid: User ID of reviewer
+- username: Username of reviewer
+- showid: ID of show being reviewed
+- showdate: Date of show
+- review_text: Full text of the review
+- rating: Numerical rating (if applicable)
+- created_at: When review was created
+- updated_at: When review was last updated
+
+5. SETLISTS
+-----------
+Purpose: Return setlist data
+Endpoints:
+- /v5/setlists.json                             // All setlists (WARNING: Large dataset)
+- /v5/setlists/[setlist_id].json                // Specific setlist
+- /v5/setlists/song/[song_name].json            // Setlists containing specific song
+- /v5/setlists/slug/[url-friendly-song-name].json // Setlists by song slug (recommended)
+- /v5/setlists/[column]/[value].json            // Query by field
+
+Data Structure (Fields Returned):
+- showid: Unique identifier for the show
+- showdate: Date of the show
+- permalink: URL-friendly link to the show
+- showyear: Year of the show
+- uniqueid: Unique identifier for setlist entry
+- meta: Metadata about the setlist
+- reviews: Review information
+- exclude: Whether to exclude from statistics
+- setlistnotes: Notes about the setlist
+- soundcheck: Soundcheck information
+- songid: ID of the song
+- position: Position of song in set
+- transition: Transition information between songs
+- footnote: Additional notes
+
+Examples:
+- https://api.phish.net/v5/setlists/song/YEM.json?apikey=YOUR_API_KEY
+- https://api.phish.net/v5/setlists/slug/you-enjoy-myself.json?apikey=YOUR_API_KEY
+
+6. SHOWS
+--------
+Purpose: Return show data
+Endpoints:
+- /v5/shows.json                                // All shows (WARNING: Large dataset)
+- /v5/shows/[show_id].json                      // Specific show by ID
+- /v5/shows/showdate/YYYY-MM-DD.json            // Show by date
+- /v5/shows/showyear/YYYY.json                  // Shows from specific year
+- /v5/shows/state/[state_code].json             // Shows from specific state
+- /v5/shows/[column]/[value].json               // Query by field
+
+Data Structure (Fields Returned):
+- showid: Unique identifier for the show
+- showyear: Year of the show
+- showmonth: Month of the show
+- showday: Day of the show
+- showdate: Full date of the show
+- permalink: URL-friendly link to the show
+- exclude_from_stats: Whether to exclude from statistics
+- venueid: ID of the venue
+- setlist_notes: Notes about the setlist
+- venue: Venue name
+- city: City where show took place
+- state: State/province where show took place
+- country: Country where show took place
+- artistid: ID of the artist
+- artist_name: Name of the artist
+- tourid: ID of the tour
+- tour_name: Name of the tour
+- created_at: When record was created
+- updated_at: When record was last updated
+
+Examples:
+- https://api.phish.net/v5/shows/showdate/1997-11-22.json?apikey=YOUR_API_KEY
+- https://api.phish.net/v5/shows/showyear/1989.json?apikey=YOUR_API_KEY&order_by=showdate
+- https://api.phish.net/v5/shows/state/NY.json?apikey=YOUR_API_KEY
+
+7. SONGDATA
+-----------
+Purpose: Return extended song data, including lyrics and history
+Endpoints:
+- /v5/songdata.json                             // All song data
+- /v5/songdata/[song_id].json                   // Specific song data
+- /v5/songdata/[column]/[value].json            // Query by field
+
+Data Structure (Fields Returned):
+- songid: Unique identifier for the song
+- song: Song name/title
+- nickname: Song nickname (if any)
+- slug: URL-friendly version of song name
+- lyrics: Complete song lyrics
+- history: Historical information about the song
+- historian: Person who provided the historical information
+
+8. SONGS
+--------
+Purpose: Return song data
+Endpoints:
+- /v5/songs.json                                // All songs
+- /v5/songs/[song_id].json                      // Specific song
+- /v5/songs/[column]/[value].json               // Query by field
+
+Data Structure (Fields Returned):
+- songid: Unique identifier for the song
+- song: Song name/title
+- slug: URL-friendly version of song name
+- abbr: Song abbreviation
+- artist: Artist name
+- debut: Date song was first played
+- last_played: Date song was last played
+- times_played: Total number of times played
+- last_permalink: Link to last performance
+- debut_permalink: Link to debut performance
+- gap: Number of shows since last played
+
+Examples:
+- https://api.phish.net/v5/songs.json?apikey=YOUR_API_KEY
+
+9. USERS ⚠️ SPECIAL METHOD
+-------------------------
+Purpose: Return data about a user
+⚠️ IMPORTANT: This is a "special method" that requires specific parameters
+
+Endpoints:
+- /v5/users/uid/[user_id].json                  // User data by ID
+- /v5/users/username/[username].json            // User data by username
+
+⚠️ Cannot use: /v5/users.json (will return error)
+Must specify one of: uid or username
+
+Data Structure (Fields Returned - estimated):
+- uid: Unique user identifier
+- username: Username
+- profile_data: Public profile information
+- shows_seen: Number of shows attended (if public)
+- registration_date: When user registered
+- last_active: Last activity date
+- public_stats: Publicly available statistics
+
+10. VENUES
+----------
+Purpose: Return venue data
+Endpoints:
+- /v5/venues.json                               // All venues
+- /v5/venues.html                               // All venues (HTML table)
+- /v5/venues.html?no_header=1                   // All venues (HTML, no header)
+- /v5/venues/[venue_id].json                    // Specific venue
+- /v5/venues/[column]/[value].json              // Query by field
+
+Data Structure (Fields Returned):
+- venueid: Unique identifier for the venue
+- venuename: Name of the venue
+- city: City where venue is located
+- state: State/province where venue is located
+- country: Country where venue is located
+- venuenotes: Additional notes about the venue
+- alias: Alternative names for the venue
+- short_name: Abbreviated venue name
+
+Examples:
+- https://api.phish.net/v5/venues.html?apikey=YOUR_API_KEY
+- https://api.phish.net/v5/venues.html?apikey=YOUR_API_KEY&no_header=1
+
+REQUEST STRUCTURE PATTERNS
+===========================
+
+1. All data from a method:
+   /v5/[method].[format]
+
+2. Specific record by ID:
+   /v5/[method]/[ID].[format]
+
+3. Query by field/column:
+   /v5/[method]/[column]/[value].[format]
+
+SUPPORTED FORMATS
+=================
+- .json (JSON - recommended)
+- .html (HTML tables)
+- .xml (XML - limited support)
+
+QUERY PARAMETERS
+================
+- apikey: YOUR_API_KEY (required)
+- order_by: Column name to sort by
+- direction: 'asc' or 'desc' (default: 'asc')
+- limit: Maximum number of results to return
+- no_header: Suppress HTML banner (HTML format only)
+- callback: JSONP callback function name (JSON format only)
+
+EXAMPLE COMPLETE REQUESTS
+==========================
+https://api.phish.net/v5/shows/showyear/1989.json?apikey=YOUR_API_KEY&order_by=showdate&direction=asc&limit=50
+
+https://api.phish.net/v5/setlists/song/Harry%20Hood.json?apikey=YOUR_API_KEY&limit=10
+
+https://api.phish.net/v5/venues.html?apikey=YOUR_API_KEY&no_header=1&order_by=venuename
+
+IMPORTANT NOTES
+===============
+- Replace YOUR_API_KEY with your actual API key
+- Some endpoints without filters can return very large datasets
+- Local caching is encouraged to reduce API calls
+- API responses are cached for short periods
+- Rate limiting is enforced
+- All requests require authentication
+
+SPECIAL CONSIDERATIONS
+======================
+- Avoid naked endpoints like /setlists/ or /shows/ without filters
+- Use song slugs instead of song names when possible
+- Cache frequently accessed data locally
+- Monitor your usage to avoid being rate-limited or disabled
+
+API TERMS OF USE
+================
+Usage governed by terms at: https://api.phish.net/keys/
+Data attribution required for non-commercial use
+Commercial use may require additional licensing
