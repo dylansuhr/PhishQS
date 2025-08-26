@@ -72,11 +72,9 @@ struct LatestSetlistView: View {
                                     .foregroundColor(.secondary)
                             }
                             
-                            // Show tour position info if available
+                            // Show tour position info with blue highlighting for show numbers
                             if let tourPosition = viewModel.tourPositionInfo {
-                                Text(tourPosition.shortDisplayText)
-                                    .font(.caption2)
-                                    .foregroundColor(.secondary)
+                                createStyledTourText(tourPosition.tourName, showNumbers: "\(tourPosition.showNumber)/\(tourPosition.totalShows)")
                             }
                         }
                     }
@@ -85,12 +83,8 @@ struct LatestSetlistView: View {
                 
                 // Full setlist display
                 if !viewModel.setlistItems.isEmpty {
-                    VStack(alignment: .leading, spacing: 2) {
-                        ForEach(Array(StringFormatters.formatSetlist(viewModel.setlistItems).enumerated()), id: \.offset) { index, line in
-                            if !line.isEmpty {
-                                coloredSetlistLine(line)
-                            }
-                        }
+                    VStack(alignment: .leading, spacing: 4) {
+                        createDirectSetlistView()
                     }
                     .padding(.horizontal)
                 }
@@ -111,142 +105,127 @@ struct LatestSetlistView: View {
         }
     }
     
-    /// Create a colored setlist line with individual song colors
+    /// Create setlist view directly from SetlistItem array
     @ViewBuilder
-    private func coloredSetlistLine(_ line: String) -> some View {
-        let trimmed = line.trimmingCharacters(in: .whitespaces)
+    private func createDirectSetlistView() -> some View {
+        let groupedBySet = Dictionary(grouping: viewModel.setlistItems) { $0.set }
+        let setOrder = ["1", "2", "3", "E", "ENCORE"]
+        let setsWithPositions = calculateSetPositions(groupedBySet: groupedBySet, setOrder: setOrder)
         
-        // Handle set headers
-        if (trimmed.hasPrefix("Set ") && trimmed.hasSuffix(":")) || trimmed.hasPrefix("Encore:") {
-            Text(line)
+        ForEach(setsWithPositions, id: \.setKey) { setData in
+            // Set header
+            Text(formatSetName(setData.setKey))
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.blue)
-        } else {
-            // Parse and color individual songs within the line to match detailed view
-            createColoredSetlistLine(line)
+            
+            // Songs in this set
+            createSetSongsView(setData.items, startPosition: setData.startPosition)
+            
+            // Add spacing between sets (but not after the last set)
+            let isLastSet = setData.setKey.uppercased() == "E" || setData.setKey.uppercased() == "ENCORE"
+            if !isLastSet {
+                Text("")
+                    .font(.caption2)
+            }
         }
     }
     
-    /// Create a colored setlist line with individual song colors matching the detailed view
+    /// Create a view for all songs in a set with proper coloring and transitions
     @ViewBuilder
-    private func createColoredSetlistLine(_ line: String) -> some View {
-        let components = parseLineIntoColoredComponents(line)
-        
-        // Use AttributedString for proper inline coloring
-        let attributedText = components.reduce(AttributedString()) { result, component in
-            var attributed = AttributedString(component.text)
-            attributed.foregroundColor = component.color
-            return result + attributed
-        }
-        
+    private func createSetSongsView(_ setItems: [SetlistItem], startPosition: Int) -> some View {
+        let attributedText = createAttributedSetText(setItems, startPosition: startPosition)
         Text(attributedText)
             .font(.caption)
     }
     
-    /// Parse a formatted setlist line into individual colored components
-    /// Uses position-based color matching for accurate duplicate song handling
-    private func parseLineIntoColoredComponents(_ line: String) -> [(text: String, color: Color)] {
-        var components: [(text: String, color: Color)] = []
-        var remainingLine = line
-        var songPosition = getCurrentLineStartPosition(line)
+    /// Create AttributedString for a set's songs with proper colors and transitions
+    private func createAttributedSetText(_ setItems: [SetlistItem], startPosition: Int) -> AttributedString {
+        var result = AttributedString()
         
-        // Split by transition marks while preserving them
-        let separators = [" > ", " -> ", ", "]
-        
-        while !remainingLine.isEmpty {
-            var earliestMatch: (separator: String, range: Range<String.Index>)? = nil
+        for (index, item) in setItems.enumerated() {
+            let songPosition = startPosition + index
             
-            // Find the earliest occurring separator
-            for separator in separators {
-                if let range = remainingLine.range(of: separator) {
-                    if earliestMatch == nil || range.lowerBound < earliestMatch!.range.lowerBound {
-                        earliestMatch = (separator, range)
-                    }
-                }
+            // Add colored song name
+            var songText = AttributedString(item.song)
+            let songColor = viewModel.colorForSong(at: songPosition, expectedName: item.song) ?? .primary
+            songText.foregroundColor = songColor
+            result += songText
+            
+            // Add transition mark in black if it exists
+            if let transMark = item.transMark, !transMark.isEmpty {
+                var transitionText = AttributedString(transMark)
+                transitionText.foregroundColor = .primary
+                result += transitionText
             }
             
-            if let match = earliestMatch {
-                // Add song before separator with position-based color
-                let songText = String(remainingLine[..<match.range.lowerBound]).trimmingCharacters(in: .whitespaces)
-                if !songText.isEmpty {
-                    let songColor = viewModel.colorForSong(at: songPosition, expectedName: songText) ?? .primary
-                    components.append((text: songText, color: songColor))
-                    songPosition += 1  // Increment position for next song
-                }
-                
-                // Add separator in black
-                components.append((text: match.separator, color: .primary))
-                
-                // Continue with rest of line
-                remainingLine = String(remainingLine[match.range.upperBound...])
-            } else {
-                // No more separators, add remaining text as song
-                let songText = remainingLine.trimmingCharacters(in: .whitespaces)
-                if !songText.isEmpty {
-                    let songColor = viewModel.colorForSong(at: songPosition, expectedName: songText) ?? .primary
-                    components.append((text: songText, color: songColor))
-                }
-                break
+            // Add space between songs (except last)
+            if index < setItems.count - 1 {
+                result += AttributedString(" ")
             }
         }
         
-        return components
+        return result
     }
     
-    /// Calculate the starting position for songs in the current line
-    /// This tracks position across the formatted setlist to maintain accuracy
-    private func getCurrentLineStartPosition(_ currentLine: String) -> Int {
-        // Count total songs in all previous lines
-        let formattedLines = StringFormatters.formatSetlist(viewModel.setlistItems)
-        var totalSongs = 0
+    /// Calculate starting positions for each set
+    private func calculateSetPositions(groupedBySet: [String: [SetlistItem]], setOrder: [String]) -> [(setKey: String, items: [SetlistItem], startPosition: Int)] {
+        var result: [(setKey: String, items: [SetlistItem], startPosition: Int)] = []
+        var currentPosition = 0
         
-        for line in formattedLines {
-            if line == currentLine {
-                break  // Found current line, return position
+        // First, add sets that match our expected order
+        for setKey in setOrder {
+            if let setItems = groupedBySet[setKey] ?? groupedBySet[setKey.uppercased()] {
+                result.append((setKey: setKey, items: setItems, startPosition: currentPosition))
+                currentPosition += setItems.count
             }
-            
-            // Skip set headers
-            let trimmed = line.trimmingCharacters(in: .whitespaces)
-            if (trimmed.hasPrefix("Set ") && trimmed.hasSuffix(":")) || trimmed.hasPrefix("Encore:") {
-                continue
-            }
-            
-            // Count songs in this line
-            let separators = [" > ", " -> ", ", "]
-            var lineText = line
-            var songsInLine = 0
-            
-            while !lineText.isEmpty {
-                var earliestMatch: Range<String.Index>? = nil
-                
-                for separator in separators {
-                    if let range = lineText.range(of: separator) {
-                        if earliestMatch == nil || range.lowerBound < earliestMatch!.lowerBound {
-                            earliestMatch = range
-                        }
-                    }
-                }
-                
-                if let match = earliestMatch {
-                    let songText = String(lineText[..<match.lowerBound]).trimmingCharacters(in: .whitespaces)
-                    if !songText.isEmpty {
-                        songsInLine += 1
-                    }
-                    lineText = String(lineText[match.upperBound...])
-                } else {
-                    let songText = lineText.trimmingCharacters(in: .whitespaces)
-                    if !songText.isEmpty {
-                        songsInLine += 1
-                    }
-                    break
-                }
-            }
-            
-            totalSongs += songsInLine
         }
         
-        return totalSongs
+        // Then add any remaining sets not in our order (for edge cases)
+        let processedKeys = Set(result.map { $0.setKey.uppercased() })
+        for (setKey, setItems) in groupedBySet {
+            if !processedKeys.contains(setKey.uppercased()) {
+                result.append((setKey: setKey, items: setItems, startPosition: currentPosition))
+                currentPosition += setItems.count
+            }
+        }
+        
+        return result
+    }
+    
+    /// Create styled tour text with blue highlighted show numbers
+    @ViewBuilder
+    private func createStyledTourText(_ tourName: String, showNumbers: String) -> some View {
+        HStack(spacing: 2) {
+            Text(tourName)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            
+            Text(showNumbers)
+                .font(.caption)
+                .fontWeight(.medium)
+                .foregroundColor(.blue)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 1)
+                .background(Color.blue.opacity(0.1))
+                .cornerRadius(3)
+        }
+    }
+    
+    /// Format set names properly (1→"Set 1", 2→"Set 2", E→"Encore", etc.)
+    private func formatSetName(_ setIdentifier: String) -> String {
+        switch setIdentifier.uppercased() {
+        case "E", "ENCORE":
+            return "Encore:"
+        case "1":
+            return "Set 1:"
+        case "2":
+            return "Set 2:"
+        case "3":
+            return "Set 3:"
+        default:
+            return "Set \(setIdentifier):"
+        }
     }
     
 }

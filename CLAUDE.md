@@ -298,6 +298,65 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 - Could benefit from more comprehensive edge case testing
 - Documentation could be enhanced for complex API coordination logic
 
+### **Session Complete ✅ - Song Parsing Architecture Redesign & Blue Tour Highlighting**
+
+**Date**: August 26, 2025
+**Status**: Direct SetlistItem rendering implemented with enhanced tour info styling
+
+### **Latest Session Accomplishments ✅**
+- [x] **"My Friend, My Friend" Comma Parsing Fix**: Fixed edge case where songs with internal commas were incorrectly split
+- [x] **Direct SetlistItem Rendering**: Replaced string parsing with direct use of SetlistItem array - eliminated all comma parsing complexity
+- [x] **Robust Set Processing**: Added fallback logic to handle any unexpected set identifiers ("E", "ENCORE", etc.)
+- [x] **Perfect Spacing**: Fixed spacing between sets and restored missing Encore section
+- [x] **Blue Tour Highlighting**: Added blue highlighting to tour show numbers (e.g., "23/23") matching venue run styling 
+- [x] **Layout Preservation**: Maintained original 5-line header design including intentional day description
+
+### **Technical Architecture Improvements**
+- **Eliminated String Parsing**: No more regex or string splitting - works directly with structured data
+- **Position-Based Color Matching**: Maintains accurate song position tracking across all sets for color gradient
+- **Enhanced Data Pipeline**: `SetlistItem.song` + `SetlistItem.transMark` → Direct rendering with colors
+- **Robust Encore Detection**: Dynamic set processing handles all set variants properly
+
+### **Current UI Status ✅**
+```
+2025-07-27
+Sunday, July 27th  
+Broadview Stage at SPAC                           N3/3
+Saratoga Springs, NY
+Summer Tour 2025 23/23
+
+Set 1:
+[Colored songs with transition marks] ✅
+
+Set 2: 
+[Colored songs with transition marks] ✅
+
+Encore:
+[Colored songs] ✅
+```
+
+Where **"N3/3"** and **"23/23"** both use blue highlighting with background.
+
+### **Files Modified This Session**
+- `Features/LatestSetlist/LatestSetlistView.swift`: Major architecture change from string parsing to direct SetlistItem rendering
+- `Utilities/RelativeDurationColors.swift`: Added color calculation utilities for direct data approach
+
+### **Data Flow Now ✅**
+```
+PhishNet API → SetlistItem[] → Direct Rendering → Individual Colors
+                    ↓
+              EnhancedSetlist → Position-based color matching
+                    ↓
+               Styled Display (song colors + blue highlights)
+```
+
+### **Key Benefits Achieved**
+- **100% Accurate**: No more parsing ambiguity - "My Friend, My Friend" vs "Funky Bitch, Roses Are Free"
+- **Future Proof**: Works with any song names, comma patterns, or special characters
+- **Performance**: Eliminated complex string processing overhead
+- **Maintainable**: Clean separation between data and presentation
+- **Consistent Styling**: Tour info now matches venue run visual design
+
 ### **Code Quality**: Production-ready, well-architected, comprehensive error handling ✅
 
 ### **Session Complete ✅ - TourDashboard Home Screen & Code Cleanup**
