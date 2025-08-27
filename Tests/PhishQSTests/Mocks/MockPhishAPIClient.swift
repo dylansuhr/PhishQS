@@ -83,6 +83,23 @@ class MockPhishAPIClient {
         ]
     }
     
+    func fetchSongPerformances(songName: String) async throws -> [SongPerformance] {
+        await simulateNetworkDelay()
+        
+        // Mock song performances for testing
+        return [
+            SongPerformance(showid: 1001, showdate: "2024-07-15", showyear: "2024", venue: "MSG", city: "New York", state: "NY", country: "USA", permalink: "2024-07-15"),
+            SongPerformance(showid: 1002, showdate: "2023-12-30", showyear: "2023", venue: "MSG", city: "New York", state: "NY", country: "USA", permalink: "2023-12-30")
+        ]
+    }
+    
+    func fetchShowCountBetween(startDate: String, endDate: String) async throws -> Int {
+        await simulateNetworkDelay()
+        
+        // Mock show count for testing - return a reasonable number
+        return 100
+    }
+    
 }
 
 // MARK: - Protocol Conformance

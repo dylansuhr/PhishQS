@@ -18,23 +18,23 @@ struct Venue: Codable, Identifiable {
 class PhishAPIClient: PhishAPIService {
     static let shared = PhishAPIClient()  // singleton instance
 
-    private let baseURL = "https://api.phish.net/v5"
+    internal let baseURL = "https://api.phish.net/v5"
     private let apiKey = Secrets.value(for: "PhishNetAPIKey")
+    
+    var isAvailable: Bool {
+        return !apiKey.isEmpty
+    }
     
     // MARK: - Show Methods
     
     /// Fetch all shows for a given year
     func fetchShows(forYear year: String) async throws -> [Show] {
-        // Add cache-busting with timestamp and random component for fresh data
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let random = Int.random(in: 1000...9999)
-        guard let url = URL(string: "\(baseURL)/setlists/showyear/\(year).json?apikey=\(apiKey)&artist=phish&_t=\(timestamp)&_r=\(random)") else {
+        // Remove cache-busting for better performance - year data doesn't change frequently
+        guard let url = URL(string: "\(baseURL)/setlists/showyear/\(year).json?apikey=\(apiKey)&artist=phish") else {
             throw APIError.invalidURL
         }
 
-        var request = URLRequest(url: url)
-        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
-        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
+        let request = URLRequest(url: url)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -106,16 +106,12 @@ class PhishAPIClient: PhishAPIService {
     
     /// Fetch setlist for a specific show date
     func fetchSetlist(for date: String) async throws -> [SetlistItem] {
-        // Add cache-busting with timestamp and random component for fresh data
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let random = Int.random(in: 1000...9999)
-        guard let url = URL(string: "\(baseURL)/setlists/showdate/\(date).json?apikey=\(apiKey)&artist=phish&_t=\(timestamp)&_r=\(random)") else {
+        // Remove cache-busting for better performance - historical setlists don't change
+        guard let url = URL(string: "\(baseURL)/setlists/showdate/\(date).json?apikey=\(apiKey)&artist=phish") else {
             throw APIError.invalidURL
         }
 
-        var request = URLRequest(url: url)
-        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
-        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
+        let request = URLRequest(url: url)
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
@@ -139,17 +135,17 @@ class PhishAPIClient: PhishAPIService {
     
     /// Fetch all songs with gap information for tour statistics
     func fetchAllSongsWithGaps() async throws -> [SongGapInfo] {
-        // Add cache-busting with timestamp for fresh data
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let random = Int.random(in: 1000...9999)
-        guard let url = URL(string: "\(baseURL)/songs.json?apikey=\(apiKey)&_t=\(timestamp)&_r=\(random)") else {
+        // Check cache first - song gaps change rarely
+        if let cachedGaps = CacheManager.shared.get([SongGapInfo].self, forKey: CacheManager.CacheKeys.songGaps) {
+            return cachedGaps
+        }
+        
+        // Fetch from API if not cached
+        guard let url = URL(string: "\(baseURL)/songs.json?apikey=\(apiKey)") else {
             throw APIError.invalidURL
         }
 
-        var request = URLRequest(url: url)
-        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
-        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
-        
+        let request = URLRequest(url: url)
         let (data, response) = try await URLSession.shared.data(for: request)
         
         guard let httpResponse = response as? HTTPURLResponse else {
@@ -174,6 +170,9 @@ class PhishAPIClient: PhishAPIService {
                 )
             }
             
+            // Cache the result for 6 hours
+            CacheManager.shared.set(gapInfo, forKey: CacheManager.CacheKeys.songGaps, ttl: CacheManager.TTL.songGaps)
+            
             return gapInfo
         } catch {
             throw APIError.decodingError(error)
@@ -181,6 +180,63 @@ class PhishAPIClient: PhishAPIService {
     }
     
     // MARK: - Venue Methods
+    
+    /// Fetch all performances of a specific song with chronological ordering
+    func fetchSongPerformances(songName: String) async throws -> [SongPerformance] {
+        // Use song slug endpoint for better performance with chronological ordering
+        let encodedSongName = songName.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? songName
+        guard let url = URL(string: "\(baseURL)/setlists/song/\(encodedSongName).json?apikey=\(apiKey)&order_by=showdate&direction=asc") else {
+            throw APIError.invalidURL
+        }
+
+        let request = URLRequest(url: url)
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+
+        do {
+            let performanceResponse = try JSONDecoder().decode(SongPerformanceResponse.self, from: data)
+            return performanceResponse.data
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
+    
+    /// Fetch total number of Phish shows between two dates (inclusive)
+    /// Used for calculating historical gaps
+    func fetchShowCountBetween(startDate: String, endDate: String) async throws -> Int {
+        // Use a more efficient approach by fetching years and counting
+        // Parse start and end years
+        let startYear = String(startDate.prefix(4))
+        let endYear = String(endDate.prefix(4))
+        
+        var totalShows = 0
+        
+        // Convert years to integers for range
+        guard let startYearInt = Int(startYear), let endYearInt = Int(endYear) else {
+            throw APIError.invalidURL
+        }
+        
+        // Fetch shows for each year in the range
+        for year in startYearInt...endYearInt {
+            let yearShows = try await fetchShows(forYear: String(year))
+            
+            // Filter shows to date range
+            let filteredShows = yearShows.filter { show in
+                show.showdate >= startDate && show.showdate <= endDate
+            }
+            
+            totalShows += filteredShows.count
+        }
+        
+        return totalShows
+    }
     
     /// Fetch venue information by venue ID
     func fetchVenueInfo(for venueId: String) async throws -> Venue {
@@ -213,6 +269,10 @@ struct VenueResponse: Codable {
     let data: Venue
 }
 
+struct SongPerformanceResponse: Codable {
+    let data: [SongPerformance]
+}
+
 // MARK: - Song Gap Response Models
 
 struct SongData: Codable {
@@ -228,4 +288,86 @@ struct SongData: Codable {
 
 struct SongsResponse: Codable {
     let data: [SongData]
+}
+
+// MARK: - Gap Data Provider Extension
+
+extension PhishAPIClient: GapDataProviderProtocol {
+    
+    /// Fetch gap information for a specific song on a specific show date
+    func fetchSongGap(songName: String, showDate: String) async throws -> SongGapInfo? {
+        let performances = try await fetchSongPerformanceHistory(songName: songName)
+        
+        // Find the performance matching the show date
+        guard let performance = performances.first(where: { $0.showdate == showDate }) else {
+            return nil
+        }
+        
+        // Convert to SongGapInfo
+        return SongGapInfo(
+            songId: performance.songid,
+            songName: performance.song,
+            gap: performance.gap,
+            lastPlayed: showDate,
+            timesPlayed: performances.count,
+            tourVenue: performance.venue,
+            tourVenueRun: nil,  // Can be enhanced later with venue run data
+            tourDate: showDate
+        )
+    }
+    
+    /// Fetch gap information for multiple songs on a specific show date
+    func fetchSongGaps(songNames: [String], showDate: String) async throws -> [SongGapInfo] {
+        var gapInfos: [SongGapInfo] = []
+        
+        for songName in songNames {
+            do {
+                if let gapInfo = try await fetchSongGap(songName: songName, showDate: showDate) {
+                    gapInfos.append(gapInfo)
+                }
+                
+                // Small delay to avoid overwhelming the API
+                try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
+                
+            } catch {
+                print("Failed to fetch gap for \(songName): \(error)")
+                continue
+            }
+        }
+        
+        return gapInfos.sorted { $0.gap > $1.gap } // Sort by highest gap first
+    }
+    
+    /// Fetch complete performance history for a song (includes gap data for each performance)
+    func fetchSongPerformanceHistory(songName: String) async throws -> [SongPerformance] {
+        // Use the slug endpoint for better URL handling
+        let slugName = songName.lowercased()
+            .replacingOccurrences(of: " ", with: "-")
+            .replacingOccurrences(of: "'", with: "")
+            .replacingOccurrences(of: ".", with: "")
+            .replacingOccurrences(of: ",", with: "")
+        
+        guard let url = URL(string: "\(baseURL)/setlists/slug/\(slugName).json?apikey=\(apiKey)") else {
+            throw APIError.invalidURL
+        }
+        
+        let request = URLRequest(url: url)
+        
+        let (data, response) = try await URLSession.shared.data(for: request)
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.invalidResponse
+        }
+        
+        guard httpResponse.statusCode == 200 else {
+            throw APIError.httpError(httpResponse.statusCode)
+        }
+        
+        do {
+            let performanceResponse = try JSONDecoder().decode(SongPerformanceResponse.self, from: data)
+            return performanceResponse.data
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
 }

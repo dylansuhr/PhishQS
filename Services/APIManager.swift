@@ -57,14 +57,38 @@ class APIManager: ObservableObject {
     
     /// Fetch setlist with enhanced data (song durations, venue runs, tour position, etc.)
     func fetchEnhancedSetlist(for date: String) async throws -> EnhancedSetlist {
+        // Check cache first for recent shows
+        let cacheKey = CacheManager.CacheKeys.enhancedSetlist(date)
+        if let cachedSetlist = CacheManager.shared.get(EnhancedSetlist.self, forKey: cacheKey) {
+            return cachedSetlist
+        }
+        
         // Get base setlist from Phish.net
         let setlistItems = try await phishNetClient.fetchSetlist(for: date)
         
-        // Try to get enhanced data from Phish.in
+        // Try to get enhanced data from Phish.in and gap data from Phish.net
         var trackDurations: [TrackDuration] = []
         var venueRun: VenueRun? = nil
         var tourPosition: TourShowPosition? = nil
         var recordings: [Recording] = []
+        var songGaps: [SongGapInfo] = []
+        
+        // Execute all API calls in parallel for better performance
+        async let gapDataTask: [SongGapInfo] = {
+            // Get unique song names from the setlist
+            let songNames = Array(Set(setlistItems.map { $0.song }))
+            
+            // Cast phishNetClient to GapDataProviderProtocol if it supports gap data
+            if let gapProvider = phishNetClient as? GapDataProviderProtocol {
+                do {
+                    return try await gapProvider.fetchSongGaps(songNames: songNames, showDate: date)
+                } catch {
+                    print("Warning: Could not fetch gap data from Phish.net for \(date): \(error)")
+                    return []
+                }
+            }
+            return []
+        }()
         
         if let phishInClient = phishInClient, phishInClient.isAvailable {
             // Execute all Phish.in API calls in parallel for better performance
@@ -99,14 +123,23 @@ class APIManager: ObservableObject {
             }
         }
         
-        return EnhancedSetlist(
+        // Await gap data task
+        songGaps = await gapDataTask
+        
+        let enhancedSetlist = EnhancedSetlist(
             showDate: date,
             setlistItems: setlistItems,
             trackDurations: trackDurations,
             venueRun: venueRun,
             tourPosition: tourPosition,
-            recordings: recordings
+            recordings: recordings,
+            songGaps: songGaps
         )
+        
+        // Cache the enhanced setlist for 30 minutes
+        CacheManager.shared.set(enhancedSetlist, forKey: cacheKey, ttl: CacheManager.TTL.enhancedSetlist)
+        
+        return enhancedSetlist
     }
     
     /// Fetch tours for a specific year from Phish.in
@@ -155,6 +188,31 @@ class APIManager: ObservableObject {
             return []
         }
         return try await phishInClient.fetchTourTrackDurations(tourName: tourName)
+    }
+    
+    /// Fetch all shows for a specific tour using existing Phish.in infrastructure
+    func fetchTourShows(tourName: String) async throws -> [Show] {
+        guard let phishInClient = phishInClient as? PhishInAPIClient else {
+            throw APIError.noData
+        }
+        
+        // Use existing getCachedTourShows from PhishIn (it's private, so we need to use the public method)
+        // We can get tour shows through the existing fetchTourTrackDurations infrastructure
+        let tourTracks = try await phishInClient.fetchTourTrackDurations(tourName: tourName)
+        
+        // Extract unique show dates from tour tracks
+        let uniqueShowDates = Set(tourTracks.map { $0.showDate })
+        
+        // Convert to Show objects
+        let shows = uniqueShowDates.map { showDate in
+            Show(
+                showyear: String(showDate.prefix(4)),
+                showdate: showDate,
+                artist_name: "Phish"
+            )
+        }
+        
+        return shows.sorted { $0.showdate < $1.showdate }
     }
     
     /// Get the native tour name from Phish.in for a specific show date

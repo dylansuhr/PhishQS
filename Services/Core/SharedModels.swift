@@ -132,6 +132,12 @@ struct SongGapInfo: Codable, Identifiable {
     let tourVenueRun: VenueRun? // Venue run info for current tour performance (if applicable)
     let tourDate: String?    // Date when played in current tour (if applicable)
     
+    // Historical information (last played before current tour)
+    let historicalVenue: String?     // Venue where song was actually last played before current tour
+    let historicalCity: String?      // City where song was last played before current tour  
+    let historicalState: String?     // State where song was last played before current tour
+    let historicalLastPlayed: String? // Actual date when song was last played before current tour
+    
     /// Formatted gap display text
     var gapDisplayText: String {
         if gap == 0 {
@@ -167,8 +173,31 @@ struct SongGapInfo: Codable, Identifiable {
         return DateUtilities.formatDateForDisplay(tourDate)
     }
     
+    /// Formatted historical last played date (actual last played before current tour)
+    var historicalLastPlayedFormatted: String? {
+        guard let historicalLastPlayed = historicalLastPlayed else {
+            // Fallback to original lastPlayed if historical data not available
+            return DateUtilities.formatDateForDisplay(lastPlayed)
+        }
+        return DateUtilities.formatDateForDisplay(historicalLastPlayed)
+    }
+    
+    /// Historical venue display text with city/state
+    var historicalVenueDisplayText: String? {
+        guard let venue = historicalVenue else { return nil }
+        
+        var displayText = venue
+        if let city = historicalCity {
+            displayText += ", \(city)"
+            if let state = historicalState {
+                displayText += ", \(state)"
+            }
+        }
+        return displayText
+    }
+    
     /// Initialize with songId as id
-    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil) {
+    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil, historicalVenue: String? = nil, historicalCity: String? = nil, historicalState: String? = nil, historicalLastPlayed: String? = nil) {
         self.id = songId
         self.songId = songId
         self.songName = songName
@@ -178,7 +207,35 @@ struct SongGapInfo: Codable, Identifiable {
         self.tourVenue = tourVenue
         self.tourVenueRun = tourVenueRun
         self.tourDate = tourDate
+        self.historicalVenue = historicalVenue
+        self.historicalCity = historicalCity
+        self.historicalState = historicalState
+        self.historicalLastPlayed = historicalLastPlayed
     }
+}
+
+/// Song performance from Phish.net setlists API
+struct SongPerformance: Codable {
+    let showid: Int
+    let showdate: String
+    let showyear: String
+    let venue: String
+    let city: String
+    let state: String?
+    let country: String
+    let permalink: String
+    
+    // Gap information
+    let gap: Int                        // Number of shows since last performance
+    let songid: Int                     // Song ID for reliable matching
+    let song: String                    // Song name
+    let slug: String                    // URL-friendly song name
+    
+    // Additional performance details
+    let set: String?                    // Set number where song was played
+    let position: Int?                  // Position within the set
+    let trans_mark: String?            // Transition mark (>, ->, etc.)
+    let footnote: String?              // Any special notes about this performance
 }
 
 /// Combined tour statistics for display
@@ -203,6 +260,7 @@ struct EnhancedSetlist: Codable {
     let venueRun: VenueRun?
     let tourPosition: TourShowPosition?
     let recordings: [Recording]
+    let songGaps: [SongGapInfo]          // Gap information for each song in setlist
     
     /// Get duration for a specific song by position in setlist (preferred method)
     /// Uses position-based matching with name validation for accuracy with duplicate song names
@@ -287,6 +345,19 @@ struct EnhancedSetlist: Codable {
         }
         
         return dp[m][n]
+    }
+    
+    /// Get gap information for a specific song by name
+    func getGap(for songName: String) -> SongGapInfo? {
+        return songGaps.first { gap in
+            gap.songName.lowercased() == songName.lowercased()
+        }
+    }
+    
+    /// Get the top N rarest songs (highest gaps) from this setlist
+    func getRarestSongs(limit: Int = 3) -> [SongGapInfo] {
+        let sortedByGap = songGaps.sorted { $0.gap > $1.gap }
+        return Array(sortedByGap.prefix(limit))
     }
     
     /// Get formatted venue run display text

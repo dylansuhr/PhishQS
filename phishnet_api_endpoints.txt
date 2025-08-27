@@ -112,9 +112,16 @@ Endpoints:
 - /v5/setlists/slug/[url-friendly-song-name].json // Setlists by song slug (recommended)
 - /v5/setlists/[column]/[value].json            // Query by field
 
+⭐ IMPORTANT GAP DATA DISCOVERY:
+The /v5/setlists/slug/[song-name].json endpoint includes GAP DATA for each performance!
+Each song performance record includes:
+- gap: Shows since last performance (e.g. 353)
+- This provides historical gap information at the time of each performance
+- No manual calculation needed - Phish.net calculates it for you!
+
 Data Structure (Fields Returned):
 - showid: Unique identifier for the show
-- showdate: Date of the show
+- showdate: Date of the show (e.g. "1990-03-28")
 - permalink: URL-friendly link to the show
 - showyear: Year of the show
 - uniqueid: Unique identifier for setlist entry
@@ -127,10 +134,18 @@ Data Structure (Fields Returned):
 - position: Position of song in set
 - transition: Transition information between songs
 - footnote: Additional notes
+- venue: Venue name (e.g. "Beta Theta Pi Frat House Party")
+- gap: Shows since last performance (HISTORICAL gap data!)
+
+PERFECT SOLUTION FOR SHOW-SPECIFIC GAP DATA:
+1. For each song in a setlist, call /v5/setlists/slug/[song-name].json
+2. Find the performance matching your target show date
+3. Extract the gap value directly - accurate historical gap information!
 
 Examples:
 - https://api.phish.net/v5/setlists/song/YEM.json?apikey=YOUR_API_KEY
 - https://api.phish.net/v5/setlists/slug/you-enjoy-myself.json?apikey=YOUR_API_KEY
+- https://api.phish.net/v5/setlists/slug/tweezer.json?apikey=YOUR_API_KEY  // All 464+ Tweezer performances with gap data!
 
 6. SHOWS
 --------

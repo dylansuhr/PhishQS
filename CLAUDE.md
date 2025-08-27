@@ -281,6 +281,13 @@ Modular architecture to integrate multiple Phish data sources while maintaining 
 - **Graceful Fallback**: Clean UI behavior when tour data is unavailable
 - **Consistent Styling**: Tour info uses appropriate typography hierarchy and secondary colors
 
+### **Important Architecture Note ⚠️**
+**Tour vs Show Data Distinction**: 
+- **Above the latest setlist**: Show-specific information (date, venue, setlist)
+- **Below the latest setlist**: Tour-wide information (statistics, top 3 longest/rarest songs across entire tour)
+- Tour statistics should show the **cumulative best across all shows in the tour** (e.g., Summer Tour 2025 had 23 shows)
+- Avoid duplicating existing tour tracking infrastructure - we already display "Summer Tour 2025 23/23"
+
 ### **Ready for Next Session:**
 1. **Color Scale Implementation**: Implement color coding for song lengths in SetlistView (green=short, red=long)
 2. **Recording Links**: Add links to available recordings where applicable  

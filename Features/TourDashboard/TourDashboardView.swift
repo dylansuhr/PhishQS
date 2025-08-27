@@ -21,6 +21,13 @@ struct TourDashboardView: View {
                     )
                     TourStatisticsCards(statistics: statistics)
                 }
+            } else if latestSetlistViewModel.isTourStatisticsLoading && latestSetlistViewModel.latestShow != nil {
+                // Show loading state for tour statistics while main content is already loaded
+                DashboardSection {
+                    TourStatisticsLoadingView(
+                        tourPosition: latestSetlistViewModel.tourPositionInfo
+                    )
+                }
             }
             
             // Search Action Card
@@ -132,6 +139,57 @@ struct SearchActionCard: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
         }
+    }
+}
+
+/// Loading view for tour statistics
+struct TourStatisticsLoadingView: View {
+    let tourPosition: TourShowPosition?
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Tour Statistics")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+            }
+            
+            if let tourPosition = tourPosition {
+                HStack {
+                    Text(tourPosition.tourName)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                    
+                    Spacer()
+                    
+                    Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.blue)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 2)
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(4)
+                }
+            }
+            
+            // Loading indicator
+            HStack {
+                ProgressView()
+                    .scaleEffect(0.8)
+                Text("Loading tour statistics...")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.top, 8)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
     }
 }
 

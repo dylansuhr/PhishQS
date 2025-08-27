@@ -356,46 +356,65 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     
     /// Fetch all track durations for an entire tour
     func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration] {
+        // Check cache first
+        let cacheKey = CacheManager.CacheKeys.tourTrackDurations(tourName)
+        if let cachedTracks = CacheManager.shared.get([TrackDuration].self, forKey: cacheKey) {
+            return cachedTracks
+        }
+        
         // Get basic show list for the tour (dates only)
         let tourShowList = try await getCachedTourShows(tourName: tourName)
         
         var allTourTracks: [TrackDuration] = []
         
-        // Fetch detailed show data for each show in the tour individually
-        // This is necessary because the bulk shows endpoint doesn't include track data
-        for showBasic in tourShowList {
-            do {
-                // Fetch complete show data including tracks
-                let detailedShow = try await fetchShowByDate(showBasic.date)
-                
-                guard let tracks = detailedShow.tracks else { 
-                    continue 
+        // Use TaskGroup for parallel processing instead of sequential
+        allTourTracks = await withTaskGroup(of: [TrackDuration].self, returning: [TrackDuration].self) { group in
+            // Add tasks for each show
+            for showBasic in tourShowList {
+                group.addTask {
+                    do {
+                        // Fetch complete show data including tracks
+                        let detailedShow = try await self.fetchShowByDate(showBasic.date)
+                        
+                        guard let tracks = detailedShow.tracks else { 
+                            return []
+                        }
+                        
+                        // Get venue information from the show
+                        let venueName = detailedShow.venue?.name
+                        
+                        // Fetch venue run information for this show (if needed)
+                        var venueRun: VenueRun? = nil
+                        do {
+                            venueRun = try await self.fetchVenueRuns(for: showBasic.date)
+                        } catch {
+                            // Continue without venue run info if fetch fails
+                        }
+                        
+                        return tracks.compactMap { track in
+                            track.toTrackDuration(
+                                showDate: showBasic.date,
+                                venue: venueName,
+                                venueRun: venueRun
+                            )
+                        }
+                        
+                    } catch {
+                        return []
+                    }
                 }
-                
-                // Get venue information from the show
-                let venueName = detailedShow.venue?.name
-                
-                // Fetch venue run information for this show
-                var venueRun: VenueRun? = nil
-                do {
-                    venueRun = try await fetchVenueRuns(for: showBasic.date)
-                } catch {
-                    // Continue without venue run info if fetch fails
-                }
-                
-                let showTracks = tracks.compactMap { track in
-                    track.toTrackDuration(
-                        showDate: showBasic.date,
-                        venue: venueName,
-                        venueRun: venueRun
-                    )
-                }
-                allTourTracks.append(contentsOf: showTracks)
-                
-            } catch {
-                continue
             }
+            
+            // Collect all results
+            var results: [TrackDuration] = []
+            for await showTracks in group {
+                results.append(contentsOf: showTracks)
+            }
+            return results
         }
+        
+        // Cache the result for 2 hours
+        CacheManager.shared.set(allTourTracks, forKey: cacheKey, ttl: CacheManager.TTL.tourTrackDurations)
         
         return allTourTracks
     }

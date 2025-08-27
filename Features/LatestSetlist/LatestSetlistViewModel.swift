@@ -7,6 +7,7 @@ class LatestSetlistViewModel: BaseViewModel {
     @Published var setlistItems: [SetlistItem] = []
     @Published var enhancedSetlist: EnhancedSetlist?
     @Published var tourStatistics: TourSongStatistics?
+    @Published var isTourStatisticsLoading: Bool = false
     
     // Navigation state
     @Published var currentShowIndex: Int = 0
@@ -42,21 +43,26 @@ class LatestSetlistViewModel: BaseViewModel {
                 enhancedSetlist = enhanced
                 setlistItems = enhanced.setlistItems
                 
-                // Fetch tour statistics in background
-                await fetchTourStatistics()
-                
                 // Cache shows for navigation
                 await loadShowsForYear(show.showyear)
                 updateNavigationState()
+                
+                // Set loading false first to show main content
+                setLoading(false)
+                
+                // Fetch tour statistics in background (non-blocking)
+                Task {
+                    await fetchTourStatistics()
+                }
             } else {
                 errorMessage = "Still waiting..."
+                setLoading(false)
             }
         } catch {
             handleError(error)
+            setLoading(false)
             return
         }
-        
-        setLoading(false)
     }
     
     // Non-async wrapper for SwiftUI compatibility
@@ -174,11 +180,13 @@ class LatestSetlistViewModel: BaseViewModel {
             enhancedSetlist = enhanced
             setlistItems = enhanced.setlistItems
             
-            // Update tour statistics for new show
-            await fetchTourStatistics()
-            
             currentShowIndex = index
             updateNavigationState()
+            
+            // Update tour statistics for new show in background (non-blocking)
+            Task {
+                await fetchTourStatistics()
+            }
         } catch {
             handleError(error)
         }
@@ -277,12 +285,52 @@ class LatestSetlistViewModel: BaseViewModel {
         // Only fetch if we have enhanced setlist data
         guard let enhanced = enhancedSetlist else { return }
         
+        // Set loading state for tour statistics
+        isTourStatisticsLoading = true
+        
         do {
-            // Fetch gap data from Phish.net API
-            let allSongGaps = try await apiClient.fetchAllSongsWithGaps()
+            print("🎯 Calculating tour-progressive rarest songs...")
+            
+            // Get all shows from the current tour to calculate progressive rarest songs
+            var tourShows: [EnhancedSetlist] = [enhanced] // Start with current show
+            
+            if let tourName = enhanced.tourPosition?.tourName {
+                do {
+                    print("📊 Fetching tour shows for \(tourName)...")
+                    
+                    // Use existing tour infrastructure to get all shows for this tour
+                    let allTourShows = try await apiManager.fetchTourShows(tourName: tourName)
+                    
+                    // Convert to enhanced setlists (only for shows up to current date)
+                    let currentDate = enhanced.showDate
+                    let showsUpToCurrent = allTourShows.filter { $0.showdate <= currentDate }
+                    
+                    print("📊 Processing \(showsUpToCurrent.count) shows from \(tourName)")
+                    
+                    var enhancedTourShows: [EnhancedSetlist] = []
+                    for show in showsUpToCurrent {
+                        do {
+                            let enhancedShow = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
+                            enhancedTourShows.append(enhancedShow)
+                        } catch {
+                            print("Warning: Could not fetch enhanced setlist for \(show.showdate): \(error)")
+                        }
+                    }
+                    
+                    tourShows = enhancedTourShows.sorted { $0.showDate < $1.showDate }
+                    print("✅ Successfully loaded \(tourShows.count) enhanced setlists from \(tourName)")
+                    
+                } catch {
+                    print("Warning: Could not fetch tour shows for \(tourName): \(error)")
+                    print("🔄 Falling back to single-show gap calculation")
+                    // Keep tourShows as [enhanced] for single-show fallback
+                }
+            }
             
             // Fetch tour-wide track durations if we have tour information
             var tourTrackDurations: [TrackDuration]? = nil
+            var longestSongs: [TrackDuration] = []
+            
             if let tourName = enhanced.tourPosition?.tourName,
                let showDate = enhanced.setlistItems.first?.showdate {
                 do {
@@ -293,18 +341,51 @@ class LatestSetlistViewModel: BaseViewModel {
                     let tourNameToUse = nativeTourName ?? tourName
                     
                     tourTrackDurations = try await apiManager.fetchTourTrackDurations(tourName: tourNameToUse)
+                    
+                    // Calculate longest songs from tour data if available
+                    if let tourDurations = tourTrackDurations, !tourDurations.isEmpty {
+                        longestSongs = Array(tourDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                    } else {
+                        longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                    }
                 } catch {
                     print("Warning: Could not fetch tour track durations for \(tourName): \(error)")
+                    longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
                 }
+            } else {
+                longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
             }
             
-            // Calculate tour statistics using the service
-            let tourName = enhanced.tourPosition?.tourName
-            let statistics = TourStatisticsService.calculateTourStatistics(
-                enhancedSetlist: enhanced,
-                tourTrackDurations: tourTrackDurations,
-                allSongGaps: allSongGaps,
-                tourName: tourName
+            // Calculate tour-progressive rarest songs with caching
+            var rarestSongs: [SongGapInfo] = []
+            
+            if let tourName = enhanced.tourPosition?.tourName {
+                let cacheKey = CacheManager.CacheKeys.tourStatistics(tourName, showDate: enhanced.showDate)
+                
+                // Check cache first
+                if let cachedRarest = CacheManager.shared.get([SongGapInfo].self, forKey: cacheKey) {
+                    print("📦 Using cached tour statistics for \(tourName)")
+                    rarestSongs = cachedRarest
+                } else {
+                    print("🔄 Calculating fresh tour statistics for \(tourName)")
+                    rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
+                        tourShows: tourShows,
+                        tourName: tourName
+                    )
+                    
+                    // Cache for 1 hour (tour stats don't change often)
+                    CacheManager.shared.set(rarestSongs, forKey: cacheKey, ttl: 60 * 60)
+                }
+            } else {
+                // Fallback for shows without tour info
+                rarestSongs = enhanced.getRarestSongs(limit: 3)
+            }
+            
+            // Create tour statistics with real gap data
+            let statistics = TourSongStatistics(
+                longestSongs: longestSongs,
+                rarestSongs: rarestSongs,
+                tourName: enhanced.tourPosition?.tourName
             )
             
             // Update published property on main actor
@@ -314,6 +395,102 @@ class LatestSetlistViewModel: BaseViewModel {
             // Log error but don't block main functionality
             print("Failed to fetch tour statistics: \(error)")
             tourStatistics = nil
+        }
+        
+        // Clear loading state
+        isTourStatisticsLoading = false
+    }
+    
+    // MARK: - Gap Chart API Testing (Temporary)
+    
+    /// Test potential gap chart API endpoints - temporary method for research
+    @MainActor
+    func testGapChartAPI() async {
+        guard let show = latestShow else {
+            print("❌ No show available for testing")
+            return
+        }
+        
+        await testGapChartEndpoints(for: show.showdate)
+    }
+    
+    /// Test potential gap chart API endpoints to see if any exist
+    private func testGapChartEndpoints(for showDate: String) async {
+        let baseURL = "https://api.phish.net/v5"
+        let apiKey = Secrets.value(for: "PhishNetAPIKey")
+        
+        let potentialEndpoints = [
+            "/setlists/gap-chart/\(showDate).json",
+            "/shows/\(showDate)/gaps.json",
+            "/setlists/\(showDate)/gaps.json",
+            "/gap-chart/\(showDate).json",
+            "/setlists/get/\(showDate).json?include_gaps=true",
+            "/setlists/show/\(showDate).json?gaps=true"
+        ]
+        
+        print("🔍 Testing Gap Chart API Endpoints for \(showDate)")
+        print("==================================================")
+        
+        for endpoint in potentialEndpoints {
+            await testEndpoint(baseURL + endpoint + "?apikey=\(apiKey)")
+        }
+        
+        print("==================================================")
+        print("✅ Gap Chart API endpoint testing complete")
+    }
+    
+    /// Test a specific endpoint and report results
+    private func testEndpoint(_ urlString: String) async {
+        let endpointPath = urlString.components(separatedBy: "api.phish.net/v5").last?.components(separatedBy: "?").first ?? "unknown"
+        
+        guard let url = URL(string: urlString) else {
+            print("❌ Invalid URL: \(endpointPath)")
+            return
+        }
+        
+        do {
+            let request = URLRequest(url: url)
+            let (data, response) = try await URLSession.shared.data(for: request)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                print("❌ \(endpointPath) - Invalid response")
+                return
+            }
+            
+            switch httpResponse.statusCode {
+            case 200:
+                print("✅ \(endpointPath) - SUCCESS! (Response size: \(data.count) bytes)")
+                
+                // Try to parse as JSON to see structure
+                if let jsonObject = try? JSONSerialization.jsonObject(with: data) {
+                    if let dict = jsonObject as? [String: Any] {
+                        print("   📋 Response keys: \(Array(dict.keys).joined(separator: ", "))")
+                        
+                        // Look for gap-related fields
+                        let gapKeys = dict.keys.filter { key in
+                            key.lowercased().contains("gap") || 
+                            key.lowercased().contains("last") ||
+                            key.lowercased().contains("previous")
+                        }
+                        
+                        if !gapKeys.isEmpty {
+                            print("   🎯 Gap-related keys found: \(gapKeys.joined(separator: ", "))")
+                        }
+                    }
+                }
+                
+            case 403:
+                print("🚫 \(endpointPath) - 403 Forbidden (may need different permissions)")
+                
+            case 404:
+                print("📭 \(endpointPath) - 404 Not Found (endpoint doesn't exist)")
+                
+            default:
+                print("⚠️  \(endpointPath) - HTTP \(httpResponse.statusCode)")
+            }
+            
+        } catch {
+            print("💥 \(endpointPath) - Error: \(error.localizedDescription)")
         }
     }
     
