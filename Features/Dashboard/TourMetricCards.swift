@@ -57,6 +57,13 @@ struct LongestSongRow: View {
                 Text(DateUtilities.formatDateForDisplay(song.showDate))
                     .font(.caption2)
                     .foregroundColor(.secondary)
+                
+                // Show venue and night information if available
+                if let venueText = song.venueDisplayText {
+                    Text(venueText)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
             }
             .layoutPriority(1)
             
@@ -118,9 +125,19 @@ struct RarestSongRow: View {
                     .foregroundColor(.primary)
                     .fixedSize(horizontal: false, vertical: true)
                 
-                Text(song.lastPlayedFormatted)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                // Show current tour date if available
+                if let tourDate = song.tourDateFormatted {
+                    Text(tourDate)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                
+                // Show tour venue and night information if available
+                if let tourVenueText = song.tourVenueDisplayText {
+                    Text(tourVenueText)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
             }
             .layoutPriority(1)
             
@@ -138,7 +155,7 @@ struct RarestSongRow: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.orange)
                     
-                    Text("shows ago")
+                    Text(song.lastPlayedFormatted)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -223,17 +240,19 @@ struct TourOverviewCard: View {
 #Preview {
     VStack(spacing: 16) {
         // Sample longest songs
+        let sampleVenueRun = VenueRun(venue: "Madison Square Garden", city: "New York", state: "NY", nightNumber: 3, totalNights: 4, showDates: ["2025-07-25", "2025-07-26", "2025-07-27", "2025-07-28"])
+        
         let sampleLongestSongs = [
-            TrackDuration(id: "1", songName: "Tweezer", songId: 627, durationSeconds: 1383, showDate: "2025-07-27", setNumber: "2"),
-            TrackDuration(id: "2", songName: "You Enjoy Myself", songId: 692, durationSeconds: 1037, showDate: "2025-07-26", setNumber: "1"),
-            TrackDuration(id: "3", songName: "Ghost", songId: 294, durationSeconds: 947, showDate: "2025-07-25", setNumber: "2")
+            TrackDuration(id: "1", songName: "Tweezer", songId: 627, durationSeconds: 1383, showDate: "2025-07-27", setNumber: "2", venue: "Madison Square Garden", venueRun: sampleVenueRun),
+            TrackDuration(id: "2", songName: "You Enjoy Myself", songId: 692, durationSeconds: 1037, showDate: "2025-07-26", setNumber: "1", venue: "Broadview Stage at SPAC", venueRun: nil),
+            TrackDuration(id: "3", songName: "Ghost", songId: 294, durationSeconds: 947, showDate: "2025-07-25", setNumber: "2", venue: "Alpine Valley Music Theatre", venueRun: nil)
         ]
         
-        // Sample rarest songs
+        // Sample rarest songs with tour venue information
         let sampleRarestSongs = [
-            SongGapInfo(songId: 251, songName: "Fluffhead", gap: 47, lastPlayed: "2023-08-15", timesPlayed: 87),
-            SongGapInfo(songId: 342, songName: "Icculus", gap: 23, lastPlayed: "2024-02-18", timesPlayed: 45),
-            SongGapInfo(songId: 398, songName: "McGrupp", gap: 15, lastPlayed: "2024-07-12", timesPlayed: 62)
+            SongGapInfo(songId: 251, songName: "Fluffhead", gap: 47, lastPlayed: "2023-08-15", timesPlayed: 87, tourVenue: "Madison Square Garden", tourVenueRun: sampleVenueRun, tourDate: "2025-07-27"),
+            SongGapInfo(songId: 342, songName: "Icculus", gap: 23, lastPlayed: "2024-02-18", timesPlayed: 45, tourVenue: "Broadview Stage at SPAC", tourVenueRun: nil, tourDate: "2025-07-26"),
+            SongGapInfo(songId: 398, songName: "McGrupp", gap: 15, lastPlayed: "2024-07-12", timesPlayed: 62, tourVenue: "Alpine Valley Music Theatre", tourVenueRun: nil, tourDate: "2025-07-25")
         ]
         
         TourStatisticsCards(

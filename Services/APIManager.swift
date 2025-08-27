@@ -156,6 +156,21 @@ class APIManager: ObservableObject {
         }
         return try await phishInClient.fetchTourTrackDurations(tourName: tourName)
     }
+    
+    /// Get the native tour name from Phish.in for a specific show date
+    func getNativeTourName(for showDate: String) async throws -> String? {
+        guard let phishInClient = phishInClient as? PhishInAPIClient else {
+            return nil
+        }
+        
+        do {
+            let phishInShow = try await phishInClient.fetchShowByDate(showDate)
+            return phishInShow.tour_name
+        } catch {
+            print("Could not fetch native tour name for \(showDate): \(error)")
+            return nil
+        }
+    }
 }
 
 // MARK: - Convenience Extensions

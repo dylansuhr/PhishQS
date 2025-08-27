@@ -99,7 +99,7 @@ struct PhishInTrack: Codable, Identifiable {
     let jam_starts: [JamStart]?
     
     /// Convert duration to TrackDuration model
-    func toTrackDuration(showDate: String) -> TrackDuration? {
+    func toTrackDuration(showDate: String, venue: String? = nil, venueRun: VenueRun? = nil) -> TrackDuration? {
         guard let duration = duration else { return nil }
         
         return TrackDuration(
@@ -108,7 +108,9 @@ struct PhishInTrack: Codable, Identifiable {
             songId: nil, // Phish.in doesn't provide songid mapping yet
             durationSeconds: duration / 1000, // Convert milliseconds to seconds
             showDate: showDate,
-            setNumber: set_name ?? "1"
+            setNumber: set_name ?? "1",
+            venue: venue,
+            venueRun: venueRun
         )
     }
 }

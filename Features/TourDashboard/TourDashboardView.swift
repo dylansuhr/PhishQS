@@ -14,7 +14,11 @@ struct TourDashboardView: View {
             
             // Tour Statistics Cards
             if let statistics = latestSetlistViewModel.tourStatistics, statistics.hasData {
-                DashboardSection("Tour Statistics") {
+                DashboardSection {
+                    TourStatisticsHeaderView(
+                        tourName: statistics.tourName,
+                        tourPosition: latestSetlistViewModel.tourPositionInfo
+                    )
                     TourStatisticsCards(statistics: statistics)
                 }
             }
@@ -38,6 +42,50 @@ struct TourDashboardView: View {
                 YearListView()
             }
         }
+    }
+}
+
+/// Header view for tour statistics section showing tour name and progress
+struct TourStatisticsHeaderView: View {
+    let tourName: String?
+    let tourPosition: TourShowPosition?
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text("Tour Statistics")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+            }
+            
+            if let tourName = tourName {
+                HStack {
+                    Text(tourName)
+                        .font(.subheadline)
+                        .fontWeight(.medium)
+                        .foregroundColor(.secondary)
+                    
+                    if let tourPosition = tourPosition {
+                        Spacer()
+                        
+                        Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundColor(.blue)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 2)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(4)
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 8)
+        .padding(.bottom, 4)
     }
 }
 

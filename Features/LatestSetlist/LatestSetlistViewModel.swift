@@ -283,21 +283,19 @@ class LatestSetlistViewModel: BaseViewModel {
             
             // Fetch tour-wide track durations if we have tour information
             var tourTrackDurations: [TrackDuration]? = nil
-            if let tourName = enhanced.tourPosition?.tourName {
+            if let tourName = enhanced.tourPosition?.tourName,
+               let showDate = enhanced.setlistItems.first?.showdate {
                 do {
-                    print("Attempting to fetch tour data for: '\(tourName)'")
+                    // Get the actual tour name from Phish.in for this show
+                    let nativeTourName = try await apiManager.getNativeTourName(for: showDate)
                     
-                    // First, let's see what tours are actually available in 2025
-                    let availableTours = try await apiManager.fetchTours(forYear: "2025")
-                    print("Available 2025 tours: \(availableTours.map { $0.name })")
+                    // Use the native tour name if available, otherwise fall back to tour position name
+                    let tourNameToUse = nativeTourName ?? tourName
                     
-                    tourTrackDurations = try await apiManager.fetchTourTrackDurations(tourName: tourName)
-                    print("Fetched \(tourTrackDurations?.count ?? 0) track durations for tour: \(tourName)")
+                    tourTrackDurations = try await apiManager.fetchTourTrackDurations(tourName: tourNameToUse)
                 } catch {
                     print("Warning: Could not fetch tour track durations for \(tourName): \(error)")
                 }
-            } else {
-                print("No tour name available from enhanced setlist")
             }
             
             // Calculate tour statistics using the service

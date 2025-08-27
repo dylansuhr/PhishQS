@@ -20,11 +20,11 @@ class MockPhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     
     // Mock data
     private let mockTrackDurations: [TrackDuration] = [
-        TrackDuration(id: "1", songName: "Sample in a Jar", durationSeconds: 342, showDate: "2025-01-28", setNumber: "1"),
-        TrackDuration(id: "2", songName: "Divided Sky", durationSeconds: 856, showDate: "2025-01-28", setNumber: "1"),
-        TrackDuration(id: "3", songName: "Free", durationSeconds: 523, showDate: "2025-01-28", setNumber: "1"),
-        TrackDuration(id: "4", songName: "Tweezer", durationSeconds: 1247, showDate: "2025-01-28", setNumber: "2"),
-        TrackDuration(id: "5", songName: "Harry Hood", durationSeconds: 891, showDate: "2025-01-28", setNumber: "2")
+        TrackDuration(id: "1", songName: "Sample in a Jar", songId: 580, durationSeconds: 342, showDate: "2025-01-28", setNumber: "1", venue: "Madison Square Garden", venueRun: nil),
+        TrackDuration(id: "2", songName: "Divided Sky", songId: 251, durationSeconds: 856, showDate: "2025-01-28", setNumber: "1", venue: "Madison Square Garden", venueRun: nil),
+        TrackDuration(id: "3", songName: "Free", songId: 285, durationSeconds: 523, showDate: "2025-01-28", setNumber: "1", venue: "Madison Square Garden", venueRun: nil),
+        TrackDuration(id: "4", songName: "Tweezer", songId: 627, durationSeconds: 1247, showDate: "2025-01-28", setNumber: "2", venue: "Madison Square Garden", venueRun: nil),
+        TrackDuration(id: "5", songName: "Harry Hood", songId: 301, durationSeconds: 891, showDate: "2025-01-28", setNumber: "2", venue: "Madison Square Garden", venueRun: nil)
     ]
     
     private let mockRecordings: [Recording] = [

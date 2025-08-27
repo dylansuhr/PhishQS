@@ -130,7 +130,9 @@ struct RarestSongRowView: View {
             songId: 627,
             durationSeconds: 1425, // 23:45
             showDate: "2025-07-27",
-            setNumber: "2"
+            setNumber: "2",
+            venue: "Broadview Stage at SPAC",
+            venueRun: nil
         ),
         TrackDuration(
             id: "2",
@@ -138,7 +140,9 @@ struct RarestSongRowView: View {
             songId: 692,
             durationSeconds: 1112, // 18:32
             showDate: "2025-07-26",
-            setNumber: "1"
+            setNumber: "1",
+            venue: "Madison Square Garden",
+            venueRun: VenueRun(venue: "Madison Square Garden", city: "New York", state: "NY", nightNumber: 2, totalNights: 4, showDates: ["2025-07-24", "2025-07-25", "2025-07-26", "2025-07-27"])
         ),
         TrackDuration(
             id: "3",
@@ -146,7 +150,9 @@ struct RarestSongRowView: View {
             songId: 294,
             durationSeconds: 947, // 15:47
             showDate: "2025-07-25",
-            setNumber: "2"
+            setNumber: "2",
+            venue: "Alpine Valley Music Theatre",
+            venueRun: nil
         )
     ]
     
@@ -156,21 +162,30 @@ struct RarestSongRowView: View {
             songName: "Fluffhead",
             gap: 47,
             lastPlayed: "2023-08-15",
-            timesPlayed: 87
+            timesPlayed: 87,
+            tourVenue: "Madison Square Garden",
+            tourVenueRun: VenueRun(venue: "Madison Square Garden", city: "New York", state: "NY", nightNumber: 2, totalNights: 4, showDates: ["2025-07-24", "2025-07-25", "2025-07-26", "2025-07-27"]),
+            tourDate: "2025-07-27"
         ),
         SongGapInfo(
             songId: 342,
             songName: "Icculus",
             gap: 23,
             lastPlayed: "2024-02-18",
-            timesPlayed: 45
+            timesPlayed: 45,
+            tourVenue: "Broadview Stage at SPAC",
+            tourVenueRun: nil,
+            tourDate: "2025-07-26"
         ),
         SongGapInfo(
             songId: 398,
             songName: "McGrupp",
             gap: 15,
             lastPlayed: "2024-07-12",
-            timesPlayed: 62
+            timesPlayed: 62,
+            tourVenue: "Alpine Valley Music Theatre",
+            tourVenueRun: nil,
+            tourDate: "2025-07-25"
         )
     ]
     

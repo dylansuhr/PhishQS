@@ -72,10 +72,6 @@ struct LatestSetlistView: View {
                                     .foregroundColor(.secondary)
                             }
                             
-                            // Show tour position info with blue highlighting for show numbers
-                            if let tourPosition = viewModel.tourPositionInfo {
-                                createStyledTourText(tourPosition.tourName, showNumbers: "\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                            }
                         }
                     }
                 }
@@ -193,24 +189,6 @@ struct LatestSetlistView: View {
         return result
     }
     
-    /// Create styled tour text with blue highlighted show numbers
-    @ViewBuilder
-    private func createStyledTourText(_ tourName: String, showNumbers: String) -> some View {
-        HStack(spacing: 2) {
-            Text(tourName)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            Text(showNumbers)
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundColor(.blue)
-                .padding(.horizontal, 6)
-                .padding(.vertical, 1)
-                .background(Color.blue.opacity(0.1))
-                .cornerRadius(3)
-        }
-    }
     
     /// Format set names properly (1→"Set 1", 2→"Set 2", E→"Encore", etc.)
     private func formatSetName(_ setIdentifier: String) -> String {

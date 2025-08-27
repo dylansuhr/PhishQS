@@ -89,8 +89,23 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
             return []
         }
         
+        // Get venue information from the show
+        let venueName = show.venue?.name
+        
+        // Fetch venue run information for this show
+        var venueRun: VenueRun? = nil
+        do {
+            venueRun = try await fetchVenueRuns(for: showDate)
+        } catch {
+            // Continue without venue run info if fetch fails
+        }
+        
         return tracks.compactMap { track in
-            track.toTrackDuration(showDate: showDate)
+            track.toTrackDuration(
+                showDate: showDate,
+                venue: venueName,
+                venueRun: venueRun
+            )
         }
     }
     
@@ -238,6 +253,35 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
             return cached
         }
         
+        // Try exact match first
+        let exactShows = try await fetchShowsForTourName(tourName)
+        if !exactShows.isEmpty {
+            // Cache and return exact matches
+            await withCheckedContinuation { continuation in
+                cacheQueue.async(flags: .barrier) {
+                    self.tourShowsCache[tourName] = exactShows
+                    continuation.resume()
+                }
+            }
+            return exactShows
+        }
+        
+        // If no exact matches, try fuzzy matching
+        let fuzzyMatches = try await tryFuzzyTourMatching(originalTourName: tourName)
+        
+        // Cache the result (even if empty)
+        await withCheckedContinuation { continuation in
+            cacheQueue.async(flags: .barrier) {
+                self.tourShowsCache[tourName] = fuzzyMatches
+                continuation.resume()
+            }
+        }
+        
+        return fuzzyMatches
+    }
+    
+    /// Try to fetch shows for a specific tour name
+    private func fetchShowsForTourName(_ tourName: String) async throws -> [PhishInShow] {
         let tourShowsResponse: PhishInShowsResponse = try await makeRequest(
             endpoint: "shows",
             responseType: PhishInShowsResponse.self,
@@ -247,20 +291,48 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
             ]
         )
         
-        // Filter to EXACT tour name match only and cache the result
-        let exactTourShows = tourShowsResponse.shows
+        return tourShowsResponse.shows
             .filter { $0.tour_name == tourName }
             .sorted(by: { $0.date < $1.date })
+    }
+    
+    /// Try different tour name variations if exact match fails
+    private func tryFuzzyTourMatching(originalTourName: String) async throws -> [PhishInShow] {
+        let variations = generateTourNameVariations(originalTourName)
         
-        // Cache the result (thread-safe)
-        await withCheckedContinuation { continuation in
-            cacheQueue.async(flags: .barrier) {
-                self.tourShowsCache[tourName] = exactTourShows
-                continuation.resume()
+        for variation in variations {
+            let shows = try await fetchShowsForTourName(variation)
+            if !shows.isEmpty {
+                return shows
             }
         }
         
-        return exactTourShows
+        return []
+    }
+    
+    /// Generate different variations of tour names to try
+    private func generateTourNameVariations(_ originalTourName: String) -> [String] {
+        var variations: [String] = []
+        
+        // Common patterns for tour names
+        if originalTourName.contains("Summer Tour") {
+            let year = originalTourName.replacingOccurrences(of: "Summer Tour ", with: "")
+            variations.append("Summer \(year)")
+            variations.append("\(year) Summer Tour")
+            variations.append("Summer '\(year.suffix(2))")
+        } else if originalTourName.contains("Winter Tour") {
+            let year = originalTourName.replacingOccurrences(of: "Winter Tour ", with: "")
+            variations.append("Winter \(year)")
+            variations.append("\(year) Winter Tour")
+            variations.append("Winter '\(year.suffix(2))")
+        } else if originalTourName.contains("Fall Tour") {
+            let year = originalTourName.replacingOccurrences(of: "Fall Tour ", with: "")
+            variations.append("Fall \(year)")
+            variations.append("\(year) Fall Tour")
+            variations.append("Fall '\(year.suffix(2))")
+        }
+        
+        return variations.filter { !$0.isEmpty }
     }
     
     /// Fetch all songs
@@ -284,30 +356,47 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     
     /// Fetch all track durations for an entire tour
     func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration] {
-        print("PhishIn: Searching for tour: '\(tourName)'")
-        
-        // Get all shows in the tour using existing caching
-        let tourShows = try await getCachedTourShows(tourName: tourName)
-        
-        print("PhishIn: Found \(tourShows.count) shows for tour '\(tourName)'")
+        // Get basic show list for the tour (dates only)
+        let tourShowList = try await getCachedTourShows(tourName: tourName)
         
         var allTourTracks: [TrackDuration] = []
         
-        // Collect track durations from all shows in the tour
-        for show in tourShows {
-            guard let tracks = show.tracks else { 
-                print("PhishIn: No tracks found for show \(show.date)")
-                continue 
+        // Fetch detailed show data for each show in the tour individually
+        // This is necessary because the bulk shows endpoint doesn't include track data
+        for showBasic in tourShowList {
+            do {
+                // Fetch complete show data including tracks
+                let detailedShow = try await fetchShowByDate(showBasic.date)
+                
+                guard let tracks = detailedShow.tracks else { 
+                    continue 
+                }
+                
+                // Get venue information from the show
+                let venueName = detailedShow.venue?.name
+                
+                // Fetch venue run information for this show
+                var venueRun: VenueRun? = nil
+                do {
+                    venueRun = try await fetchVenueRuns(for: showBasic.date)
+                } catch {
+                    // Continue without venue run info if fetch fails
+                }
+                
+                let showTracks = tracks.compactMap { track in
+                    track.toTrackDuration(
+                        showDate: showBasic.date,
+                        venue: venueName,
+                        venueRun: venueRun
+                    )
+                }
+                allTourTracks.append(contentsOf: showTracks)
+                
+            } catch {
+                continue
             }
-            
-            let showTracks = tracks.compactMap { track in
-                track.toTrackDuration(showDate: show.date)
-            }
-            allTourTracks.append(contentsOf: showTracks)
-            print("PhishIn: Added \(showTracks.count) tracks from \(show.date)")
         }
         
-        print("PhishIn: Total tour tracks collected: \(allTourTracks.count)")
         return allTourTracks
     }
 }

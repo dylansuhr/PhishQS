@@ -16,11 +16,25 @@ struct TrackDuration: Codable, Identifiable {
     let durationSeconds: Int
     let showDate: String
     let setNumber: String
+    let venue: String?        // venue name for display
+    let venueRun: VenueRun?   // venue run info if multi-night run
     
     var formattedDuration: String {
         let minutes = durationSeconds / 60
         let seconds = durationSeconds % 60
         return String(format: "%d:%02d", minutes, seconds)
+    }
+    
+    var venueDisplayText: String? {
+        guard let venue = venue else { return nil }
+        
+        // If multi-night run, include night indicator
+        if let venueRun = venueRun, venueRun.totalNights > 1 {
+            return "\(venue), N\(venueRun.nightNumber)"
+        }
+        
+        // Single night, just venue name
+        return venue
     }
 }
 
@@ -112,8 +126,11 @@ struct SongGapInfo: Codable, Identifiable {
     let songId: Int           // Phish.net songid
     let songName: String      // Song name
     let gap: Int             // Shows since last performance (0 = most recent)
-    let lastPlayed: String   // Date last performed ("2024-07-12")
+    let lastPlayed: String   // Date last performed BEFORE current tour ("2024-07-12")
     let timesPlayed: Int     // Total times performed
+    let tourVenue: String?   // Venue where played in current tour (if applicable)
+    let tourVenueRun: VenueRun? // Venue run info for current tour performance (if applicable)
+    let tourDate: String?    // Date when played in current tour (if applicable)
     
     /// Formatted gap display text
     var gapDisplayText: String {
@@ -126,29 +143,41 @@ struct SongGapInfo: Codable, Identifiable {
         }
     }
     
-    /// Formatted last played date
+    /// Formatted last played date  
     var lastPlayedFormatted: String {
-        // Use DateFormatter to parse the date string
-        let inputFormatter = DateFormatter()
-        inputFormatter.dateFormat = "yyyy-MM-dd"
+        return DateUtilities.formatDateForDisplay(lastPlayed)
+    }
+    
+    /// Tour venue display text (venue and night info if multi-night run)
+    var tourVenueDisplayText: String? {
+        guard let venue = tourVenue else { return nil }
         
-        guard let date = inputFormatter.date(from: lastPlayed) else {
-            return "Last: \(lastPlayed)"
+        // If multi-night run, include night indicator
+        if let venueRun = tourVenueRun, venueRun.totalNights > 1 {
+            return "\(venue), N\(venueRun.nightNumber)"
         }
         
-        let outputFormatter = DateFormatter()
-        outputFormatter.dateStyle = .medium
-        return "Last: \(outputFormatter.string(from: date))"
+        // Single night, just venue name
+        return venue
+    }
+    
+    /// Formatted tour date for display (when song was played in current tour)
+    var tourDateFormatted: String? {
+        guard let tourDate = tourDate else { return nil }
+        return DateUtilities.formatDateForDisplay(tourDate)
     }
     
     /// Initialize with songId as id
-    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int) {
+    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil) {
         self.id = songId
         self.songId = songId
         self.songName = songName
         self.gap = gap
         self.lastPlayed = lastPlayed
         self.timesPlayed = timesPlayed
+        self.tourVenue = tourVenue
+        self.tourVenueRun = tourVenueRun
+        self.tourDate = tourDate
     }
 }
 

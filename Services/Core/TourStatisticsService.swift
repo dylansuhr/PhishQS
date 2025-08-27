@@ -32,9 +32,19 @@ class TourStatisticsService {
             )
         }
         
-        // Get tour context from setlist items
-        let tourSongIds = extractTourSongIds(from: setlist.setlistItems)
-        let tourSongNames = Set(setlist.setlistItems.map { $0.song.lowercased() })
+        // Get tour context - use tour-wide data if available, otherwise current show
+        let tourSongIds: Set<Int>
+        let tourSongNames: Set<String>
+        
+        if let tourDurations = tourTrackDurations, !tourDurations.isEmpty {
+            // Use tour-wide song context
+            tourSongIds = Set(tourDurations.compactMap { $0.songId })
+            tourSongNames = Set(tourDurations.map { $0.songName.lowercased() })
+        } else {
+            // Fallback to single show context
+            tourSongIds = extractTourSongIds(from: setlist.setlistItems)
+            tourSongNames = Set(setlist.setlistItems.map { $0.song.lowercased() })
+        }
         
         // Calculate longest songs - use tour-wide data if available, otherwise fall back to single show
         let longestSongs: [TrackDuration]
@@ -48,7 +58,8 @@ class TourStatisticsService {
         let rarestSongs = calculateRarestSongs(
             from: allSongGaps,
             tourSongIds: tourSongIds,
-            tourSongNames: tourSongNames
+            tourSongNames: tourSongNames,
+            tourTrackDurations: tourTrackDurations
         )
         
         return TourSongStatistics(
@@ -76,18 +87,56 @@ class TourStatisticsService {
     private static func calculateRarestSongs(
         from allGaps: [SongGapInfo],
         tourSongIds: Set<Int>,
-        tourSongNames: Set<String>
+        tourSongNames: Set<String>,
+        tourTrackDurations: [TrackDuration]?
     ) -> [SongGapInfo] {
         
-        // Filter to songs that appear in the current tour
-        let tourSongs = allGaps.filter { gapInfo in
-            // First try songId matching (most reliable)
+        // Filter to songs that appear in the current tour and add venue information
+        let tourSongs = allGaps.compactMap { gapInfo -> SongGapInfo? in
+            // First check if this song appears in the current tour
+            let appearsInTour: Bool
             if !tourSongIds.isEmpty && tourSongIds.contains(gapInfo.songId) {
-                return true
+                appearsInTour = true
+            } else if tourSongNames.contains(gapInfo.songName.lowercased()) {
+                appearsInTour = true
+            } else {
+                appearsInTour = false
             }
             
-            // Fallback to name matching (case insensitive)
-            return tourSongNames.contains(gapInfo.songName.lowercased())
+            guard appearsInTour else { return nil }
+            
+            // Try to find venue information from tour track durations
+            var tourVenue: String? = nil
+            var tourVenueRun: VenueRun? = nil
+            var tourDate: String? = nil
+            
+            if let tourTracks = tourTrackDurations {
+                // Find matching track by song ID (most reliable) or name
+                let matchingTrack = tourTracks.first { track in
+                    if let trackSongId = track.songId, trackSongId == gapInfo.songId {
+                        return true
+                    }
+                    return track.songName.lowercased() == gapInfo.songName.lowercased()
+                }
+                
+                if let track = matchingTrack {
+                    tourVenue = track.venue
+                    tourVenueRun = track.venueRun
+                    tourDate = track.showDate
+                }
+            }
+            
+            // Create enhanced SongGapInfo with tour venue information
+            return SongGapInfo(
+                songId: gapInfo.songId,
+                songName: gapInfo.songName,
+                gap: gapInfo.gap,
+                lastPlayed: gapInfo.lastPlayed,
+                timesPlayed: gapInfo.timesPlayed,
+                tourVenue: tourVenue,
+                tourVenueRun: tourVenueRun,
+                tourDate: tourDate
+            )
         }
         
         // Return top 3 rarest (highest gap) songs
@@ -139,7 +188,8 @@ class TourStatisticsService {
         let rarestSongs = calculateRarestSongs(
             from: allSongGaps,
             tourSongIds: allTourSongIds,
-            tourSongNames: allTourSongNames
+            tourSongNames: allTourSongNames,
+            tourTrackDurations: allTourDurations
         )
         
         return TourSongStatistics(
