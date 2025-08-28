@@ -303,8 +303,23 @@ class LatestSetlistViewModel: BaseViewModel {
             return
         }
         
+        // Try server-side tour statistics first (Performance optimization)
+        if let serverStats = await ServerSideTourStatsService.shared.fetchCurrentTourStatistics() {
+            print("🚀 Using server-side tour statistics (instant loading)")
+            
+            // Cache the server response for dashboard optimization
+            CacheManager.shared.set(serverStats, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)
+            
+            await MainActor.run {
+                tourStatistics = serverStats
+                isTourStatisticsLoading = false
+            }
+            return
+        }
+        
+        // Fallback to local calculation if server unavailable
         do {
-            print("🎯 Calculating current tour statistics...")
+            print("🎯 Server unavailable - calculating tour statistics locally...")
             
             // Get all shows from the current tour to calculate progressive rarest songs
             var tourShows: [EnhancedSetlist] = [enhanced] // Start with current show
