@@ -125,17 +125,16 @@ struct RarestSongRow: View {
                     .foregroundColor(.primary)
                     .fixedSize(horizontal: false, vertical: true)
                 
-                // Show current show date and venue in one line: "2025-07-27 - Broadview Stage at SPAC"
-                if let tourDate = song.tourDate, let tourVenue = song.tourVenue {
-                    Text("\(DateUtilities.formatDateForDisplay(tourDate)) - \(tourVenue)")
+                // Show tour date on first line (matching LongestSongRow format)
+                if let tourDate = song.tourDateFormatted {
+                    Text(tourDate)
                         .font(.caption2)
                         .foregroundColor(.secondary)
-                } else if let tourDate = song.tourDate {
-                    Text(DateUtilities.formatDateForDisplay(tourDate))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                } else if let tourVenue = song.tourVenue {
-                    Text(tourVenue)
+                }
+                
+                // Show venue with proper N1/N2/N3 logic on second line
+                if let venueText = song.tourVenueDisplayText {
+                    Text(venueText)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -159,14 +158,17 @@ struct RarestSongRow: View {
                 }
                 
                 // Last played date (the date that created this gap)
-                if let historicalDate = song.historicalLastPlayed {
-                    Text(DateUtilities.formatDateForDisplay(historicalDate))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                } else if song.gap > 0 {
-                    Text(DateUtilities.formatDateForDisplay(song.lastPlayed))
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+                if song.gap > 0 {
+                    // Use the historical last played date that created the gap
+                    if let historicalDate = song.historicalLastPlayed {
+                        Text(DateUtilities.formatDateForDisplay(historicalDate))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    } else {
+                        Text(DateUtilities.formatDateForDisplay(song.lastPlayed))
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
             .layoutPriority(2)

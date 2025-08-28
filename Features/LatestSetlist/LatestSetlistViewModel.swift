@@ -288,43 +288,32 @@ class LatestSetlistViewModel: BaseViewModel {
         // Set loading state for tour statistics
         isTourStatisticsLoading = true
         
+        // Handle tour change detection for current tour optimization
+        if let tourName = enhanced.tourPosition?.tourName {
+            CacheManager.shared.handleTourChange(newTourName: tourName)
+        }
+        
+        // Check for current tour stats cache first (Dashboard optimization)
+        if let cachedStats = CacheManager.shared.get(TourSongStatistics.self, forKey: CacheManager.CacheKeys.currentTourStats) {
+            print("⚡ Using cached current tour statistics (dashboard optimization)")
+            await MainActor.run {
+                tourStatistics = cachedStats
+                isTourStatisticsLoading = false
+            }
+            return
+        }
+        
         do {
-            print("🎯 Calculating tour-progressive rarest songs...")
+            print("🎯 Calculating current tour statistics...")
             
             // Get all shows from the current tour to calculate progressive rarest songs
             var tourShows: [EnhancedSetlist] = [enhanced] // Start with current show
             
             if let tourName = enhanced.tourPosition?.tourName {
-                do {
-                    print("📊 Fetching tour shows for \(tourName)...")
-                    
-                    // Use existing tour infrastructure to get all shows for this tour
-                    let allTourShows = try await apiManager.fetchTourShows(tourName: tourName)
-                    
-                    // Convert to enhanced setlists (only for shows up to current date)
-                    let currentDate = enhanced.showDate
-                    let showsUpToCurrent = allTourShows.filter { $0.showdate <= currentDate }
-                    
-                    print("📊 Processing \(showsUpToCurrent.count) shows from \(tourName)")
-                    
-                    var enhancedTourShows: [EnhancedSetlist] = []
-                    for show in showsUpToCurrent {
-                        do {
-                            let enhancedShow = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
-                            enhancedTourShows.append(enhancedShow)
-                        } catch {
-                            print("Warning: Could not fetch enhanced setlist for \(show.showdate): \(error)")
-                        }
-                    }
-                    
-                    tourShows = enhancedTourShows.sorted { $0.showDate < $1.showDate }
-                    print("✅ Successfully loaded \(tourShows.count) enhanced setlists from \(tourName)")
-                    
-                } catch {
-                    print("Warning: Could not fetch tour shows for \(tourName): \(error)")
-                    print("🔄 Falling back to single-show gap calculation")
-                    // Keep tourShows as [enhanced] for single-show fallback
-                }
+                tourShows = await fetchTourEnhancedSetlistsOptimized(
+                    tourName: tourName, 
+                    currentShow: enhanced
+                )
             }
             
             // Fetch tour-wide track durations if we have tour information
@@ -356,26 +345,15 @@ class LatestSetlistViewModel: BaseViewModel {
                 longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
             }
             
-            // Calculate tour-progressive rarest songs with caching
+            // Calculate tour-progressive rarest songs for current tour only
             var rarestSongs: [SongGapInfo] = []
             
             if let tourName = enhanced.tourPosition?.tourName {
-                let cacheKey = CacheManager.CacheKeys.tourStatistics(tourName, showDate: enhanced.showDate)
-                
-                // Check cache first
-                if let cachedRarest = CacheManager.shared.get([SongGapInfo].self, forKey: cacheKey) {
-                    print("📦 Using cached tour statistics for \(tourName)")
-                    rarestSongs = cachedRarest
-                } else {
-                    print("🔄 Calculating fresh tour statistics for \(tourName)")
-                    rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
-                        tourShows: tourShows,
-                        tourName: tourName
-                    )
-                    
-                    // Cache for 1 hour (tour stats don't change often)
-                    CacheManager.shared.set(rarestSongs, forKey: cacheKey, ttl: 60 * 60)
-                }
+                print("🔄 Calculating fresh current tour statistics for \(tourName)")
+                rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
+                    tourShows: tourShows,
+                    tourName: tourName
+                )
             } else {
                 // Fallback for shows without tour info
                 rarestSongs = enhanced.getRarestSongs(limit: 3)
@@ -387,6 +365,10 @@ class LatestSetlistViewModel: BaseViewModel {
                 rarestSongs: rarestSongs,
                 tourName: enhanced.tourPosition?.tourName
             )
+            
+            // Cache current tour statistics for dashboard optimization (1 hour TTL)
+            CacheManager.shared.set(statistics, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)
+            print("💾 Cached current tour statistics for fast dashboard loading")
             
             // Update published property on main actor
             tourStatistics = statistics
@@ -491,6 +473,72 @@ class LatestSetlistViewModel: BaseViewModel {
             
         } catch {
             print("💥 \(endpointPath) - Error: \(error.localizedDescription)")
+        }
+    }
+    
+    /// Optimized tour enhanced setlists fetching with comprehensive caching
+    private func fetchTourEnhancedSetlistsOptimized(
+        tourName: String, 
+        currentShow: EnhancedSetlist
+    ) async -> [EnhancedSetlist] {
+        
+        let cacheKey = CacheManager.CacheKeys.tourEnhancedSetlists(tourName)
+        let currentDate = currentShow.showDate
+        
+        // Check if we have cached tour setlists
+        if let cachedTourShows = CacheManager.shared.get([EnhancedSetlist].self, forKey: cacheKey) {
+            print("📦 Found cached tour setlists for \(tourName)")
+            
+            // Filter to current date and check if we need to add new show
+            let upToDateShows = cachedTourShows.filter { $0.showDate <= currentDate }
+            let hasCurrentShow = upToDateShows.contains { $0.showDate == currentDate }
+            
+            if hasCurrentShow {
+                print("✅ Current show already in cache, using cached data (\(upToDateShows.count) shows)")
+                return upToDateShows
+            } else {
+                print("🔄 Adding current show to cached tour data")
+                let updatedShows = (upToDateShows + [currentShow]).sorted { $0.showDate < $1.showDate }
+                
+                // Update cache with new show added
+                CacheManager.shared.set(updatedShows, forKey: cacheKey, ttl: CacheManager.TTL.tourEnhancedSetlists)
+                return updatedShows
+            }
+        }
+        
+        // No cache - fetch full tour data
+        print("🔄 Fetching fresh tour setlists for \(tourName)")
+        
+        do {
+            // Get all tour shows
+            let allTourShows = try await apiManager.fetchTourShows(tourName: tourName)
+            let showsUpToCurrent = allTourShows.filter { $0.showdate <= currentDate }
+            
+            print("📊 Processing \(showsUpToCurrent.count) shows from \(tourName)")
+            
+            // Fetch enhanced setlists with individual caching
+            var enhancedTourShows: [EnhancedSetlist] = []
+            for show in showsUpToCurrent {
+                do {
+                    let enhancedShow = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
+                    enhancedTourShows.append(enhancedShow)
+                } catch {
+                    print("Warning: Could not fetch enhanced setlist for \(show.showdate): \(error)")
+                }
+            }
+            
+            let sortedShows = enhancedTourShows.sorted { $0.showDate < $1.showDate }
+            
+            // Cache the full tour collection
+            CacheManager.shared.set(sortedShows, forKey: cacheKey, ttl: CacheManager.TTL.tourEnhancedSetlists)
+            
+            print("✅ Successfully loaded and cached \(sortedShows.count) enhanced setlists from \(tourName)")
+            return sortedShows
+            
+        } catch {
+            print("Warning: Could not fetch tour shows for \(tourName): \(error)")
+            print("🔄 Falling back to single-show gap calculation")
+            return [currentShow]
         }
     }
     

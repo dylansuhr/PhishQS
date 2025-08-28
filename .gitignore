@@ -25,3 +25,12 @@ fastlane/screenshots/**/*.png
 # Xcode Patch
 *.moved-aside
 *.xcuserstate
+
+# Development documentation (contains session details)
+Docs/SESSION_SUMMARY.md
+
+# Raw data files (can be large)
+Resources/Data/*.csv
+
+# Temporary development files
+*.tmp

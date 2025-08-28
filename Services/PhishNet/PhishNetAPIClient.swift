@@ -299,20 +299,39 @@ extension PhishAPIClient: GapDataProviderProtocol {
         let performances = try await fetchSongPerformanceHistory(songName: songName)
         
         // Find the performance matching the show date
-        guard let performance = performances.first(where: { $0.showdate == showDate }) else {
+        guard let currentPerformanceIndex = performances.firstIndex(where: { $0.showdate == showDate }),
+              let currentPerformance = performances.first(where: { $0.showdate == showDate }) else {
             return nil
         }
         
-        // Convert to SongGapInfo
+        // Find the previous performance (the one that created the gap)
+        var historicalLastPlayed: String?
+        var historicalVenue: String?
+        var historicalCity: String?
+        var historicalState: String?
+        
+        if currentPerformanceIndex > 0 {
+            let previousPerformance = performances[currentPerformanceIndex - 1]
+            historicalLastPlayed = previousPerformance.showdate
+            historicalVenue = previousPerformance.venue
+            historicalCity = previousPerformance.city
+            historicalState = previousPerformance.state
+        }
+        
+        // Convert to SongGapInfo with proper historical data
         return SongGapInfo(
-            songId: performance.songid,
-            songName: performance.song,
-            gap: performance.gap,
-            lastPlayed: showDate,
+            songId: currentPerformance.songid,
+            songName: currentPerformance.song,
+            gap: currentPerformance.gap,
+            lastPlayed: historicalLastPlayed ?? showDate, // Use historical date if available
             timesPlayed: performances.count,
-            tourVenue: performance.venue,
+            tourVenue: currentPerformance.venue,
             tourVenueRun: nil,  // Can be enhanced later with venue run data
-            tourDate: showDate
+            tourDate: showDate,
+            historicalVenue: historicalVenue,
+            historicalCity: historicalCity,
+            historicalState: historicalState,
+            historicalLastPlayed: historicalLastPlayed
         )
     }
     

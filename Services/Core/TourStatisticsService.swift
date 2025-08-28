@@ -32,14 +32,35 @@ class TourStatisticsService {
             for gapInfo in show.songGaps {
                 let songKey = gapInfo.songName.lowercased()
                 
-                // For each song, keep the one with the highest gap (most recent performance)
-                // Or if it's the first time we see this song in the tour, use it
+                // For each song, keep the occurrence with the HIGHEST gap
                 if let existingGap = tourSongGaps[songKey] {
-                    // Keep the one from the most recent show (later in tour)
-                    // Since tourShows is chronological, later shows should override
-                    tourSongGaps[songKey] = gapInfo
+                    // Only replace if this occurrence has a higher gap
+                    if gapInfo.gap > existingGap.gap {
+                        print("      🔄 Updating \(gapInfo.songName): \(existingGap.gap) → \(gapInfo.gap)")
+                        tourSongGaps[songKey] = gapInfo
+                    } else {
+                        print("      ✓ Keeping \(gapInfo.songName): \(existingGap.gap) > \(gapInfo.gap)")
+                    }
                 } else {
+                    // First time seeing this song - add it
+                    print("      ➕ Adding \(gapInfo.songName): Gap \(gapInfo.gap)")
                     tourSongGaps[songKey] = gapInfo
+                }
+            }
+        }
+        
+        // Debug: Show all songs with gaps > 200 for validation
+        let highGapSongs = Array(tourSongGaps.values)
+            .filter { $0.gap > 200 }
+            .sorted { $0.gap > $1.gap }
+        
+        if !highGapSongs.isEmpty {
+            print("   🔍 All songs with gap > 200:")
+            for song in highGapSongs.prefix(10) { // Show top 10 high-gap songs
+                if let tourDate = song.tourDate {
+                    print("      • \(song.songName): \(song.gap) gap (from \(tourDate))")
+                } else {
+                    print("      • \(song.songName): \(song.gap) gap")
                 }
             }
         }
@@ -52,7 +73,12 @@ class TourStatisticsService {
         
         print("   📊 Top 3 rarest across tour:")
         for (index, song) in topRarestSongs.enumerated() {
-            print("      \(index + 1). \(song.songName) - Gap: \(song.gap)")
+            // Include the show date where this gap was recorded for validation
+            if let tourDate = song.tourDate {
+                print("      \(index + 1). \(song.songName) - Gap: \(song.gap) (from \(tourDate))")
+            } else {
+                print("      \(index + 1). \(song.songName) - Gap: \(song.gap)")
+            }
         }
         
         return topRarestSongs
