@@ -18,8 +18,7 @@ class ServerSideTourStatsService {
     
     /// Base URL for tour statistics API - configurable for different environments
     private var baseURL: String {
-        // TODO: Add to Secrets.plist or configuration
-        return "https://api.phishqs.com"
+        return "https://phish-qs-server.vercel.app"
     }
     
     /// Current tour statistics endpoint
@@ -80,9 +79,51 @@ class ServerSideTourStatsService {
     
     /// Convert server response format to app's TourSongStatistics format
     private func convertToTourSongStatistics(from serverResponse: ServerTourStatsResponse) -> TourSongStatistics {
+        
+        // Convert server track durations to app format
+        let longestSongs = serverResponse.longestSongs.map { serverTrack in
+            TrackDuration(
+                id: "\(serverTrack.showDate)-\(serverTrack.songName)", // Generate ID
+                songName: serverTrack.songName,
+                songId: nil, // Server doesn't provide songId
+                durationSeconds: serverTrack.durationSeconds,
+                showDate: serverTrack.showDate,
+                setNumber: "Unknown", // Server doesn't provide set number
+                venue: serverTrack.venue,
+                venueRun: serverTrack.venueRun.map { serverVenue in
+                    VenueRun(
+                        venue: serverTrack.venue,
+                        city: "Unknown", // Server doesn't provide city
+                        state: nil, // Server doesn't provide state
+                        nightNumber: serverVenue.showNumber,
+                        totalNights: serverVenue.totalShows,
+                        showDates: [serverTrack.showDate] // Single show date
+                    )
+                }
+            )
+        }
+        
+        // Convert server song gap info to app format
+        let rarestSongs = serverResponse.rarestSongs.map { serverGap in
+            SongGapInfo(
+                songId: 0, // Server doesn't provide songId, use 0 as placeholder
+                songName: serverGap.songName,
+                gap: serverGap.gap,
+                lastPlayed: serverGap.lastPlayed,
+                timesPlayed: 100, // Server doesn't provide times played, use reasonable default
+                tourVenue: serverGap.tourVenue,
+                tourVenueRun: nil, // Could be enhanced later if server provides this
+                tourDate: serverGap.tourDate,
+                historicalVenue: nil, // Server doesn't provide historical venue details
+                historicalCity: nil,
+                historicalState: nil,
+                historicalLastPlayed: serverGap.lastPlayed
+            )
+        }
+        
         return TourSongStatistics(
-            longestSongs: serverResponse.longestSongs,
-            rarestSongs: serverResponse.rarestSongs,
+            longestSongs: longestSongs,
+            rarestSongs: rarestSongs,
             tourName: serverResponse.tourName
         )
     }
@@ -95,8 +136,33 @@ struct ServerTourStatsResponse: Codable {
     let tourName: String
     let lastUpdated: String
     let latestShow: String
-    let longestSongs: [TrackDuration]
-    let rarestSongs: [SongGapInfo]
+    let longestSongs: [ServerTrackDuration]
+    let rarestSongs: [ServerSongGapInfo]
+}
+
+/// Server format for track duration (matches server JSON structure)
+struct ServerTrackDuration: Codable {
+    let songName: String
+    let durationSeconds: Int
+    let showDate: String
+    let venue: String
+    let venueRun: ServerVenueRun?
+}
+
+/// Server format for song gap info (matches server JSON structure)
+struct ServerSongGapInfo: Codable {
+    let songName: String
+    let gap: Int
+    let lastPlayed: String
+    let tourDate: String
+    let tourVenue: String
+}
+
+/// Server format for venue run info
+struct ServerVenueRun: Codable {
+    let showNumber: Int
+    let totalShows: Int
+    let displayText: String
 }
 
 // MARK: - Error Types

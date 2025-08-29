@@ -318,8 +318,9 @@ class LatestSetlistViewModel: BaseViewModel {
         }
         
         // Fallback to local calculation if server unavailable
+        // NEW: Try JavaScript bridge first, then fall back to original Swift calculation
         do {
-            print("🎯 Server unavailable - calculating tour statistics locally...")
+            print("🎯 Server unavailable - trying JavaScript bridge calculation...")
             
             // Get all shows from the current tour to calculate progressive rarest songs
             var tourShows: [EnhancedSetlist] = [enhanced] // Start with current show
@@ -332,8 +333,7 @@ class LatestSetlistViewModel: BaseViewModel {
             }
             
             // Fetch tour-wide track durations if we have tour information
-            var tourTrackDurations: [TrackDuration]? = nil
-            var longestSongs: [TrackDuration] = []
+            var tourTrackDurations: [TrackDuration] = []
             
             if let tourName = enhanced.tourPosition?.tourName,
                let showDate = enhanced.setlistItems.first?.showdate {
@@ -344,53 +344,78 @@ class LatestSetlistViewModel: BaseViewModel {
                     // Use the native tour name if available, otherwise fall back to tour position name
                     let tourNameToUse = nativeTourName ?? tourName
                     
-                    tourTrackDurations = try await apiManager.fetchTourTrackDurations(tourName: tourNameToUse)
-                    
-                    // Calculate longest songs from tour data if available
-                    if let tourDurations = tourTrackDurations, !tourDurations.isEmpty {
-                        longestSongs = Array(tourDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                    let fetchedDurations = try await apiManager.fetchTourTrackDurations(tourName: tourNameToUse)
+                    if !fetchedDurations.isEmpty {
+                        tourTrackDurations = fetchedDurations
                     } else {
-                        longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                        tourTrackDurations = enhanced.trackDurations
                     }
                 } catch {
                     print("Warning: Could not fetch tour track durations for \(tourName): \(error)")
-                    longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                    tourTrackDurations = enhanced.trackDurations
                 }
             } else {
-                longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                tourTrackDurations = enhanced.trackDurations
             }
             
-            // Calculate tour-progressive rarest songs for current tour only
-            var rarestSongs: [SongGapInfo] = []
+            // Try JavaScript bridge calculation first
+            var statistics: TourSongStatistics? = nil
             
-            if let tourName = enhanced.tourPosition?.tourName {
-                print("🔄 Calculating fresh current tour statistics for \(tourName)")
-                rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
+            do {
+                let jsCalculator = try JavaScriptTourCalculator()
+                statistics = jsCalculator.calculateTourStatistics(
                     tourShows: tourShows,
-                    tourName: tourName
+                    tourTrackDurations: tourTrackDurations,
+                    tourName: enhanced.tourPosition?.tourName
                 )
-            } else {
-                // Fallback for shows without tour info
-                rarestSongs = enhanced.getRarestSongs(limit: 3)
+                
+                if let stats = statistics {
+                    print("✅ JavaScript bridge calculation successful")
+                    print("📊 Results: \(stats.longestSongs.count) longest songs, \(stats.rarestSongs.count) rarest songs")
+                }
+            } catch {
+                print("⚠️ JavaScript bridge failed: \(error.localizedDescription)")
+                print("🔄 Falling back to original Swift calculation...")
             }
             
-            // Create tour statistics with real gap data
-            let statistics = TourSongStatistics(
-                longestSongs: longestSongs,
-                rarestSongs: rarestSongs,
-                tourName: enhanced.tourPosition?.tourName
-            )
+            // Fallback to original Swift calculation if JavaScript failed
+            if statistics == nil {
+                print("🔄 Using original Swift calculation as final fallback...")
+                
+                let longestSongs = Array(tourTrackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                
+                var rarestSongs: [SongGapInfo] = []
+                if let tourName = enhanced.tourPosition?.tourName {
+                    rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
+                        tourShows: tourShows,
+                        tourName: tourName
+                    )
+                } else {
+                    rarestSongs = enhanced.getRarestSongs(limit: 3)
+                }
+                
+                statistics = TourSongStatistics(
+                    longestSongs: longestSongs,
+                    rarestSongs: rarestSongs,
+                    tourName: enhanced.tourPosition?.tourName
+                )
+                
+                print("✅ Swift fallback calculation completed")
+            }
             
-            // Cache current tour statistics for dashboard optimization (1 hour TTL)
-            CacheManager.shared.set(statistics, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)
-            print("💾 Cached current tour statistics for fast dashboard loading")
-            
-            // Update published property on main actor
-            tourStatistics = statistics
+            // Cache and update results
+            if let finalStats = statistics {
+                // Cache current tour statistics for dashboard optimization (1 hour TTL)
+                CacheManager.shared.set(finalStats, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)
+                print("💾 Cached current tour statistics for fast dashboard loading")
+                
+                // Update published property on main actor
+                tourStatistics = finalStats
+            }
             
         } catch {
             // Log error but don't block main functionality
-            print("Failed to fetch tour statistics: \(error)")
+            print("❌ All calculation methods failed: \(error)")
             tourStatistics = nil
         }
         
