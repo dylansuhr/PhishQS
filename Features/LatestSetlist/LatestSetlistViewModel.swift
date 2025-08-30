@@ -378,29 +378,21 @@ class LatestSetlistViewModel: BaseViewModel {
                 print("🔄 Falling back to original Swift calculation...")
             }
             
-            // Fallback to original Swift calculation if JavaScript failed
+            // No Swift fallback - we use only JavaScript bridge or server data
+            // This enforces single source of truth: tourCalculations.js
             if statistics == nil {
-                print("🔄 Using original Swift calculation as final fallback...")
+                print("❌ JavaScript bridge failed and no server data available")
+                print("🔧 Creating minimal statistics to avoid app crash")
                 
-                let longestSongs = Array(tourTrackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
-                
-                var rarestSongs: [SongGapInfo] = []
-                if let tourName = enhanced.tourPosition?.tourName {
-                    rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
-                        tourShows: tourShows,
-                        tourName: tourName
-                    )
-                } else {
-                    rarestSongs = enhanced.getRarestSongs(limit: 3)
-                }
-                
+                // Create minimal statistics to keep app functional
+                // This should only happen in rare edge cases
                 statistics = TourSongStatistics(
-                    longestSongs: longestSongs,
-                    rarestSongs: rarestSongs,
+                    longestSongs: Array(tourTrackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3)),
+                    rarestSongs: enhanced.getRarestSongs(limit: 3), // Basic gap data from individual show
                     tourName: enhanced.tourPosition?.tourName
                 )
                 
-                print("✅ Swift fallback calculation completed")
+                print("⚠️ Using minimal statistics - JavaScript bridge needs investigation")
             }
             
             // Cache and update results
@@ -413,10 +405,6 @@ class LatestSetlistViewModel: BaseViewModel {
                 tourStatistics = finalStats
             }
             
-        } catch {
-            // Log error but don't block main functionality
-            print("❌ All calculation methods failed: \(error)")
-            tourStatistics = nil
         }
         
         // Clear loading state

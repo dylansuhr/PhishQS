@@ -56,12 +56,14 @@ function calculateTourProgressiveRarestSongs(tourShows, tourName) {
                 }
                 
                 // Store enhanced gap info with tour context
+                // IMPORTANT: Following API usage principle - venue data comes from Phish.net only
+                // show.venue comes from Phish.net SetlistItem data, ensuring venue-date consistency
                 tourSongGaps.set(songKey, {
                     songName: gapInfo.songName,
                     gap: gapInfo.gap,
                     lastPlayed: gapInfo.lastPlayed || null,
-                    tourDate: gapInfo.tourDate || show.showDate,
-                    tourVenue: gapInfo.tourVenue || show.venue || 'Unknown Venue',
+                    tourDate: show.showDate, // Always use Phish.net show date
+                    tourVenue: show.venue || 'Unknown Venue', // Always use Phish.net venue from SetlistItem
                     timesPlayed: gapInfo.timesPlayed || 100, // Default value like iOS
                     // Preserve historical data if available
                     historicalVenue: gapInfo.historicalVenue || null,

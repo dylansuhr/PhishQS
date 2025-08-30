@@ -6,6 +6,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PhishQS (Phish Quick Setlist) is a minimalist iOS app built with SwiftUI that allows users to quickly browse Phish setlists by year, month, and day using the Phish.net API. The app follows a hierarchical navigation pattern: Year → Month → Day → Setlist, with a focus on speed and minimal taps.
 
+## Core Architectural Principles
+
+### Single Source of Truth for Calculations
+**CRITICAL**: All tour statistics calculations MUST use `Resources/tourCalculations.js` as the single source of truth. This JavaScript file is executed by:
+- **Server**: Uses the JavaScript file to pre-compute statistics
+- **iOS Client**: Uses `JavaScriptTourCalculator.swift` bridge when server unavailable
+- **Result**: Identical calculations across all platforms, zero inconsistency
+
+**Never create duplicate calculation logic in Swift** - all calculations go through the JavaScript bridge to maintain consistency.
+
+### API Usage Guidelines (Strict)
+**CRITICAL**: APIs must be used according to their strengths, never mix data sources:
+
+**Phish.net API**:
+- ✅ **Source of truth for**: Venue names, dates, cities, states, setlist data, show metadata
+- ✅ **When to use**: All venue-date pairs, all show information, all setlist content
+
+**Phish.in API**:
+- ✅ **Source of truth for**: Song durations ONLY (`durationSeconds` field)
+- ❌ **Never use for**: Venue names, dates, show metadata, venue run calculations
+
+**Rule**: If you display a date, the corresponding venue MUST come from the same API source (Phish.net).
+
+### Performance-First Architecture
+- **Server-First**: Always try server-side pre-computed statistics first
+- **JavaScript Fallback**: Use JavaScript bridge when server unavailable  
+- **No Swift Fallback**: Never fall back to duplicate Swift calculations
+- **Physical Device**: Always test on physical iOS device due to Cloudflare networking issues in simulator
+
 ## Build and Test Commands
 
 This is a standard Xcode iOS project. Use these commands:
@@ -48,6 +77,32 @@ The project uses the new Swift Testing framework (not XCTest), so test files use
 - `MockPhishAPIClient` for testing with simulated delays and error scenarios
 - Comprehensive error handling with `APIError` enum
 - All network calls use async/await with proper error propagation
+
+### JavaScript Bridge Architecture (Single Source of Truth)
+
+**Core Components:**
+- **`Resources/tourCalculations.js`**: The single JavaScript file containing ALL tour statistics calculation logic
+- **`JavaScriptTourCalculator.swift`**: iOS bridge that executes the JavaScript using JavaScriptCore
+- **Server Integration**: Server uses the same JavaScript file for pre-computed statistics
+
+**Data Flow:**
+```
+1. Server: JavaScript File → Pre-computed Statistics → JSON API
+2. iOS: JSON API → Instant Loading (preferred path)
+3. iOS Fallback: JavaScript Bridge → Local Calculation (when server unavailable)
+```
+
+**Key Benefits:**
+- **Perfect Consistency**: Server and iOS execute identical calculation logic
+- **Single Maintenance Point**: All calculation changes made in one JavaScript file
+- **Performance Flexibility**: Fast server pre-computation with reliable local fallback
+- **Cross-Platform**: Same logic works in Node.js server and iOS JavaScriptCore
+
+**Critical Rules:**
+- Never create duplicate calculation logic in Swift
+- Always use `JavaScriptTourCalculator` for any tour statistics calculations
+- Keep `tourCalculations.js` compatible with both Node.js and JavaScriptCore environments
+- Test calculations on both server and iOS to ensure consistency
 
 ### Shared Utilities Architecture
 - **`BaseViewModel`**: Common ViewModel functionality (loading states, error handling)
@@ -114,9 +169,20 @@ The project uses the new Swift Testing framework (not XCTest), so test files use
 ### Overview
 Modular architecture to integrate multiple Phish data sources while maintaining clean separation of concerns and easy extensibility.
 
-### API Priority Strategy
-1. **Phish.net** - Primary source for setlist data (current implementation)
-2. **Phish.in** - Song lengths, tour metadata, venue run information
+### API Usage Strategy (Strict Separation)
+**CRITICAL**: Each API has specific responsibilities - never cross boundaries:
+
+1. **Phish.net** - **ALL** show metadata and setlist data:
+   - Venue names, cities, states, dates
+   - Setlist content, song names, set information  
+   - Show metadata, artist information
+   - **Rule**: Source of truth for all venue-date pairs
+
+2. **Phish.in** - **ONLY** song performance data:
+   - Song durations (`durationSeconds`)
+   - **Rule**: Never use for venue, date, or show metadata
+
+**Venue-Date Matching Principle**: If displaying a venue and date together, both MUST come from the same API call to ensure accuracy.
 
 ### Directory Structure
 ```
@@ -502,3 +568,33 @@ Endpoint: https://api.phishqs.com/current-tour-stats.json
 - **Scalability**: All users benefit from single server-side calculation
 
 ### **Ready for Production**: Client-side implementation complete and tested ✅
+
+### **Session Complete ✅ - API Usage Compliance & Single Source of Truth**
+
+**Date**: August 30, 2025  
+**Status**: Venue data fixes and single source of truth architecture implemented
+
+### **Latest Session Accomplishments ✅**
+- [x] **API Usage Compliance**: Fixed venue data to strictly follow Phish.net (venue/date) vs Phish.in (duration) principle
+- [x] **Venue-Date Matching**: Resolved issue where venues didn't match their corresponding dates 
+- [x] **Single Source of Truth**: Established `Resources/tourCalculations.js` as the single source for all tour statistics
+- [x] **JavaScript Bridge**: All calculations must use `JavaScriptTourCalculator.swift` bridge (no Swift duplicates)
+- [x] **Phish.in Cleanup**: Removed venue/venue run extraction from Phish.in - duration data only
+- [x] **Performance Fix**: Disabled expensive venue run calculation that was causing loading issues
+- [x] **Documentation**: Added Core Architectural Principles to CLAUDE.md with strict API usage guidelines
+
+### **Critical Architecture Fixes ✅**
+- **Phish.net**: Now sole source of venue, date, city, state, setlist data
+- **Phish.in**: Now used ONLY for song durations (`durationSeconds`)
+- **JavaScript**: Single calculation source prevents server-client inconsistencies
+- **TrackDuration**: Modified to not include venue data from Phish.in
+- **APIManager**: Updated venue run calculation to use Phish.net data only
+
+### **Current Status**
+- ✅ **App Performance**: No longer stuck loading latest show
+- ✅ **Venue Accuracy**: Venues correctly match their corresponding dates
+- ✅ **API Compliance**: Strict separation between Phish.net and Phish.in data
+- ⚠️ **Venue Runs**: Temporarily disabled pending efficient Phish.net calculation
+- ✅ **Single Source**: JavaScript bridge architecture ready for server integration
+
+### **Next Priority**: Implement efficient venue run calculation using Phish.net data to restore N1/N2/N3 indicators
