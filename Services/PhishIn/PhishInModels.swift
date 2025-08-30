@@ -99,7 +99,8 @@ struct PhishInTrack: Codable, Identifiable {
     let jam_starts: [JamStart]?
     
     /// Convert duration to TrackDuration model
-    func toTrackDuration(showDate: String, venue: String? = nil, venueRun: VenueRun? = nil) -> TrackDuration? {
+    /// Note: Only extracts duration data from Phish.in - venue data should come from Phish.net
+    func toTrackDuration(showDate: String) -> TrackDuration? {
         guard let duration = duration else { return nil }
         
         return TrackDuration(
@@ -109,8 +110,8 @@ struct PhishInTrack: Codable, Identifiable {
             durationSeconds: duration / 1000, // Convert milliseconds to seconds
             showDate: showDate,
             setNumber: set_name ?? "1",
-            venue: venue,
-            venueRun: venueRun
+            venue: nil, // Venue data should come from Phish.net, not Phish.in
+            venueRun: nil // Venue run data should come from Phish.net, not Phish.in
         )
     }
 }

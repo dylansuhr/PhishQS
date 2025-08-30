@@ -89,23 +89,10 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
             return []
         }
         
-        // Get venue information from the show
-        let venueName = show.venue?.name
-        
-        // Fetch venue run information for this show
-        var venueRun: VenueRun? = nil
-        do {
-            venueRun = try await fetchVenueRuns(for: showDate)
-        } catch {
-            // Continue without venue run info if fetch fails
-        }
+        // Note: We no longer extract venue info from Phish.in - venue data comes from Phish.net only
         
         return tracks.compactMap { track in
-            track.toTrackDuration(
-                showDate: showDate,
-                venue: venueName,
-                venueRun: venueRun
-            )
+            track.toTrackDuration(showDate: showDate)
         }
     }
     
@@ -151,7 +138,7 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
             return nil
         }
         
-        let venueSlug = venue.slug ?? venue.name.lowercased().replacingOccurrences(of: " ", with: "-")
+        _ = venue.slug ?? venue.name.lowercased().replacingOccurrences(of: " ", with: "-")
         
         // Get tour shows with caching to avoid duplicate API calls
         let allTourShows = try await getCachedTourShows(tourName: tourName)
@@ -380,23 +367,10 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
                             return []
                         }
                         
-                        // Get venue information from the show
-                        let venueName = detailedShow.venue?.name
-                        
-                        // Fetch venue run information for this show (if needed)
-                        var venueRun: VenueRun? = nil
-                        do {
-                            venueRun = try await self.fetchVenueRuns(for: showBasic.date)
-                        } catch {
-                            // Continue without venue run info if fetch fails
-                        }
+                        // Note: We no longer extract venue info from Phish.in - venue data comes from Phish.net only
                         
                         return tracks.compactMap { track in
-                            track.toTrackDuration(
-                                showDate: showBasic.date,
-                                venue: venueName,
-                                venueRun: venueRun
-                            )
+                            track.toTrackDuration(showDate: showBasic.date)
                         }
                         
                     } catch {

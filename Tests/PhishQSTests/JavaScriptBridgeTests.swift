@@ -5,24 +5,22 @@
 //  Created by Claude on 8/29/25.
 //
 
-import Testing
+import XCTest
 @testable import PhishQS
 
 /// Tests for the JavaScript tour calculator bridge
 /// 
 /// These tests validate that the JavaScript bridge produces identical results
 /// to the server-side calculation engine, ensuring perfect consistency.
-struct JavaScriptBridgeTests {
+class JavaScriptBridgeTests: XCTestCase {
     
     // MARK: - Engine Validation Tests
     
-    @Test("JavaScript engine loads correctly")
     func testEngineInitialization() throws {
         let calculator = try JavaScriptTourCalculator()
-        #expect(calculator.validateEngine())
+        XCTAssertTrue(calculator.validateEngine())
     }
     
-    @Test("JavaScript engine handles empty data gracefully")
     func testEmptyDataHandling() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -32,14 +30,13 @@ struct JavaScriptBridgeTests {
             tourName: "Empty Test Tour"
         )
         
-        #expect(result != nil)
-        #expect(result?.longestSongs.isEmpty ?? false)
-        #expect(result?.rarestSongs.isEmpty ?? false)
+        XCTAssertNotNil(result)
+        XCTAssertTrue(result?.longestSongs.isEmpty ?? false)
+        XCTAssertTrue(result?.rarestSongs.isEmpty ?? false)
     }
     
     // MARK: - Calculation Accuracy Tests
     
-    @Test("JavaScript produces expected longest songs calculation")
     func testLongestSongsCalculation() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -80,23 +77,22 @@ struct JavaScriptBridgeTests {
             tourName: "Summer Tour 2025"
         )
         
-        #expect(result != nil)
-        #expect(result?.longestSongs.count == 3)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.longestSongs.count, 3)
         
         // Verify songs are sorted by duration (descending)
         if let longestSongs = result?.longestSongs {
-            #expect(longestSongs[0].songName == "What's Going Through Your Mind")
-            #expect(longestSongs[0].durationSeconds == 2544)
+            XCTAssertEqual(longestSongs[0].songName, "What's Going Through Your Mind")
+            XCTAssertEqual(longestSongs[0].durationSeconds, 2544)
             
-            #expect(longestSongs[1].songName == "Sand")
-            #expect(longestSongs[1].durationSeconds == 2383)
+            XCTAssertEqual(longestSongs[1].songName, "Sand")
+            XCTAssertEqual(longestSongs[1].durationSeconds, 2383)
             
-            #expect(longestSongs[2].songName == "Down with Disease")
-            #expect(longestSongs[2].durationSeconds == 2048)
+            XCTAssertEqual(longestSongs[2].songName, "Down with Disease")
+            XCTAssertEqual(longestSongs[2].durationSeconds, 2048)
         }
     }
     
-    @Test("JavaScript produces expected rarest songs calculation")
     func testRarestSongsCalculation() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -109,25 +105,24 @@ struct JavaScriptBridgeTests {
             tourName: "Summer Tour 2025"
         )
         
-        #expect(result != nil)
-        #expect(result?.rarestSongs.count == 3)
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.rarestSongs.count, 3)
         
         // Verify songs are sorted by gap size (descending)
         if let rarestSongs = result?.rarestSongs {
-            #expect(rarestSongs[0].songName == "On Your Way Down")
-            #expect(rarestSongs[0].gap == 522)
+            XCTAssertEqual(rarestSongs[0].songName, "On Your Way Down")
+            XCTAssertEqual(rarestSongs[0].gap, 522)
             
-            #expect(rarestSongs[1].songName == "Paul and Silas")
-            #expect(rarestSongs[1].gap == 323)
+            XCTAssertEqual(rarestSongs[1].songName, "Paul and Silas")
+            XCTAssertEqual(rarestSongs[1].gap, 323)
             
-            #expect(rarestSongs[2].songName == "Devotion To A Dream")
-            #expect(rarestSongs[2].gap == 322)
+            XCTAssertEqual(rarestSongs[2].songName, "Devotion To A Dream")
+            XCTAssertEqual(rarestSongs[2].gap, 322)
         }
     }
     
     // MARK: - Consistency Tests
     
-    @Test("JavaScript results match server format exactly")
     func testServerFormatConsistency() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -140,30 +135,29 @@ struct JavaScriptBridgeTests {
             tourName: "Summer Tour 2025"
         )
         
-        #expect(result != nil)
-        #expect(result?.tourName == "Summer Tour 2025")
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.tourName, "Summer Tour 2025")
         
         // Verify longest songs have required fields
         if let longestSongs = result?.longestSongs {
             for song in longestSongs {
-                #expect(!song.songName.isEmpty)
-                #expect(song.durationSeconds > 0)
-                #expect(!song.showDate.isEmpty)
+                XCTAssertFalse(song.songName.isEmpty)
+                XCTAssertGreaterThan(song.durationSeconds, 0)
+                XCTAssertFalse(song.showDate.isEmpty)
             }
         }
         
         // Verify rarest songs have required fields
         if let rarestSongs = result?.rarestSongs {
             for song in rarestSongs {
-                #expect(!song.songName.isEmpty)
-                #expect(song.gap >= 0)
+                XCTAssertFalse(song.songName.isEmpty)
+                XCTAssertGreaterThanOrEqual(song.gap, 0)
             }
         }
     }
     
     // MARK: - Performance Tests
     
-    @Test("JavaScript execution completes within performance threshold")
     func testPerformance() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -180,15 +174,14 @@ struct JavaScriptBridgeTests {
         
         let executionTime = CFAbsoluteTimeGetCurrent() - startTime
         
-        #expect(result != nil)
-        #expect(executionTime < 2.0) // Should complete within 2 seconds
+        XCTAssertNotNil(result)
+        XCTAssertLessThan(executionTime, 2.0) // Should complete within 2 seconds
         
         // Verify performance metrics are acceptable
         let metrics = calculator.performanceMetrics
-        #expect(metrics.isPerformanceAcceptable)
+        XCTAssertTrue(metrics.isPerformanceAcceptable)
     }
     
-    @Test("JavaScript engine handles multiple calculations efficiently")
     func testMultipleCalculations() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -203,19 +196,18 @@ struct JavaScriptBridgeTests {
                 tourName: "Test Tour \(i)"
             )
             
-            #expect(result != nil)
-            #expect(result?.longestSongs.count == 3)
+            XCTAssertNotNil(result)
+            XCTAssertEqual(result?.longestSongs.count, 3)
         }
         
         let metrics = calculator.performanceMetrics
-        #expect(metrics.totalCalculations == 5)
-        #expect(metrics.errorCount == 0)
-        #expect(metrics.successRate == 1.0)
+        XCTAssertEqual(metrics.totalCalculations, 5)
+        XCTAssertEqual(metrics.errorCount, 0)
+        XCTAssertEqual(metrics.successRate, 1.0)
     }
     
     // MARK: - Error Handling Tests
     
-    @Test("JavaScript bridge handles malformed data gracefully")
     func testErrorHandling() throws {
         let calculator = try JavaScriptTourCalculator()
         
@@ -240,7 +232,7 @@ struct JavaScriptBridgeTests {
         
         // Should handle gracefully and return some result or nil
         // Should not crash the app
-        #expect(true) // Test passes if we reach this point without crashing
+        XCTAssertTrue(true) // Test passes if we reach this point without crashing
     }
     
     // MARK: - Helper Methods

@@ -93,7 +93,7 @@ class APIManager: ObservableObject {
         if let phishInClient = phishInClient, phishInClient.isAvailable {
             // Execute all Phish.in API calls in parallel for better performance
             async let trackDurationsTask = phishInClient.fetchTrackDurations(for: date)
-            async let venueRunTask = phishInClient.fetchVenueRuns(for: date)
+            async let venueRunTask = calculateVenueRunFromPhishNet(for: date, setlistItems: setlistItems)
             async let tourPositionTask = phishInClient.fetchTourPosition(for: date)
             async let recordingsTask = phishInClient.fetchRecordings(for: date)
             
@@ -104,11 +104,8 @@ class APIManager: ObservableObject {
                 print("Warning: Could not fetch track durations from Phish.in for \(date): \(error)")
             }
             
-            do {
-                venueRun = try await venueRunTask
-            } catch {
-                print("Warning: Could not fetch venue run info from Phish.in: \(error)")
-            }
+            venueRun = await venueRunTask
+            // No need for try-catch since calculateVenueRunFromPhishNet doesn't throw
             
             do {
                 tourPosition = try await tourPositionTask
@@ -159,11 +156,11 @@ class APIManager: ObservableObject {
     }
     
     /// Fetch venue run information for a specific show
+    /// Note: This now uses Phish.net data instead of Phish.in to maintain our API usage principle
     func fetchVenueRuns(for showDate: String) async throws -> VenueRun? {
-        guard let phishInClient = phishInClient else {
-            return nil
-        }
-        return try await phishInClient.fetchVenueRuns(for: showDate)
+        // Get setlist items from Phish.net for this show
+        let setlistItems = try await phishNetClient.fetchSetlist(for: showDate)
+        return await calculateVenueRunFromPhishNet(for: showDate, setlistItems: setlistItems)
     }
     
     /// Fetch recording information for a specific show
@@ -255,5 +252,17 @@ extension APIManager {
             sources.append("Phish.in (Audio & Tours)")
         }
         return sources
+    }
+    
+    // MARK: - Phish.net-based Venue Run Calculation
+    
+    /// Calculate venue run information from Phish.net data (not Phish.in)
+    /// This maintains our principle: Phish.net for all venue/date data, Phish.in only for durations
+    /// Temporarily simplified to avoid performance issues
+    private func calculateVenueRunFromPhishNet(for date: String, setlistItems: [SetlistItem]) async -> VenueRun? {
+        // For now, return nil to avoid the expensive API calls that were causing loading issues
+        // TODO: Implement a more efficient venue run calculation that doesn't require fetching all year's setlists
+        print("Venue run calculation temporarily disabled to avoid performance issues")
+        return nil
     }
 }

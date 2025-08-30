@@ -129,11 +129,12 @@ class TourStatisticsService {
         }
         
         // Calculate rarest songs (filtered to tour context)
-        var rarestSongs = calculateRarestSongs(
+        let rarestSongs = calculateRarestSongs(
             from: allSongGaps,
             tourSongIds: tourSongIds,
             tourSongNames: tourSongNames,
-            tourTrackDurations: tourTrackDurations
+            tourTrackDurations: tourTrackDurations,
+            tourShows: [] // Single show context - no full tour data available
         )
         
         // TODO: Enhance rarest songs with accurate historical data
@@ -166,7 +167,8 @@ class TourStatisticsService {
         from allGaps: [SongGapInfo],
         tourSongIds: Set<Int>,
         tourSongNames: Set<String>,
-        tourTrackDurations: [TrackDuration]?
+        tourTrackDurations: [TrackDuration]?,
+        tourShows: [EnhancedSetlist] = []
     ) -> [SongGapInfo] {
         
         // Debug: Print tour song information for troubleshooting
@@ -191,26 +193,37 @@ class TourStatisticsService {
             // Debug: Print songs that match tour criteria
             print("   - Tour song: \(gapInfo.songName) (Gap: \(gapInfo.gap))")
             
-            // Try to find venue information from tour track durations
+            // Get venue information from Phish.net setlist data (not Phish.in)
+            // We should only use Phish.in for song durations, all venue/date data comes from Phish.net
             var tourVenue: String? = nil
             var tourVenueRun: VenueRun? = nil
             var tourDate: String? = nil
             
-            if let tourTracks = tourTrackDurations {
-                // Find all matching tracks for this song in the tour
-                let matchingTracks = tourTracks.filter { track in
-                    if let trackSongId = track.songId, trackSongId == gapInfo.songId {
-                        return true
+            // Find venue information from Phish.net tour shows data
+            if !tourShows.isEmpty {
+                // Find all shows where this song was played
+                let matchingShows = tourShows.filter { show in
+                    show.setlistItems.contains { setlistItem in
+                        if let itemSongId = setlistItem.songId, itemSongId == gapInfo.songId {
+                            return true
+                        }
+                        return setlistItem.song.lowercased() == gapInfo.songName.lowercased()
                     }
-                    return track.songName.lowercased() == gapInfo.songName.lowercased()
                 }
                 
-                // For rarest songs display, prefer the most recent performance in tour
-                // This ensures we show where it was last played in the current tour
-                if let mostRecentTrack = matchingTracks.max(by: { $0.showDate < $1.showDate }) {
-                    tourVenue = mostRecentTrack.venue
-                    tourVenueRun = mostRecentTrack.venueRun
-                    tourDate = mostRecentTrack.showDate
+                // Get the most recent show where this song was played in the tour
+                if let mostRecentShow = matchingShows.max(by: { $0.showDate < $1.showDate }),
+                   let songPerformance = mostRecentShow.setlistItems.first(where: { setlistItem in
+                       if let itemSongId = setlistItem.songId, itemSongId == gapInfo.songId {
+                           return true
+                       }
+                       return setlistItem.song.lowercased() == gapInfo.songName.lowercased()
+                   }) {
+                    
+                    // All data comes from Phish.net (same SetlistItem)
+                    tourVenue = songPerformance.venue
+                    tourDate = songPerformance.showdate
+                    tourVenueRun = mostRecentShow.venueRun // Venue run from Phish.net data
                 }
             }
             
@@ -347,7 +360,8 @@ class TourStatisticsService {
             from: allSongGaps,
             tourSongIds: allTourSongIds,
             tourSongNames: allTourSongNames,
-            tourTrackDurations: allTourDurations
+            tourTrackDurations: allTourDurations,
+            tourShows: tourShows // Full tour shows data available
         )
         
         return TourSongStatistics(
