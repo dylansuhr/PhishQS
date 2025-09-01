@@ -112,15 +112,43 @@ export class PhishNetClient {
      * Creates gap info filtered to tour context
      */
     async fetchSongGaps(songNames, showDate) {
+        console.log(`   🔍 DEBUG: Fetching gaps for ${songNames.length} songs from ${showDate}`);
+        console.log(`   🔍 DEBUG: Song names: ${songNames.join(', ')}`);
+        
         // Get all song gap data
         const allGaps = await this.fetchAllSongsWithGaps();
+        console.log(`   🔍 DEBUG: Total songs in database: ${allGaps.length}`);
         
         // Filter to songs that appear in the current setlist
         const songNameSet = new Set(songNames.map(name => name.toLowerCase()));
         
-        return allGaps.filter(gapInfo => 
+        const filteredGaps = allGaps.filter(gapInfo => 
             songNameSet.has(gapInfo.songName.toLowerCase())
         );
+        
+        console.log(`   🔍 DEBUG: Filtered gaps found: ${filteredGaps.length}`);
+        
+        // Log ALL gap values for debugging - show specific songs we're looking for
+        const targetSongs = ['on your way down', 'paul and silas', 'devotion to a dream'];
+        targetSongs.forEach(targetSong => {
+            const foundSong = filteredGaps.find(gap => gap.songName.toLowerCase() === targetSong);
+            if (foundSong) {
+                console.log(`   🎯 DEBUG: Found target song "${foundSong.songName}" with gap ${foundSong.gap}`);
+            }
+        });
+        
+        // Log high-gap songs for debugging
+        const highGapSongs = filteredGaps.filter(gap => gap.gap > 100);
+        if (highGapSongs.length > 0) {
+            console.log(`   🔍 DEBUG: High-gap songs (>100) in this show:`);
+            highGapSongs.forEach(song => {
+                console.log(`      • ${song.songName}: Gap ${song.gap}`);
+            });
+        } else {
+            console.log(`   🔍 DEBUG: No high-gap songs (>100) found in this show. Max gap: ${Math.max(...filteredGaps.map(g => g.gap))}`);
+        }
+        
+        return filteredGaps;
     }
 
     /**

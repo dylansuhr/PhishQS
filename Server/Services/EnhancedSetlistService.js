@@ -75,17 +75,33 @@ export class EnhancedSetlistService {
             console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[3].reason?.message}`);
         }
 
-        // Step 4: Get gap data from Phish.net (same as iOS lines 82-96) 
-        try {
-            // Get unique song names from the setlist (same as iOS line 84)
-            const songNames = [...new Set(setlistItems.map(item => item.song))];
-            console.log(`   📊 Fetching gap data for ${songNames.length} unique songs...`);
-            
-            songGaps = await this.phishNetClient.fetchSongGaps(songNames, showDate);
-            console.log(`   📊 Found gap data for ${songGaps.length} songs from Phish.net`);
-        } catch (error) {
-            console.log(`   ⚠️  Could not fetch gap data: ${error.message}`);
-            songGaps = [];
+        // Step 4: Extract gap data directly from setlist (gap data is already in setlist response)
+        console.log(`   📊 Extracting gap data from setlist items...`);
+        
+        songGaps = setlistItems.map(item => ({
+            songId: item.songid,
+            songName: item.song,
+            gap: item.gap,
+            lastPlayed: null, // Not available in setlist response
+            timesPlayed: null, // Not available in setlist response
+            tourVenue: null,
+            tourVenueRun: null,
+            tourDate: null,
+            historicalVenue: null,
+            historicalCity: null,
+            historicalState: null,
+            historicalLastPlayed: null
+        }));
+        
+        console.log(`   📊 Extracted gap data for ${songGaps.length} songs from setlist`);
+        
+        // Debug: Log high-gap songs found in this show
+        const highGapSongs = songGaps.filter(gap => gap.gap > 100);
+        if (highGapSongs.length > 0) {
+            console.log(`   🔍 DEBUG: High-gap songs (>100) in ${showDate}:`);
+            highGapSongs.forEach(song => {
+                console.log(`      • ${song.songName}: Gap ${song.gap}`);
+            });
         }
 
         // Step 5: Create enhanced setlist object (same as iOS lines 134-142)

@@ -122,9 +122,19 @@ export class TourStatisticsService {
             .slice(0, 3);
         
         // 3. Rarest songs - sort gaps by highest gap value
-        const rarestSongs = Array.from(tourSongGaps.values())
+        const allGapSongs = Array.from(tourSongGaps.values());
+        console.log(`🔍 DEBUG: Total unique songs with gaps: ${allGapSongs.length}`);
+        
+        // Log top 10 gaps for debugging
+        const top10Gaps = allGapSongs
             .sort((a, b) => b.gap - a.gap)
-            .slice(0, 3);
+            .slice(0, 10);
+        console.log(`🔍 DEBUG: Top 10 gaps across entire tour:`);
+        top10Gaps.forEach((song, index) => {
+            console.log(`   ${index + 1}. ${song.songName}: Gap ${song.gap}`);
+        });
+        
+        const rarestSongs = top10Gaps.slice(0, 3);
         
         // Summary output
         console.log(`✅ Statistics calculated: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
