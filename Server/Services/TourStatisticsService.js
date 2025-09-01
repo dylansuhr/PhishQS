@@ -85,13 +85,19 @@ export class TourStatisticsService {
                         }
                     );
                     
-                    // For each song, keep the occurrence with the HIGHEST gap
+                    // For each song, keep the occurrence with the HIGHEST gap (progressive tracking with validation)
                     if (tourSongGaps.has(songKey)) {
                         const existingGap = tourSongGaps.get(songKey);
+                        // Only replace if this occurrence has a higher gap
                         if (gapInfo.gap > existingGap.gap) {
+                            console.log(`      🔄 Updating ${gapInfo.songName}: ${existingGap.gap} → ${gapInfo.gap}`);
                             tourSongGaps.set(songKey, enhancedGapInfo);
+                        } else {
+                            console.log(`      ✓ Keeping ${gapInfo.songName}: ${existingGap.gap} > ${gapInfo.gap}`);
                         }
                     } else {
+                        // First time seeing this song - add it
+                        console.log(`      ➕ Adding ${gapInfo.songName}: Gap ${gapInfo.gap}`);
                         tourSongGaps.set(songKey, enhancedGapInfo);
                     }
                 });
