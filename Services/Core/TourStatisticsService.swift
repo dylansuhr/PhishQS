@@ -341,6 +341,115 @@ class TourStatisticsService {
         return result
     }
     
+    /// Calculate ALL tour statistics in a single pass for optimal performance
+    /// This replaces separate calls to calculateTourProgressiveRarestSongs, calculateMostPlayedSongs, etc.
+    /// - Parameters:
+    ///   - tourShows: All enhanced setlists for the tour
+    ///   - tourName: Name of the tour
+    /// - Returns: Complete tour statistics calculated in single pass
+    static func calculateAllTourStatistics(
+        tourShows: [EnhancedSetlist], 
+        tourName: String?
+    ) -> TourSongStatistics {
+        
+        print("🚀 calculateAllTourStatistics: Processing \(tourShows.count) shows in single pass")
+        
+        guard !tourShows.isEmpty else {
+            print("⚠️  No tour shows provided, returning empty statistics")
+            return TourSongStatistics(longestSongs: [], rarestSongs: [], mostPlayedSongs: [], tourName: tourName)
+        }
+        
+        // Data collection containers for all three statistics
+        var songPlayCounts: [String: (count: Int, songId: Int?)] = [:]     // For most played
+        var allTrackDurations: [TrackDuration] = []                        // For longest
+        var tourSongGaps: [String: SongGapInfo] = [:]                      // For rarest
+        
+        // SINGLE PASS through all tour shows
+        for (showIndex, show) in tourShows.enumerated() {
+            print("   Processing show \(showIndex + 1): \(show.showDate)")
+            
+            // Collect track durations for longest songs calculation
+            allTrackDurations.append(contentsOf: show.trackDurations)
+            
+            // Count song frequencies for most played calculation
+            for track in show.trackDurations {
+                let songKey = track.songName.lowercased()
+                
+                if let existing = songPlayCounts[songKey] {
+                    songPlayCounts[songKey] = (count: existing.count + 1, songId: existing.songId ?? track.songId)
+                } else {
+                    songPlayCounts[songKey] = (count: 1, songId: track.songId)
+                }
+            }
+            
+            // Collect gap information for rarest songs calculation
+            for gapInfo in show.songGaps {
+                let songKey = gapInfo.songName.lowercased()
+                
+                // Create enhanced gap info with venue run data from show context
+                let enhancedGapInfo = SongGapInfo(
+                    songId: gapInfo.songId,
+                    songName: gapInfo.songName,
+                    gap: gapInfo.gap,
+                    lastPlayed: gapInfo.lastPlayed,
+                    timesPlayed: gapInfo.timesPlayed,
+                    tourVenue: show.setlistItems.first?.venue, // Venue from Phish.net setlist
+                    tourVenueRun: show.venueRun, // Venue run from Phish.in
+                    tourDate: show.showDate,
+                    historicalVenue: gapInfo.historicalVenue,
+                    historicalCity: gapInfo.historicalCity,
+                    historicalState: gapInfo.historicalState,
+                    historicalLastPlayed: gapInfo.historicalLastPlayed
+                )
+                
+                // For each song, keep the occurrence with the HIGHEST gap
+                if let existingGap = tourSongGaps[songKey] {
+                    if gapInfo.gap > existingGap.gap {
+                        tourSongGaps[songKey] = enhancedGapInfo
+                    }
+                } else {
+                    tourSongGaps[songKey] = enhancedGapInfo
+                }
+            }
+        }
+        
+        // Calculate final results from collected data
+        
+        // 1. Longest songs - sort all track durations by length
+        let longestSongs = Array(allTrackDurations
+            .sorted { $0.durationSeconds > $1.durationSeconds }
+            .prefix(3))
+        
+        // 2. Most played songs - convert counts to MostPlayedSong objects
+        let mostPlayedSongs = songPlayCounts.compactMap { (songName, info) -> MostPlayedSong? in
+            let songId = info.songId ?? songName.hash
+            return MostPlayedSong(songId: songId, songName: songName.capitalized, playCount: info.count)
+        }
+        .sorted { $0.playCount > $1.playCount }
+        .prefix(3)
+        .map { $0 }
+        
+        // 3. Rarest songs - sort gaps by highest gap value
+        let rarestSongs = Array(tourSongGaps.values
+            .sorted { $0.gap > $1.gap }
+            .prefix(3))
+        
+        // Debug output
+        print("🚀 Single-pass calculation complete:")
+        print("   📊 Found \(allTrackDurations.count) total track performances")
+        print("   📊 Found \(songPlayCounts.count) unique songs")
+        print("   📊 Top 3 longest: \(longestSongs.map { "\($0.songName) (\($0.formattedDuration))" }.joined(separator: ", "))")
+        print("   📊 Top 3 most played: \(mostPlayedSongs.map { "\($0.songName) (\($0.playCount)x)" }.joined(separator: ", "))")
+        print("   📊 Top 3 rarest: \(rarestSongs.map { "\($0.songName) (gap: \($0.gap))" }.joined(separator: ", "))")
+        
+        return TourSongStatistics(
+            longestSongs: longestSongs,
+            rarestSongs: rarestSongs,
+            mostPlayedSongs: mostPlayedSongs,
+            tourName: tourName
+        )
+    }
+    
     /// Calculate top 3 most played songs from track durations
     static func calculateMostPlayedSongs(from trackDurations: [TrackDuration]) -> [MostPlayedSong] {
         print("🎵 calculateMostPlayedSongs: Processing \(trackDurations.count) track durations")

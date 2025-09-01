@@ -243,8 +243,8 @@ struct TourStatisticsCards: View {
     var body: some View {
         if let stats = statistics, stats.hasData {
             VStack(alignment: .leading, spacing: 16) {
-                // LongestSongsCard(songs: stats.longestSongs)  // Temporarily hidden for debugging
-                // RarestSongsCard(songs: stats.rarestSongs)     // Temporarily hidden for debugging
+                LongestSongsCard(songs: stats.longestSongs)
+                RarestSongsCard(songs: stats.rarestSongs)
                 MostPlayedSongsCard(songs: stats.mostPlayedSongs)
             }
         }

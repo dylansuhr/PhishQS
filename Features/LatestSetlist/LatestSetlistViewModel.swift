@@ -316,76 +316,30 @@ class LatestSetlistViewModel: BaseViewModel {
                 )
             }
             
-            // Fetch tour-wide track durations if we have tour information
-            // TEMPORARILY DISABLED FOR DEBUGGING MOST PLAYED SONGS
-            var tourTrackDurations: [TrackDuration]? = nil
-            var longestSongs: [TrackDuration] = [] // Disabled - empty for faster debugging
+            // Calculate ALL tour statistics in single optimized pass
+            let statistics: TourSongStatistics
             
-            // Commented out expensive longest songs calculation
-            /*
-            if let tourName = enhanced.tourPosition?.tourName,
-               let showDate = enhanced.setlistItems.first?.showdate {
-                do {
-                    // Get the actual tour name from Phish.in for this show
-                    let nativeTourName = try await apiManager.getNativeTourName(for: showDate)
-                    
-                    // Use the native tour name if available, otherwise fall back to tour position name
-                    let tourNameToUse = nativeTourName ?? tourName
-                    
-                    tourTrackDurations = try await apiManager.fetchTourTrackDurations(tourName: tourNameToUse)
-                    
-                    // Calculate longest songs from tour data if available
-                    if let tourDurations = tourTrackDurations, !tourDurations.isEmpty {
-                        longestSongs = Array(tourDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
-                    } else {
-                        longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
-                    }
-                } catch {
-                    print("Warning: Could not fetch tour track durations for \(tourName): \(error)")
-                    longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
-                }
-            } else {
-                longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
-            }
-            */
-            
-            // TEMPORARILY DISABLED FOR DEBUGGING MOST PLAYED SONGS
-            var rarestSongs: [SongGapInfo] = [] // Disabled - empty for faster debugging
-            
-            // Commented out expensive rarest songs calculation
-            /*
-            if let tourName = enhanced.tourPosition?.tourName {
-                print("🔄 Calculating fresh current tour statistics for \(tourName)")
-                rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
+            if let tourName = enhanced.tourPosition?.tourName, !tourShows.isEmpty {
+                print("🚀 Using optimized single-pass calculation for \(tourName)")
+                // Use optimized single-pass calculation for all statistics
+                statistics = TourStatisticsService.calculateAllTourStatistics(
                     tourShows: tourShows,
                     tourName: tourName
                 )
             } else {
-                // Fallback for shows without tour info
-                rarestSongs = enhanced.getRarestSongs(limit: 3)
+                print("📊 Fallback to single show calculations")
+                // Fallback for shows without tour info - calculate from single show
+                let longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
+                let rarestSongs = enhanced.getRarestSongs(limit: 3)
+                let mostPlayedSongs = TourStatisticsService.calculateMostPlayedSongs(from: enhanced.trackDurations)
+                
+                statistics = TourSongStatistics(
+                    longestSongs: longestSongs,
+                    rarestSongs: rarestSongs,
+                    mostPlayedSongs: mostPlayedSongs,
+                    tourName: enhanced.tourPosition?.tourName
+                )
             }
-            */
-            
-            // Calculate most played songs from tour data (same pattern as longest songs)
-            var mostPlayedSongs: [MostPlayedSong] = []
-            if let tourName = enhanced.tourPosition?.tourName, !tourShows.isEmpty {
-                // Use tour-wide track durations for most played calculation
-                let allTourDurations = tourShows.flatMap { $0.trackDurations }
-                mostPlayedSongs = TourStatisticsService.calculateMostPlayedSongs(from: allTourDurations)
-                print("📊 Calculated most played songs from \(allTourDurations.count) tour tracks")
-            } else {
-                // Fallback to single show durations
-                mostPlayedSongs = TourStatisticsService.calculateMostPlayedSongs(from: enhanced.trackDurations)
-                print("📊 Calculated most played songs from \(enhanced.trackDurations.count) single show tracks")
-            }
-            
-            // Create tour statistics with real data
-            let statistics = TourSongStatistics(
-                longestSongs: longestSongs,
-                rarestSongs: rarestSongs,
-                mostPlayedSongs: mostPlayedSongs,
-                tourName: enhanced.tourPosition?.tourName
-            )
             
             // Cache current tour statistics for dashboard optimization (1 hour TTL)
             CacheManager.shared.set(statistics, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)
