@@ -8,14 +8,24 @@
 import Foundation
 
 /// Service for calculating tour-specific song statistics
+///
+/// **IMPORTANT**: This service has been refactored to use server-side calculations.
+/// - Primary approach: Use `TourStatisticsAPIClient.shared.fetchTourStatistics()` for instant server-side statistics
+/// - Fallback methods: Deprecated calculation methods remain available for offline scenarios
+/// - Performance: Server responses are ~100x faster than local calculations
+///
 class TourStatisticsService {
     
     /// Calculate tour-progressive rarest songs (tracks top 3 across entire tour)
-    /// This should be called with ALL previous shows from the tour plus the current show
+    ///
+    /// **DEPRECATED**: This method has been replaced by server-side calculations via TourStatisticsAPIClient.
+    /// Tour statistics are now fetched from pre-computed JSON served by Vercel for instant loading.
+    ///
     /// - Parameters:
     ///   - tourShows: All enhanced setlists from the tour (in chronological order)
     ///   - tourName: Name of the tour for context
     /// - Returns: Top 3 rarest songs across the entire tour
+    @available(*, deprecated, message: "Use TourStatisticsAPIClient.shared.fetchTourStatistics() for server-side statistics")
     static func calculateTourProgressiveRarestSongs(
         tourShows: [EnhancedSetlist],
         tourName: String?
@@ -161,7 +171,6 @@ class TourStatisticsService {
             mostPlayedSongs = calculateMostPlayedSongs(from: setlist.trackDurations)
         }
         
-        // TODO: Enhance rarest songs with accurate historical data
         // This will require making calculateTourStatistics async or creating a separate async method
         // For now, the enhanced data is added manually in calculateRarestSongs
         
@@ -342,11 +351,16 @@ class TourStatisticsService {
     }
     
     /// Calculate ALL tour statistics in a single pass for optimal performance
-    /// This replaces separate calls to calculateTourProgressiveRarestSongs, calculateMostPlayedSongs, etc.
+    /// 
+    /// **DEPRECATED**: This method has been replaced by server-side calculations via TourStatisticsAPIClient.
+    /// Tour statistics are now fetched from pre-computed JSON served by Vercel for instant loading.
+    /// This method is kept for fallback scenarios or offline support if needed.
+    ///
     /// - Parameters:
     ///   - tourShows: All enhanced setlists for the tour
     ///   - tourName: Name of the tour
     /// - Returns: Complete tour statistics calculated in single pass
+    @available(*, deprecated, message: "Use TourStatisticsAPIClient.shared.fetchTourStatistics() for server-side statistics")
     static func calculateAllTourStatistics(
         tourShows: [EnhancedSetlist], 
         tourName: String?

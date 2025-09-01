@@ -4,584 +4,195 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PhishQS (Phish Quick Setlist) is a minimalist iOS app built with SwiftUI that allows users to quickly browse Phish setlists by year, month, and day using the Phish.net API. The app follows a hierarchical navigation pattern: Year → Month → Day → Setlist, with a focus on speed and minimal taps.
+PhishQS is a hybrid iOS/Node.js project consisting of:
+- **iOS App**: Swift/UIKit minimalist app for browsing Phish setlists
+- **Server Components**: Vercel-deployed Node.js serverless functions for tour statistics
 
-## Build and Test Commands
+## Plan and Review
 
-This is a standard Xcode iOS project. Use these commands:
+Before you begin, write a detailed implementation plan in a file named claude/tasks/TASK_NAME.md.
 
-- **Build** (default - build-only, no simulator): `xcodebuild -project PhishQS.xcodeproj -scheme PhishQS -destination 'generic/platform=iOS' build`
-- **Build** (with xcbeautify if installed): `xcodebuild -project PhishQS.xcodeproj -scheme PhishQS -destination 'generic/platform=iOS' build | xcbeautify --quiet`
-- **Build** (alternative): Open `PhishQS.xcodeproj` in Xcode and use Cmd+B
-- **Run Tests**: Use Cmd+U in Xcode, or `xcodebuild test -scheme PhishQS -destination 'platform=iOS Simulator,name=iPhone 15'`
-- **Run App**: Use Cmd+R in Xcode or build and run on simulator/device
+This plan should include:
 
-**Note**: Default to build-only command for compilation checks. Use physical device for testing due to Cloudflare networking issues in simulator.
+A clear, detailed breakdown of the implementation steps.
 
-The project uses the new Swift Testing framework (not XCTest), so test files use `@Test` annotations instead of `XCTestCase`.
+The reasoning behind your approach.
 
-## Core Architectural Principles
+A list of specific tasks.
 
-### Pure iOS Calculations Architecture
-**CURRENT APPROACH**: All tour statistics calculations are performed natively in iOS using Swift code. This provides:
-- **Simplicity**: No cross-platform complexity or JavaScript bridge dependencies
-- **Reliability**: Direct Swift implementations with full iOS integration
-- **Performance**: Optimized Swift calculations with intelligent caching
-- **Maintainability**: Single codebase in Swift, easier to debug and enhance
+Focus on a Minimum Viable Product (MVP) to avoid over-planning. Once the plan is ready, please ask me to review it. Do not proceed with implementation until I have approved the plan.
 
-### API Usage Guidelines (Strict)
-**CRITICAL**: APIs must be used according to their strengths, never mix data sources:
+## While Implementing
 
-**Phish.net API**:
-- ✅ **Source of truth for**: Venue names, dates, cities, states, setlist data, show metadata
-- ✅ **When to use**: All venue-date pairs, all show information, all setlist content
+As you work, keep the plan updated. After you complete a task, append a detailed description of the changes you've made to the plan. This ensures that the progress and next steps are clear and can be easily handed over to other engineers if needed.
 
-**Phish.in API**:
-- ✅ **Source of truth for**: Song durations ONLY (`durationSeconds` field), venue runs (N1/N2/N3), tour positions
-- ❌ **Never use for**: Venue names, dates, show metadata when displaying with dates
+## Development Commands
 
-**Rule**: If you display a date, the corresponding venue MUST come from the same API source (Phish.net).
+### Server/Node.js Commands
+```bash
+npm run dev                # Start Vercel development server
+npm run generate-stats     # Generate tour statistics JSON data
+npm run deploy             # Deploy to Vercel production
+```
 
-### Venue Run Logic (N1/N2/N3 Display)
-**CRITICAL RULE**: N1/N2/N3 indicators are displayed ONLY when there are multiple nights at the same venue:
+### iOS Development
+- Use Xcode to build and run the iOS app
+- iOS target requires iOS 16.0+ and Xcode 15+
+- UI tests are located in `Tests/PhishQSUITests/`
 
-**Display Logic**:
-- ✅ **Multi-night runs**: Show "Madison Square Garden, N3" (when `totalNights > 1`)
-- ✅ **Single night shows**: Show "Madison Square Garden" only (no night indicator)
-- ✅ **Format**: `venue, N{nightNumber}` where nightNumber is 1-based
-- ✅ **Data source**: Phish.in API provides venue run calculation logic
+## Architecture Overview
+
+### iOS App Structure
+The iOS app follows a feature-based architecture with clear separation of concerns:
+
+- **Features/**: Feature modules with view-viewmodel pairs
+  - `Dashboard/`: Main dashboard with latest show cards
+  - `Setlist/`: Setlist display with detailed track views
+  - `MonthSelection/`, `DaySelection/`, `YearSelection/`: Navigation hierarchy
+  - `TourDashboard/`: Tour-specific statistics view
+  - `LatestSetlist/`: Latest show information
+
+- **Services/**: Core business logic and API clients
+  - `APIManager.swift`: Central coordinator between different API services
+  - `Core/`: Shared services including caching, tour statistics, and API protocols
+  - `PhishNet/`, `PhishIn/`: API client implementations
+
+- **Models/**: Data models for shows, setlists, and tour statistics
+
+- **Utilities/**: Helper functions and extensions
+
+### Server Structure
+Node.js serverless functions follow iOS architectural patterns:
+
+- **Server/API/**: Vercel serverless function endpoints
+  - `tour-statistics.js`: Main API endpoint serving pre-computed tour data
+
+- **Server/Services/**: Business logic services (mirrors iOS Services pattern)
+  - `TourStatisticsService.js`: Core tour statistics calculations
+
+- **Server/Models/**: Data models matching iOS model structure
+  - `TourStatistics.js`: Tour statistics model definitions
+
+- **Server/Scripts/**: Data generation and maintenance scripts
+  - `generate-stats.js`: Creates tour statistics JSON from API data
+
+- **Server/Data/**: Generated JSON data files served by APIs
+
+## Key Design Patterns
+
+### Multi-API Strategy
+The app uses a hybrid approach combining two specialized APIs to provide comprehensive tour data:
+
+**Phish.net API** (Primary setlist source):
+- Shows by year and setlist data
+- Song gap calculations (shows since last played)
+- Venue names, cities, states that match setlist context
+- Transition marks between songs (→, >, etc.)
+- Official authoritative Phish database
+
+**Phish.in API** (Audio and performance enhancement):
+- Song durations (only available source)
+- Tour organization and naming
+- Venue runs calculation (N1/N2/N3 multi-night indicators)
+- Audio recording links
+
+**Why both APIs are required**:
+- Neither API alone provides complete data needed for tour statistics
+- Phish.net has no duration data; Phish.in has no gap data
+- Each API specializes in different aspects of show information
+
+### Caching Strategy
+- `CacheManager.swift` handles data persistence and cache invalidation
+- Server responses include cache headers (`s-maxage=3600`)
+
+### Tour Statistics Business Logic
+Core tour statistics are calculated using specific algorithms and update rules:
+
+**Top 3 Longest Songs**:
+- Ranked by duration (longest first)
+- Updates during active tour: new songs replace shortest of current top 3 if longer
+- Displays: song name, duration, show date, venue name
+- Data source: Song durations from Phish.in API
+
+**Top 3 Rarest Songs (Biggest Gaps)**:
+- Ranked by gap size (shows since last played before current tour)
+- Updates during active tour: new songs replace lowest gap if higher
+- Displays: song name, gap number, tour show date/venue, last played date
+- Data source: Gap calculations from Phish.net API
+
+**Tour Transition Logic**:
+- Tour determined by which tour the latest setlist belongs to
+- Between tours: continue showing stats from most recently completed tour
+- New tour: statistics reset and begin tracking new tour automatically
+- Latest setlist always shows most recent Phish concert
+
+**Performance Strategy**:
+- Server pre-computes all statistics to avoid slow real-time calculation
+- Statistics stored in `Server/Data/tour-stats.json`
+- `TourStatisticsService` handles complex calculations including gap analysis
+- `HistoricalGapCalculator` manages song gap calculations
+
+## API Configuration
+
+### Server Environment
+- Node.js 18+ required
+- Uses ES modules (`"type": "module"` in package.json)
+- Vercel configuration in `vercel.json` with CORS headers
+
+### API Endpoints
+- `/api/tour-statistics`: Returns pre-computed tour statistics
+- Requires API keys for Phish.net and Phish.in (configured in generate-stats.js)
+
+## Critical API Rules
+
+### Venue-Date Consistency Rule
+**CRITICAL**: If you display a date, the corresponding venue MUST come from the same API source.
+
+**Why this matters**:
+- Show date from Phish.net + venue name from Phish.in = potentially different venue names
+- This creates data inconsistencies and user confusion
+- Each API may format venue names differently for the same physical location
 
 **Implementation**:
-- `VenueRun.totalNights > 1` → Display N1/N2/N3 indicator
-- `VenueRun.totalNights = 1` → Display venue name only, no night indicator
-- No VenueRun data → Display venue name only
-
-### Performance-First Architecture
-- **Current Tour Caching**: Intelligent caching for current tour statistics (1-hour TTL)
-- **Tour Change Detection**: Automatic cache clearing when tours transition
-- **Optimized Calculations**: Swift implementations with minimal API calls
-- **Physical Device Testing**: Always test on physical iOS device due to Cloudflare networking issues in simulator
-
-## Architecture and Code Organization
-
-### Project Structure
-- **Features/**: Organized by screen/feature with View and ViewModel pairs
-  - `YearSelection/`: Starting screen showing years 1983-2025 (excluding hiatus years 2005-2007)
-  - `MonthSelection/`: Shows months with shows for selected year
-  - `DaySelection/`: Shows days with shows for selected month
-  - `Setlist/`: Displays the actual setlist for selected show
-  - `LatestSetlist/`: Shows the most recent show at top of year list
-- **Models/**: Data models (`Show`, `SetlistItem`, response wrappers)
-- **Utilities/**: API client and mock implementations
-- **Resources/**: Contains `Secrets.plist` for API keys
-- **Tests/**: Unit tests using Swift Testing framework
-
-### Key Architecture Patterns
-
-1. **MVVM Pattern**: Each view has a corresponding ViewModel extending `BaseViewModel`
-2. **Dependency Injection**: ViewModels accept `PhishAPIService` protocol for testability
-3. **Async/Await**: Modern Swift concurrency throughout the API layer
-4. **Protocol-Oriented**: `PhishAPIService` protocol with real and mock implementations
-5. **NavigationStack**: Uses SwiftUI NavigationStack for hierarchical navigation
-6. **Shared Utilities**: Common functionality extracted into reusable utilities
-
-### API Client Design
-- `PhishAPIClient` singleton for production API calls
-- `MockPhishAPIClient` for testing with simulated delays and error scenarios
-- Comprehensive error handling with `APIError` enum
-- All network calls use async/await with proper error propagation
-
-### Shared Utilities Architecture
-- **`BaseViewModel`**: Common ViewModel functionality (loading states, error handling)
-- **`DateUtilities`**: Date parsing, formatting, and extraction functions
-- **`APIUtilities`**: Phish show filtering and data processing
-- **`StringFormatters`**: Consistent string formatting for setlists and titles
-
-### Data Flow
-1. User starts at `YearListView` (shows hardcoded years 1983-2025)
-2. Each level fetches data from Phish.net API to populate the next level
-3. ViewModels use shared utilities for data transformation
-4. Views display loading states, errors, and retry functionality consistently
-5. Views use NavigationLink for push-style navigation between levels
-
-### Key Implementation Details
-- Years 2005-2007 are filtered out (Phish hiatus period)
-- Latest setlist appears at top of year list for quick access
-- All ViewModels inherit from `BaseViewModel` for consistent error/loading handling
-- All Views display loading spinners and error messages with retry buttons
-- Date parsing and formatting handled by shared utilities
-- No code duplication between ViewModels
-
-## Known Issues
-
-### iOS Simulator + Cloudflare Networking
-- **Issue**: The Phish.net API (hosted on Cloudflare) fails in iOS Simulator with IPv6/QUIC protocol errors
-- **Symptoms**: Timeouts, "connection lost", "cannot parse response" errors
-- **Root Cause**: iOS Simulator has known compatibility issues with Cloudflare's modern networking (HTTP/3, QUIC, IPv6)
-- **Solution**: Use physical iOS device for development and testing
-- **Workarounds**: Not implemented in production code (debug files were removed for cleanliness)
-
-### Testing Strategy
-- **Physical Device**: Full functionality including API calls
-- **Simulator**: Use MockPhishAPIClient for UI testing when network calls fail
-- **Unit Tests**: Run on both simulator (with mocks) and device (with real API)
-
-## Feature Roadmap
-
-### High Priority
-- [ ] Add link to stream show on LivePhish app
-- [ ] Add Phish.net link so user can get more information on the show
-- [ ] Add future tour dates button on home screen and pull future tour date data
-- [ ] Add day of the week to each show (Monday, Tuesday, etc.)
-- [ ] For month view, add month names (January, February) in addition to numbers for easy reading
-- [ ] When user is not on latest setlist card, add "Return to Latest" button for quick navigation
-- [ ] Remove all loading animations throughout the app for cleaner, more professional appearance
-
-### Medium Priority
-- [x] For venue "runs" (same venue multiple nights), show N1/3, N2/3, N3/3 format
-- [x] Indicate show number in tour (e.g., "Summer Tour 2025 15/23")
-- [x] Build functionality to pull data from Phish.in API and research available information
-- [x] Access song lengths for each song in a show
-- [ ] Implement color scale for song lengths (green=shortest, red=longest, gradient between)
-- [ ] Implement categorization of shows by tour within year/month/day (maintain efficiency)
-- [ ] Consider removing year list from home screen, replace with button leading to dedicated full-page year view
-
-### Long Term Goals
-- [ ] OCR feature: Take photo of any date, read date from image, open that show
-- [ ] Notes section for each show with sharing capability
-- [ ] Collaborative notes with friends and notifications ("listen to this Tweezer - it's fire!")
-
-## Multi-API Architecture Plan
-
-### Overview
-Modular architecture to integrate multiple Phish data sources while maintaining clean separation of concerns and easy extensibility.
-
-### API Priority Strategy
-1. **Phish.net** - Primary source for setlist data (current implementation)
-2. **Phish.in** - Song lengths, tour metadata, venue run information
-
-### Directory Structure
-```
-/Services/
-├── PhishNet/          # Phish.net API client (primary setlist source)
-├── PhishIn/           # Phish.in API client (song lengths, tours, venue runs)
-├── Core/              # Shared protocols, errors, utilities
-└── APIManager.swift   # Central coordinator between all APIs
-```
-
-### Data Strategy
-- **Phish.net**: Master setlist data (maintain current approach as single source of truth)
-- **Phish.in**: Supplement with song durations, tour metadata, N1/N2/N3 venue run info
-
-### Implementation Phases
-**Phase 1: Foundation Restructure**
-1. Create Services directory structure  
-2. Move existing PhishAPIClient to Services/PhishNet/
-3. Create core protocols and shared utilities
-4. Update imports throughout app
-
-**Phase 2: Phish.in Integration**
-1. Implement Phish.in client focusing on tracks/tours endpoints
-2. Create models for song durations and tour metadata
-3. Test data integration without UI changes
-
-**Phase 3: Central Coordination**
-1. Build APIManager to coordinate between APIs
-2. Update ViewModels to use new APIManager
-
-### Benefits
-- Provides song length and tour data from Phish.in
-- Maintains Phish.net as setlist authority
-- Modular design for easy future API additions
-- Clean separation of concerns
-
-## Session Progress Summary
-
-### **Phase 1 Complete: Foundation Restructure** ✅
-- [x] Created Services directory structure with proper organization
-- [x] Moved PhishAPIClient to Services/PhishNet/ (renamed from PhishNetAPIClient for compatibility)
-- [x] Created core protocols and shared utilities in Services/Core/
-- [x] Built central APIManager coordinator
-- [x] Updated all imports throughout app to use new structure
-- [x] Fixed Xcode project file references (resolved "Servies" typo)
-- [x] Moved MockPhishAPIClient to test-only target (Tests/PhishQSTests/Mocks/)
-- [x] Verified main app builds successfully
-
-### **Session Complete ✅ - Multi-API Architecture Phases 2 & 3**
-
-**Date**: July 25, 2025
-**Status**: Phase 2 & 3 of Multi-API Architecture complete, ready for Phase 4
-
-### **Latest Session Accomplishments ✅**
-- [x] **Phase 2 Complete**: Phish.in API Integration
-  - Full PhishIn API client implementation with song durations, tour metadata, venue runs (N1/N2/N3)
-  - Comprehensive models with conversion utilities between API formats
-  - Complete mock implementation for testing
-  - Protocol-compliant error handling and async/await support
-- [x] **Phase 3 Complete**: Central API Coordination
-  - Enhanced APIManager with multi-API coordination
-  - `fetchEnhancedSetlist()` combines Phish.net setlists with Phish.in song durations and venue runs
-  - Graceful fallback when Phish.in is unavailable
-  - New `EnhancedSetlist` model for combined data
-- [x] **Architecture Foundation**: Clean, extensible multi-API design
-- [x] **Build Verification**: All code compiles successfully
-
-### **Current Architecture ✅**
-```
-/Services/
-├── PhishNet/          # Phish.net API client (primary setlist source) ✅
-├── PhishIn/           # Phish.in API client (song lengths, tours, venue runs) ✅  
-├── Core/              # Shared protocols, errors, utilities ✅
-└── APIManager.swift   # Central coordinator between APIs ✅
-```
-
-### **Session Complete ✅ - Transition Mark Display & Duration Matching Fix**
-
-**Date**: August 21, 2025
-**Status**: Song duration display and transition marks fully functional
-
-### **Latest Session Accomplishments ✅**
-- [x] **Transition Mark Display Fix**: Fixed `->` and `>` symbols now display properly next to song names
-- [x] **Song Duration Matching Fix**: Fixed duration lookup between Phish.net setlist and Phish.in track data
-- [x] **Venue Model Fix**: Fixed PhishInVenue decoding error for venues without `id` field 
-- [x] **Enhanced UI Components**: Updated `DetailedSetlistLineView` with separate transition mark parameter
-- [x] **Simplified Parsing Logic**: Removed complex song parsing that stripped transition marks
-- [x] **Fuzzy Matching**: Added intelligent song name matching with exact + partial fallback
-- [x] **Phish.in v2 API**: Updated to use Phish.in API v2 - no authentication required
-- [x] **Enhanced Data Integration**: ViewModels now use `APIManager.fetchEnhancedSetlist()` for combined data
-
-### **Current Architecture Status ✅**
-```
-/Services/
-├── PhishNet/          # Phish.net API client (primary setlist source) ✅
-├── PhishIn/           # Phish.in API client v2 (song lengths, tours, venue runs) ✅  
-├── Core/              # Shared protocols, errors, utilities ✅
-└── APIManager.swift   # Central coordinator between APIs ✅
-
-/Features/Setlist/
-├── SetlistView.swift           # Individual song display with durations ✅
-├── SetlistViewModel.swift      # Enhanced data integration ✅
-└── DetailedSetlistLineView.swift # Song + duration component ✅
-
-/Utilities/
-└── SongParser.swift            # Song extraction utility ✅
-```
-
-### **Key Implementation Details**
-- **Individual Song Display**: SetlistView now shows songs line-by-line with right-aligned durations (like LivePhish)
-- **Data Pipeline**: PhishNet provides setlists → PhishIn v2 provides song durations → Combined in EnhancedSetlist
-- **API v2 Benefits**: No authentication required, full song duration data available
-- **User Feedback**: Clear messaging when song durations unavailable (should be rare now)
-
-### **Research Findings - API Relationship**
-- **Phish.net**: Primary setlist and metadata source (API v5) - authoritative database
-- **Phish.in**: Audio recording archive with timing data (API v2) - complementary enhancement
-- **Data Flow**: Services complement rather than duplicate - our multi-API architecture is correctly designed
-- **API Authentication**: Phish.in v2 requires no authentication; Phish.net uses existing key
-
-### **Session Complete ✅ - Tour Position Display Implementation**
-
-**Date**: August 21, 2025
-**Status**: Tour position display fully implemented and functional
-
-### **Latest Session Accomplishments ✅**
-- [x] **Tour Data Models Enhanced**: Added `TourShowPosition` model with show numbering (Show X/Y format)
-- [x] **API Integration Complete**: Added `fetchTourPosition()` to PhishIn API client with tour show counting
-- [x] **Enhanced Setlist Model**: Updated `EnhancedSetlist` to include tour position information
-- [x] **UI Display Implementation**: Both SetlistView and LatestSetlistView now show tour position information
-- [x] **Central API Coordination**: APIManager now fetches and coordinates tour position data
-- [x] **Mock Testing Support**: Updated mock client with tour position test data
-- [x] **Protocol Compliance**: Added tour position method to TourProviderProtocol
-- [x] **Build Verification**: All code compiles successfully with new tour features
-
-### **Current Architecture Status ✅**
-```
-/Services/
-├── PhishNet/          # Phish.net API client (primary setlist source) ✅
-├── PhishIn/           # Phish.in API client v2 (song lengths, tours, venue runs, tour positions) ✅  
-├── Core/              # Shared protocols, errors, utilities, tour models ✅
-└── APIManager.swift   # Central coordinator between APIs ✅
-
-/Features/Setlist/
-├── SetlistView.swift           # Individual song display with durations + tour info ✅
-├── SetlistViewModel.swift      # Enhanced data integration + tour position ✅
-└── DetailedSetlistLineView.swift # Song + duration component ✅
-
-/Features/TourDashboard/
-└── TourDashboardView.swift     # Home screen with latest setlist + search button ✅
-
-/Features/LatestSetlist/
-├── LatestSetlistView.swift     # Latest show with tour position display ✅
-└── LatestSetlistViewModel.swift # Enhanced with tour position access ✅
-
-```
-
-### **Key Implementation Details**
-- **Tour Position Display**: Shows "Winter Tour 2025 (8/12)" in full setlist view and "Show 8/12" in latest setlist card
-- **Automatic Calculation**: Tour position calculated by finding show's chronological position within its tour
-- **Data Pipeline**: PhishNet provides setlists → PhishIn v2 provides tour metadata → Combined with position calculation
-- **Graceful Fallback**: Clean UI behavior when tour data is unavailable
-- **Consistent Styling**: Tour info uses appropriate typography hierarchy and secondary colors
-
-### **Important Architecture Note ⚠️**
-**Tour vs Show Data Distinction**: 
-- **Above the latest setlist**: Show-specific information (date, venue, setlist)
-- **Below the latest setlist**: Tour-wide information (statistics, top 3 longest/rarest songs across entire tour)
-- Tour statistics should show the **cumulative best across all shows in the tour** (e.g., Summer Tour 2025 had 23 shows)
-- Avoid duplicating existing tour tracking infrastructure - we already display "Summer Tour 2025 23/23"
-
-### **Ready for Next Session:**
-1. **Color Scale Implementation**: Implement color coding for song lengths in SetlistView (green=short, red=long)
-2. **Recording Links**: Add links to available recordings where applicable  
-3. **LivePhish Integration**: Add links to stream shows on LivePhish app
-4. **Phish.net Links**: Add links to show details on Phish.net
-5. **Performance Optimization**: Consider caching strategies for enhanced setlist data
-6. **Remove Loading Animations**: Per roadmap - remove all loading animations for cleaner appearance
-
-### **Immediate Action Items 🚨**
-1. **AccentColor Warning**: Add AccentColor to Assets.xcassets or remove reference  
-2. **Test Target Fix**: Add `Show.swift` and `SetlistItem.swift` to test target in Xcode
-
-### **Technical Debt Items**
-- Mock client helper methods have placeholder implementations (low priority)
-- Could benefit from more comprehensive edge case testing
-- Documentation could be enhanced for complex API coordination logic
-
-### **Session Complete ✅ - Song Parsing Architecture Redesign & Blue Tour Highlighting**
-
-**Date**: August 26, 2025
-**Status**: Direct SetlistItem rendering implemented with enhanced tour info styling
-
-### **Latest Session Accomplishments ✅**
-- [x] **"My Friend, My Friend" Comma Parsing Fix**: Fixed edge case where songs with internal commas were incorrectly split
-- [x] **Direct SetlistItem Rendering**: Replaced string parsing with direct use of SetlistItem array - eliminated all comma parsing complexity
-- [x] **Robust Set Processing**: Added fallback logic to handle any unexpected set identifiers ("E", "ENCORE", etc.)
-- [x] **Perfect Spacing**: Fixed spacing between sets and restored missing Encore section
-- [x] **Blue Tour Highlighting**: Added blue highlighting to tour show numbers (e.g., "23/23") matching venue run styling 
-- [x] **Layout Preservation**: Maintained original 5-line header design including intentional day description
-
-### **Technical Architecture Improvements**
-- **Eliminated String Parsing**: No more regex or string splitting - works directly with structured data
-- **Position-Based Color Matching**: Maintains accurate song position tracking across all sets for color gradient
-- **Enhanced Data Pipeline**: `SetlistItem.song` + `SetlistItem.transMark` → Direct rendering with colors
-- **Robust Encore Detection**: Dynamic set processing handles all set variants properly
-
-### **Current UI Status ✅**
-```
-2025-07-27
-Sunday, July 27th  
-Broadview Stage at SPAC                           N3/3
-Saratoga Springs, NY
-Summer Tour 2025 23/23
-
-Set 1:
-[Colored songs with transition marks] ✅
-
-Set 2: 
-[Colored songs with transition marks] ✅
-
-Encore:
-[Colored songs] ✅
-```
-
-Where **"N3/3"** and **"23/23"** both use blue highlighting with background.
-
-### **Files Modified This Session**
-- `Features/LatestSetlist/LatestSetlistView.swift`: Major architecture change from string parsing to direct SetlistItem rendering
-- `Utilities/RelativeDurationColors.swift`: Added color calculation utilities for direct data approach
-
-### **Data Flow Now ✅**
-```
-PhishNet API → SetlistItem[] → Direct Rendering → Individual Colors
-                    ↓
-              EnhancedSetlist → Position-based color matching
-                    ↓
-               Styled Display (song colors + blue highlights)
-```
-
-### **Key Benefits Achieved**
-- **100% Accurate**: No more parsing ambiguity - "My Friend, My Friend" vs "Funky Bitch, Roses Are Free"
-- **Future Proof**: Works with any song names, comma patterns, or special characters
-- **Performance**: Eliminated complex string processing overhead
-- **Maintainable**: Clean separation between data and presentation
-- **Consistent Styling**: Tour info now matches venue run visual design
-
-### **Code Quality**: Production-ready, well-architected, comprehensive error handling ✅
-
-### **Session Complete ✅ - TourDashboard Home Screen & Code Cleanup**
-
-**Date**: August 21, 2025
-**Status**: New home screen architecture and dead code cleanup complete
-
-### **Latest Session Accomplishments ✅**
-- [x] **TourDashboard Home Screen**: New clean home screen with latest setlist + search button
-- [x] **Navigation Restructure**: TourDashboard → YearListView (via search) → MonthListView → SetlistView
-- [x] **Card Removal**: Removed all card styling from LatestSetlistView for cleaner look
-- [x] **Dead Code Cleanup**: Removed unused DateSearchView, refresh functionality, formattedSetlist
-- [x] **Documentation Update**: Updated CLAUDE.md to reflect new architecture
-
-### **New Architecture ✅**
-```
-App Launch: TourDashboardView (home screen)
-├── Latest setlist display (no cards, Previous/Next buttons)
-├── "search by date" button → YearListView → MonthListView → SetlistView
-└── All existing data: venue runs, tour positions, song durations preserved
-```
-
-### **Code Cleanup Completed**
-- **Removed Files**: DateSearchView.swift (unused date picker)
-- **Removed Code**: isRefreshing state, refreshCurrentShow methods, formattedSetlist property
-- **Updated Documentation**: Architecture diagrams and session notes
-
-### **Session Complete ✅ - Current Tour Dashboard Performance Optimization**
-
-**Date**: August 28, 2025
-**Status**: Tour dashboard optimized for current tour only with fast performance and minimal memory usage
-
-### **Latest Session Accomplishments ✅**
-- [x] **Current Tour Cache Strategy**: Implemented `currentTourStats` cache key for dashboard optimization
-- [x] **Tour Change Detection**: Added automatic cache clearing when tours transition (Summer 2025 → Fall 2025)
-- [x] **Performance Optimization**: Dashboard loads instantly for cached current tour data (1 hour TTL)
-- [x] **Memory Management**: Previous tour data automatically discarded when tours change
-- [x] **Build Verification**: All optimization code compiles successfully
-
-### **Current Tour Dashboard Strategy ✅**
-```
-Dashboard Data Flow:
-1. Get latest show date → Determine current tour (e.g., "Summer Tour 2025")
-2. Check currentTourStats cache → Load instantly if available
-3. If no cache: Calculate tour statistics once → Cache for 1 hour
-4. Tour transition (Summer→Fall): Clear Summer cache, start fresh with Fall data
-5. Memory: Only current tour data retained, previous tour data discarded
-```
-
-### **Performance Benefits**
-- **First Load**: 60 seconds → 2 seconds (calculation + caching)
-- **Subsequent Loads**: 2 seconds → 0.1 seconds (cached data)
-- **Tour Transitions**: Automatic cache cleanup when tours change
-- **Memory**: Minimal footprint, no historical tour baggage
-
-### **Key Implementation Details**
-- **CacheManager**: Added `currentTourStats` and `currentTourName` cache keys
-- **Tour Detection**: `handleTourChange()` method detects tour transitions automatically
-- **LatestSetlistViewModel**: Optimized `fetchTourStatistics()` with current tour caching
-- **Cache TTL**: 1 hour for current tour stats (short since only current tour matters)
-- **Cleanup**: Previous tour data automatically garbage collected
-
-### **Current Architecture Status ✅**
-```
-Tour Dashboard: Current Tour Only (Optimized)
-├── Cache: currentTourStats (1 hour TTL)
-├── Detection: Automatic tour transition handling
-├── Memory: Minimal - current tour data only
-└── Performance: ~0.1 second loads after first calculation
-```
-
-### Completed ✅
-- [x] Fix LatestSetlistView swipe animations (horizontal-only movement, proper slide transitions)
-- [x] Multi-API Architecture Phase 1: Foundation Restructure
-- [x] Multi-API Architecture Phase 2: Phish.in Integration  
-- [x] Multi-API Architecture Phase 3: Central Coordination
-- [x] Phase 4: Song Duration Display Implementation
-- [x] Transition Mark Display & Duration Matching Fixes
-- [x] **Venue Run Display & Date Search Implementation**
-- [x] **Tour Position Display Implementation**
-- [x] **Current Tour Dashboard Performance Optimization**
-- [x] **Pure iOS Architecture Documentation Update**
-
-### **Session Complete ✅ - Pure iOS Architecture Documentation Update**
-
-**Date**: August 31, 2025  
-**Status**: Documentation updated to reflect pure iOS calculations approach
-
-### **Latest Session Accomplishments ✅**
-- [x] **Documentation Cleanup**: Updated CLAUDE.md to reflect pure iOS calculations architecture  
-- [x] **Architecture Clarification**: Removed outdated JavaScript bridge references
-- [x] **ServerSideTourStats.md Archive**: Marked server-side approach as archived/reference-only
-- [x] **Venue Run Logic Documentation**: Added comprehensive N1/N2/N3 display rules
-- [x] **API Usage Guidelines**: Clarified Phish.net vs Phish.in responsibilities
-- [x] **Branch Status**: Documented current branch architecture (main = pure iOS, javascript-bridge = archived)
-
-### **Current Architecture Status ✅**
-- ✅ **Pure iOS Calculations**: All tour statistics calculated natively in Swift
-- ✅ **Venue Run Logic**: N1/N2/N3 indicators working correctly with Phish.in API
-- ✅ **API Compliance**: Strict separation between Phish.net and Phish.in data
-- ✅ **Performance**: Current tour caching with 1-hour TTL
-- ✅ **Documentation**: All docs reflect current pure iOS approach
-
-## N1/N2/N3 Venue Run Logic Explanation
-
-### **Display Rules (Critical Implementation Details)**
-
-The N1/N2/N3 venue run logic follows a strict rule: **show night indicators ONLY when multiple nights at same venue**.
-
-### **Code Implementation**
-
-**1. VenueRun Model** (`SharedModels.swift:88-102`):
-```swift
-struct VenueRun: Codable {
-    let venue: String
-    let nightNumber: Int       // 1-based: 1, 2, 3, etc.
-    let totalNights: Int       // Total nights at venue: 1, 2, 3, etc.
-    
-    var runDisplayText: String {
-        if totalNights > 1 {
-            return "N\(nightNumber)/\(totalNights)"    // "N2/3"
-        }
-        return ""  // Single night = no indicator
-    }
-}
-```
-
-**2. TrackDuration Display** (`SharedModels.swift:28-38`):
-```swift
-var venueDisplayText: String? {
-    guard let venue = venue else { return nil }
-    
-    // Multi-night run: show night indicator
-    if let venueRun = venueRun, venueRun.totalNights > 1 {
-        return "\(venue), N\(venueRun.nightNumber)"  // "MSG, N3"
-    }
-    
-    // Single night: venue name only
-    return venue  // "Madison Square Garden"
-}
-```
-
-**3. SongGapInfo Display** (`SharedModels.swift:158-168`):
-```swift
-var tourVenueDisplayText: String? {
-    guard let venue = tourVenue else { return nil }
-    
-    // Multi-night run: show night indicator  
-    if let venueRun = tourVenueRun, venueRun.totalNights > 1 {
-        return "\(venue), N\(venueRun.nightNumber)"  // "MSG, N1"
-    }
-    
-    // Single night: venue name only
-    return venue  // "Alpine Valley"
-}
-```
-
-### **Display Examples**
-
-| Scenario | totalNights | nightNumber | Display |
-|----------|-------------|-------------|---------|
-| 4-night MSG run, night 3 | 4 | 3 | "Madison Square Garden, N3" |
-| 2-night SPAC run, night 1 | 2 | 1 | "Broadview Stage at SPAC, N1" |
-| Single night at Alpine | 1 | 1 | "Alpine Valley Music Theatre" |
-| No venue run data | - | - | "Venue Name" |
-
-### **Data Flow**
-
-1. **Phish.in API** → `fetchVenueRuns()` → Calculates multi-night runs for same venue
-2. **VenueRun object** → Contains `nightNumber` and `totalNights` 
-3. **Display logic** → Only shows N1/N2/N3 when `totalNights > 1`
-4. **UI rendering** → TrackDuration and SongGapInfo use `venueDisplayText` computed properties
-
-### **Key Benefits**
-
-- ✅ **Clarity**: Users immediately see multi-night context ("N2/3" = 2nd of 3 nights)
-- ✅ **Clean UI**: Single nights don't clutter with unnecessary indicators
-- ✅ **Consistency**: Same logic used for longest songs and rarest songs displays
-- ✅ **Performance**: Venue run calculation cached and reused across statistics
+- Use Phish.net as the setlist authority (dates, venues, song order)
+- Enhance with Phish.in data (durations, tour structure) but maintain venue-date pairing
+- Validate venue-date matching when combining API responses
+- Never mix venue names from different APIs for the same show
+
+## Data Flow
+
+### Tour Statistics Pipeline
+1. **Multi-API Data Collection**:
+   - Fetch show dates and setlists from Phish.net API
+   - Fetch song durations and tour metadata from Phish.in API
+   - Apply venue-date consistency rules during data combination
+
+2. **Statistics Calculation**:
+   - `TourStatisticsService` processes all tour shows
+   - Calculate top 3 longest songs using Phish.in duration data
+   - Calculate top 3 rarest songs using Phish.net gap data
+   - Apply tour transition logic for current vs completed tours
+
+3. **Pre-computation and Storage**:
+   - `npm run generate-stats` creates tour data JSON
+   - Statistics stored in `Server/Data/tour-stats.json`
+   - Eliminates real-time calculation delays
+
+4. **API Serving**: 
+   - Vercel functions serve pre-computed data via `/api/tour-statistics`
+   - Cache headers set for performance (`s-maxage=3600`)
+
+5. **iOS Consumption**: 
+   - App fetches data via `APIManager` and caches locally via `CacheManager`
+   - ViewModels update SwiftUI views with fetched data
+   - Tour dashboard displays statistics instantly (no calculation wait)
+
+## Testing
+- iOS UI tests in `Tests/PhishQSUITests/`
+- No server-side tests currently implemented
+- Mock implementations available for API clients
+
+## Deployment
+- Server: Deployed to Vercel via `npm run deploy`
+- iOS: Standard Xcode build and distribution process
+- Statistics data regenerated via GitHub Actions or manual script execution

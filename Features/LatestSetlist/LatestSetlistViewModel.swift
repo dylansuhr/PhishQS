@@ -316,30 +316,9 @@ class LatestSetlistViewModel: BaseViewModel {
                 )
             }
             
-            // Calculate ALL tour statistics in single optimized pass
-            let statistics: TourSongStatistics
-            
-            if let tourName = enhanced.tourPosition?.tourName, !tourShows.isEmpty {
-                print("🚀 Using optimized single-pass calculation for \(tourName)")
-                // Use optimized single-pass calculation for all statistics
-                statistics = TourStatisticsService.calculateAllTourStatistics(
-                    tourShows: tourShows,
-                    tourName: tourName
-                )
-            } else {
-                print("📊 Fallback to single show calculations")
-                // Fallback for shows without tour info - calculate from single show
-                let longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
-                let rarestSongs = enhanced.getRarestSongs(limit: 3)
-                let mostPlayedSongs = TourStatisticsService.calculateMostPlayedSongs(from: enhanced.trackDurations)
-                
-                statistics = TourSongStatistics(
-                    longestSongs: longestSongs,
-                    rarestSongs: rarestSongs,
-                    mostPlayedSongs: mostPlayedSongs,
-                    tourName: enhanced.tourPosition?.tourName
-                )
-            }
+            // Fetch tour statistics from Vercel server (replaces local calculations)
+            print("🌐 Fetching tour statistics from server...")
+            let statistics = try await TourStatisticsAPIClient.shared.fetchTourStatistics()
             
             // Cache current tour statistics for dashboard optimization (1 hour TTL)
             CacheManager.shared.set(statistics, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)

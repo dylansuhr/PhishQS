@@ -20,14 +20,19 @@ class APIManager: ObservableObject {
     /// Audio and tour data provider (Phish.in)
     private let phishInClient: (AudioProviderProtocol & TourProviderProtocol)?
     
+    /// Tour statistics provider (Vercel server)
+    private let tourStatsClient: TourStatisticsProviderProtocol
+    
     // MARK: - Initialization
     
     init(
         phishNetClient: PhishAPIService = PhishAPIClient.shared,
-        phishInClient: (AudioProviderProtocol & TourProviderProtocol)? = PhishInAPIClient.shared
+        phishInClient: (AudioProviderProtocol & TourProviderProtocol)? = PhishInAPIClient.shared,
+        tourStatsClient: TourStatisticsProviderProtocol = TourStatisticsAPIClient.shared
     ) {
         self.phishNetClient = phishNetClient
         self.phishInClient = phishInClient
+        self.tourStatsClient = tourStatsClient
     }
     
     // MARK: - Setlist Operations (Primary Source: Phish.net)
@@ -254,6 +259,18 @@ extension APIManager {
         if isEnhancedDataAvailable {
             sources.append("Phish.in (Audio & Tours)")
         }
+        if tourStatsClient.isAvailable {
+            sources.append("Vercel Server (Statistics)")
+        }
         return sources
+    }
+    
+    // MARK: - Tour Statistics Operations (Primary Source: Vercel Server)
+    
+    /// Fetch pre-computed tour statistics from server
+    /// - Returns: Complete tour statistics with longest, rarest, and most played songs
+    /// - Throws: APIError for network or parsing failures
+    func fetchTourStatistics() async throws -> TourSongStatistics {
+        return try await tourStatsClient.fetchTourStatistics()
     }
 }
