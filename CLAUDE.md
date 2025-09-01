@@ -20,6 +20,48 @@ This is a standard Xcode iOS project. Use these commands:
 
 The project uses the new Swift Testing framework (not XCTest), so test files use `@Test` annotations instead of `XCTestCase`.
 
+## Core Architectural Principles
+
+### Pure iOS Calculations Architecture
+**CURRENT APPROACH**: All tour statistics calculations are performed natively in iOS using Swift code. This provides:
+- **Simplicity**: No cross-platform complexity or JavaScript bridge dependencies
+- **Reliability**: Direct Swift implementations with full iOS integration
+- **Performance**: Optimized Swift calculations with intelligent caching
+- **Maintainability**: Single codebase in Swift, easier to debug and enhance
+
+### API Usage Guidelines (Strict)
+**CRITICAL**: APIs must be used according to their strengths, never mix data sources:
+
+**Phish.net API**:
+- ✅ **Source of truth for**: Venue names, dates, cities, states, setlist data, show metadata
+- ✅ **When to use**: All venue-date pairs, all show information, all setlist content
+
+**Phish.in API**:
+- ✅ **Source of truth for**: Song durations ONLY (`durationSeconds` field), venue runs (N1/N2/N3), tour positions
+- ❌ **Never use for**: Venue names, dates, show metadata when displaying with dates
+
+**Rule**: If you display a date, the corresponding venue MUST come from the same API source (Phish.net).
+
+### Venue Run Logic (N1/N2/N3 Display)
+**CRITICAL RULE**: N1/N2/N3 indicators are displayed ONLY when there are multiple nights at the same venue:
+
+**Display Logic**:
+- ✅ **Multi-night runs**: Show "Madison Square Garden, N3" (when `totalNights > 1`)
+- ✅ **Single night shows**: Show "Madison Square Garden" only (no night indicator)
+- ✅ **Format**: `venue, N{nightNumber}` where nightNumber is 1-based
+- ✅ **Data source**: Phish.in API provides venue run calculation logic
+
+**Implementation**:
+- `VenueRun.totalNights > 1` → Display N1/N2/N3 indicator
+- `VenueRun.totalNights = 1` → Display venue name only, no night indicator
+- No VenueRun data → Display venue name only
+
+### Performance-First Architecture
+- **Current Tour Caching**: Intelligent caching for current tour statistics (1-hour TTL)
+- **Tour Change Detection**: Automatic cache clearing when tours transition
+- **Optimized Calculations**: Swift implementations with minimal API calls
+- **Physical Device Testing**: Always test on physical iOS device due to Cloudflare networking issues in simulator
+
 ## Architecture and Code Organization
 
 ### Project Structure
@@ -445,3 +487,101 @@ Tour Dashboard: Current Tour Only (Optimized)
 - [x] **Venue Run Display & Date Search Implementation**
 - [x] **Tour Position Display Implementation**
 - [x] **Current Tour Dashboard Performance Optimization**
+- [x] **Pure iOS Architecture Documentation Update**
+
+### **Session Complete ✅ - Pure iOS Architecture Documentation Update**
+
+**Date**: August 31, 2025  
+**Status**: Documentation updated to reflect pure iOS calculations approach
+
+### **Latest Session Accomplishments ✅**
+- [x] **Documentation Cleanup**: Updated CLAUDE.md to reflect pure iOS calculations architecture  
+- [x] **Architecture Clarification**: Removed outdated JavaScript bridge references
+- [x] **ServerSideTourStats.md Archive**: Marked server-side approach as archived/reference-only
+- [x] **Venue Run Logic Documentation**: Added comprehensive N1/N2/N3 display rules
+- [x] **API Usage Guidelines**: Clarified Phish.net vs Phish.in responsibilities
+- [x] **Branch Status**: Documented current branch architecture (main = pure iOS, javascript-bridge = archived)
+
+### **Current Architecture Status ✅**
+- ✅ **Pure iOS Calculations**: All tour statistics calculated natively in Swift
+- ✅ **Venue Run Logic**: N1/N2/N3 indicators working correctly with Phish.in API
+- ✅ **API Compliance**: Strict separation between Phish.net and Phish.in data
+- ✅ **Performance**: Current tour caching with 1-hour TTL
+- ✅ **Documentation**: All docs reflect current pure iOS approach
+
+## N1/N2/N3 Venue Run Logic Explanation
+
+### **Display Rules (Critical Implementation Details)**
+
+The N1/N2/N3 venue run logic follows a strict rule: **show night indicators ONLY when multiple nights at same venue**.
+
+### **Code Implementation**
+
+**1. VenueRun Model** (`SharedModels.swift:88-102`):
+```swift
+struct VenueRun: Codable {
+    let venue: String
+    let nightNumber: Int       // 1-based: 1, 2, 3, etc.
+    let totalNights: Int       // Total nights at venue: 1, 2, 3, etc.
+    
+    var runDisplayText: String {
+        if totalNights > 1 {
+            return "N\(nightNumber)/\(totalNights)"    // "N2/3"
+        }
+        return ""  // Single night = no indicator
+    }
+}
+```
+
+**2. TrackDuration Display** (`SharedModels.swift:28-38`):
+```swift
+var venueDisplayText: String? {
+    guard let venue = venue else { return nil }
+    
+    // Multi-night run: show night indicator
+    if let venueRun = venueRun, venueRun.totalNights > 1 {
+        return "\(venue), N\(venueRun.nightNumber)"  // "MSG, N3"
+    }
+    
+    // Single night: venue name only
+    return venue  // "Madison Square Garden"
+}
+```
+
+**3. SongGapInfo Display** (`SharedModels.swift:158-168`):
+```swift
+var tourVenueDisplayText: String? {
+    guard let venue = tourVenue else { return nil }
+    
+    // Multi-night run: show night indicator  
+    if let venueRun = tourVenueRun, venueRun.totalNights > 1 {
+        return "\(venue), N\(venueRun.nightNumber)"  // "MSG, N1"
+    }
+    
+    // Single night: venue name only
+    return venue  // "Alpine Valley"
+}
+```
+
+### **Display Examples**
+
+| Scenario | totalNights | nightNumber | Display |
+|----------|-------------|-------------|---------|
+| 4-night MSG run, night 3 | 4 | 3 | "Madison Square Garden, N3" |
+| 2-night SPAC run, night 1 | 2 | 1 | "Broadview Stage at SPAC, N1" |
+| Single night at Alpine | 1 | 1 | "Alpine Valley Music Theatre" |
+| No venue run data | - | - | "Venue Name" |
+
+### **Data Flow**
+
+1. **Phish.in API** → `fetchVenueRuns()` → Calculates multi-night runs for same venue
+2. **VenueRun object** → Contains `nightNumber` and `totalNights` 
+3. **Display logic** → Only shows N1/N2/N3 when `totalNights > 1`
+4. **UI rendering** → TrackDuration and SongGapInfo use `venueDisplayText` computed properties
+
+### **Key Benefits**
+
+- ✅ **Clarity**: Users immediately see multi-night context ("N2/3" = 2nd of 3 nights)
+- ✅ **Clean UI**: Single nights don't clutter with unnecessary indicators
+- ✅ **Consistency**: Same logic used for longest songs and rarest songs displays
+- ✅ **Performance**: Venue run calculation cached and reused across statistics

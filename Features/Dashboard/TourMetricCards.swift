@@ -176,6 +176,66 @@ struct RarestSongRow: View {
     }
 }
 
+/// Card displaying top 3 most played songs from the current tour
+struct MostPlayedSongsCard: View {
+    let songs: [MostPlayedSong]
+    
+    var body: some View {
+        MetricCard("Most Played Songs") {
+            if songs.isEmpty {
+                Text("No play count data available")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .italic()
+            } else {
+                VStack(alignment: .leading, spacing: 8) {
+                    ForEach(Array(songs.prefix(3).enumerated()), id: \.offset) { index, song in
+                        MostPlayedSongRow(position: index + 1, song: song)
+                        
+                        if index < min(songs.count, 3) - 1 {
+                            Divider()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+/// Individual row for most played song display
+struct MostPlayedSongRow: View {
+    let position: Int
+    let song: MostPlayedSong
+    
+    var body: some View {
+        HStack(spacing: 12) {
+            // Position number
+            Text("\(position)")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.green)
+                .frame(width: 20, alignment: .center)
+            
+            VStack(alignment: .leading, spacing: 2) {
+                Text(song.songName)
+                    .font(.body)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .layoutPriority(1)
+            
+            Spacer(minLength: 8)
+            
+            Text("\(song.playCount)")
+                .font(.callout)
+                .fontWeight(.semibold)
+                .foregroundColor(.green)
+                .layoutPriority(2)
+        }
+    }
+}
+
 /// Combined statistics cards in a vertical layout
 struct TourStatisticsCards: View {
     let statistics: TourSongStatistics?
@@ -183,8 +243,9 @@ struct TourStatisticsCards: View {
     var body: some View {
         if let stats = statistics, stats.hasData {
             VStack(alignment: .leading, spacing: 16) {
-                LongestSongsCard(songs: stats.longestSongs)
-                RarestSongsCard(songs: stats.rarestSongs)
+                // LongestSongsCard(songs: stats.longestSongs)  // Temporarily hidden for debugging
+                // RarestSongsCard(songs: stats.rarestSongs)     // Temporarily hidden for debugging
+                MostPlayedSongsCard(songs: stats.mostPlayedSongs)
             }
         }
     }
@@ -266,10 +327,18 @@ struct TourOverviewCard: View {
             SongGapInfo(songId: 398, songName: "McGrupp", gap: 15, lastPlayed: "2024-07-12", timesPlayed: 62, tourVenue: "Alpine Valley Music Theatre", tourVenueRun: nil, tourDate: "2025-07-25")
         ]
         
+        // Sample most played songs
+        let sampleMostPlayedSongs = [
+            MostPlayedSong(songId: 473, songName: "You Enjoy Myself", playCount: 8),
+            MostPlayedSong(songId: 627, songName: "Tweezer", playCount: 7),
+            MostPlayedSong(songId: 294, songName: "Ghost", playCount: 6)
+        ]
+        
         TourStatisticsCards(
             statistics: TourSongStatistics(
                 longestSongs: sampleLongestSongs,
                 rarestSongs: sampleRarestSongs,
+                mostPlayedSongs: sampleMostPlayedSongs,
                 tourName: "Summer Tour 2025"
             )
         )

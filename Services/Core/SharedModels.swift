@@ -238,15 +238,32 @@ struct SongPerformance: Codable {
     let footnote: String?              // Any special notes about this performance
 }
 
+/// Most played song information for tour statistics
+struct MostPlayedSong: Codable, Identifiable {
+    let id: Int               // Use songId as unique identifier
+    let songId: Int           // Phish.net songid
+    let songName: String      // Song name
+    let playCount: Int        // Number of times played in tour
+    
+    /// Initialize with songId as id
+    init(songId: Int, songName: String, playCount: Int) {
+        self.id = songId
+        self.songId = songId
+        self.songName = songName
+        self.playCount = playCount
+    }
+}
+
 /// Combined tour statistics for display
 struct TourSongStatistics: Codable {
     let longestSongs: [TrackDuration]   // Top 3 longest songs by duration
     let rarestSongs: [SongGapInfo]      // Top 3 rarest songs by gap
+    let mostPlayedSongs: [MostPlayedSong] // Top 3 most played songs by frequency
     let tourName: String?               // Current tour name for context
     
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty
     }
 }
 

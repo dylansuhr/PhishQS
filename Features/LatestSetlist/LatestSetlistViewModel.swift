@@ -317,9 +317,12 @@ class LatestSetlistViewModel: BaseViewModel {
             }
             
             // Fetch tour-wide track durations if we have tour information
+            // TEMPORARILY DISABLED FOR DEBUGGING MOST PLAYED SONGS
             var tourTrackDurations: [TrackDuration]? = nil
-            var longestSongs: [TrackDuration] = []
+            var longestSongs: [TrackDuration] = [] // Disabled - empty for faster debugging
             
+            // Commented out expensive longest songs calculation
+            /*
             if let tourName = enhanced.tourPosition?.tourName,
                let showDate = enhanced.setlistItems.first?.showdate {
                 do {
@@ -344,10 +347,13 @@ class LatestSetlistViewModel: BaseViewModel {
             } else {
                 longestSongs = Array(enhanced.trackDurations.sorted(by: { $0.durationSeconds > $1.durationSeconds }).prefix(3))
             }
+            */
             
-            // Calculate tour-progressive rarest songs for current tour only
-            var rarestSongs: [SongGapInfo] = []
+            // TEMPORARILY DISABLED FOR DEBUGGING MOST PLAYED SONGS
+            var rarestSongs: [SongGapInfo] = [] // Disabled - empty for faster debugging
             
+            // Commented out expensive rarest songs calculation
+            /*
             if let tourName = enhanced.tourPosition?.tourName {
                 print("🔄 Calculating fresh current tour statistics for \(tourName)")
                 rarestSongs = TourStatisticsService.calculateTourProgressiveRarestSongs(
@@ -358,11 +364,26 @@ class LatestSetlistViewModel: BaseViewModel {
                 // Fallback for shows without tour info
                 rarestSongs = enhanced.getRarestSongs(limit: 3)
             }
+            */
             
-            // Create tour statistics with real gap data
+            // Calculate most played songs from tour data (same pattern as longest songs)
+            var mostPlayedSongs: [MostPlayedSong] = []
+            if let tourName = enhanced.tourPosition?.tourName, !tourShows.isEmpty {
+                // Use tour-wide track durations for most played calculation
+                let allTourDurations = tourShows.flatMap { $0.trackDurations }
+                mostPlayedSongs = TourStatisticsService.calculateMostPlayedSongs(from: allTourDurations)
+                print("📊 Calculated most played songs from \(allTourDurations.count) tour tracks")
+            } else {
+                // Fallback to single show durations
+                mostPlayedSongs = TourStatisticsService.calculateMostPlayedSongs(from: enhanced.trackDurations)
+                print("📊 Calculated most played songs from \(enhanced.trackDurations.count) single show tracks")
+            }
+            
+            // Create tour statistics with real data
             let statistics = TourSongStatistics(
                 longestSongs: longestSongs,
                 rarestSongs: rarestSongs,
+                mostPlayedSongs: mostPlayedSongs,
                 tourName: enhanced.tourPosition?.tourName
             )
             

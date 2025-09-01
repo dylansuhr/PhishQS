@@ -32,19 +32,35 @@ class TourStatisticsService {
             for gapInfo in show.songGaps {
                 let songKey = gapInfo.songName.lowercased()
                 
+                // Create enhanced gap info with venue run data from show context
+                let enhancedGapInfo = SongGapInfo(
+                    songId: gapInfo.songId,
+                    songName: gapInfo.songName,
+                    gap: gapInfo.gap,
+                    lastPlayed: gapInfo.lastPlayed,
+                    timesPlayed: gapInfo.timesPlayed,
+                    tourVenue: show.setlistItems.first?.venue, // Venue from Phish.net setlist
+                    tourVenueRun: show.venueRun, // Venue run from Phish.in
+                    tourDate: show.showDate,
+                    historicalVenue: gapInfo.historicalVenue,
+                    historicalCity: gapInfo.historicalCity,
+                    historicalState: gapInfo.historicalState,
+                    historicalLastPlayed: gapInfo.historicalLastPlayed
+                )
+                
                 // For each song, keep the occurrence with the HIGHEST gap
                 if let existingGap = tourSongGaps[songKey] {
                     // Only replace if this occurrence has a higher gap
                     if gapInfo.gap > existingGap.gap {
                         print("      🔄 Updating \(gapInfo.songName): \(existingGap.gap) → \(gapInfo.gap)")
-                        tourSongGaps[songKey] = gapInfo
+                        tourSongGaps[songKey] = enhancedGapInfo
                     } else {
                         print("      ✓ Keeping \(gapInfo.songName): \(existingGap.gap) > \(gapInfo.gap)")
                     }
                 } else {
                     // First time seeing this song - add it
                     print("      ➕ Adding \(gapInfo.songName): Gap \(gapInfo.gap)")
-                    tourSongGaps[songKey] = gapInfo
+                    tourSongGaps[songKey] = enhancedGapInfo
                 }
             }
         }
@@ -102,6 +118,7 @@ class TourStatisticsService {
             return TourSongStatistics(
                 longestSongs: [],
                 rarestSongs: [],
+                mostPlayedSongs: [],
                 tourName: tourName
             )
         }
@@ -136,6 +153,14 @@ class TourStatisticsService {
             tourTrackDurations: tourTrackDurations
         )
         
+        // Calculate most played songs from tour data
+        let mostPlayedSongs: [MostPlayedSong]
+        if let tourDurations = tourTrackDurations, !tourDurations.isEmpty {
+            mostPlayedSongs = calculateMostPlayedSongs(from: tourDurations)
+        } else {
+            mostPlayedSongs = calculateMostPlayedSongs(from: setlist.trackDurations)
+        }
+        
         // TODO: Enhance rarest songs with accurate historical data
         // This will require making calculateTourStatistics async or creating a separate async method
         // For now, the enhanced data is added manually in calculateRarestSongs
@@ -143,6 +168,7 @@ class TourStatisticsService {
         return TourSongStatistics(
             longestSongs: longestSongs,
             rarestSongs: rarestSongs,
+            mostPlayedSongs: mostPlayedSongs,
             tourName: tourName
         )
     }
@@ -315,6 +341,43 @@ class TourStatisticsService {
         return result
     }
     
+    /// Calculate top 3 most played songs from track durations
+    static func calculateMostPlayedSongs(from trackDurations: [TrackDuration]) -> [MostPlayedSong] {
+        print("🎵 calculateMostPlayedSongs: Processing \(trackDurations.count) track durations")
+        
+        // Count occurrences of each song
+        var songCounts: [String: (count: Int, songId: Int?)] = [:]
+        
+        for track in trackDurations {
+            let songKey = track.songName.lowercased()
+            
+            if let existing = songCounts[songKey] {
+                songCounts[songKey] = (count: existing.count + 1, songId: existing.songId ?? track.songId)
+            } else {
+                songCounts[songKey] = (count: 1, songId: track.songId)
+            }
+        }
+        
+        print("🎵 Found \(songCounts.count) unique songs")
+        
+        // Convert to MostPlayedSong objects and sort by count
+        let mostPlayedSongs = songCounts.compactMap { (songName, info) -> MostPlayedSong? in
+            // Use songId if available, otherwise use hash of song name
+            let songId = info.songId ?? songName.hash
+            return MostPlayedSong(songId: songId, songName: songName.capitalized, playCount: info.count)
+        }
+        .sorted { $0.playCount > $1.playCount }
+        .prefix(3)
+        .map { $0 }
+        
+        print("🎵 Top 3 most played songs:")
+        for (index, song) in mostPlayedSongs.enumerated() {
+            print("   \(index + 1). \(song.songName): \(song.playCount) plays")
+        }
+        
+        return mostPlayedSongs
+    }
+    
     /// Calculate tour statistics for a specific tour by analyzing multiple shows
     /// This is a more comprehensive method for future use when we have full tour data
     /// - Parameters:
@@ -329,7 +392,7 @@ class TourStatisticsService {
     ) -> TourSongStatistics {
         
         guard !tourShows.isEmpty else {
-            return TourSongStatistics(longestSongs: [], rarestSongs: [], tourName: tourName)
+            return TourSongStatistics(longestSongs: [], rarestSongs: [], mostPlayedSongs: [], tourName: tourName)
         }
         
         // Collect all songs and durations from entire tour
@@ -350,9 +413,13 @@ class TourStatisticsService {
             tourTrackDurations: allTourDurations
         )
         
+        // Calculate most played songs
+        let mostPlayedSongs = calculateMostPlayedSongs(from: allTourDurations)
+        
         return TourSongStatistics(
             longestSongs: longestSongs,
             rarestSongs: rarestSongs,
+            mostPlayedSongs: mostPlayedSongs,
             tourName: tourName
         )
     }

@@ -199,6 +199,14 @@ Benefits: Instant setlist display with all enhancements
 
 ---
 
-## Implementation Notes
+## Implementation Status: ARCHIVED
 
-**This document will be updated continuously as implementation progresses. All decisions, code changes, and lessons learned will be documented here for future reference.**
+**IMPORTANT**: This document describes a JavaScript bridge and server-side approach that was implemented but **NOT CURRENTLY USED**. 
+
+**CURRENT ARCHITECTURE**: The app uses **pure iOS calculations** implemented in Swift. All tour statistics are calculated natively in iOS with no JavaScript bridge or server dependencies.
+
+**BRANCH STATUS**:
+- **`main`** and **`pure-ios-calculations`**: Pure iOS Swift calculations ✅ **ACTIVE**
+- **`javascript-bridge`**: JavaScript bridge + server integration (archived, available for future reference)
+
+**This document is preserved for historical reference and future server-side implementation if desired.**
