@@ -1,7 +1,16 @@
 /**
  * generate-stats.js
- * Script to generate tour statistics JSON from real API data
- * Follows iOS project architecture patterns
+ * 
+ * Script to generate tour statistics JSON from real API data using
+ * the new modular calculator architecture with configuration-driven settings.
+ * 
+ * Architecture Features:
+ * - Uses StatisticsConfig for all configuration (no hardcoding)
+ * - Leverages StatisticsRegistry for modular calculator system
+ * - Maintains exact iOS data flow pattern for compatibility
+ * - Generates identical output format for seamless API integration
+ * 
+ * Follows iOS project architecture patterns with server-side optimizations
  */
 
 import { writeFileSync } from 'fs';
@@ -9,15 +18,17 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { TourStatisticsService } from '../Services/TourStatisticsService.js';
 import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
+import StatisticsConfig from '../Config/StatisticsConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Configuration - using real API key from iOS Secrets.plist
+// Configuration - now managed through StatisticsConfig
+const apiConfig = StatisticsConfig.getApiConfig('phishNet');
 const CONFIG = {
-    PHISH_NET_API_KEY: '4771B8589CD3E53848E7',
-    PHISH_NET_BASE_URL: 'https://api.phish.net/v5',
-    PHISH_IN_BASE_URL: 'https://phish.in/api/v2'
+    PHISH_NET_API_KEY: apiConfig.defaultApiKey, // TODO: Move to environment variables  
+    PHISH_NET_BASE_URL: apiConfig.baseUrl,
+    PHISH_IN_BASE_URL: StatisticsConfig.getApiConfig('phishIn').baseUrl
 };
 
 /**
@@ -52,9 +63,9 @@ async function generateTourStatistics() {
         const allTourShows = await enhancedService.collectTourData(tourName, latestShow.showdate);
         console.log(`🎪 Tour data collected: ${allTourShows.length} shows processed`);
         
-        // Step 5: Calculate statistics using existing working logic
-        console.log('📊 Calculating tour statistics using proven algorithms...');
-        const tourStats = TourStatisticsService.calculateAllTourStatistics(allTourShows, tourName);
+        // Step 5: Calculate statistics using new modular architecture
+        console.log('📊 Calculating tour statistics using modular calculator system...');
+        const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, tourName);
         
         // Step 6: Save result to both locations (Server/Data and api/Data)
         const serverOutputPath = join(__dirname, '..', 'Data', 'tour-stats.json');

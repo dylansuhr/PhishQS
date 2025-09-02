@@ -1,19 +1,53 @@
 /**
  * PhishNetClient.js
+ * 
  * JavaScript port of iOS PhishNetAPIClient.swift
- * Maintains exact same API calls and response handling
+ * Provides access to the Phish.net API v5 for setlist data and gap calculations.
+ * 
+ * Phish.net is the authoritative source for:
+ * - Complete setlist data with song order and transitions
+ * - Gap calculations (shows since song was last played)
+ * - Official venue names that match setlist context
+ * - Comprehensive Phish show database
+ * 
+ * Business Rules:
+ * - Gap data embedded in setlist responses is live and current
+ * - Venue names from Phish.net must be paired with show dates from same source
+ * - This API provides no duration data (use Phish.in for durations)
+ * 
+ * @see https://api.phish.net/v5/docs for API documentation
  */
 
 import fetch from 'node-fetch';
 
+/**
+ * Client for interacting with Phish.net API v5
+ * Handles authentication and provides methods for fetching setlist and show data
+ */
 export class PhishNetClient {
+    /**
+     * Initialize PhishNetClient with API key
+     * @param {string} apiKey - Valid Phish.net API key for authentication
+     */
     constructor(apiKey) {
+        /** @type {string} Base URL for Phish.net API v5 */
         this.baseURL = 'https://api.phish.net/v5';
+        /** @type {string} API key for authentication */
         this.apiKey = apiKey;
     }
 
     /**
      * Fetch the latest show (most recent chronologically)
+     * 
+     * Business Logic:
+     * - Tries current year first for performance
+     * - Falls back to previous year if no shows found
+     * - Filters to Phish shows only (excludes side projects)
+     * - Returns most recent by show date
+     * 
+     * @returns {Promise<Object|null>} Latest show object or null if none found
+     * @throws {Error} If API request fails
+     * 
      * Port of iOS PhishNetAPIClient.fetchLatestShow() lines 58-78
      */
     async fetchLatestShow() {
@@ -43,6 +77,11 @@ export class PhishNetClient {
 
     /**
      * Fetch all shows for a given year
+     * 
+     * @param {string} year - Year to fetch shows for (e.g., '2025')
+     * @returns {Promise<Array>} Array of show objects for the specified year
+     * @throws {Error} If API request fails
+     * 
      * Port of iOS PhishNetAPIClient.fetchShows() lines 31-55
      */
     async fetchShows(year) {
@@ -59,7 +98,16 @@ export class PhishNetClient {
     }
 
     /**
-     * Fetch setlist for a specific show date  
+     * Fetch setlist for a specific show date
+     * 
+     * CRITICAL: Setlist items contain live gap data embedded in response.
+     * This gap data is current and should be used for statistics calculations
+     * rather than the stale data from the general /songs.json endpoint.
+     * 
+     * @param {string} showDate - Show date in YYYY-MM-DD format
+     * @returns {Promise<Array>} Array of setlist items with embedded gap data
+     * @throws {Error} If API request fails
+     * 
      * Port of iOS PhishNetAPIClient.fetchSetlist() lines 108-132
      */
     async fetchSetlist(showDate) {
@@ -75,84 +123,16 @@ export class PhishNetClient {
         return setlistResponse.data || [];
     }
 
-    /**
-     * Fetch all songs with gap information for tour statistics
-     * Port of iOS PhishNetAPIClient.fetchAllSongsWithGaps() lines 137-180
-     */
-    async fetchAllSongsWithGaps() {
-        const url = `${this.baseURL}/songs.json?apikey=${this.apiKey}`;
-        
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error: ${response.status}`);
-        }
-
-        const songsResponse = await response.json();
-        
-        // Convert API response to SongGapInfo objects (same as iOS lines 163-171)
-        return (songsResponse.data || []).map(songData => ({
-            songId: songData.songid,
-            songName: songData.song,
-            gap: songData.gap,
-            lastPlayed: songData.last_played,
-            timesPlayed: songData.times_played,
-            tourVenue: null,
-            tourVenueRun: null,
-            tourDate: null,
-            historicalVenue: null,
-            historicalCity: null,
-            historicalState: null,
-            historicalLastPlayed: null
-        }));
-    }
-
-    /**
-     * Fetch song gaps for specific songs and show date
-     * Creates gap info filtered to tour context
-     */
-    async fetchSongGaps(songNames, showDate) {
-        console.log(`   🔍 DEBUG: Fetching gaps for ${songNames.length} songs from ${showDate}`);
-        console.log(`   🔍 DEBUG: Song names: ${songNames.join(', ')}`);
-        
-        // Get all song gap data
-        const allGaps = await this.fetchAllSongsWithGaps();
-        console.log(`   🔍 DEBUG: Total songs in database: ${allGaps.length}`);
-        
-        // Filter to songs that appear in the current setlist
-        const songNameSet = new Set(songNames.map(name => name.toLowerCase()));
-        
-        const filteredGaps = allGaps.filter(gapInfo => 
-            songNameSet.has(gapInfo.songName.toLowerCase())
-        );
-        
-        console.log(`   🔍 DEBUG: Filtered gaps found: ${filteredGaps.length}`);
-        
-        // Log ALL gap values for debugging - show specific songs we're looking for
-        const targetSongs = ['on your way down', 'paul and silas', 'devotion to a dream'];
-        targetSongs.forEach(targetSong => {
-            const foundSong = filteredGaps.find(gap => gap.songName.toLowerCase() === targetSong);
-            if (foundSong) {
-                console.log(`   🎯 DEBUG: Found target song "${foundSong.songName}" with gap ${foundSong.gap}`);
-            }
-        });
-        
-        // Log high-gap songs for debugging
-        const highGapSongs = filteredGaps.filter(gap => gap.gap > 100);
-        if (highGapSongs.length > 0) {
-            console.log(`   🔍 DEBUG: High-gap songs (>100) in this show:`);
-            highGapSongs.forEach(song => {
-                console.log(`      • ${song.songName}: Gap ${song.gap}`);
-            });
-        } else {
-            console.log(`   🔍 DEBUG: No high-gap songs (>100) found in this show. Max gap: ${Math.max(...filteredGaps.map(g => g.gap))}`);
-        }
-        
-        return filteredGaps;
-    }
 
     /**
      * Filter to Phish shows only
+     * 
+     * Excludes side projects, guest appearances, and other non-Phish performances.
+     * Validates that show has proper date format and artist name.
+     * 
+     * @param {Array} shows - Array of show objects from API
+     * @returns {Array} Filtered array containing only Phish shows
+     * 
      * Port of iOS APIUtilities.filterPhishShows() logic
      */
     filterPhishShows(shows) {
