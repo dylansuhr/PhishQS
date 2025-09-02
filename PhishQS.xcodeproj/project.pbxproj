@@ -11,6 +11,9 @@
 		F4A55E8D2E313C8800C4AB42 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */; };
 		F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
 		F4D557C72DEE7CBF002A5961 /* PhishQSApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */; };
+		F4F1DDC22E675399006B6D75 /* vercel.json in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DDC12E675399006B6D75 /* vercel.json */; };
+		F4F1DDC32E675399006B6D75 /* package-lock.json in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DDC02E675399006B6D75 /* package-lock.json */; };
+		F4F1DDC42E675399006B6D75 /* package.json in Resources */ = {isa = PBXBuildFile; fileRef = F4F1DDBF2E675399006B6D75 /* package.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +42,9 @@
 		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
 		F4D8B98C2E1EB7EC00EB140A /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F4D8B98D2E1EB81E00EB140A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		F4F1DDBF2E675399006B6D75 /* package.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = package.json; sourceTree = "<group>"; };
+		F4F1DDC02E675399006B6D75 /* package-lock.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "package-lock.json"; sourceTree = "<group>"; };
+		F4F1DDC12E675399006B6D75 /* vercel.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vercel.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -85,6 +91,20 @@
 			);
 			target = F418FFC42DE7ED0B00240D34 /* PhishQSTests */;
 		};
+		F4F1DDC52E6754B4006B6D75 /* Exceptions for "Server" folder in "PhishQS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Data/tour-stats.json",
+			);
+			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
+		};
+		F4F1DDC62E6754E0006B6D75 /* Exceptions for "api" folder in "PhishQS" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Data/tour-stats.json",
+			);
+			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -126,6 +146,22 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		F4F1DDA92E67017C006B6D75 /* Server */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F4F1DDC52E6754B4006B6D75 /* Exceptions for "Server" folder in "PhishQS" target */,
+			);
+			path = Server;
+			sourceTree = "<group>";
+		};
+		F4F1DDBC2E6702D7006B6D75 /* api */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F4F1DDC62E6754E0006B6D75 /* Exceptions for "api" folder in "PhishQS" target */,
+			);
+			path = api;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -156,6 +192,9 @@
 		F418FFAF2DE7ED0A00240D34 = {
 			isa = PBXGroup;
 			children = (
+				F4F1DDBF2E675399006B6D75 /* package.json */,
+				F4F1DDC02E675399006B6D75 /* package-lock.json */,
+				F4F1DDC12E675399006B6D75 /* vercel.json */,
 				F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */,
 				F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */,
 				F4D8B98C2E1EB7EC00EB140A /* README.md */,
@@ -168,6 +207,8 @@
 				F42264E52E1E77F200891DED /* Features */,
 				F42264E72E1E780E00891DED /* Models */,
 				F46ACF932E32C865009CF6FB /* Services */,
+				F4F1DDA92E67017C006B6D75 /* Server */,
+				F4F1DDBC2E6702D7006B6D75 /* api */,
 			);
 			sourceTree = "<group>";
 		};
@@ -203,6 +244,8 @@
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
 				F46ACF932E32C865009CF6FB /* Services */,
+				F4F1DDA92E67017C006B6D75 /* Server */,
+				F4F1DDBC2E6702D7006B6D75 /* api */,
 			);
 			name = PhishQS;
 			packageProductDependencies = (
@@ -310,6 +353,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */,
+				F4F1DDC22E675399006B6D75 /* vercel.json in Resources */,
+				F4F1DDC32E675399006B6D75 /* package-lock.json in Resources */,
+				F4F1DDC42E675399006B6D75 /* package.json in Resources */,
 				F4A55E8D2E313C8800C4AB42 /* CLAUDE.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

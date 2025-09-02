@@ -304,18 +304,6 @@ class LatestSetlistViewModel: BaseViewModel {
         }
         
         do {
-            print("🎯 Calculating current tour statistics...")
-            
-            // Get all shows from the current tour to calculate progressive rarest songs
-            var tourShows: [EnhancedSetlist] = [enhanced] // Start with current show
-            
-            if let tourName = enhanced.tourPosition?.tourName {
-                tourShows = await fetchTourEnhancedSetlistsOptimized(
-                    tourName: tourName, 
-                    currentShow: enhanced
-                )
-            }
-            
             // Fetch tour statistics from Vercel server (replaces local calculations)
             print("🌐 Fetching tour statistics from server...")
             let statistics = try await TourStatisticsAPIClient.shared.fetchTourStatistics()
