@@ -18,6 +18,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { TourStatisticsService } from '../Services/TourStatisticsService.js';
 import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
+import { HistoricalDataEnhancer } from '../Services/HistoricalDataEnhancer.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -67,21 +68,26 @@ async function generateTourStatistics() {
         console.log('📊 Calculating tour statistics using modular calculator system...');
         const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, tourName);
         
-        // Step 6: Save result to both locations (Server/Data and api/Data)
+        // Step 6: Enhance statistics with historical data (only for top N results)
+        console.log('🔍 Enhancing statistics with historical data...');
+        const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
+        const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
+        
+        // Step 7: Save result to both locations (Server/Data and api/Data)
         const serverOutputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
         const apiOutputPath = join(__dirname, '..', '..', 'api', 'Data', 'tour-stats.json');
         
-        const jsonData = JSON.stringify(tourStats, null, 2);
+        const jsonData = JSON.stringify(enhancedTourStats, null, 2);
         writeFileSync(serverOutputPath, jsonData);
         writeFileSync(apiOutputPath, jsonData);
         
         console.log('✅ Real tour statistics generated successfully!');
         console.log(`📁 Server data: ${serverOutputPath}`);
         console.log(`📁 API data: ${apiOutputPath}`);
-        console.log(`🎵 Generated statistics for: ${tourStats.tourName}`);
-        console.log(`   📊 Longest songs: ${tourStats.longestSongs.length}`);
-        console.log(`   📊 Rarest songs: ${tourStats.rarestSongs.length}`); 
-        console.log(`   📊 Most played: ${tourStats.mostPlayedSongs.length}`);
+        console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
+        console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
+        console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
+        console.log(`   📊 Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
         
     } catch (error) {
         console.error('❌ Error generating tour statistics:', error);

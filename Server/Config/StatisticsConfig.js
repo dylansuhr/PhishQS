@@ -44,6 +44,37 @@ const baseConfig = {
         mostPlayedSongs: 3
     },
     
+    // ===== HISTORICAL DATA ENHANCEMENT =====
+    // Configuration for API-driven historical data enhancement
+    
+    /** @type {Object} Historical data enhancement settings */
+    historicalDataEnhancement: {
+        /** @type {boolean} Whether to enable historical data API calls */
+        enabled: true,
+        
+        /** @type {Object} Enhancement settings for each statistics type */
+        categories: {
+            rarestSongs: {
+                enabled: true,
+                enhanceTopN: 3  // Easy to change to 10 for top 10
+            },
+            longestSongs: {
+                enabled: false, // Could add venue history later
+                enhanceTopN: 3
+            },
+            mostPlayedSongs: {
+                enabled: false, // Could add debut dates later  
+                enhanceTopN: 3
+            }
+        },
+        
+        /** @type {number} Delay between API calls (ms) for rate limiting */
+        apiCallDelay: 100,
+        
+        /** @type {number} Timeout for individual historical data API calls (ms) */
+        apiTimeout: 5000
+    },
+    
     // ===== PERFORMANCE THRESHOLDS =====
     // Define what constitutes notable performances
     
@@ -218,6 +249,36 @@ export class StatisticsConfig {
      */
     static getResultLimit(statisticsType) {
         return config.resultLimits[statisticsType] || config.defaultResultLimit;
+    }
+
+    /**
+     * Get historical data enhancement configuration
+     * @param {string} statisticsType - Type of statistics (rarestSongs, longestSongs, mostPlayedSongs)
+     * @returns {Object} Enhancement configuration object
+     */
+    static getHistoricalEnhancementConfig(statisticsType) {
+        const category = config.historicalDataEnhancement.categories[statisticsType];
+        if (!category) {
+            return { enabled: false, enhanceTopN: 0 };
+        }
+        
+        return {
+            enabled: config.historicalDataEnhancement.enabled && category.enabled,
+            enhanceTopN: category.enhanceTopN,
+            apiCallDelay: config.historicalDataEnhancement.apiCallDelay,
+            apiTimeout: config.historicalDataEnhancement.apiTimeout
+        };
+    }
+
+    /**
+     * Check if historical enhancement is needed for any statistics type
+     * @returns {boolean} True if any category has historical enhancement enabled
+     */
+    static isHistoricalEnhancementEnabled() {
+        if (!config.historicalDataEnhancement.enabled) return false;
+        
+        return Object.values(config.historicalDataEnhancement.categories)
+            .some(category => category.enabled);
     }
     
     /**

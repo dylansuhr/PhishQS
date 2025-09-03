@@ -58,8 +58,8 @@
       "songId": 424,
       "songName": "On Your Way Down",
       "gap": 521,
-      "lastPlayed": null,
-      "timesPlayed": null,
+      "lastPlayed": "2011-09-13",
+      "timesPlayed": 28,
       "tourVenue": "United Center",
       "tourVenueRun": {
         "venue": "United Center",
@@ -74,33 +74,33 @@
         ]
       },
       "tourDate": "2025-07-18",
-      "historicalVenue": null,
-      "historicalCity": null,
-      "historicalState": null,
-      "historicalLastPlayed": null
+      "historicalVenue": "Higher Ground",
+      "historicalCity": "South Burlington",
+      "historicalState": "VT",
+      "historicalLastPlayed": "2011-09-13"
     },
     {
       "id": 430,
       "songId": 430,
       "songName": "Paul and Silas",
       "gap": 322,
-      "lastPlayed": null,
-      "timesPlayed": null,
+      "lastPlayed": "2016-07-22",
+      "timesPlayed": 92,
       "tourVenue": "Petersen Events Center",
       "tourVenueRun": null,
       "tourDate": "2025-06-24",
-      "historicalVenue": null,
-      "historicalCity": null,
-      "historicalState": null,
-      "historicalLastPlayed": null
+      "historicalVenue": "The Forum",
+      "historicalCity": "Inglewood",
+      "historicalState": "CA",
+      "historicalLastPlayed": "2016-07-22"
     },
     {
       "id": 2423,
       "songId": 2423,
       "songName": "Devotion To a Dream",
       "gap": 322,
-      "lastPlayed": null,
-      "timesPlayed": null,
+      "lastPlayed": "2016-10-15",
+      "timesPlayed": 22,
       "tourVenue": "North Charleston Coliseum",
       "tourVenueRun": {
         "venue": "North Charleston Coliseum",
@@ -115,10 +115,10 @@
         ]
       },
       "tourDate": "2025-07-11",
-      "historicalVenue": null,
-      "historicalCity": null,
-      "historicalState": null,
-      "historicalLastPlayed": null
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2016-10-15"
     }
   ],
   "mostPlayedSongs": [

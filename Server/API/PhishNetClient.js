@@ -125,6 +125,96 @@ export class PhishNetClient {
 
 
     /**
+     * Fetch complete performance history for a song (includes gap data for each performance)
+     * 
+     * Uses the slug endpoint for better URL handling. This provides chronological
+     * performance data that allows calculating historical last-played dates.
+     * 
+     * @param {string} songName - Name of song to fetch performance history for
+     * @returns {Promise<Array>} Array of performance objects with dates and venues
+     * @throws {Error} If API request fails
+     * 
+     * Port of iOS PhishNetAPIClient.fetchSongPerformanceHistory() lines 361-391
+     */
+    async fetchSongPerformanceHistory(songName) {
+        // Use the slug endpoint for better URL handling
+        const slugName = songName.toLowerCase()
+            .replace(/ /g, '-')
+            .replace(/'/g, '')
+            .replace(/\./g, '')
+            .replace(/,/g, '');
+
+        const url = `${this.baseURL}/setlists/slug/${slugName}.json?apikey=${this.apiKey}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const performanceResponse = await response.json();
+        return performanceResponse.data || [];
+    }
+
+    /**
+     * Fetch gap information for a specific song on a specific show date
+     * 
+     * This method replicates the iOS logic that gets real historical dates by:
+     * 1. Fetching complete performance history for the song
+     * 2. Finding the performance on the target show date
+     * 3. Locating the previous performance that created the gap
+     * 4. Extracting the historical last-played date and venue
+     * 
+     * @param {string} songName - Name of song to fetch gap info for
+     * @param {string} showDate - Show date in YYYY-MM-DD format
+     * @returns {Promise<Object|null>} Gap info with historical data or null if not found
+     * @throws {Error} If API request fails
+     * 
+     * Port of iOS PhishNetAPIClient.fetchSongGap() lines 298-336
+     */
+    async fetchSongGap(songName, showDate) {
+        const performances = await this.fetchSongPerformanceHistory(songName);
+
+        // Find the performance matching the show date
+        const currentPerformanceIndex = performances.findIndex(p => p.showdate === showDate);
+        const currentPerformance = performances.find(p => p.showdate === showDate);
+
+        if (currentPerformanceIndex === -1 || !currentPerformance) {
+            return null;
+        }
+
+        // Find the previous performance (the one that created the gap)
+        let historicalLastPlayed = null;
+        let historicalVenue = null;
+        let historicalCity = null;
+        let historicalState = null;
+
+        if (currentPerformanceIndex > 0) {
+            const previousPerformance = performances[currentPerformanceIndex - 1];
+            historicalLastPlayed = previousPerformance.showdate;
+            historicalVenue = previousPerformance.venue;
+            historicalCity = previousPerformance.city;
+            historicalState = previousPerformance.state;
+        }
+
+        // Return gap info with proper historical data (matching iOS structure)
+        return {
+            songId: currentPerformance.songid,
+            songName: currentPerformance.song,
+            gap: currentPerformance.gap,
+            lastPlayed: historicalLastPlayed || showDate, // Use historical date if available
+            timesPlayed: performances.length,
+            tourVenue: currentPerformance.venue,
+            tourVenueRun: null, // Can be enhanced later with venue run data
+            tourDate: showDate,
+            historicalVenue: historicalVenue,
+            historicalCity: historicalCity,
+            historicalState: historicalState,
+            historicalLastPlayed: historicalLastPlayed
+        };
+    }
+
+    /**
      * Filter to Phish shows only
      * 
      * Excludes side projects, guest appearances, and other non-Phish performances.

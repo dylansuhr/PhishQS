@@ -75,18 +75,18 @@ export class EnhancedSetlistService {
             console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[3].reason?.message}`);
         }
 
-        // Step 4: Extract gap data directly from setlist (gap data is already in setlist response)
+        // Step 4: Extract gap data from setlist (gap data is already in setlist response)
         console.log(`   📊 Extracting gap data from setlist items...`);
         
         songGaps = setlistItems.map(item => ({
             songId: item.songid,
             songName: item.song,
             gap: item.gap,
-            lastPlayed: null, // Not available in setlist response
-            timesPlayed: null, // Not available in setlist response
+            lastPlayed: null, // Historical data will be added in post-processing for top N results only
+            timesPlayed: null,
             tourVenue: null,
             tourVenueRun: null,
-            tourDate: null,
+            tourDate: showDate,
             historicalVenue: null,
             historicalCity: null,
             historicalState: null,
@@ -94,15 +94,6 @@ export class EnhancedSetlistService {
         }));
         
         console.log(`   📊 Extracted gap data for ${songGaps.length} songs from setlist`);
-        
-        // Debug: Log high-gap songs found in this show
-        const highGapSongs = songGaps.filter(gap => gap.gap > 100);
-        if (highGapSongs.length > 0) {
-            console.log(`   🔍 DEBUG: High-gap songs (>100) in ${showDate}:`);
-            highGapSongs.forEach(song => {
-                console.log(`      • ${song.songName}: Gap ${song.gap}`);
-            });
-        }
 
         // Step 5: Create enhanced setlist object (same as iOS lines 134-142)
         const enhancedSetlist = {
