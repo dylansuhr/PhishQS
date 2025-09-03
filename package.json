@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vercel dev",
     "generate-stats": "node Server/Scripts/generate-stats.js",
-    "deploy": "vercel --prod"
+    "deploy": "npx vercel --prod --yes"
   },
   "dependencies": {
     "node-fetch": "^3.3.2"

@@ -110,7 +110,10 @@ struct PhishInTrack: Codable, Identifiable {
             showDate: showDate,
             setNumber: set_name ?? "1",
             venue: venue,
-            venueRun: venueRun
+            venueRun: venueRun,
+            city: venueRun?.city, // Extract city from venue run if available
+            state: venueRun?.state, // Extract state from venue run if available
+            tourPosition: nil // Tour position will be added by statistics service
         )
     }
 }

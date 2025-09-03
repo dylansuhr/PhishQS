@@ -74,6 +74,9 @@
         ]
       },
       "tourDate": "2025-07-18",
+      "tourCity": null,
+      "tourState": null,
+      "tourPosition": null,
       "historicalVenue": "Higher Ground",
       "historicalCity": "South Burlington",
       "historicalState": "VT",
@@ -89,6 +92,9 @@
       "tourVenue": "Petersen Events Center",
       "tourVenueRun": null,
       "tourDate": "2025-06-24",
+      "tourCity": null,
+      "tourState": null,
+      "tourPosition": null,
       "historicalVenue": "The Forum",
       "historicalCity": "Inglewood",
       "historicalState": "CA",
@@ -115,6 +121,9 @@
         ]
       },
       "tourDate": "2025-07-11",
+      "tourCity": null,
+      "tourState": null,
+      "tourPosition": null,
       "historicalVenue": "North Charleston Coliseum",
       "historicalCity": "North Charleston",
       "historicalState": "SC",
@@ -126,19 +135,34 @@
       "id": 1712495126,
       "songId": 1712495126,
       "songName": "Tweezer Reprise",
-      "playCount": 10
+      "playCount": 10,
+      "mostRecentDate": "",
+      "mostRecentVenue": null,
+      "city": null,
+      "state": null,
+      "tourPosition": null
     },
     {
       "id": 744171844,
       "songId": 744171844,
       "songName": "Tweezer",
-      "playCount": 7
+      "playCount": 7,
+      "mostRecentDate": "",
+      "mostRecentVenue": null,
+      "city": null,
+      "state": null,
+      "tourPosition": null
     },
     {
       "id": 2084439332,
       "songId": 2084439332,
       "songName": "Harry Hood",
-      "playCount": 6
+      "playCount": 6,
+      "mostRecentDate": "",
+      "mostRecentVenue": null,
+      "city": null,
+      "state": null,
+      "tourPosition": null
     }
   ],
   "tourName": "Summer Tour 2025"
