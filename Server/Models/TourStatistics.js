@@ -9,11 +9,18 @@
  * Mirrors Swift MostPlayedSong struct
  */
 export class MostPlayedSong {
-    constructor(songId, songName, playCount) {
+    constructor(songId, songName, playCount, options = {}) {
         this.id = songId;
         this.songId = songId;
         this.songName = songName;
         this.playCount = playCount;
+        
+        // Tour context fields (represents most recent performance)
+        this.mostRecentDate = options.mostRecentDate || '';
+        this.mostRecentVenue = options.mostRecentVenue || null;
+        this.city = options.city || null;
+        this.state = options.state || null;
+        this.tourPosition = options.tourPosition || null;
     }
 }
 
@@ -22,7 +29,7 @@ export class MostPlayedSong {
  * Mirrors Swift TrackDuration struct
  */
 export class TrackDuration {
-    constructor(id, songName, songId, durationSeconds, showDate, setNumber, venue, venueRun = null) {
+    constructor(id, songName, songId, durationSeconds, showDate, setNumber, venue, venueRun = null, options = {}) {
         this.id = id;
         this.songName = songName;
         this.songId = songId;
@@ -31,6 +38,11 @@ export class TrackDuration {
         this.setNumber = setNumber;
         this.venue = venue;
         this.venueRun = venueRun;
+        
+        // Tour context fields
+        this.city = options.city || null;
+        this.state = options.state || null;
+        this.tourPosition = options.tourPosition || null;
     }
     
     get formattedDuration() {
@@ -67,6 +79,12 @@ export class SongGapInfo {
         this.tourVenue = options.tourVenue || null;
         this.tourVenueRun = options.tourVenueRun || null;
         this.tourDate = options.tourDate || null;
+        
+        // Tour context fields
+        this.tourCity = options.tourCity || null;
+        this.tourState = options.tourState || null;
+        this.tourPosition = options.tourPosition || null;
+        
         this.historicalVenue = options.historicalVenue || null;
         this.historicalCity = options.historicalCity || null;
         this.historicalState = options.historicalState || null;

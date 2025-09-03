@@ -19,6 +19,11 @@ struct TrackDuration: Codable, Identifiable {
     let venue: String?        // venue name for display
     let venueRun: VenueRun?   // venue run info if multi-night run
     
+    // Tour context fields
+    let city: String?         // city where song was performed
+    let state: String?        // state where song was performed  
+    let tourPosition: TourShowPosition? // position within tour (e.g., show 4 of 23)
+    
     var formattedDuration: String {
         let minutes = durationSeconds / 60
         let seconds = durationSeconds % 60
@@ -36,6 +41,12 @@ struct TrackDuration: Codable, Identifiable {
         // Single night, just venue name
         return venue
     }
+}
+
+// MARK: - TrackDuration TourContextProvider Conformance
+
+extension TrackDuration: TourContextProvider {
+    // Already has required properties: city, state, tourPosition, showDate, venue
 }
 
 struct Recording: Codable, Identifiable {
@@ -120,6 +131,38 @@ struct Playlist: Codable, Identifiable {
 
 // MARK: - Tour Statistics Models
 
+/// Protocol for models that can provide tour context information
+protocol TourContextProvider {
+    var city: String? { get }
+    var state: String? { get }
+    var tourPosition: TourShowPosition? { get }
+    var showDate: String { get }
+    var venue: String? { get }
+    
+    /// Formatted city and state display text
+    var cityStateDisplayText: String? { get }
+    /// Formatted tour position badge text (e.g., "4/23")
+    var tourPositionBadgeText: String? { get }
+}
+
+/// Default implementation of TourContextProvider methods
+extension TourContextProvider {
+    var cityStateDisplayText: String? {
+        guard let city = city else { return nil }
+        
+        if let state = state {
+            return "\(city), \(state)"
+        } else {
+            return city
+        }
+    }
+    
+    var tourPositionBadgeText: String? {
+        guard let tourPosition = tourPosition else { return nil }
+        return "\(tourPosition.showNumber)/\(tourPosition.totalShows)"
+    }
+}
+
 /// Song gap information from Phish.net API
 struct SongGapInfo: Codable, Identifiable {
     let id: Int               // Use songId as unique identifier
@@ -131,6 +174,11 @@ struct SongGapInfo: Codable, Identifiable {
     let tourVenue: String?   // Venue where played in current tour (if applicable)
     let tourVenueRun: VenueRun? // Venue run info for current tour performance (if applicable)
     let tourDate: String?    // Date when played in current tour (if applicable)
+    
+    // Tour context fields
+    let tourCity: String?    // City where song was played in current tour
+    let tourState: String?   // State where song was played in current tour  
+    let tourPosition: TourShowPosition? // Position within tour (e.g., show 4 of 23)
     
     // Historical information (last played before current tour)
     let historicalVenue: String?     // Venue where song was actually last played before current tour
@@ -197,7 +245,7 @@ struct SongGapInfo: Codable, Identifiable {
     }
     
     /// Initialize with songId as id
-    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil, historicalVenue: String? = nil, historicalCity: String? = nil, historicalState: String? = nil, historicalLastPlayed: String? = nil) {
+    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil, tourCity: String? = nil, tourState: String? = nil, tourPosition: TourShowPosition? = nil, historicalVenue: String? = nil, historicalCity: String? = nil, historicalState: String? = nil, historicalLastPlayed: String? = nil) {
         self.id = songId
         self.songId = songId
         self.songName = songName
@@ -207,11 +255,23 @@ struct SongGapInfo: Codable, Identifiable {
         self.tourVenue = tourVenue
         self.tourVenueRun = tourVenueRun
         self.tourDate = tourDate
+        self.tourCity = tourCity
+        self.tourState = tourState
+        self.tourPosition = tourPosition
         self.historicalVenue = historicalVenue
         self.historicalCity = historicalCity
         self.historicalState = historicalState
         self.historicalLastPlayed = historicalLastPlayed
     }
+}
+
+// MARK: - SongGapInfo TourContextProvider Conformance
+
+extension SongGapInfo: TourContextProvider {
+    var city: String? { tourCity }
+    var state: String? { tourState }
+    var showDate: String { tourDate ?? lastPlayed }
+    var venue: String? { tourVenue }
 }
 
 /// Song performance from Phish.net setlists API
@@ -245,13 +305,32 @@ struct MostPlayedSong: Codable, Identifiable {
     let songName: String      // Song name
     let playCount: Int        // Number of times played in tour
     
+    // Tour context fields (represents most recent performance)
+    let mostRecentDate: String      // Date of most recent performance in tour
+    let mostRecentVenue: String?    // Venue of most recent performance
+    let city: String?              // City of most recent performance
+    let state: String?             // State of most recent performance  
+    let tourPosition: TourShowPosition? // Position within tour for most recent performance
+    
     /// Initialize with songId as id
-    init(songId: Int, songName: String, playCount: Int) {
+    init(songId: Int, songName: String, playCount: Int, mostRecentDate: String? = nil, mostRecentVenue: String? = nil, city: String? = nil, state: String? = nil, tourPosition: TourShowPosition? = nil) {
         self.id = songId
         self.songId = songId
         self.songName = songName
         self.playCount = playCount
+        self.mostRecentDate = mostRecentDate ?? ""
+        self.mostRecentVenue = mostRecentVenue
+        self.city = city
+        self.state = state
+        self.tourPosition = tourPosition
     }
+}
+
+// MARK: - MostPlayedSong TourContextProvider Conformance
+
+extension MostPlayedSong: TourContextProvider {
+    var showDate: String { mostRecentDate }
+    var venue: String? { mostRecentVenue }
 }
 
 /// Combined tour statistics for display

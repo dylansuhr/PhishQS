@@ -146,6 +146,11 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		F4C533E72E6896A100903379 /* Features */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Features;
+			sourceTree = "<group>";
+		};
 		F4F1DDA92E67017C006B6D75 /* Server */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -209,6 +214,7 @@
 				F46ACF932E32C865009CF6FB /* Services */,
 				F4F1DDA92E67017C006B6D75 /* Server */,
 				F4F1DDBC2E6702D7006B6D75 /* api */,
+				F4C533E72E6896A100903379 /* Features */,
 			);
 			sourceTree = "<group>";
 		};
@@ -244,6 +250,7 @@
 				F42264E82E1E781600891DED /* Resources */,
 				F42264EA2E1E783200891DED /* Utilities */,
 				F46ACF932E32C865009CF6FB /* Services */,
+				F4C533E72E6896A100903379 /* Features */,
 				F4F1DDA92E67017C006B6D75 /* Server */,
 				F4F1DDBC2E6702D7006B6D75 /* api */,
 			);

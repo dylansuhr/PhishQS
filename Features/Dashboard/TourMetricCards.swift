@@ -33,48 +33,15 @@ struct LongestSongsCard: View {
     }
 }
 
-/// Individual row for longest song display
+/// Individual row for longest song display (Legacy - will be deprecated)
+/// Use LongestSongRowModular from SharedUIComponents for new implementations
 struct LongestSongRow: View {
     let position: Int
     let song: TrackDuration
     
     var body: some View {
-        HStack(spacing: 12) {
-            // Position number
-            Text("\(position)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.blue)
-                .frame(width: 20, alignment: .center)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(song.songName)
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-                
-                Text(DateUtilities.formatDateForDisplay(song.showDate))
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-                
-                // Show venue and night information if available
-                if let venueText = song.venueDisplayText {
-                    Text(venueText)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-            }
-            .layoutPriority(1)
-            
-            Spacer(minLength: 8)
-            
-            Text(song.formattedDuration)
-                .font(.callout)
-                .fontWeight(.semibold)
-                .foregroundColor(.blue)
-                .layoutPriority(2)
-        }
+        // Use new modular component
+        LongestSongRowModular(position: position, song: song)
     }
 }
 
@@ -104,75 +71,15 @@ struct RarestSongsCard: View {
     }
 }
 
-/// Individual row for rarest song display
+/// Individual row for rarest song display (Legacy - will be deprecated)
+/// Use RarestSongRowModular from SharedUIComponents for new implementations
 struct RarestSongRow: View {
     let position: Int
     let song: SongGapInfo
     
     var body: some View {
-        HStack(spacing: 12) {
-            // Position number
-            Text("\(position)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.orange)
-                .frame(width: 20, alignment: .center)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(song.songName)
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-                
-                // Show tour date on first line (matching LongestSongRow format)
-                if let tourDate = song.tourDateFormatted {
-                    Text(tourDate)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-                
-                // Show venue with proper N1/N2/N3 logic on second line
-                if let venueText = song.tourVenueDisplayText {
-                    Text(venueText)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-            }
-            .layoutPriority(1)
-            
-            Spacer(minLength: 8)
-            
-            VStack(alignment: .trailing, spacing: 2) {
-                // Gap number
-                if song.gap == 0 {
-                    Text("Recent")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.orange)
-                } else {
-                    Text("\(song.gap)")
-                        .font(.callout)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.orange)
-                }
-                
-                // Last played date (the date that created this gap)
-                if song.gap > 0 {
-                    // Use the historical last played date that created the gap
-                    if let historicalDate = song.historicalLastPlayed {
-                        Text(DateUtilities.formatDateForDisplay(historicalDate))
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    } else {
-                        Text(DateUtilities.formatDateForDisplay(song.lastPlayed))
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-            .layoutPriority(2)
-        }
+        // Use new modular component
+        RarestSongRowModular(position: position, song: song)
     }
 }
 
@@ -202,37 +109,15 @@ struct MostPlayedSongsCard: View {
     }
 }
 
-/// Individual row for most played song display
+/// Individual row for most played song display (Legacy - will be deprecated)
+/// Use MostPlayedSongRowModular from SharedUIComponents for new implementations
 struct MostPlayedSongRow: View {
     let position: Int
     let song: MostPlayedSong
     
     var body: some View {
-        HStack(spacing: 12) {
-            // Position number
-            Text("\(position)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.green)
-                .frame(width: 20, alignment: .center)
-            
-            VStack(alignment: .leading, spacing: 2) {
-                Text(song.songName)
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(.primary)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            .layoutPriority(1)
-            
-            Spacer(minLength: 8)
-            
-            Text("\(song.playCount)")
-                .font(.callout)
-                .fontWeight(.semibold)
-                .foregroundColor(.green)
-                .layoutPriority(2)
-        }
+        // Use new modular component
+        MostPlayedSongRowModular(position: position, song: song)
     }
 }
 
@@ -314,24 +199,26 @@ struct TourOverviewCard: View {
         // Sample longest songs
         let sampleVenueRun = VenueRun(venue: "Madison Square Garden", city: "New York", state: "NY", nightNumber: 3, totalNights: 4, showDates: ["2025-07-25", "2025-07-26", "2025-07-27", "2025-07-28"])
         
+        let sampleTourPosition = TourShowPosition(tourName: "Summer Tour 2025", showNumber: 4, totalShows: 23, tourYear: "2025")
+        
         let sampleLongestSongs = [
-            TrackDuration(id: "1", songName: "Tweezer", songId: 627, durationSeconds: 1383, showDate: "2025-07-27", setNumber: "2", venue: "Madison Square Garden", venueRun: sampleVenueRun),
-            TrackDuration(id: "2", songName: "You Enjoy Myself", songId: 692, durationSeconds: 1037, showDate: "2025-07-26", setNumber: "1", venue: "Broadview Stage at SPAC", venueRun: nil),
-            TrackDuration(id: "3", songName: "Ghost", songId: 294, durationSeconds: 947, showDate: "2025-07-25", setNumber: "2", venue: "Alpine Valley Music Theatre", venueRun: nil)
+            TrackDuration(id: "1", songName: "Tweezer", songId: 627, durationSeconds: 1383, showDate: "2025-07-27", setNumber: "2", venue: "Madison Square Garden", venueRun: sampleVenueRun, city: "New York", state: "NY", tourPosition: sampleTourPosition),
+            TrackDuration(id: "2", songName: "You Enjoy Myself", songId: 692, durationSeconds: 1037, showDate: "2025-07-26", setNumber: "1", venue: "Broadview Stage at SPAC", venueRun: nil, city: "Saratoga Springs", state: "NY", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 3, totalShows: 23, tourYear: "2025")),
+            TrackDuration(id: "3", songName: "Ghost", songId: 294, durationSeconds: 947, showDate: "2025-07-25", setNumber: "2", venue: "Alpine Valley Music Theatre", venueRun: nil, city: "East Troy", state: "WI", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 2, totalShows: 23, tourYear: "2025"))
         ]
         
         // Sample rarest songs with tour venue information
         let sampleRarestSongs = [
-            SongGapInfo(songId: 251, songName: "Fluffhead", gap: 47, lastPlayed: "2023-08-15", timesPlayed: 87, tourVenue: "Madison Square Garden", tourVenueRun: sampleVenueRun, tourDate: "2025-07-27"),
-            SongGapInfo(songId: 342, songName: "Icculus", gap: 23, lastPlayed: "2024-02-18", timesPlayed: 45, tourVenue: "Broadview Stage at SPAC", tourVenueRun: nil, tourDate: "2025-07-26"),
-            SongGapInfo(songId: 398, songName: "McGrupp", gap: 15, lastPlayed: "2024-07-12", timesPlayed: 62, tourVenue: "Alpine Valley Music Theatre", tourVenueRun: nil, tourDate: "2025-07-25")
+            SongGapInfo(songId: 251, songName: "Fluffhead", gap: 47, lastPlayed: "2023-08-15", timesPlayed: 87, tourVenue: "Madison Square Garden", tourVenueRun: sampleVenueRun, tourDate: "2025-07-27", tourCity: "New York", tourState: "NY", tourPosition: sampleTourPosition),
+            SongGapInfo(songId: 342, songName: "Icculus", gap: 23, lastPlayed: "2024-02-18", timesPlayed: 45, tourVenue: "Broadview Stage at SPAC", tourVenueRun: nil, tourDate: "2025-07-26", tourCity: "Saratoga Springs", tourState: "NY", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 3, totalShows: 23, tourYear: "2025")),
+            SongGapInfo(songId: 398, songName: "McGrupp", gap: 15, lastPlayed: "2024-07-12", timesPlayed: 62, tourVenue: "Alpine Valley Music Theatre", tourVenueRun: nil, tourDate: "2025-07-25", tourCity: "East Troy", tourState: "WI", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 2, totalShows: 23, tourYear: "2025"))
         ]
         
         // Sample most played songs
         let sampleMostPlayedSongs = [
-            MostPlayedSong(songId: 473, songName: "You Enjoy Myself", playCount: 8),
-            MostPlayedSong(songId: 627, songName: "Tweezer", playCount: 7),
-            MostPlayedSong(songId: 294, songName: "Ghost", playCount: 6)
+            MostPlayedSong(songId: 473, songName: "You Enjoy Myself", playCount: 8, mostRecentDate: "2025-07-27", mostRecentVenue: "Madison Square Garden", city: "New York", state: "NY", tourPosition: sampleTourPosition),
+            MostPlayedSong(songId: 627, songName: "Tweezer", playCount: 7, mostRecentDate: "2025-07-26", mostRecentVenue: "Broadview Stage at SPAC", city: "Saratoga Springs", state: "NY", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 3, totalShows: 23, tourYear: "2025")),
+            MostPlayedSong(songId: 294, songName: "Ghost", playCount: 6, mostRecentDate: "2025-07-25", mostRecentVenue: "Alpine Valley Music Theatre", city: "East Troy", state: "WI", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 2, totalShows: 23, tourYear: "2025"))
         ]
         
         TourStatisticsCards(

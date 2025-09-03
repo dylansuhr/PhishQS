@@ -166,6 +166,9 @@ export class TourStatisticsService {
                             tourVenue: show.setlistItems?.[0]?.venue, // Venue from Phish.net setlist
                             tourVenueRun: show.venueRun, // Venue run from Phish.in
                             tourDate: show.showDate,
+                            tourCity: show.venueRun?.city, // City from venue run
+                            tourState: show.venueRun?.state, // State from venue run
+                            tourPosition: show.tourPosition, // Tour position
                             historicalVenue: gapInfo.historicalVenue,
                             historicalCity: gapInfo.historicalCity,
                             historicalState: gapInfo.historicalState,
@@ -199,20 +202,32 @@ export class TourStatisticsService {
             }
         });
         
-        // Calculate final results from collected data
+        // Calculate final results from collected data with tour context enhancement
         
-        // 1. Longest songs - sort all track durations by length
+        // 1. Longest songs - sort all track durations by length and enhance with tour context
         const longestSongs = allTrackDurations
+            .map(track => this.enhanceTrackWithTourContext(track, tourShows))
             .sort((a, b) => b.durationSeconds - a.durationSeconds)
             .slice(0, 3);
         
-        // 2. Most played songs - convert counts to MostPlayedSong objects
-        const mostPlayedSongs = Array.from(songPlayCounts.values())
-            .map(info => new MostPlayedSong(
-                info.songId || this.hashCode(info.songName),
-                this.capitalizeWords(info.songName),
-                info.count
-            ))
+        // 2. Most played songs - convert counts to MostPlayedSong objects with tour context
+        const mostPlayedSongs = Array.from(songPlayCounts.entries())
+            .map(([songKey, info]) => {
+                // Find the most recent show where this song was played
+                const mostRecentShow = this.findMostRecentShowForSong(songKey, tourShows);
+                return new MostPlayedSong(
+                    info.songId || this.hashCode(info.songName),
+                    this.capitalizeWords(info.songName),
+                    info.count,
+                    mostRecentShow ? {
+                        mostRecentDate: mostRecentShow.showDate,
+                        mostRecentVenue: mostRecentShow.setlistItems?.[0]?.venue,
+                        city: mostRecentShow.venueRun?.city,
+                        state: mostRecentShow.venueRun?.state,
+                        tourPosition: mostRecentShow.tourPosition
+                    } : {}
+                );
+            })
             .sort((a, b) => b.playCount - a.playCount)
             .slice(0, 3);
         
@@ -240,6 +255,66 @@ export class TourStatisticsService {
             mostPlayedSongs,
             tourName
         );
+    }
+    
+    /**
+     * Enhance track duration with tour context information
+     * @param {Object} track - Original track duration object
+     * @param {Array} tourShows - All tour shows for context lookup
+     * @returns {TrackDuration} Enhanced track with tour context
+     */
+    static enhanceTrackWithTourContext(track, tourShows) {
+        // Find the show that this track belongs to
+        const matchingShow = tourShows.find(show => show.showDate === track.showDate);
+        
+        if (!matchingShow) {
+            // Return track as-is if we can't find matching show
+            console.log(`⚠️ Could not find matching show for track ${track.songName} on ${track.showDate}`);
+            return track;
+        }
+        
+        // Create enhanced TrackDuration with tour context
+        return new TrackDuration(
+            track.id,
+            track.songName,
+            track.songId,
+            track.durationSeconds,
+            track.showDate,
+            track.setNumber,
+            track.venue || matchingShow.setlistItems?.[0]?.venue,
+            track.venueRun || matchingShow.venueRun,
+            {
+                city: matchingShow.venueRun?.city,
+                state: matchingShow.venueRun?.state,
+                tourPosition: matchingShow.tourPosition
+            }
+        );
+    }
+    
+    /**
+     * Find the most recent show where a song was played
+     * @param {string} songKey - Lowercase song name key
+     * @param {Array} tourShows - All tour shows
+     * @returns {Object|null} Most recent show or null if not found
+     */
+    static findMostRecentShowForSong(songKey, tourShows) {
+        // Sort shows by date (newest first) and find first show with this song
+        const sortedShows = tourShows.slice().sort((a, b) => 
+            new Date(b.showDate) - new Date(a.showDate)
+        );
+        
+        for (const show of sortedShows) {
+            if (show.trackDurations) {
+                const hasThisSong = show.trackDurations.some(track => 
+                    track.songName.toLowerCase() === songKey
+                );
+                if (hasThisSong) {
+                    return show;
+                }
+            }
+        }
+        
+        return null;
     }
     
     /**

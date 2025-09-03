@@ -229,41 +229,7 @@ struct CompactSetlistView: View {
     }
 }
 
-/// Reusable badge component
-struct BadgeView: View {
-    let text: String
-    let style: BadgeStyle
-    
-    enum BadgeStyle {
-        case blue
-        case gray
-        
-        var backgroundColor: Color {
-            switch self {
-            case .blue: return .blue.opacity(0.1)
-            case .gray: return .gray.opacity(0.1)
-            }
-        }
-        
-        var textColor: Color {
-            switch self {
-            case .blue: return .blue
-            case .gray: return .gray
-            }
-        }
-    }
-    
-    var body: some View {
-        Text(text)
-            .font(.caption)
-            .fontWeight(.medium)
-            .foregroundColor(style.textColor)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 4)
-            .background(style.backgroundColor)
-            .cornerRadius(6)
-    }
-}
+// BadgeView now available from SharedUIComponents.swift
 
 #Preview {
     LatestShowHeroCard(viewModel: LatestSetlistViewModel())
