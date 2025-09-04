@@ -6,11 +6,13 @@
 
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import { PhishInClient } from '../API/PhishInClient.js';
+import { PhishNetTourService } from './PhishNetTourService.js';
 
 export class EnhancedSetlistService {
     constructor(phishNetApiKey) {
         this.phishNetClient = new PhishNetClient(phishNetApiKey);
         this.phishInClient = new PhishInClient();
+        this.phishNetTourService = new PhishNetTourService(phishNetApiKey);
     }
 
     /**
@@ -52,12 +54,16 @@ export class EnhancedSetlistService {
         // Step 3: Execute all API calls in parallel for better performance (same as iOS lines 98-129)
         console.log('   🔄 Fetching enhancement data in parallel...');
         
-        // Parallel Phish.in API calls (same pattern as iOS lines 99-128)
+        // Parallel API calls - Phish.in for durations/recordings, Phish.net for tour position
         const phishInResults = await Promise.allSettled([
             this.phishInClient.fetchTrackDurations(showDate),
             this.phishInClient.fetchVenueRuns(showDate),
-            this.phishInClient.fetchTourPosition(showDate), 
             this.phishInClient.fetchRecordings(showDate)
+        ]);
+        
+        // Get tour position from Phish.net (migrated from Phish.in for accuracy)
+        const tourPositionResult = await Promise.allSettled([
+            this.phishNetTourService.getTourContext(showDate)
         ]);
 
         // Extract results with individual error handling (same as iOS lines 105-128)
@@ -77,20 +83,21 @@ export class EnhancedSetlistService {
             console.log(`   ⚠️  Could not fetch venue run info: ${phishInResults[1].reason?.message}`);
         }
 
-        if (phishInResults[2].status === 'fulfilled') {
-            tourPosition = phishInResults[2].value;
+        if (tourPositionResult[0].status === 'fulfilled') {
+            const tourContext = tourPositionResult[0].value;
+            tourPosition = tourContext.tourPosition;
             if (tourPosition) {
                 console.log(`   🎪 Found tour position: Show ${tourPosition.showNumber}/${tourPosition.totalShows} of ${tourPosition.tourName}`);
             }
         } else {
-            console.log(`   ⚠️  Could not fetch tour position: ${phishInResults[2].reason?.message}`);
+            console.log(`   ⚠️  Could not fetch tour position: ${tourPositionResult[0].reason?.message}`);
         }
 
-        if (phishInResults[3].status === 'fulfilled') {
-            recordings = phishInResults[3].value;
+        if (phishInResults[2].status === 'fulfilled') {
+            recordings = phishInResults[2].value;
             console.log(`   🎧 Found ${recordings.length} recordings from Phish.in`);
         } else {
-            console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[3].reason?.message}`);
+            console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[2].reason?.message}`);
         }
 
         // Step 4: Extract gap data from setlist (gap data is already in setlist response)
@@ -137,8 +144,9 @@ export class EnhancedSetlistService {
         console.log(`🎪 Collecting enhanced data for tour: ${tourName}`);
         
         try {
-            // Get all shows for the tour (same as iOS fetchTourShows pattern)
-            const tourShows = await this.phishInClient.getCachedTourShows(tourName);
+            // Get all shows for the tour using Phish.net (migrated from Phish.in)
+            const year = currentShowDate.split('-')[0]; // Extract year from show date
+            const tourShows = await this.phishNetTourService.fetchTourShows(year, tourName);
             console.log(`   📋 Found ${tourShows.length} shows in ${tourName}`);
 
             if (tourShows.length === 0) {
@@ -148,18 +156,23 @@ export class EnhancedSetlistService {
                 return [currentEnhanced];
             }
 
-            // Create enhanced setlists for each show (optimized like iOS)
-            console.log('   🔄 Creating enhanced setlists for all tour shows...');
+            // Create enhanced setlists for each show (only for played shows with setlist data)
+            console.log('   🔄 Creating enhanced setlists for played tour shows...');
             const enhancedSetlists = [];
             
-            for (let i = 0; i < tourShows.length; i++) {
-                const show = tourShows[i];
+            // Filter to only shows that are in the past or present (have actually been played)
+            const today = new Date().toISOString().split('T')[0];
+            const playedShows = tourShows.filter(show => show.showdate <= today);
+            console.log(`   📊 Processing ${playedShows.length}/${tourShows.length} played shows (excluding ${tourShows.length - playedShows.length} future shows)`);
+            
+            for (let i = 0; i < playedShows.length; i++) {
+                const show = playedShows[i];
                 try {
-                    console.log(`   📅 Processing show ${i + 1}/${tourShows.length}: ${show.date}`);
-                    const enhanced = await this.createEnhancedSetlist(show.date);
+                    console.log(`   📅 Processing show ${i + 1}/${playedShows.length}: ${show.showdate}`);
+                    const enhanced = await this.createEnhancedSetlist(show.showdate);
                     enhancedSetlists.push(enhanced);
                 } catch (error) {
-                    console.log(`   ⚠️  Skipping show ${show.date}: ${error.message}`);
+                    console.log(`   ⚠️  Skipping show ${show.showdate}: ${error.message}`);
                     // Continue processing other shows even if one fails
                 }
             }

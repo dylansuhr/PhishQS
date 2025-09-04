@@ -10,6 +10,8 @@ import Foundation
 // MARK: - Central API Coordinator
 
 /// Central manager that coordinates between different API services
+/// Uses Phish.net for tour organization, show counts, venue runs
+/// Uses Phish.in for song durations only
 class APIManager: ObservableObject {
     
     // MARK: - API Clients
@@ -17,8 +19,11 @@ class APIManager: ObservableObject {
     /// Primary setlist data provider (Phish.net)
     private let phishNetClient: PhishAPIService
     
-    /// Audio and tour data provider (Phish.in)
-    private let phishInClient: (AudioProviderProtocol & TourProviderProtocol)?
+    /// Audio data provider (Phish.in) - durations only
+    private let phishInClient: AudioProviderProtocol?
+    
+    /// Tour data provider (Phish.net)
+    private let phishNetTourService: PhishNetTourService
     
     /// Tour statistics provider (Vercel server)
     private let tourStatsClient: TourStatisticsProviderProtocol
@@ -27,11 +32,13 @@ class APIManager: ObservableObject {
     
     init(
         phishNetClient: PhishAPIService = PhishAPIClient.shared,
-        phishInClient: (AudioProviderProtocol & TourProviderProtocol)? = PhishInAPIClient.shared,
+        phishInClient: AudioProviderProtocol? = PhishInAPIClient.shared,
+        phishNetTourService: PhishNetTourService = PhishNetTourService(),
         tourStatsClient: TourStatisticsProviderProtocol = TourStatisticsAPIClient.shared
     ) {
         self.phishNetClient = phishNetClient
         self.phishInClient = phishInClient
+        self.phishNetTourService = phishNetTourService
         self.tourStatsClient = tourStatsClient
     }
     
@@ -71,7 +78,7 @@ class APIManager: ObservableObject {
         // Get base setlist from Phish.net
         let setlistItems = try await phishNetClient.fetchSetlist(for: date)
         
-        // Try to get enhanced data from Phish.in and gap data from Phish.net
+        // Get enhanced data: durations from Phish.in, tour/venue data from Phish.net
         var trackDurations: [TrackDuration] = []
         var venueRun: VenueRun? = nil
         var tourPosition: TourShowPosition? = nil
@@ -95,11 +102,11 @@ class APIManager: ObservableObject {
             return []
         }()
         
+        // Execute API calls in parallel: Phish.in for durations, Phish.net for tour/venue data
+        async let tourContextTask = phishNetTourService.getTourContext(for: date)
+        
         if let phishInClient = phishInClient, phishInClient.isAvailable {
-            // Execute all Phish.in API calls in parallel for better performance
             async let trackDurationsTask = phishInClient.fetchTrackDurations(for: date)
-            async let venueRunTask = phishInClient.fetchVenueRuns(for: date)
-            async let tourPositionTask = phishInClient.fetchTourPosition(for: date)
             async let recordingsTask = phishInClient.fetchRecordings(for: date)
             
             // Await results with individual error handling
@@ -110,22 +117,19 @@ class APIManager: ObservableObject {
             }
             
             do {
-                venueRun = try await venueRunTask
-            } catch {
-                print("Warning: Could not fetch venue run info from Phish.in: \(error)")
-            }
-            
-            do {
-                tourPosition = try await tourPositionTask
-            } catch {
-                print("Warning: Could not fetch tour position from Phish.in: \(error)")
-            }
-            
-            do {
                 recordings = try await recordingsTask
             } catch {
                 print("Warning: Could not fetch recording info from Phish.in: \(error)")
             }
+        }
+        
+        // Get tour context from Phish.net
+        do {
+            let tourContext = try await tourContextTask
+            tourPosition = tourContext.tourPosition
+            venueRun = tourContext.venueRun
+        } catch {
+            print("Warning: Could not fetch tour context from Phish.net: \(error)")
         }
         
         // Await gap data task
@@ -147,12 +151,16 @@ class APIManager: ObservableObject {
         return enhancedSetlist
     }
     
-    /// Fetch tours for a specific year from Phish.in
+    /// Fetch tours for a specific year from Phish.net
+    /// Note: This method may need to be implemented differently as Phish.net doesn't have a direct tours endpoint
     func fetchTours(forYear year: String) async throws -> [Tour] {
-        guard let phishInClient = phishInClient else {
-            throw APIError.serviceUnavailable
+        // For now, we can extract tour information from shows
+        let shows = try await phishNetClient.fetchShows(forYear: year)
+        let tourNames = Set(shows.compactMap { $0.tour_name })
+        
+        return tourNames.map { tourName in
+            Tour(id: tourName, name: tourName, year: year, startDate: "", endDate: "", showCount: 0)
         }
-        return try await phishInClient.fetchTours(forYear: year)
     }
     
     /// Fetch track durations for a specific show
@@ -163,12 +171,10 @@ class APIManager: ObservableObject {
         return try await phishInClient.fetchTrackDurations(for: showDate)
     }
     
-    /// Fetch venue run information for a specific show
+    /// Fetch venue run information for a specific show from Phish.net
     func fetchVenueRuns(for showDate: String) async throws -> VenueRun? {
-        guard let phishInClient = phishInClient else {
-            return nil
-        }
-        return try await phishInClient.fetchVenueRuns(for: showDate)
+        let tourContext = try await phishNetTourService.getTourContext(for: showDate)
+        return tourContext.venueRun
     }
     
     /// Fetch recording information for a specific show
@@ -179,58 +185,49 @@ class APIManager: ObservableObject {
         return try await phishInClient.fetchRecordings(for: showDate)
     }
     
-    /// Fetch tour position information for a specific show
+    /// Fetch tour position information for a specific show from Phish.net
     func fetchTourPosition(for showDate: String) async throws -> TourShowPosition? {
-        guard let phishInClient = phishInClient else {
+        guard let tourName = try await phishNetTourService.getTourNameForShow(date: showDate) else {
             return nil
         }
-        return try await phishInClient.fetchTourPosition(for: showDate)
+        return try await phishNetTourService.calculateTourPosition(for: showDate, tourName: tourName)
     }
     
     /// Fetch all track durations for an entire tour
-    func fetchTourTrackDurations(tourName: String) async throws -> [TrackDuration] {
+    /// Uses Phish.net for tour show list, Phish.in for durations
+    func fetchTourTrackDurations(tourName: String, year: String) async throws -> [TrackDuration] {
         guard let phishInClient = phishInClient else {
             return []
         }
-        return try await phishInClient.fetchTourTrackDurations(tourName: tourName)
-    }
-    
-    /// Fetch all shows for a specific tour using existing Phish.in infrastructure
-    func fetchTourShows(tourName: String) async throws -> [Show] {
-        guard let phishInClient = phishInClient as? PhishInAPIClient else {
-            throw APIError.noData
+        
+        // Get tour shows from Phish.net
+        let tourShows = try await phishNetTourService.fetchTourShows(year: year, tourName: tourName)
+        var allTourTracks: [TrackDuration] = []
+        
+        // Fetch durations from Phish.in for each show
+        for show in tourShows {
+            do {
+                let trackDurations = try await phishInClient.fetchTrackDurations(for: show.showdate)
+                allTourTracks.append(contentsOf: trackDurations)
+            } catch {
+                print("Warning: Could not fetch durations for \(show.showdate): \(error)")
+            }
         }
         
-        // Use existing getCachedTourShows from PhishIn (it's private, so we need to use the public method)
-        // We can get tour shows through the existing fetchTourTrackDurations infrastructure
-        let tourTracks = try await phishInClient.fetchTourTrackDurations(tourName: tourName)
-        
-        // Extract unique show dates from tour tracks
-        let uniqueShowDates = Set(tourTracks.map { $0.showDate })
-        
-        // Convert to Show objects
-        let shows = uniqueShowDates.map { showDate in
-            Show(
-                showyear: String(showDate.prefix(4)),
-                showdate: showDate,
-                artist_name: "Phish"
-            )
-        }
-        
-        return shows.sorted { $0.showdate < $1.showdate }
+        return allTourTracks
     }
     
-    /// Get the native tour name from Phish.in for a specific show date
+    /// Fetch all shows for a specific tour using Phish.net
+    func fetchTourShows(tourName: String, year: String) async throws -> [Show] {
+        return try await phishNetTourService.fetchTourShows(year: year, tourName: tourName)
+    }
+    
+    /// Get the tour name from Phish.net for a specific show date
     func getNativeTourName(for showDate: String) async throws -> String? {
-        guard let phishInClient = phishInClient as? PhishInAPIClient else {
-            return nil
-        }
-        
         do {
-            let phishInShow = try await phishInClient.fetchShowByDate(showDate)
-            return phishInShow.tour_name
+            return try await phishNetTourService.getTourNameForShow(date: showDate)
         } catch {
-            print("Could not fetch native tour name for \(showDate): \(error)")
+            print("Could not fetch tour name for \(showDate): \(error)")
             return nil
         }
     }
@@ -257,8 +254,9 @@ extension APIManager {
     var availableDataSources: [String] {
         var sources = ["Phish.net (Setlists)"]
         if isEnhancedDataAvailable {
-            sources.append("Phish.in (Audio & Tours)")
+            sources.append("Phish.in (Audio Only)")
         }
+        sources.append("Phish.net (Tours & Venues)")
         if tourStatsClient.isAvailable {
             sources.append("Vercel Server (Statistics)")
         }

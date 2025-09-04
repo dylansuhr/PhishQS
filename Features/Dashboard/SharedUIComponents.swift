@@ -140,9 +140,10 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
                         .font(.caption2)
                         .foregroundColor(.secondary)
                     
-                    // FEATURE TEMPORARILY DISABLED: Tour position badge (e.g., "4/23")
+                    // FEATURE TEMPORARILY DISABLED: Tour position badge (e.g., "4/31")
                     // To re-enable: uncomment the block below
-                    // This displays the show number within the tour (e.g., show 4 of 23)
+                    // This displays the show number within the tour using Phish.net data (e.g., show 4 of 31)
+                    // NOTE: Now uses Phish.net for accurate total show counts including future dates
                     /*
                     if let tourPosition = item.tourPosition {
                         BadgeView(

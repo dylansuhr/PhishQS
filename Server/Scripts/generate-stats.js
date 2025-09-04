@@ -19,6 +19,7 @@ import { fileURLToPath } from 'url';
 import { TourStatisticsService } from '../Services/TourStatisticsService.js';
 import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
 import { HistoricalDataEnhancer } from '../Services/HistoricalDataEnhancer.js';
+import { PhishNetTourService } from '../Services/PhishNetTourService.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -40,29 +41,50 @@ async function generateTourStatistics() {
     try {
         console.log('🎯 Starting real tour statistics generation...');
         
-        // Initialize enhanced setlist service with real API key
+        // Initialize services with real API key
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
+        const tourService = new PhishNetTourService(CONFIG.PHISH_NET_API_KEY);
         
-        // Step 1: Get latest show (exact same as iOS LatestSetlistViewModel:38)
-        console.log('📡 Fetching latest show from Phish.net...');
-        const latestShow = await enhancedService.phishNetClient.fetchLatestShow();
-        if (!latestShow) {
-            throw new Error('No latest show found - cannot generate statistics');
+        // Step 1: Get latest Summer Tour show (not just latest show)
+        console.log('📡 Fetching 2025 shows from Phish.net...');
+        const year2025Shows = await enhancedService.phishNetClient.fetchShows('2025');
+        console.log(`📊 Found ${year2025Shows.length} total 2025 shows`);
+        
+        // Debug: Show unique tour names and sample data
+        const tourNames = [...new Set(year2025Shows.map(show => show.tourname))];
+        console.log(`🎯 Available tour names: ${tourNames.join(', ')}`);
+        
+        // Debug: Show sample show data to understand structure
+        if (year2025Shows.length > 0) {
+            console.log(`🔍 Sample show data:`, JSON.stringify(year2025Shows[0], null, 2));
         }
-        console.log(`🎪 Latest show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
         
-        // Step 2: Get enhanced setlist with tour info (same as iOS APIManager.fetchEnhancedSetlist)
+        // Find the latest Summer Tour show specifically  
+        const summerTourShows = year2025Shows.filter(show => show.tourname === '2025 Summer Tour');
+        console.log(`🎪 Found ${summerTourShows.length} Summer Tour 2025 shows`);
+        console.log(`📊 This includes ${summerTourShows.length} played shows. Full tour should have 31 total shows per phish.net`);
+        
+        if (summerTourShows.length === 0) {
+            throw new Error('No Summer Tour 2025 shows found - cannot generate statistics');
+        }
+        
+        // Get the latest Summer Tour show (last chronologically)
+        const latestShow = summerTourShows.sort((a, b) => a.showdate.localeCompare(b.showdate)).pop();
+        console.log(`🎪 Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
+        
+        // Step 2: Determine current tour (we know it's Summer Tour 2025)
+        console.log('🔍 Using Summer Tour 2025 as current tour...');
+        const tourName = '2025 Summer Tour';
+        console.log(`📍 Current tour identified: ${tourName}`);
+        
+        // Step 3: Get enhanced setlist with multi-API data
         console.log('🔗 Creating enhanced setlist with multi-API data...');
         const latestEnhanced = await enhancedService.createEnhancedSetlist(latestShow.showdate);
         
-        // Step 3: Determine current tour (same as iOS :292)
-        const tourName = latestEnhanced.tourPosition?.tourName || "Current Tour";
-        console.log(`📍 Current tour identified: ${tourName}`);
-        
-        // Step 4: Collect all tour shows (same as iOS :306-316)
+        // Step 4: Collect all tour shows using Phish.net (includes future shows)
         console.log('📋 Collecting enhanced data for entire tour...');
         const allTourShows = await enhancedService.collectTourData(tourName, latestShow.showdate);
-        console.log(`🎪 Tour data collected: ${allTourShows.length} shows processed`);
+        console.log(`🎪 Tour data collected: ${allTourShows.length} shows processed (includes future scheduled shows)`);
         
         // Step 5: Calculate statistics using new modular architecture
         console.log('📊 Calculating tour statistics using modular calculator system...');
