@@ -4,7 +4,7 @@
       "id": "38368",
       "songName": "What's Going Through Your Mind",
       "songId": null,
-      "durationSeconds": 2560224,
+      "durationSeconds": 2560,
       "showDate": "2025-06-24",
       "setNumber": "Set 2",
       "venue": "Petersen Events Center",
@@ -17,13 +17,13 @@
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "42670:24"
+      "formattedDuration": "42:40"
     },
     {
       "id": "38549",
       "songName": "Sand",
       "songId": null,
-      "durationSeconds": 2383608,
+      "durationSeconds": 2384,
       "showDate": "2025-07-15",
       "setNumber": "Set 2",
       "venue": "The Mann Center for the Performing Arts",
@@ -46,13 +46,13 @@
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "39726:48"
+      "formattedDuration": "39:44"
     },
     {
       "id": "38498",
       "songName": "Down with Disease",
       "songId": null,
-      "durationSeconds": 2048496,
+      "durationSeconds": 2048,
       "showDate": "2025-07-11",
       "setNumber": "Set 2",
       "venue": "North Charleston Coliseum",
@@ -76,7 +76,7 @@
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "34141:36"
+      "formattedDuration": "34:08"
     }
   ],
   "rarestSongs": [

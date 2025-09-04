@@ -62,15 +62,6 @@ export class LongestSongsCalculator extends BaseStatisticsCalculator {
             dataContainer.allTrackDurations.push(...enhancedTracks);
             
             this.log(`🎵 Collected ${show.trackDurations.length} enhanced track durations from ${show.showDate}`);
-            
-            // Debug: Log any exceptionally long tracks (>30 minutes)
-            const longTracks = enhancedTracks.filter(track => track.durationSeconds > 1800);
-            if (longTracks.length > 0) {
-                longTracks.forEach(track => {
-                    const minutes = Math.floor(track.durationSeconds / 60);
-                    this.log(`🔥 Extended jam: ${track.songName} (${minutes}m) on ${show.showDate} at ${track.city}, ${track.state}`);
-                });
-            }
         } else {
             this.log(`⚠️  No track durations available for ${show.showDate}`);
         }

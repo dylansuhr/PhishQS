@@ -71,7 +71,7 @@ export class PhishInClient {
                 id: String(track.id),
                 songName: track.title,
                 songId: track.songs?.[0]?.id || null,
-                durationSeconds: track.duration,
+                durationSeconds: Math.round(track.duration / 1000),
                 showDate: showDate,
                 setNumber: String(track.set_name || '1'),
                 venue: venueName,
