@@ -159,6 +159,7 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
                 if let venueText = venueDisplayText(for: item) {
                     Text(venueText)
                         .font(.caption2)
+                        .fontWeight(.semibold)
                         .foregroundColor(.secondary)
                 }
                 
