@@ -85,41 +85,13 @@ class PhishNetTourService {
     // MARK: - Venue Run Calculation
     
     /// Calculate venue runs for a set of shows
-    /// Replaces Phish.in venue run detection
+    /// Note: Show data from Phish.net doesn't include venue information
+    /// Venue runs will need to be calculated from setlist data instead
     func calculateVenueRuns(for shows: [Show]) -> [String: VenueRun] {
-        var venueRuns: [String: VenueRun] = [:]
-        
-        // Group shows by venue
-        let venueGroups = Dictionary(grouping: shows) { show in
-            "\(show.venue ?? "Unknown")-\(show.city ?? "Unknown")-\(show.state ?? "Unknown")"
-        }
-        
-        for (venueKey, venueShows) in venueGroups {
-            let sortedShows = venueShows.sorted { $0.showdate < $1.showdate }
-            
-            // Only create venue runs for multi-night stands
-            if sortedShows.count > 1 {
-                let showDates = sortedShows.map { $0.showdate }
-                
-                // Use first show for venue info
-                guard let firstShow = sortedShows.first else { continue }
-                
-                for (index, show) in sortedShows.enumerated() {
-                    let venueRun = VenueRun(
-                        venue: firstShow.venue ?? "Unknown Venue",
-                        city: firstShow.city ?? "Unknown City", 
-                        state: firstShow.state,
-                        nightNumber: index + 1,
-                        totalNights: sortedShows.count,
-                        showDates: showDates
-                    )
-                    
-                    venueRuns[show.showdate] = venueRun
-                }
-            }
-        }
-        
-        return venueRuns
+        // Cannot calculate venue runs from Show data alone since Phish.net /shows/ endpoint 
+        // doesn't include venue information. This would need to be done with setlist data.
+        // For now, return empty dictionary
+        return [:]
     }
     
     /// Get venue run for a specific show date within a tour

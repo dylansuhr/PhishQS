@@ -452,8 +452,11 @@ class LatestSetlistViewModel: BaseViewModel {
         print("🔄 Fetching fresh tour setlists for \(tourName)")
         
         do {
+            // Extract year from current show date
+            let year = String(currentDate.prefix(4))
+            
             // Get all tour shows
-            let allTourShows = try await apiManager.fetchTourShows(tourName: tourName)
+            let allTourShows = try await apiManager.fetchTourShows(tourName: tourName, year: year)
             let showsUpToCurrent = allTourShows.filter { $0.showdate <= currentDate }
             
             print("📊 Processing \(showsUpToCurrent.count) shows from \(tourName)")
