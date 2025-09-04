@@ -53,17 +53,22 @@ export class LongestSongsCalculator extends BaseStatisticsCalculator {
     processShow(show, dataContainer) {
         // Collect track durations for longest songs calculation
         if (show.trackDurations && Array.isArray(show.trackDurations)) {
-            // Add all track durations to the master collection
-            dataContainer.allTrackDurations.push(...show.trackDurations);
+            // Enhance each track duration with tour context from the show
+            const enhancedTracks = show.trackDurations.map(track => {
+                return this.enhanceTrackWithTourContext(track, show);
+            });
             
-            this.log(`🎵 Collected ${show.trackDurations.length} track durations from ${show.showDate}`);
+            // Add enhanced track durations to the master collection
+            dataContainer.allTrackDurations.push(...enhancedTracks);
+            
+            this.log(`🎵 Collected ${show.trackDurations.length} enhanced track durations from ${show.showDate}`);
             
             // Debug: Log any exceptionally long tracks (>30 minutes)
-            const longTracks = show.trackDurations.filter(track => track.durationSeconds > 1800);
+            const longTracks = enhancedTracks.filter(track => track.durationSeconds > 1800);
             if (longTracks.length > 0) {
                 longTracks.forEach(track => {
                     const minutes = Math.floor(track.durationSeconds / 60);
-                    this.log(`🔥 Extended jam: ${track.songName} (${minutes}m) on ${show.showDate}`);
+                    this.log(`🔥 Extended jam: ${track.songName} (${minutes}m) on ${show.showDate} at ${track.city}, ${track.state}`);
                 });
             }
         } else {
@@ -130,5 +135,46 @@ export class LongestSongsCalculator extends BaseStatisticsCalculator {
         
         this.log(`✅ Found duration data in ${showsWithDurations.length}/${tourShows.length} shows`);
         return true;
+    }
+    
+    /**
+     * Enhance track duration with tour context information from show data
+     * @param {Object} track - Original track duration object
+     * @param {Object} show - Show data containing venue run and tour position
+     * @returns {TrackDuration} Enhanced track with tour context
+     */
+    enhanceTrackWithTourContext(track, show) {
+        // Extract city and state from Phish.net show data first, fallback to venue run
+        let city = null;
+        let state = null;
+        
+        // First try to get city/state from Phish.net show data (more accurate for all venues)
+        if (show.showVenueInfo) {
+            city = show.showVenueInfo.city;
+            state = show.showVenueInfo.state;
+        }
+        
+        // Fallback to venue run if not available from show data
+        if (!city && show.venueRun) {
+            city = show.venueRun.city;
+            state = show.venueRun.state;
+        }
+        
+        // Create enhanced TrackDuration with tour context
+        return new TrackDuration(
+            track.id,
+            track.songName,
+            track.songId,
+            track.durationSeconds,
+            track.showDate,
+            track.setNumber,
+            track.venue || show.setlistItems?.[0]?.venue,
+            track.venueRun || show.venueRun,
+            {
+                city: city,
+                state: state,
+                tourPosition: show.tourPosition
+            }
+        );
     }
 }

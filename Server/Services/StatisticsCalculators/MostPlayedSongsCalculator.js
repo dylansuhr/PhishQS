@@ -38,10 +38,16 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
         return {
             /** 
              * @type {Map<string, Object>} 
-             * Maps song names (lowercase) to play count data
-             * Value: { count: number, songId: string, songName: string }
+             * Maps song names (lowercase) to play count data with tour context
+             * Value: { count: number, songId: string, songName: string, mostRecentShow: Object }
              */
-            songPlayCounts: new Map()
+            songPlayCounts: new Map(),
+            
+            /**
+             * @type {Array<Object>}
+             * All tour shows for finding most recent performances
+             */
+            allTourShows: []
         };
     }
     
@@ -56,7 +62,10 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
      * @param {Object} dataContainer - Data collection container
      */
     processShow(show, dataContainer) {
-        const { songPlayCounts } = dataContainer;
+        const { songPlayCounts, allTourShows } = dataContainer;
+        
+        // Add this show to the collection for finding most recent performances
+        allTourShows.push(show);
         
         // Count song frequencies using track durations as primary source
         if (show.trackDurations && Array.isArray(show.trackDurations)) {
@@ -67,12 +76,15 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
                 const songKey = track.songName.toLowerCase();
                 
                 if (songPlayCounts.has(songKey)) {
-                    // Increment existing song count
+                    // Increment existing song count and update most recent show if this is newer
                     const existing = songPlayCounts.get(songKey);
+                    const isMoreRecent = new Date(show.showDate) >= new Date(existing.mostRecentShow?.showDate || '1970-01-01');
+                    
                     songPlayCounts.set(songKey, {
                         count: existing.count + 1,
                         songId: existing.songId || track.songId,
-                        songName: track.songName // Keep original case formatting
+                        songName: track.songName, // Keep original case formatting
+                        mostRecentShow: isMoreRecent ? show : existing.mostRecentShow
                     });
                     
                     this.log(`📈 ${track.songName}: ${existing.count} → ${existing.count + 1} plays`);
@@ -81,7 +93,8 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
                     songPlayCounts.set(songKey, {
                         count: 1,
                         songId: track.songId,
-                        songName: track.songName
+                        songName: track.songName,
+                        mostRecentShow: show
                     });
                     
                     this.log(`➕ ${track.songName}: First play tracked`);
@@ -113,17 +126,20 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
             return [];
         }
         
-        // Convert counts to MostPlayedSong objects and sort by play count
+        // Convert counts to MostPlayedSong objects (simplified - only name and count)
         const mostPlayedSongs = allSongCounts
-            .map(info => new MostPlayedSong(
-                info.songId || BaseStatisticsCalculator.hashCode(info.songName),
-                BaseStatisticsCalculator.capitalizeWords(info.songName),
-                info.count
-            ))
+            .map(info => {
+                return new MostPlayedSong(
+                    info.songId || BaseStatisticsCalculator.hashCode(info.songName),
+                    BaseStatisticsCalculator.capitalizeWords(info.songName),
+                    info.count
+                    // No additional tour context - user requested only name and count
+                );
+            })
             .sort((a, b) => b.playCount - a.playCount)
             .slice(0, this.resultLimit);
         
-        // Debug logging for top results
+        // Debug logging for top results (simplified - only name and count)
         this.log(`🏆 Top ${mostPlayedSongs.length} most played songs in ${tourName}:`);
         mostPlayedSongs.forEach((song, index) => {
             const plural = song.playCount === 1 ? 'time' : 'times';

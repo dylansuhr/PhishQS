@@ -156,7 +156,9 @@ export class HistoricalDataEnhancer {
                         historicalLastPlayed: historicalData.historicalLastPlayed,
                         historicalVenue: historicalData.historicalVenue,
                         historicalCity: historicalData.historicalCity,
-                        historicalState: historicalData.historicalState
+                        historicalState: historicalData.historicalState,
+                        // Compute formatted historical date
+                        formattedHistoricalDate: this.formatDate(historicalData.historicalLastPlayed)
                     };
 
                     enhancedSongs.push(enhancedSong);
@@ -181,6 +183,33 @@ export class HistoricalDataEnhancer {
 
         console.log(`     📊 Enhanced ${enhancedSongs.length} ${categoryName} with historical data`);
         return enhancedSongs;
+    }
+    
+    /**
+     * Format date from YYYY-MM-DD to M/d/yy format
+     * @param {string} dateString - Date in YYYY-MM-DD format
+     * @returns {string|null} Formatted date as M/d/yy or null if invalid
+     */
+    formatDate(dateString) {
+        if (!dateString) return null;
+        
+        try {
+            // Parse date string directly to avoid timezone issues
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return null;
+            
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const day = parseInt(parts[2]);
+            
+            if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+            if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+            
+            const shortYear = year.toString().slice(-2);
+            return `${month}/${day}/${shortYear}`;
+        } catch (error) {
+            return null;
+        }
     }
 }
 

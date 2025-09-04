@@ -79,6 +79,10 @@ export class RarestSongsCalculator extends BaseStatisticsCalculator {
                         tourVenue: show.setlistItems?.[0]?.venue, // Venue from Phish.net setlist
                         tourVenueRun: show.venueRun, // Venue run from Phish.in
                         tourDate: show.showDate,
+                        // Extract city and state from Phish.net show data first, fallback to venue run
+                        tourCity: show.showVenueInfo?.city || show.venueRun?.city,
+                        tourState: show.showVenueInfo?.state || show.venueRun?.state,
+                        tourPosition: show.tourPosition, // Tour position information
                         historicalVenue: gapInfo.historicalVenue,
                         historicalCity: gapInfo.historicalCity,
                         historicalState: gapInfo.historicalState,

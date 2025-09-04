@@ -23,6 +23,24 @@ export class EnhancedSetlistService {
         // Step 1: Get base setlist from Phish.net (same as iOS line 72)
         const setlistItems = await this.phishNetClient.fetchSetlist(showDate);
         console.log(`   📋 Found ${setlistItems.length} setlist items from Phish.net`);
+        
+        // Step 1.5: Get show data from Phish.net to extract venue/city/state information
+        let showVenueInfo = null;
+        try {
+            const year = showDate.split('-')[0];
+            const yearShows = await this.phishNetClient.fetchShows(year);
+            const matchingShow = yearShows.find(show => show.showdate === showDate);
+            if (matchingShow) {
+                showVenueInfo = {
+                    venue: matchingShow.venue,
+                    city: matchingShow.city,
+                    state: matchingShow.state
+                };
+                console.log(`   🏟️  Found venue info from Phish.net: ${showVenueInfo.venue}, ${showVenueInfo.city}, ${showVenueInfo.state}`);
+            }
+        } catch (error) {
+            console.log(`   ⚠️  Could not fetch show venue info: ${error.message}`);
+        }
 
         // Step 2: Initialize enhancement data containers (same as iOS lines 74-79)
         let trackDurations = [];
@@ -103,7 +121,8 @@ export class EnhancedSetlistService {
             venueRun: venueRun,
             tourPosition: tourPosition,
             recordings: recordings,
-            songGaps: songGaps
+            songGaps: songGaps,
+            showVenueInfo: showVenueInfo // Include Phish.net venue info for city/state extraction
         };
 
         console.log(`   ✅ Enhanced setlist created with ${Object.keys(enhancedSetlist).length} data components`);

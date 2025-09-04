@@ -43,13 +43,22 @@ export class TrackDuration {
         this.city = options.city || null;
         this.state = options.state || null;
         this.tourPosition = options.tourPosition || null;
+        
+        // Pre-computed formatted duration for JSON serialization
+        this.formattedDuration = this.formatDuration(durationSeconds);
     }
     
-    get formattedDuration() {
-        const minutes = Math.floor(this.durationSeconds / 60);
-        const seconds = this.durationSeconds % 60;
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    /**
+     * Format duration from seconds to MM:SS format
+     * @param {number} seconds - Duration in seconds
+     * @returns {string} Formatted duration as MM:SS
+     */
+    formatDuration(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
     }
+    
     
     get venueDisplayText() {
         if (!this.venue) return null;
@@ -89,6 +98,36 @@ export class SongGapInfo {
         this.historicalCity = options.historicalCity || null;
         this.historicalState = options.historicalState || null;
         this.historicalLastPlayed = options.historicalLastPlayed || null;
+        
+        // Pre-computed formatted historical date for JSON serialization
+        this.formattedHistoricalDate = this.formatDate(options.historicalLastPlayed);
+    }
+    
+    /**
+     * Format date from YYYY-MM-DD to M/d/yy format
+     * @param {string} dateString - Date in YYYY-MM-DD format
+     * @returns {string|null} Formatted date as M/d/yy or null if invalid
+     */
+    formatDate(dateString) {
+        if (!dateString) return null;
+        
+        try {
+            // Parse date string directly to avoid timezone issues
+            const parts = dateString.split('-');
+            if (parts.length !== 3) return null;
+            
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+            const day = parseInt(parts[2]);
+            
+            if (isNaN(year) || isNaN(month) || isNaN(day)) return null;
+            if (month < 1 || month > 12 || day < 1 || day > 31) return null;
+            
+            const shortYear = year.toString().slice(-2);
+            return `${month}/${day}/${shortYear}`;
+        } catch (error) {
+            return null;
+        }
     }
     
     get gapDisplayText() {
