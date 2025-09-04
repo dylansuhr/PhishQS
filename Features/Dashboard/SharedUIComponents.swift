@@ -256,11 +256,11 @@ struct RarestSongRowModular: View {
                 // Last played date (the date that created this gap)
                 if song.gap > 0 {
                     if let historicalDate = song.historicalLastPlayed {
-                        Text(DateUtilities.formatDateForDisplay(historicalDate))
+                        Text(historicalDate)
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     } else {
-                        Text(DateUtilities.formatDateForDisplay(song.lastPlayed))
+                        Text(song.lastPlayed)
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
