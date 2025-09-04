@@ -126,14 +126,14 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
             return [];
         }
         
-        // Convert counts to MostPlayedSong objects (simplified - only name and count)
+        // Convert counts to MostPlayedSong objects (simple: only name and count)
         const mostPlayedSongs = allSongCounts
             .map(info => {
                 return new MostPlayedSong(
                     info.songId || BaseStatisticsCalculator.hashCode(info.songName),
                     BaseStatisticsCalculator.capitalizeWords(info.songName),
                     info.count
-                    // No additional tour context - user requested only name and count
+                    // No venue or tour context - keep it simple per user request
                 );
             })
             .sort((a, b) => b.playCount - a.playCount)

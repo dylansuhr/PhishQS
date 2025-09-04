@@ -9,18 +9,11 @@
  * Mirrors Swift MostPlayedSong struct
  */
 export class MostPlayedSong {
-    constructor(songId, songName, playCount, options = {}) {
+    constructor(songId, songName, playCount) {
         this.id = songId;
         this.songId = songId;
         this.songName = songName;
         this.playCount = playCount;
-        
-        // Tour context fields (represents most recent performance)
-        this.mostRecentDate = options.mostRecentDate || '';
-        this.mostRecentVenue = options.mostRecentVenue || null;
-        this.city = options.city || null;
-        this.state = options.state || null;
-        this.tourPosition = options.tourPosition || null;
     }
 }
 

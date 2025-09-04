@@ -150,9 +150,9 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
                     Spacer()
                 }
                 
-                // Venue information if available
-                if let venue = item.venue {
-                    Text(venue)
+                // Venue information with run info if available
+                if let venueText = venueDisplayText(for: item) {
+                    Text(venueText)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -172,6 +172,27 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
             metricView()
                 .layoutPriority(2)
         }
+    }
+    
+    /// Helper function to get venue display text with run info for different model types
+    private func venueDisplayText(for item: T) -> String? {
+        // Handle TrackDuration with venueDisplayText property
+        if let trackDuration = item as? TrackDuration {
+            return trackDuration.venueDisplayText
+        }
+        
+        // Handle SongGapInfo with tourVenueDisplayText property
+        if let songGapInfo = item as? SongGapInfo {
+            return songGapInfo.tourVenueDisplayText
+        }
+        
+        // MostPlayedSong no longer has venue info - return nil
+        if item is MostPlayedSong {
+            return nil
+        }
+        
+        // Fallback for other types that conform to TourContextProvider
+        return item.venue
     }
     
     /// Helper function to format city and state display text
@@ -249,17 +270,36 @@ struct RarestSongRowModular: View {
     }
 }
 
-/// Specialized row for most played songs
+/// Specialized row for most played songs (simplified: only song name and count)
 struct MostPlayedSongRowModular: View {
     let position: Int
     let song: MostPlayedSong
     
     var body: some View {
-        TourStatisticsRowBase(position: position, item: song, positionColor: .green) {
+        HStack(spacing: 12) {
+            // Position number
+            Text("\(position)")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.green)
+                .frame(width: 20, alignment: .center)
+            
+            // Song name only
+            Text(song.songName)
+                .font(.body)
+                .fontWeight(.medium)
+                .foregroundColor(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+            
+            Spacer(minLength: 8)
+            
+            // Play count only
             Text("\(song.playCount)")
                 .font(.callout)
                 .fontWeight(.semibold)
                 .foregroundColor(.green)
+                .layoutPriority(2)
         }
     }
 }

@@ -305,33 +305,17 @@ struct MostPlayedSong: Codable, Identifiable {
     let songName: String      // Song name
     let playCount: Int        // Number of times played in tour
     
-    // Tour context fields (represents most recent performance)
-    let mostRecentDate: String      // Date of most recent performance in tour
-    let mostRecentVenue: String?    // Venue of most recent performance
-    let city: String?              // City of most recent performance
-    let state: String?             // State of most recent performance  
-    let tourPosition: TourShowPosition? // Position within tour for most recent performance
-    
-    /// Initialize with songId as id
-    init(songId: Int, songName: String, playCount: Int, mostRecentDate: String? = nil, mostRecentVenue: String? = nil, city: String? = nil, state: String? = nil, tourPosition: TourShowPosition? = nil) {
+    /// Initialize with songId as id  
+    init(songId: Int, songName: String, playCount: Int) {
         self.id = songId
         self.songId = songId
         self.songName = songName
         self.playCount = playCount
-        self.mostRecentDate = mostRecentDate ?? ""
-        self.mostRecentVenue = mostRecentVenue
-        self.city = city
-        self.state = state
-        self.tourPosition = tourPosition
     }
 }
 
-// MARK: - MostPlayedSong TourContextProvider Conformance
-
-extension MostPlayedSong: TourContextProvider {
-    var showDate: String { mostRecentDate }
-    var venue: String? { mostRecentVenue }
-}
+// MARK: - MostPlayedSong does not conform to TourContextProvider
+// MostPlayedSong is kept simple with only song name and play count
 
 /// Combined tour statistics for display
 struct TourSongStatistics: Codable {

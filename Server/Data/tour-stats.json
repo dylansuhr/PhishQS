@@ -180,34 +180,19 @@
       "id": 1712495126,
       "songId": 1712495126,
       "songName": "Tweezer Reprise",
-      "playCount": 10,
-      "mostRecentDate": "",
-      "mostRecentVenue": null,
-      "city": null,
-      "state": null,
-      "tourPosition": null
+      "playCount": 10
     },
     {
       "id": 744171844,
       "songId": 744171844,
       "songName": "Tweezer",
-      "playCount": 7,
-      "mostRecentDate": "",
-      "mostRecentVenue": null,
-      "city": null,
-      "state": null,
-      "tourPosition": null
+      "playCount": 7
     },
     {
       "id": 2084439332,
       "songId": 2084439332,
       "songName": "Harry Hood",
-      "playCount": 6,
-      "mostRecentDate": "",
-      "mostRecentVenue": null,
-      "city": null,
-      "state": null,
-      "tourPosition": null
+      "playCount": 6
     }
   ],
   "tourName": "Summer Tour 2025"
