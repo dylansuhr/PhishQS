@@ -98,13 +98,6 @@
 			);
 			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
 		};
-		F4F1DDC62E6754E0006B6D75 /* Exceptions for "api" folder in "PhishQS" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"Data/tour-stats.json",
-			);
-			target = F418FFB72DE7ED0A00240D34 /* PhishQS */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -161,9 +154,6 @@
 		};
 		F4F1DDBC2E6702D7006B6D75 /* api */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				F4F1DDC62E6754E0006B6D75 /* Exceptions for "api" folder in "PhishQS" target */,
-			);
 			path = api;
 			sourceTree = "<group>";
 		};

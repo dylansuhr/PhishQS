@@ -216,9 +216,9 @@ struct TourOverviewCard: View {
         
         // Sample most played songs
         let sampleMostPlayedSongs = [
-            MostPlayedSong(songId: 473, songName: "You Enjoy Myself", playCount: 8, mostRecentDate: "2025-07-27", mostRecentVenue: "Madison Square Garden", city: "New York", state: "NY", tourPosition: sampleTourPosition),
-            MostPlayedSong(songId: 627, songName: "Tweezer", playCount: 7, mostRecentDate: "2025-07-26", mostRecentVenue: "Broadview Stage at SPAC", city: "Saratoga Springs", state: "NY", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 3, totalShows: 23, tourYear: "2025")),
-            MostPlayedSong(songId: 294, songName: "Ghost", playCount: 6, mostRecentDate: "2025-07-25", mostRecentVenue: "Alpine Valley Music Theatre", city: "East Troy", state: "WI", tourPosition: TourShowPosition(tourName: "Summer Tour 2025", showNumber: 2, totalShows: 23, tourYear: "2025"))
+            MostPlayedSong(songId: 473, songName: "You Enjoy Myself", playCount: 8),
+            MostPlayedSong(songId: 627, songName: "Tweezer", playCount: 7),
+            MostPlayedSong(songId: 294, songName: "Ghost", playCount: 6)
         ]
         
         TourStatisticsCards(

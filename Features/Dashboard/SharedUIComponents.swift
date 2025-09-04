@@ -359,9 +359,7 @@ struct MostPlayedSongRowModular: View {
             
             // Sample most played song  
             let sampleMostPlayed = MostPlayedSong(
-                songId: 473, songName: "You Enjoy Myself", playCount: 8, 
-                mostRecentDate: "2025-06-24", mostRecentVenue: "Petersen Events Center", 
-                city: "Pittsburgh", state: "PA", tourPosition: sampleTourPosition
+                songId: 473, songName: "You Enjoy Myself", playCount: 8
             )
             MostPlayedSongRowModular(position: 1, song: sampleMostPlayed)
         }
