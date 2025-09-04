@@ -7,8 +7,8 @@ const __dirname = dirname(__filename);
 
 export default function handler(req, res) {
   try {
-    // Read pre-computed statistics from Data directory
-    const statsPath = join(__dirname, 'Data', 'tour-stats.json');
+    // Read pre-computed statistics from Server/Data directory (single source of truth)
+    const statsPath = join(__dirname, '..', 'Server', 'Data', 'tour-stats.json');
     const stats = JSON.parse(readFileSync(statsPath, 'utf8'));
     
     // Set cache headers for performance
