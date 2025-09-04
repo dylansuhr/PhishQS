@@ -134,17 +134,32 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 
-                // Tour context information
-                TourInfoDisplayView(
-                    city: item.city,
-                    state: item.state,
-                    tourPosition: item.tourPosition,
-                    date: item.showDate
-                )
+                // Date and tour position (without city/state)
+                HStack(spacing: 8) {
+                    Text(DateUtilities.formatDateForDisplay(item.showDate))
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                    
+                    if let tourPosition = item.tourPosition {
+                        BadgeView(
+                            text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", 
+                            style: .blue
+                        )
+                    }
+                    
+                    Spacer()
+                }
                 
                 // Venue information if available
                 if let venue = item.venue {
                     Text(venue)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                
+                // City and state below venue
+                if let cityStateText = cityStateDisplayText(city: item.city, state: item.state) {
+                    Text(cityStateText)
                         .font(.caption2)
                         .foregroundColor(.secondary)
                 }
@@ -156,6 +171,17 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
             // Custom metric view (duration, gap, play count, etc.)
             metricView()
                 .layoutPriority(2)
+        }
+    }
+    
+    /// Helper function to format city and state display text
+    private func cityStateDisplayText(city: String?, state: String?) -> String? {
+        guard let city = city else { return nil }
+        
+        if let state = state {
+            return "\(city), \(state)"
+        } else {
+            return city
         }
     }
 }
