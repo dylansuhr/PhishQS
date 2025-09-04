@@ -134,18 +134,23 @@ struct TourStatisticsRowBase<T: TourContextProvider, MetricView: View>: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 
-                // Date and tour position (without city/state)
+                // Date only (tour position feature temporarily disabled)
                 HStack(spacing: 8) {
                     Text(DateUtilities.formatDateForDisplay(item.showDate))
                         .font(.caption2)
                         .foregroundColor(.secondary)
                     
+                    // FEATURE TEMPORARILY DISABLED: Tour position badge (e.g., "4/23")
+                    // To re-enable: uncomment the block below
+                    // This displays the show number within the tour (e.g., show 4 of 23)
+                    /*
                     if let tourPosition = item.tourPosition {
                         BadgeView(
                             text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", 
                             style: .blue
                         )
                     }
+                    */
                     
                     Spacer()
                 }
