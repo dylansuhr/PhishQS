@@ -2,11 +2,15 @@
  * EnhancedSetlistService.js
  * JavaScript port of iOS APIManager.fetchEnhancedSetlist() method
  * Creates enhanced setlist by combining Phish.net and Phish.in API data
+ * 
+ * OPTIMIZATION: Now supports both original API-based methods and new
+ * data-context-based methods for eliminating redundant API calls
  */
 
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import { PhishInClient } from '../API/PhishInClient.js';
 import { PhishNetTourService } from './PhishNetTourService.js';
+import { DataCollectionService } from './DataCollectionService.js';
 
 export class EnhancedSetlistService {
     constructor(phishNetApiKey) {
@@ -191,5 +195,80 @@ export class EnhancedSetlistService {
             const currentEnhanced = await this.createEnhancedSetlist(currentShowDate);
             return [currentEnhanced];
         }
+    }
+    
+    /**
+     * OPTIMIZED: Collect tour data using pre-fetched data context
+     * 
+     * This method replaces the API-heavy collectTourData method by using
+     * pre-collected data from DataCollectionService, eliminating redundant API calls.
+     * 
+     * @param {Object} dataContext - Pre-collected tour data context
+     * @returns {Array} Array of enhanced setlists (same format as original)
+     */
+    collectTourDataFromContext(dataContext) {
+        console.log(`🎪 Creating enhanced setlists from pre-collected data for ${dataContext.tourName}`);
+        console.log(`   📊 Processing ${dataContext.playedShowCount}/${dataContext.totalShows} played shows`);
+        
+        const enhancedSetlists = [];
+        
+        // Create enhanced setlist for each played show using pre-collected data
+        for (const show of dataContext.playedShows) {
+            try {
+                const enhanced = DataCollectionService.createEnhancedSetlistFromContext(
+                    show.showdate, 
+                    dataContext
+                );
+                enhancedSetlists.push(enhanced);
+                
+                const setlistCount = enhanced.setlistItems.length;
+                const durationCount = enhanced.trackDurations.length;
+                console.log(`   📅 ${show.showdate}: ${setlistCount} songs, ${durationCount} durations`);
+                
+            } catch (error) {
+                console.log(`   ⚠️  Error processing ${show.showdate}: ${error.message}`);
+                // Continue processing other shows even if one fails
+            }
+        }
+        
+        // Sort chronologically (same as iOS)
+        enhancedSetlists.sort((a, b) => a.showDate.localeCompare(b.showDate));
+        
+        console.log(`   ✅ Created ${enhancedSetlists.length} enhanced setlists using optimized data context`);
+        return enhancedSetlists;
+    }
+    
+    /**
+     * OPTIMIZED: Create single enhanced setlist from pre-fetched data context
+     * 
+     * This method replaces createEnhancedSetlist() by using pre-collected data,
+     * eliminating the individual API calls for venue info and tour context.
+     * 
+     * @param {string} showDate - Date of show to enhance
+     * @param {Object} dataContext - Pre-collected tour data context
+     * @returns {Object} Enhanced setlist object (same format as original)
+     */
+    createEnhancedSetlistFromContext(showDate, dataContext) {
+        console.log(`🔗 Creating enhanced setlist for ${showDate} from pre-collected data...`);
+        
+        const enhanced = DataCollectionService.createEnhancedSetlistFromContext(showDate, dataContext);
+        
+        // Log the same information as the original method for consistency
+        console.log(`   📋 Found ${enhanced.setlistItems.length} setlist items from context`);
+        if (enhanced.showVenueInfo) {
+            console.log(`   🏟️  Found venue info: ${enhanced.showVenueInfo.venue}, ${enhanced.showVenueInfo.city}, ${enhanced.showVenueInfo.state}`);
+        }
+        console.log(`   🎵 Found ${enhanced.trackDurations.length} track durations from context`);
+        if (enhanced.venueRun) {
+            console.log(`   🏟️  Found venue run: N${enhanced.venueRun.nightNumber}/${enhanced.venueRun.totalNights} at ${enhanced.venueRun.venue}`);
+        }
+        if (enhanced.tourPosition) {
+            console.log(`   🎪 Found tour position: Show ${enhanced.tourPosition.showNumber}/${enhanced.tourPosition.totalShows} of ${enhanced.tourPosition.tourName}`);
+        }
+        console.log(`   🎧 Found ${enhanced.recordings.length} recordings from context`);
+        console.log(`   📊 Extracted gap data for ${enhanced.songGaps.length} songs from setlist`);
+        console.log(`   ✅ Enhanced setlist created with ${Object.keys(enhanced).length} data components`);
+        
+        return enhanced;
     }
 }
