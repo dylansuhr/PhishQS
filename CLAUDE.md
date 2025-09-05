@@ -10,21 +10,29 @@ PhishQS is a hybrid iOS/Node.js project consisting of:
 
 ## Plan and Review
 
-Before you begin, write a detailed implementation plan in a file named claude/tasks/TASK_NAME.md.
+**IMPORTANT**: Reference and follow this process at the beginning of every coding session.
+
+Before you begin any implementation work, write a detailed implementation plan in a file named `claude/tasks/TASK_NAME.md`.
 
 This plan should include:
+- A clear, detailed breakdown of the implementation steps
+- The reasoning behind your approach
+- A list of specific tasks with acceptance criteria
+- Identification of any dependencies or prerequisites
 
-A clear, detailed breakdown of the implementation steps.
-
-The reasoning behind your approach.
-
-A list of specific tasks.
-
-Focus on a Minimum Viable Product (MVP) to avoid over-planning. Once the plan is ready, please ask me to review it. Do not proceed with implementation until I have approved the plan.
+Focus on a Minimum Viable Product (MVP) to avoid over-planning. Once the plan is ready, please ask me to review it. **Do not proceed with implementation until I have approved the plan.**
 
 ## While Implementing
 
-As you work, keep the plan updated. After you complete a task, append a detailed description of the changes you've made to the plan. This ensures that the progress and next steps are clear and can be easily handed over to other engineers if needed.
+**IMPORTANT**: Keep the plan updated throughout the implementation process.
+
+As you work:
+1. Use the TodoWrite tool to track progress on implementation tasks
+2. After completing each task, append a detailed description of the changes you've made to the plan
+3. Update the plan if you discover new requirements or need to adjust the approach
+4. Mark tasks as completed in your todo list immediately after finishing them
+
+This ensures that progress and next steps are clear and can be easily handed over to other engineers if needed.
 
 ## Development Commands
 
@@ -54,8 +62,14 @@ The iOS app follows a feature-based architecture with clear separation of concer
 
 - **Services/**: Core business logic and API clients
   - `APIManager.swift`: Central coordinator between different API services
-  - `Core/`: Shared services including caching, tour statistics, and API protocols
-  - `PhishNet/`, `PhishIn/`: API client implementations
+  - `Core/`: Shared services including:
+    - `TourConfig.swift`: Centralized tour configuration (eliminates hardcoded values)
+    - `SetlistMatchingService.swift`: Shared position-based data matching utilities
+    - `CacheManager.swift`: Data persistence and cache invalidation
+    - `TourStatisticsService.swift`: Core tour statistics calculations
+    - `HistoricalGapCalculator.swift`: Song gap calculations
+  - `PhishNet/`: Phish.net API client and tour services
+  - `PhishIn/`: Phish.in API client (audio data only)
 
 - **Models/**: Data models for shows, setlists, and tour statistics
 
@@ -69,6 +83,11 @@ Node.js serverless functions follow iOS architectural patterns:
 
 - **Server/Services/**: Business logic services (mirrors iOS Services pattern)
   - `TourStatisticsService.js`: Core tour statistics calculations
+  - `PhishNetTourService.js`: Phish.net tour data operations
+  - `TourScheduleService.js`: Complete tour schedule management
+  - `EnhancedSetlistService.js`: Multi-API setlist data coordination
+  - `StatisticsRegistry.js`: Modular calculator registry for extensible statistics
+  - `StatisticsCalculators/`: Individual calculator modules (longest songs, rarest songs, etc.)
 
 - **Server/Models/**: Data models matching iOS model structure
   - `TourStatistics.js`: Tour statistics model definitions
@@ -77,29 +96,32 @@ Node.js serverless functions follow iOS architectural patterns:
   - `generate-stats.js`: Creates tour statistics JSON from API data
 
 - **Server/Data/**: Generated JSON data files served by APIs
+  - `tour-stats.json`: Pre-computed tour statistics
+  - `tour-schedules.json`: Complete tour schedule data for accurate position calculations
 
 ## Key Design Patterns
 
 ### Multi-API Strategy
 The app uses a hybrid approach combining two specialized APIs to provide comprehensive tour data:
 
-**Phish.net API** (Primary setlist source):
+**Phish.net API** (Primary tour and setlist authority):
 - Shows by year and setlist data
 - Song gap calculations (shows since last played)
 - Venue names, cities, states that match setlist context
 - Transition marks between songs (→, >, etc.)
+- **Tour organization and show counts** (complete schedules including future shows)
+- **Venue runs calculation** (N1/N2/N3 multi-night indicators)
 - Official authoritative Phish database
 
-**Phish.in API** (Audio and performance enhancement):
-- Song durations (only available source)
-- Tour organization and naming
-- Venue runs calculation (N1/N2/N3 multi-night indicators)
+**Phish.in API** (Audio enhancement only - RESTRICTED USAGE):
+- **Song durations ONLY** (their unique strength)
 - Audio recording links
+- **Usage Restriction**: Only used for audio timing data, NOT for tour organization
 
 **Why both APIs are required**:
-- Neither API alone provides complete data needed for tour statistics
-- Phish.net has no duration data; Phish.in has no gap data
-- Each API specializes in different aspects of show information
+- Phish.net provides complete tour structure but lacks song duration data
+- Phish.in provides song durations but lacks gap calculations and complete tour schedules
+- **Migration Result**: Phish.net is now the tour authority; Phish.in is limited to audio enhancement only
 
 ### Caching Strategy
 - `CacheManager.swift` handles data persistence and cache invalidation
@@ -127,10 +149,12 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - Latest setlist always shows most recent Phish concert
 
 **Performance Strategy**:
-- Server pre-computes all statistics to avoid slow real-time calculation
+- Server pre-computes all statistics to avoid slow real-time calculation (~140ms vs 60+ seconds)
 - Statistics stored in `Server/Data/tour-stats.json`
+- **API Optimization**: 97% improvement using `/v5/shows/showyear/` endpoint (44 responses vs 1,437)
+- **Tour Position Accuracy**: Now shows correct totals (e.g., "Show 23/31" vs "Show 23/23")
 - `TourStatisticsService` handles complex calculations including gap analysis
-- `HistoricalGapCalculator` manages song gap calculations
+- `StatisticsRegistry` enables modular calculator architecture
 
 ## API Configuration
 
@@ -141,7 +165,11 @@ Core tour statistics are calculated using specific algorithms and update rules:
 
 ### API Endpoints
 - `/api/tour-statistics`: Returns pre-computed tour statistics
-- Requires API keys for Phish.net and Phish.in (configured in generate-stats.js)
+
+### API Keys and Configuration
+- **Phish.net API**: Requires API key for statistics generation (configured in generate-stats.js)
+- **Phish.in API**: No API key required
+- API keys should be configured as environment variables for production deployment
 
 ## Critical API Rules
 
@@ -163,8 +191,9 @@ Core tour statistics are calculated using specific algorithms and update rules:
 
 ### Tour Statistics Pipeline
 1. **Multi-API Data Collection**:
-   - Fetch show dates and setlists from Phish.net API
-   - Fetch song durations and tour metadata from Phish.in API
+   - **Primary**: Fetch show dates, setlists, and tour organization from Phish.net API
+   - **Enhancement**: Fetch song durations from Phish.in API (audio data only)
+   - **Tour Context**: Use TourScheduleService for complete tour schedules and accurate positions
    - Apply venue-date consistency rules during data combination
 
 2. **Statistics Calculation**:
@@ -191,6 +220,33 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - iOS UI tests in `Tests/PhishQSUITests/`
 - No server-side tests currently implemented
 - Mock implementations available for API clients
+
+## Development Best Practices
+
+### Tour-Related Functionality
+- **Use TourConfig** for any new tour-related functionality instead of hardcoding values
+- **Update TourConfig** when tours change (single point of configuration)
+- Examples: tour names, show counts, year references
+
+### Data Matching
+- **Use SetlistMatchingService** for any position-based data matching between APIs
+- Handles duplicate song names correctly using position-based matching with name validation
+- Provides duration color calculation and gap information matching utilities
+
+### ViewModel Organization
+- **Follow Extension Pattern** for organizing large ViewModels into focused components
+- Break ViewModels into extensions by functionality (Navigation, DataProcessing, TourStatistics, Core)
+- Example: `LatestSetlistViewModel+Navigation.swift`, `LatestSetlistViewModel+TourStatistics.swift`
+
+### API Usage Restrictions
+- **Maintain Phish.in Restrictions**: Keep Phish.in usage limited to audio data only (durations, recordings)
+- **Use Phish.net for Tour Data**: All tour organization, show counts, venue runs come from Phish.net
+- **Respect Venue-Date Consistency Rule**: If displaying a date, corresponding venue must come from same API source
+
+### Configuration Management
+- Use centralized services instead of hardcoded values throughout the codebase
+- Leverage the modular calculator architecture for adding new statistics types
+- Follow the established service layer patterns for API coordination
 
 ## Deployment
 - Server: Deployed to Vercel via `npm run deploy`
