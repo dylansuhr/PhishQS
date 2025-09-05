@@ -104,7 +104,7 @@ struct DashboardSection<Content: View>: View {
                     
                     HStack {
                         BadgeView(text: "N3/3", style: .blue)
-                        BadgeView(text: "23/23", style: .blue)
+                        BadgeView(text: TourConfig.tourPositionBadge(currentShow: TourConfig.samplePlayedShows), style: .blue)
                     }
                 }
             }
@@ -172,13 +172,13 @@ struct DashboardSection<Content: View>: View {
             HStack(spacing: 16) {
                 MetricCard("Tour Overview") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("Summer Tour 2025")
+                        Text(TourConfig.currentTourName)
                             .font(.body)
                             .fontWeight(.medium)
                         
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("23")
+                                Text("\(TourConfig.samplePlayedShows)")
                                     .font(.title3)
                                     .fontWeight(.bold)
                                     .foregroundColor(.blue)

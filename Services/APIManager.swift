@@ -9,23 +9,33 @@ import Foundation
 
 // MARK: - Central API Coordinator
 
-/// Central manager that coordinates between different API services
-/// Uses Phish.net for tour organization, show counts, venue runs
-/// Uses Phish.in for song durations only
+/// Central API coordinator implementing hybrid multi-API architecture
+/// 
+/// **Architecture Strategy:**
+/// - **Phish.net**: Primary source for setlists, tour organization, show counts, venue runs, song gaps
+/// - **Phish.in**: Specialized audio provider for song durations and recordings only
+/// - **Vercel Server**: Pre-computed tour statistics for optimal performance
+/// 
+/// This hybrid approach leverages each API's strengths while maintaining data consistency
 class APIManager: ObservableObject {
     
     // MARK: - API Clients
     
-    /// Primary setlist data provider (Phish.net)
+    /// Primary setlist and tour data provider (Phish.net API)
+    /// Handles: setlists, shows, tour positions, venue runs, song gap calculations
     private let phishNetClient: PhishAPIService
     
-    /// Audio data provider (Phish.in) - durations only
+    /// Specialized audio enhancement provider (Phish.in API) - song durations only
+    /// Handles: track durations, audio recordings
+    /// **Usage Restriction**: Only used for audio timing data
     private let phishInClient: AudioProviderProtocol?
     
-    /// Tour data provider (Phish.net)
+    /// Tour structure and organization provider (Phish.net API)
+    /// Handles: tour show lists, tour positions, show counts
     private let phishNetTourService: PhishNetTourService
     
-    /// Tour statistics provider (Vercel server)
+    /// Pre-computed tour statistics provider (Vercel server)
+    /// Handles: tour statistics with ~140ms response times vs 60+ second local calculations
     private let tourStatsClient: TourStatisticsProviderProtocol
     
     // MARK: - Initialization
@@ -78,7 +88,7 @@ class APIManager: ObservableObject {
         // Get base setlist from Phish.net
         let setlistItems = try await phishNetClient.fetchSetlist(for: date)
         
-        // Get enhanced data: durations from Phish.in, tour/venue data from Phish.net
+        // Hybrid data collection: durations from Phish.in (audio only), tour/venue data from Phish.net (authoritative)
         var trackDurations: [TrackDuration] = []
         var venueRun: VenueRun? = nil
         var tourPosition: TourShowPosition? = nil
@@ -102,7 +112,7 @@ class APIManager: ObservableObject {
             return []
         }()
         
-        // Execute API calls in parallel: Phish.in for durations, Phish.net for tour/venue data
+        // Parallel API execution: Phish.in (durations only), Phish.net (tour context), with individual error handling
         async let tourContextTask = phishNetTourService.getTourContext(for: date)
         
         if let phishInClient = phishInClient, phishInClient.isAvailable {
@@ -193,18 +203,18 @@ class APIManager: ObservableObject {
         return try await phishNetTourService.calculateTourPosition(for: showDate, tourName: tourName)
     }
     
-    /// Fetch all track durations for an entire tour
-    /// Uses Phish.net for tour show list, Phish.in for durations
+    /// Fetch all track durations for an entire tour using hybrid approach
+    /// **Data Sources**: Phish.net (tour show list), Phish.in (duration data only)
     func fetchTourTrackDurations(tourName: String, year: String) async throws -> [TrackDuration] {
         guard let phishInClient = phishInClient else {
             return []
         }
         
-        // Get tour shows from Phish.net
+        // Step 1: Get complete tour show list from Phish.net (authoritative source)
         let tourShows = try await phishNetTourService.fetchTourShows(year: year, tourName: tourName)
         var allTourTracks: [TrackDuration] = []
         
-        // Fetch durations from Phish.in for each show
+        // Step 2: Enhance with duration data from Phish.in (audio timing only)
         for show in tourShows {
             do {
                 let trackDurations = try await phishInClient.fetchTrackDurations(for: show.showdate)
@@ -245,7 +255,8 @@ extension APIManager {
         return true // Phish.net is our primary source
     }
     
-    /// Check if enhanced data services (Phish.in) are available
+    /// Check if audio enhancement services (Phish.in) are available
+    /// **Note**: Only used for song timing data, not tour structure
     var isEnhancedDataAvailable: Bool {
         return phishInClient?.isAvailable ?? false
     }
@@ -254,7 +265,7 @@ extension APIManager {
     var availableDataSources: [String] {
         var sources = ["Phish.net (Setlists)"]
         if isEnhancedDataAvailable {
-            sources.append("Phish.in (Audio Only)")
+            sources.append("Phish.in (Song Durations Only)")
         }
         sources.append("Phish.net (Tours & Venues)")
         if tourStatsClient.isAvailable {
@@ -265,7 +276,10 @@ extension APIManager {
     
     // MARK: - Tour Statistics Operations (Primary Source: Vercel Server)
     
-    /// Fetch pre-computed tour statistics from server
+    /// Fetch pre-computed tour statistics from Vercel server
+    /// 
+    /// **Performance**: ~140ms server response vs 60+ second local calculations
+    /// **Data Sources**: Uses Phish.net for tour structure, Phish.in for durations
     /// - Returns: Complete tour statistics with longest, rarest, and most played songs
     /// - Throws: APIError for network or parsing failures
     func fetchTourStatistics() async throws -> TourSongStatistics {

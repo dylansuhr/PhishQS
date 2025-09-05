@@ -317,19 +317,14 @@ struct MostPlayedSongRowModular: View {
     VStack(spacing: 16) {
         // Badge samples
         HStack(spacing: 8) {
-            BadgeView(text: "23/23", style: .blue)
+            BadgeView(text: TourConfig.tourPositionBadge(currentShow: TourConfig.samplePlayedShows), style: .blue)
             BadgeView(text: "N3/3", style: .gray)
             BadgeView(text: "47", style: .orange)
             BadgeView(text: "8", style: .green)
         }
         
         // Tour info samples
-        let sampleTourPosition = TourShowPosition(
-            tourName: "Summer Tour 2025",
-            showNumber: 4,
-            totalShows: 23,
-            tourYear: "2025"
-        )
+        let sampleTourPosition = TourConfig.sampleTourPosition
         
         VStack(alignment: .leading, spacing: 16) {
             TourInfoDisplayView(

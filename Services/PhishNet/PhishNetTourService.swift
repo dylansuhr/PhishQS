@@ -8,7 +8,7 @@
 import Foundation
 
 /// Service for fetching tour-related data from Phish.net API
-/// Replaces Phish.in as the authoritative source for tour organization, show counts, and venue runs
+/// Provides authoritative tour organization, show counts, and tour positions using Phish.net data
 class PhishNetTourService {
     
     private let phishNetClient: PhishAPIClient
@@ -20,7 +20,7 @@ class PhishNetTourService {
     // MARK: - Tour Show Methods
     
     /// Fetch all shows for a specific tour by year and tour name
-    /// Replaces Phish.in getCachedTourShows functionality
+    /// Provides complete tour show listing from Phish.net API
     func fetchTourShows(year: String, tourName: String) async throws -> [Show] {
         let allYearShows = try await phishNetClient.fetchShows(forYear: year)
         
@@ -41,7 +41,7 @@ class PhishNetTourService {
     // MARK: - Tour Position Calculation
     
     /// Calculate tour position for a specific show
-    /// Replaces Phish.in fetchTourPosition functionality
+    /// Determines show number within tour using Phish.net show ordering
     func calculateTourPosition(for showDate: String, tourName: String) async throws -> TourShowPosition? {
         // Extract year from show date
         let year = String(showDate.prefix(4))
@@ -65,7 +65,7 @@ class PhishNetTourService {
     // MARK: - Tour Detection
     
     /// Extract tour name from a show (if available)
-    /// Replaces Phish.in tour_name field usage
+    /// Uses Phish.net tour_name field for consistent tour identification
     func extractTourFromShow(_ show: Show) -> String? {
         return show.tour_name
     }
@@ -85,12 +85,13 @@ class PhishNetTourService {
     // MARK: - Venue Run Calculation
     
     /// Calculate venue runs for a set of shows
-    /// Note: Show data from Phish.net doesn't include venue information
-    /// Venue runs will need to be calculated from setlist data instead
+    /// Note: Venue information comes from setlist data, not show data
+    /// This method is preserved for interface compatibility but venue runs
+    /// are calculated in the enhanced setlist service using venue-rich setlist data
     func calculateVenueRuns(for shows: [Show]) -> [String: VenueRun] {
-        // Cannot calculate venue runs from Show data alone since Phish.net /shows/ endpoint 
-        // doesn't include venue information. This would need to be done with setlist data.
-        // For now, return empty dictionary
+        // Venue runs are calculated from setlist data which includes venue information
+        // The enhanced setlist service handles venue run detection using setlist venue data
+        // This method returns empty for Show-only data as venue info is not available
         return [:]
     }
     
@@ -119,8 +120,8 @@ class PhishNetTourService {
     
     // MARK: - Tour Name Normalization
     
-    /// Normalize tour names between different API sources
-    /// Maps Phish.in format to Phish.net format
+    /// Normalize tour names for consistency
+    /// Handles variations in tour name formatting between API responses
     static func normalizeTourName(_ tourName: String) -> String {
         // Handle common tour name variations
         if tourName == "Summer Tour 2025" {
