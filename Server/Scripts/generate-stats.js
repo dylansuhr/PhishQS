@@ -178,17 +178,14 @@ async function generateTourStatisticsOptimized() {
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 7: Save result (same as original)
-        const serverOutputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
+        // Step 7: Save result to API directory only (eliminates Xcode duplicate file conflict)
         const apiOutputPath = join(__dirname, '..', '..', 'api', 'Data', 'tour-stats.json');
         
         const jsonData = JSON.stringify(enhancedTourStats, null, 2);
-        writeFileSync(serverOutputPath, jsonData);
         writeFileSync(apiOutputPath, jsonData);
         
         console.timeEnd('🚀 Total Generation Time');
         console.log('✅ OPTIMIZED tour statistics generated successfully!');
-        console.log(`📁 Server data: ${serverOutputPath}`);
         console.log(`📁 API data: ${apiOutputPath}`);
         console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
         console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);

@@ -14,7 +14,8 @@
       "tourPosition": {
         "showNumber": 4,
         "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "tourName": "2025 Summer Tour",
+        "tourYear": "2025"
       },
       "formattedDuration": "42:40"
     },
@@ -42,7 +43,8 @@
       "tourPosition": {
         "showNumber": 14,
         "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "tourName": "2025 Summer Tour",
+        "tourYear": "2025"
       },
       "formattedDuration": "39:44"
     },
@@ -71,7 +73,8 @@
       "tourPosition": {
         "showNumber": 11,
         "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "tourName": "2025 Summer Tour",
+        "tourYear": "2025"
       },
       "formattedDuration": "34:08"
     }
@@ -103,7 +106,8 @@
       "tourPosition": {
         "showNumber": 16,
         "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "tourName": "2025 Summer Tour",
+        "tourYear": "2025"
       },
       "historicalVenue": "Higher Ground",
       "historicalCity": "South Burlington",
@@ -126,7 +130,8 @@
       "tourPosition": {
         "showNumber": 4,
         "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "tourName": "2025 Summer Tour",
+        "tourYear": "2025"
       },
       "historicalVenue": "The Forum",
       "historicalCity": "Inglewood",
@@ -160,7 +165,8 @@
       "tourPosition": {
         "showNumber": 11,
         "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "tourName": "2025 Summer Tour",
+        "tourYear": "2025"
       },
       "historicalVenue": "North Charleston Coliseum",
       "historicalCity": "North Charleston",
