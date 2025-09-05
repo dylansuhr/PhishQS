@@ -144,7 +144,8 @@ export class DataCollectionService {
             const tourPosition = {
                 showNumber: index + 1,
                 totalShows: tourShows.length,
-                tourName: tourName
+                tourName: tourName,
+                tourYear: year // Add required tourYear field for iOS compatibility
             };
             tourPositionsMap.set(show.showdate, tourPosition);
             console.log(`     🎪 ${show.showdate}: Show ${tourPosition.showNumber}/${tourPosition.totalShows}`);
