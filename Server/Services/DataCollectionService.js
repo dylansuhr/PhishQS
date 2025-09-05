@@ -82,41 +82,28 @@ export class DataCollectionService {
         await Promise.allSettled(setlistPromises);
         console.log(`   ✅ Collected setlists for ${setlistsMap.size} shows`);
         
-        // Step 4: Collect Phish.in enhancement data for all played shows (parallel calls)
-        console.log('   🎯 Step 3: Fetching Phish.in enhancement data...');
+        // Step 4: Collect Phish.in enhancement data for all played shows (AUDIO DATA ONLY)
+        console.log('   🎯 Step 3: Fetching Phish.in audio enhancement data (durations + recordings only)...');
         const durationsMap = new Map();
-        const venueRunsMap = new Map();
         const recordingsMap = new Map();
         
-        // Create parallel promises for all Phish.in calls
+        // Create parallel promises for Phish.in audio calls (NO VENUE RUNS - using Phish.net for those)
         const enhancementPromises = playedShows.map(async (show) => {
             const showDate = show.showdate;
             
-            // Parallel Phish.in calls for this show
-            const [durationsResult, venueRunResult, recordingsResult] = await Promise.allSettled([
+            // Parallel Phish.in calls for AUDIO DATA ONLY (durations + recordings)
+            const [durationsResult, recordingsResult] = await Promise.allSettled([
                 this.phishInClient.fetchTrackDurations(showDate),
-                this.phishInClient.fetchVenueRuns(showDate),
                 this.phishInClient.fetchRecordings(showDate)
             ]);
             
-            // Store results with error handling
+            // Store results with error handling (AUDIO DATA ONLY)
             if (durationsResult.status === 'fulfilled') {
                 durationsMap.set(showDate, durationsResult.value);
                 console.log(`     🎵 ${showDate}: ${durationsResult.value.length} durations`);
             } else {
                 durationsMap.set(showDate, []);
                 console.log(`     ⚠️  ${showDate}: No durations - ${durationsResult.reason?.message}`);
-            }
-            
-            if (venueRunResult.status === 'fulfilled') {
-                venueRunsMap.set(showDate, venueRunResult.value);
-                const vr = venueRunResult.value;
-                if (vr) {
-                    console.log(`     🏟️  ${showDate}: N${vr.nightNumber}/${vr.totalNights}`);
-                }
-            } else {
-                venueRunsMap.set(showDate, null);
-                console.log(`     ⚠️  ${showDate}: No venue run - ${venueRunResult.reason?.message}`);
             }
             
             if (recordingsResult.status === 'fulfilled') {
@@ -130,10 +117,26 @@ export class DataCollectionService {
         
         // Wait for all enhancement data to be collected
         await Promise.allSettled(enhancementPromises);
-        console.log(`   ✅ Collected enhancement data for ${playedShows.length} shows`);
+        console.log(`   ✅ Collected Phish.in audio enhancement data for ${playedShows.length} shows`);
+        
+        // Step 4: Calculate venue runs using Phish.net (NOT Phish.in)
+        console.log('   🎯 Step 4: Calculating venue runs using Phish.net tour service...');
+        const venueRunsMap = new Map();
+        
+        // Use PhishNetTourService to calculate venue runs from tour shows
+        const allVenueRuns = this.phishNetTourService.calculateVenueRuns(tourShows);
+        
+        // Map venue runs by show date for easy lookup
+        Object.entries(allVenueRuns).forEach(([showDate, venueRun]) => {
+            venueRunsMap.set(showDate, venueRun);
+            if (venueRun) {
+                console.log(`     🏟️  ${showDate}: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
+            }
+        });
+        console.log(`   ✅ Calculated venue runs for ${Object.keys(allVenueRuns).length} shows using Phish.net`);
         
         // Step 5: Calculate tour positions for all shows (using existing tour service logic)
-        console.log('   🎯 Step 4: Calculating tour positions...');
+        console.log('   🎯 Step 5: Calculating tour positions...');
         const tourPositionsMap = new Map();
         
         // Use the existing tour service logic to calculate positions
@@ -176,10 +179,10 @@ export class DataCollectionService {
             apiCalls: {
                 phishNetShows: 1,
                 phishNetSetlists: playedShows.length,
-                phishInDurations: playedShows.length,
-                phishInVenueRuns: playedShows.length,
-                phishInRecordings: playedShows.length,
-                total: 1 + (playedShows.length * 4) // Much better than previous ~116 calls
+                phishInDurations: playedShows.length, // AUDIO DATA ONLY
+                phishInRecordings: playedShows.length, // AUDIO DATA ONLY  
+                phishNetVenueRuns: 0, // Calculated from existing tour shows data (no additional API calls)
+                total: 1 + (playedShows.length * 2) // Even better: removed venue run API calls
             }
         };
         

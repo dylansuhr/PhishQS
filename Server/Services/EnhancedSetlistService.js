@@ -58,10 +58,9 @@ export class EnhancedSetlistService {
         // Step 3: Execute all API calls in parallel for better performance (same as iOS lines 98-129)
         console.log('   🔄 Fetching enhancement data in parallel...');
         
-        // Parallel API calls - Phish.in for durations/recordings, Phish.net for tour position
+        // Parallel API calls - Phish.in for AUDIO DATA ONLY (durations/recordings), Phish.net for tour position
         const phishInResults = await Promise.allSettled([
             this.phishInClient.fetchTrackDurations(showDate),
-            this.phishInClient.fetchVenueRuns(showDate),
             this.phishInClient.fetchRecordings(showDate)
         ]);
         
@@ -70,7 +69,7 @@ export class EnhancedSetlistService {
             this.phishNetTourService.getTourContext(showDate)
         ]);
 
-        // Extract results with individual error handling (same as iOS lines 105-128)
+        // Extract results with individual error handling (AUDIO DATA ONLY)
         if (phishInResults[0].status === 'fulfilled') {
             trackDurations = phishInResults[0].value;
             console.log(`   🎵 Found ${trackDurations.length} track durations from Phish.in`);
@@ -79,12 +78,10 @@ export class EnhancedSetlistService {
         }
 
         if (phishInResults[1].status === 'fulfilled') {
-            venueRun = phishInResults[1].value;
-            if (venueRun) {
-                console.log(`   🏟️  Found venue run: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
-            }
+            recordings = phishInResults[1].value;
+            console.log(`   🎧 Found ${recordings.length} recordings from Phish.in`);
         } else {
-            console.log(`   ⚠️  Could not fetch venue run info: ${phishInResults[1].reason?.message}`);
+            console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[1].reason?.message}`);
         }
 
         if (tourPositionResult[0].status === 'fulfilled') {
@@ -93,15 +90,14 @@ export class EnhancedSetlistService {
             if (tourPosition) {
                 console.log(`   🎪 Found tour position: Show ${tourPosition.showNumber}/${tourPosition.totalShows} of ${tourPosition.tourName}`);
             }
+            
+            // Get venue run from Phish.net (NOT Phish.in) - if tour context is available
+            if (tourContext.venueRun) {
+                venueRun = tourContext.venueRun;
+                console.log(`   🏟️  Found venue run from Phish.net: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
+            }
         } else {
             console.log(`   ⚠️  Could not fetch tour position: ${tourPositionResult[0].reason?.message}`);
-        }
-
-        if (phishInResults[2].status === 'fulfilled') {
-            recordings = phishInResults[2].value;
-            console.log(`   🎧 Found ${recordings.length} recordings from Phish.in`);
-        } else {
-            console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[2].reason?.message}`);
         }
 
         // Step 4: Extract gap data from setlist (gap data is already in setlist response)
