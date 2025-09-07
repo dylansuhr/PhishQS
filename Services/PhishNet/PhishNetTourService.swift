@@ -85,14 +85,79 @@ class PhishNetTourService {
     // MARK: - Venue Run Calculation
     
     /// Calculate venue runs for a set of shows
-    /// Note: Venue information comes from setlist data, not show data
-    /// This method is preserved for interface compatibility but venue runs
-    /// are calculated in the enhanced setlist service using venue-rich setlist data
+    /// Uses Phish.net show data to determine multi-night venue runs
+    /// Matches the server-side venue run calculation logic for consistency
     func calculateVenueRuns(for shows: [Show]) -> [String: VenueRun] {
-        // Venue runs are calculated from setlist data which includes venue information
-        // The enhanced setlist service handles venue run detection using setlist venue data
-        // This method returns empty for Show-only data as venue info is not available
-        return [:]
+        print("🏟️  PhishNetTourService.calculateVenueRuns for \(shows.count) shows")
+        var venueRuns: [String: VenueRun] = [:]
+        
+        // Sort shows by date to ensure proper chronological order
+        let sortedShows = shows.sorted { $0.showdate < $1.showdate }
+        
+        // Log show venues for debugging
+        for show in sortedShows.prefix(3) {
+            print("   📅 \(show.showdate): \(show.venue ?? "no venue"), \(show.city ?? "no city"), \(show.state ?? "no state")")
+        }
+        if sortedShows.count > 3 {
+            print("   ... and \(sortedShows.count - 3) more shows")
+        }
+        
+        // Group consecutive shows by venue
+        var venueGroups: [[Show]] = []
+        var currentGroup: [Show] = []
+        var currentVenue: String = ""
+        
+        for show in sortedShows {
+            let showVenue = show.venue ?? "Unknown Venue"
+            
+            if showVenue == currentVenue && !currentGroup.isEmpty {
+                // Same venue, add to current group
+                currentGroup.append(show)
+            } else {
+                // New venue or first show - finish previous group if it exists
+                if !currentGroup.isEmpty {
+                    venueGroups.append(currentGroup)
+                }
+                // Start new group
+                currentGroup = [show]
+                currentVenue = showVenue
+            }
+        }
+        
+        // Don't forget the last group
+        if !currentGroup.isEmpty {
+            venueGroups.append(currentGroup)
+        }
+        
+        print("   🎪 Found \(venueGroups.count) venue groups")
+        
+        // Generate venue runs for multi-night runs only
+        for group in venueGroups {
+            if group.count > 1 {
+                print("   🏟️  Multi-night run: \(group[0].venue) (\(group.count) nights)")
+                
+                // Multi-night run - create venue run objects
+                let showDates = group.map { $0.showdate }
+                
+                for (index, show) in group.enumerated() {
+                    let venueRun = VenueRun(
+                        venue: show.venue ?? "Unknown Venue",
+                        city: show.city ?? "Unknown City",
+                        state: show.state,
+                        nightNumber: index + 1,
+                        totalNights: group.count,
+                        showDates: showDates
+                    )
+                    venueRuns[show.showdate] = venueRun
+                    print("     📅 \(show.showdate): N\(index + 1)/\(group.count)")
+                }
+            } else {
+                print("   🏟️  Single night: \(group[0].venue ?? "Unknown Venue") (\(group[0].showdate))")
+            }
+        }
+        
+        print("   ✅ Generated \(venueRuns.count) venue run objects")
+        return venueRuns
     }
     
     /// Get venue run for a specific show date within a tour
@@ -105,15 +170,28 @@ class PhishNetTourService {
     
     /// Get complete tour context for a show (position + venue run)
     func getTourContext(for showDate: String) async throws -> (tourPosition: TourShowPosition?, venueRun: VenueRun?) {
+        print("🎪 PhishNetTourService.getTourContext for \(showDate)")
+        
         guard let tourName = try await getTourNameForShow(date: showDate) else {
+            print("   ⚠️  No tour name found for \(showDate)")
             return (nil, nil)
         }
         
+        print("   🎪 Found tour: \(tourName)")
+        
         let year = String(showDate.prefix(4))
         let tourShows = try await fetchTourShows(year: year, tourName: tourName)
+        print("   📋 Found \(tourShows.count) tour shows")
         
         let tourPosition = try await calculateTourPosition(for: showDate, tourName: tourName)
+        print("   🎯 Tour position: \(tourPosition?.showNumber ?? 0)/\(tourPosition?.totalShows ?? 0)")
+        
         let venueRun = getVenueRun(for: showDate, in: tourShows)
+        if let venueRun = venueRun {
+            print("   🏟️  Venue run: N\(venueRun.nightNumber)/\(venueRun.totalNights) at \(venueRun.venue)")
+        } else {
+            print("   🏟️  No venue run (single night show)")
+        }
         
         return (tourPosition, venueRun)
     }
@@ -124,8 +202,11 @@ class PhishNetTourService {
     /// Handles variations in tour name formatting between API responses
     static func normalizeTourName(_ tourName: String) -> String {
         // Handle common tour name variations
-        if tourName == "Summer Tour 2025" {
-            return "2025 Summer Tour"
+        if tourName == "Early Summer Tour 2025" {
+            return "2025 Early Summer Tour"
+        }
+        if tourName == "Late Summer Tour 2025" {
+            return "2025 Late Summer Tour"
         }
         
         // Add more mappings as needed

@@ -40,7 +40,7 @@ export class DataCollectionService {
      * with a single, coordinated data collection process.
      * 
      * @param {string} year - Year to collect data for (e.g., '2025')
-     * @param {string} tourName - Tour name to focus on (e.g., '2025 Summer Tour')
+     * @param {string} tourName - Tour name to focus on (e.g., '2025 Early Summer Tour')
      * @returns {Promise<Object>} Complete tour data context
      */
     async collectAllTourData(year, tourName) {
@@ -144,7 +144,8 @@ export class DataCollectionService {
             const tourPosition = {
                 showNumber: index + 1,
                 totalShows: tourShows.length,
-                tourName: tourName
+                tourName: tourName,
+                tourYear: year
             };
             tourPositionsMap.set(show.showdate, tourPosition);
             console.log(`     🎪 ${show.showdate}: Show ${tourPosition.showNumber}/${tourPosition.totalShows}`);

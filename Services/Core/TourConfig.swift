@@ -20,14 +20,14 @@ struct TourConfig {
     // MARK: - Current Tour Configuration
     
     /// Currently active tour name as used by Phish.net API
-    static let currentTourName = "2025 Summer Tour"
+    static let currentTourName = "2025 Early Summer Tour"
     
     /// Current tour year
     static let currentTourYear = "2025"
     
     /// Total scheduled shows for current tour (from Phish.net complete schedule)
     /// This includes both played and future shows for accurate position calculations
-    static let currentTourTotalShows = 31
+    static let currentTourTotalShows = 23
     
     /// Start date of current tour
     static let currentTourStartDate = "2025-06-21"

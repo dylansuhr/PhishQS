@@ -71,7 +71,10 @@ struct PhishInShow: Codable, Identifiable {
             showyear: String(Calendar.current.component(.year, from: dateFromString(date) ?? Date())),
             showdate: date,
             artist_name: "Phish",
-            tour_name: tour_name
+            tour_name: tour_name,
+            venue: venue_name, // Now optional, can be nil
+            city: nil, // Phish.in doesn't provide city info
+            state: nil // Phish.in doesn't provide state info
         )
     }
     

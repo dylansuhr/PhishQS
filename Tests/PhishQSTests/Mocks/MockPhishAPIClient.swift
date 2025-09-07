@@ -13,9 +13,9 @@ class MockPhishAPIClient {
     // MARK: - Mock Data
     
     private let mockShows: [Show] = [
-        Show(showyear: "2025", showdate: "2025-01-28", artist_name: "Phish"),
-        Show(showyear: "2025", showdate: "2025-01-29", artist_name: "Phish"),
-        Show(showyear: "2024", showdate: "2024-12-31", artist_name: "Phish")
+        Show(showyear: "2025", showdate: "2025-01-28", artist_name: "Phish", tour_name: "2025 Early Summer Tour", venue: "Madison Square Garden", city: "New York", state: "NY"),
+        Show(showyear: "2025", showdate: "2025-01-29", artist_name: "Phish", tour_name: "2025 Early Summer Tour", venue: "Madison Square Garden", city: "New York", state: "NY"),
+        Show(showyear: "2024", showdate: "2024-12-31", artist_name: "Phish", tour_name: "2024 New Year's Run", venue: "Madison Square Garden", city: "New York", state: "NY")
     ]
     
     private let mockSetlistItems: [SetlistItem] = [

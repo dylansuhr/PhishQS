@@ -60,22 +60,22 @@ async function generateTourStatistics() {
             console.log(`🔍 Sample show data:`, JSON.stringify(year2025Shows[0], null, 2));
         }
         
-        // Find the latest Summer Tour show specifically  
-        const summerTourShows = year2025Shows.filter(show => show.tourname === '2025 Summer Tour');
-        console.log(`🎪 Found ${summerTourShows.length} Summer Tour 2025 shows`);
-        console.log(`📊 This includes ${summerTourShows.length} played shows. Full tour should have 31 total shows per phish.net`);
+        // Find the latest Early Summer Tour show specifically  
+        const summerTourShows = year2025Shows.filter(show => show.tourname === '2025 Early Summer Tour');
+        console.log(`🎪 Found ${summerTourShows.length} 2025 Early Summer Tour shows`);
+        console.log(`📊 This includes ${summerTourShows.length} played shows. Full tour should have 23 total shows per phish.net`);
         
         if (summerTourShows.length === 0) {
-            throw new Error('No Summer Tour 2025 shows found - cannot generate statistics');
+            throw new Error('No 2025 Early Summer Tour shows found - cannot generate statistics');
         }
         
         // Get the latest Summer Tour show (last chronologically)
         const latestShow = summerTourShows.sort((a, b) => a.showdate.localeCompare(b.showdate)).pop();
         console.log(`🎪 Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
         
-        // Step 2: Determine current tour (we know it's Summer Tour 2025)
-        console.log('🔍 Using Summer Tour 2025 as current tour...');
-        const tourName = '2025 Summer Tour';
+        // Step 2: Determine current tour (we know it's 2025 Early Summer Tour)
+        console.log('🔍 Using 2025 Early Summer Tour as current tour...');
+        const tourName = '2025 Early Summer Tour';
         console.log(`📍 Current tour identified: ${tourName}`);
         
         // Step 3: Get enhanced setlist with multi-API data
@@ -136,31 +136,72 @@ async function generateTourStatisticsOptimized() {
         console.log('🚀 Starting OPTIMIZED tour statistics generation...');
         console.time('🚀 Total Generation Time');
         
-        // Step 1: Collect ALL required data with minimal API calls
+        // Step 1: Dynamically determine current tour from latest played show
+        console.log('📡 Determining current tour from latest show...');
+        const tourService = new PhishNetTourService(CONFIG.PHISH_NET_API_KEY);
+        
+        // Get latest show and check if it has setlist data (i.e., has been played)
+        const latestShow = await tourService.phishNetClient.fetchLatestShow();
+        let currentTour = null;
+        
+        if (latestShow) {
+            // First try the latest show's tour
+            currentTour = tourService.extractTourFromShow(latestShow);
+            console.log(`📅 Latest show: ${latestShow.showdate}`);
+            
+            // Check if this show has been played by trying to get its setlist
+            const setlist = await tourService.phishNetClient.fetchSetlist(latestShow.showdate);
+            
+            // If no setlist (future show), find the most recent show with a setlist
+            if (!setlist || setlist.length === 0) {
+                console.log(`🎯 Getting tour context for ${latestShow.showdate} (cache-first approach)...`);
+                
+                // Try finding most recent show with actual setlist data
+                const year2025Shows = await tourService.phishNetClient.fetchShows('2025');
+                const sortedShows = year2025Shows.sort((a, b) => b.showdate.localeCompare(a.showdate));
+                
+                for (const show of sortedShows) {
+                    const showSetlist = await tourService.phishNetClient.fetchSetlist(show.showdate);
+                    if (showSetlist && showSetlist.length > 0) {
+                        currentTour = tourService.extractTourFromShow(show);
+                        console.log(`   📦 Using tour from last played show: ${show.showdate}`);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (!currentTour) {
+            throw new Error('Could not determine current tour from shows');
+        }
+        
+        console.log(`🎪 Current tour: ${currentTour} (2025)`);
+        
+        // Step 2: Collect ALL required data with minimal API calls
         console.log('📊 Using DataCollectionService for optimal data collection...');
         const dataCollectionService = new DataCollectionService(CONFIG.PHISH_NET_API_KEY);
-        const dataContext = await dataCollectionService.collectAllTourData('2025', '2025 Summer Tour');
+        const dataContext = await dataCollectionService.collectAllTourData('2025', currentTour);
         
         // Show performance comparison
         console.log(`📈 Performance: Made ${dataContext.apiCalls.total} API calls (vs ~116 in original approach)`);
         
-        // Step 2: Find the latest Summer Tour show from pre-collected data
-        const latestShow = dataContext.tourShows
+        // Step 3: Find the latest tour show from pre-collected data
+        const latestTourShow = dataContext.tourShows
             .sort((a, b) => a.showdate.localeCompare(b.showdate))
             .pop();
         
-        if (!latestShow) {
-            throw new Error('No Summer Tour 2025 shows found - cannot generate statistics');
+        if (!latestTourShow) {
+            throw new Error(`No ${currentTour} shows found - cannot generate statistics`);
         }
         
-        console.log(`🎪 Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
+        console.log(`🎪 Latest tour show found: ${latestTourShow.showdate} at ${latestTourShow.venue || 'Unknown Venue'}`);
         console.log(`📍 Current tour identified: ${dataContext.tourName}`);
         
-        // Step 3: Create enhanced setlist for latest show using pre-collected data
+        // Step 4: Create enhanced setlist for latest show using pre-collected data
         console.log('🔗 Creating enhanced setlist with pre-collected data...');
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
         const latestEnhanced = enhancedService.createEnhancedSetlistFromContext(
-            latestShow.showdate, 
+            latestTourShow.showdate, 
             dataContext
         );
         

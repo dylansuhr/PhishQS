@@ -13,8 +13,9 @@
       "state": "PA",
       "tourPosition": {
         "showNumber": 4,
-        "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "totalShows": 23,
+        "tourName": "2025 Early Summer Tour",
+        "tourYear": "2025"
       },
       "formattedDuration": "42:40"
     },
@@ -41,8 +42,9 @@
       "state": "PA",
       "tourPosition": {
         "showNumber": 14,
-        "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "totalShows": 23,
+        "tourName": "2025 Early Summer Tour",
+        "tourYear": "2025"
       },
       "formattedDuration": "39:44"
     },
@@ -70,8 +72,9 @@
       "state": "SC",
       "tourPosition": {
         "showNumber": 11,
-        "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "totalShows": 23,
+        "tourName": "2025 Early Summer Tour",
+        "tourYear": "2025"
       },
       "formattedDuration": "34:08"
     }
@@ -102,8 +105,9 @@
       "tourState": "IL",
       "tourPosition": {
         "showNumber": 16,
-        "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "totalShows": 23,
+        "tourName": "2025 Early Summer Tour",
+        "tourYear": "2025"
       },
       "historicalVenue": "Higher Ground",
       "historicalCity": "South Burlington",
@@ -125,8 +129,9 @@
       "tourState": "PA",
       "tourPosition": {
         "showNumber": 4,
-        "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "totalShows": 23,
+        "tourName": "2025 Early Summer Tour",
+        "tourYear": "2025"
       },
       "historicalVenue": "The Forum",
       "historicalCity": "Inglewood",
@@ -159,8 +164,9 @@
       "tourState": "SC",
       "tourPosition": {
         "showNumber": 11,
-        "totalShows": 31,
-        "tourName": "2025 Summer Tour"
+        "totalShows": 23,
+        "tourName": "2025 Early Summer Tour",
+        "tourYear": "2025"
       },
       "historicalVenue": "North Charleston Coliseum",
       "historicalCity": "North Charleston",
@@ -189,5 +195,5 @@
       "playCount": 6
     }
   ],
-  "tourName": "2025 Summer Tour"
+  "tourName": "2025 Early Summer Tour"
 }

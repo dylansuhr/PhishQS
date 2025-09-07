@@ -25,7 +25,7 @@ export class TourScheduleService {
 
     /**
      * Get the total number of shows scheduled for a tour
-     * @param {string} tourName - Tour name (e.g., '2025 Summer Tour')
+     * @param {string} tourName - Tour name (e.g., '2025 Early Summer Tour')
      * @returns {number} Total shows scheduled (including future shows)
      */
     getTotalShowCount(tourName) {
@@ -35,7 +35,7 @@ export class TourScheduleService {
 
     /**
      * Get all scheduled show dates for a tour
-     * @param {string} tourName - Tour name (e.g., '2025 Summer Tour')
+     * @param {string} tourName - Tour name (e.g., '2025 Early Summer Tour')
      * @returns {string[]} Array of show dates in YYYY-MM-DD format
      */
     getScheduledShowDates(tourName) {
@@ -46,7 +46,7 @@ export class TourScheduleService {
     /**
      * Calculate tour position for a specific show date
      * @param {string} showDate - Show date in YYYY-MM-DD format
-     * @param {string} tourName - Tour name (e.g., '2025 Summer Tour')
+     * @param {string} tourName - Tour name (e.g., '2025 Early Summer Tour')
      * @returns {Object} Tour position info
      */
     calculateTourPosition(showDate, tourName) {

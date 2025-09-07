@@ -24,7 +24,7 @@ export class PhishNetTourService {
      * Replaces Phish.in getCachedTourShows functionality
      * 
      * @param {string} year - Year to fetch shows for (e.g., '2025')
-     * @param {string} tourName - Tour name to filter by (e.g., '2025 Summer Tour')
+     * @param {string} tourName - Tour name to filter by (e.g., '2025 Early Summer Tour')
      * @returns {Promise<Array>} Array of show objects for the tour
      */
     async fetchTourShows(year, tourName) {
@@ -233,8 +233,11 @@ export class PhishNetTourService {
      */
     static normalizeTourName(tourName) {
         // Handle common tour name variations
-        if (tourName === 'Summer Tour 2025') {
-            return '2025 Summer Tour';
+        if (tourName === 'Early Summer Tour 2025') {
+            return '2025 Early Summer Tour';
+        }
+        if (tourName === 'Late Summer Tour 2025') {
+            return '2025 Late Summer Tour';
         }
         
         // Add more mappings as needed
