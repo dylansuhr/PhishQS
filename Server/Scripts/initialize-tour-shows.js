@@ -57,11 +57,12 @@ async function initializeTourShows() {
         console.log(`📍 Initializing show files for: ${tourName}`);
         console.log(`🎪 Shows to process: ${controlFileData.currentTour.playedShows} played shows`);
         
-        // Step 2: Create shows directory if it doesn't exist
-        const showsDir = join(__dirname, '..', '..', 'api', 'Data', 'shows');
-        if (!existsSync(showsDir)) {
-            mkdirSync(showsDir, { recursive: true });
-            console.log(`📁 Created shows directory: ${showsDir}`);
+        // Step 2: Create tour-specific shows directory
+        const tourSlug = tourName.toLowerCase().replace(/\s+/g, '-'); // "2025-early-summer-tour"
+        const tourShowsDir = join(__dirname, '..', '..', 'api', 'Data', 'tours', tourSlug);
+        if (!existsSync(tourShowsDir)) {
+            mkdirSync(tourShowsDir, { recursive: true });
+            console.log(`📁 Created tour shows directory: ${tourShowsDir}`);
         }
         
         // Step 3: Use optimized data collection for all tour shows
@@ -116,7 +117,7 @@ async function initializeTourShows() {
                     
                     // Create show file
                     const showFileName = `show-${tourDate.date}.json`;
-                    const showFilePath = join(showsDir, showFileName);
+                    const showFilePath = join(tourShowsDir, showFileName);
                     
                     const showFileData = {
                         showDate: enhancedSetlist.showDate,
@@ -146,7 +147,7 @@ async function initializeTourShows() {
                     // Update tour date with show file reference
                     const updatedTourDate = {
                         ...tourDate,
-                        showFile: `shows/${showFileName}`
+                        showFile: `tours/${tourSlug}/${showFileName}`
                     };
                     updatedTourDates.push(updatedTourDate);
                     
@@ -204,7 +205,7 @@ async function initializeTourShows() {
         console.log(`   🎯 Shows created: ${showsCreated}`);
         console.log(`   ⏳ Shows with partial data: ${showsWithPartialData}`);
         console.log(`   ❌ Shows skipped: ${showsSkipped}`);
-        console.log(`📁 Show files location: ${showsDir}`);
+        console.log(`📁 Show files location: ${tourShowsDir}`);
         console.log(`🔄 Control file updated with show file references and smart tracking flags`);
         console.log(`🚀 API Performance: ${dataContext.apiCalls.total} total calls for entire tour`);
         

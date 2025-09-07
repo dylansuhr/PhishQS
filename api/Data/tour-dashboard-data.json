@@ -157,7 +157,8 @@
         "city": "Forest Hills",
         "state": "NY",
         "played": true,
-        "showNumber": 19
+        "showNumber": 19,
+        "showFile": "tours/2025-early-summer-tour/show-2025-07-22.json"
       },
       {
         "date": "2025-07-23",
@@ -165,7 +166,8 @@
         "city": "Forest Hills",
         "state": "NY",
         "played": true,
-        "showNumber": 20
+        "showNumber": 20,
+        "showFile": "tours/2025-early-summer-tour/show-2025-07-23.json"
       },
       {
         "date": "2025-07-25",
@@ -173,7 +175,8 @@
         "city": "Saratoga Springs",
         "state": "NY",
         "played": true,
-        "showNumber": 21
+        "showNumber": 21,
+        "showFile": "tours/2025-early-summer-tour/show-2025-07-25.json"
       },
       {
         "date": "2025-07-26",
@@ -181,7 +184,8 @@
         "city": "Saratoga Springs",
         "state": "NY",
         "played": true,
-        "showNumber": 22
+        "showNumber": 22,
+        "showFile": "tours/2025-early-summer-tour/show-2025-07-26.json"
       },
       {
         "date": "2025-07-27",
@@ -190,7 +194,7 @@
         "state": "NY",
         "played": true,
         "showNumber": 23,
-        "showFile": "shows/show-2025-07-27.json"
+        "showFile": "tours/2025-early-summer-tour/show-2025-07-27.json"
       }
     ]
   },

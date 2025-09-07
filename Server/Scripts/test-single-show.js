@@ -24,15 +24,18 @@ async function testSingleShow() {
     try {
         console.log('🧪 Testing single show file creation...');
         
-        // Create shows directory
-        const showsDir = join(__dirname, '..', '..', 'api', 'Data', 'shows');
-        if (!existsSync(showsDir)) {
-            mkdirSync(showsDir, { recursive: true });
+        // Create tour-specific shows directory
+        const tourSlug = '2025-early-summer-tour';
+        const tourShowsDir = join(__dirname, '..', '..', 'api', 'Data', 'tours', tourSlug);
+        if (!existsSync(tourShowsDir)) {
+            mkdirSync(tourShowsDir, { recursive: true });
         }
         
-        // Test with recent show
-        const testDate = '2025-07-27';
-        console.log(`🎯 Creating enhanced setlist for ${testDate}...`);
+        // Test with multiple recent shows
+        const testDates = ['2025-07-26', '2025-07-25', '2025-07-23'];
+        
+        for (const testDate of testDates) {
+            console.log(`\n🎯 Creating enhanced setlist for ${testDate}...`);
         
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
         const enhancedSetlist = await enhancedService.createEnhancedSetlist(testDate);
@@ -49,7 +52,7 @@ async function testSingleShow() {
         
         // Create show file
         const showFileName = `show-${testDate}.json`;
-        const showFilePath = join(showsDir, showFileName);
+        const showFilePath = join(tourShowsDir, showFileName);
         
         const showFileData = {
             showDate: enhancedSetlist.showDate,

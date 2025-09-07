@@ -1,18 +1,18 @@
 {
   "longestSongs": [
     {
-      "id": "40511",
-      "songName": "Tweezer Reprise",
+      "id": "40491",
+      "songName": "Chalk Dust Torture",
       "songId": null,
-      "durationSeconds": 1383,
-      "showDate": "2025-07-27",
+      "durationSeconds": 1729,
+      "showDate": "2025-07-25",
       "setNumber": "Set 2",
       "venue": "Saratoga Performing Arts Center",
       "venueRun": {
         "venue": "Saratoga Performing Arts Center",
         "city": "Saratoga Springs",
         "state": "NY",
-        "nightNumber": 3,
+        "nightNumber": 1,
         "totalNights": 3,
         "showDates": [
           "2025-07-25",
@@ -24,25 +24,54 @@
       "state": "NY",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 23,
+        "showNumber": 21,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "23:03"
+      "formattedDuration": "28:49"
     },
     {
-      "id": "40513",
-      "songName": "You Enjoy Myself",
+      "id": "40437",
+      "songName": "Carini",
       "songId": null,
-      "durationSeconds": 1037,
-      "showDate": "2025-07-27",
+      "durationSeconds": 1699,
+      "showDate": "2025-07-22",
+      "setNumber": "Set 2",
+      "venue": "Forest Hills Stadium",
+      "venueRun": {
+        "venue": "Forest Hills Stadium",
+        "city": "Forest Hills",
+        "state": "NY",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-07-22",
+          "2025-07-23"
+        ]
+      },
+      "city": "Forest Hills",
+      "state": "NY",
+      "tourPosition": {
+        "tourName": "2025 Early Summer Tour",
+        "showNumber": 19,
+        "totalShows": 23,
+        "tourYear": "2025"
+      },
+      "formattedDuration": "28:19"
+    },
+    {
+      "id": "40473",
+      "songName": "Down with Disease",
+      "songId": null,
+      "durationSeconds": 1500,
+      "showDate": "2025-07-26",
       "setNumber": "Set 2",
       "venue": "Saratoga Performing Arts Center",
       "venueRun": {
         "venue": "Saratoga Performing Arts Center",
         "city": "Saratoga Springs",
         "state": "NY",
-        "nightNumber": 3,
+        "nightNumber": 2,
         "totalNights": 3,
         "showDates": [
           "2025-07-25",
@@ -54,57 +83,27 @@
       "state": "NY",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 23,
+        "showNumber": 22,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "17:17"
-    },
-    {
-      "id": "40502",
-      "songName": "Roses Are Free",
-      "songId": null,
-      "durationSeconds": 1026,
-      "showDate": "2025-07-27",
-      "setNumber": "Set 1",
-      "venue": "Saratoga Performing Arts Center",
-      "venueRun": {
-        "venue": "Saratoga Performing Arts Center",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "nightNumber": 3,
-        "totalNights": 3,
-        "showDates": [
-          "2025-07-25",
-          "2025-07-26",
-          "2025-07-27"
-        ]
-      },
-      "city": "Saratoga Springs",
-      "state": "NY",
-      "tourPosition": {
-        "tourName": "2025 Early Summer Tour",
-        "showNumber": 23,
-        "totalShows": 23,
-        "tourYear": "2025"
-      },
-      "formattedDuration": "17:06"
+      "formattedDuration": "25:00"
     }
   ],
   "rarestSongs": [
     {
-      "id": 475,
-      "songId": 475,
-      "songName": "Roses Are Free",
-      "gap": 15,
-      "lastPlayed": "2025-07-03",
-      "timesPlayed": 53,
+      "id": 329,
+      "songId": 329,
+      "songName": "Lawn Boy",
+      "gap": 55,
+      "lastPlayed": "2025-03-11",
+      "timesPlayed": 234,
       "tourVenue": "Broadview Stage at SPAC",
       "tourVenueRun": {
         "venue": "Broadview Stage at SPAC",
         "city": "Saratoga Springs",
         "state": "NY",
-        "nightNumber": 3,
+        "nightNumber": 1,
         "totalNights": 3,
         "showDates": [
           "2025-07-25",
@@ -112,34 +111,34 @@
           "2025-07-27"
         ]
       },
-      "tourDate": "2025-07-27",
+      "tourDate": "2025-07-25",
       "tourCity": "Saratoga Springs",
       "tourState": "NY",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 23,
+        "showNumber": 21,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "historicalVenue": "Folsom Field",
-      "historicalCity": "Boulder",
-      "historicalState": "CO",
-      "historicalLastPlayed": "2025-07-03",
-      "formattedHistoricalDate": "7/3/25"
+      "historicalVenue": "F. M. Kirby Center for the Performing Arts",
+      "historicalCity": "Wilkes-Barre",
+      "historicalState": "PA",
+      "historicalLastPlayed": "2025-03-11",
+      "formattedHistoricalDate": "3/11/25"
     },
     {
-      "id": 96,
-      "songId": 96,
-      "songName": "Buried Alive",
-      "gap": 13,
-      "lastPlayed": "2025-07-05",
-      "timesPlayed": 175,
+      "id": 642,
+      "songId": 642,
+      "songName": "Wading in the Velvet Sea",
+      "gap": 24,
+      "lastPlayed": "2025-04-23",
+      "timesPlayed": 139,
       "tourVenue": "Broadview Stage at SPAC",
       "tourVenueRun": {
         "venue": "Broadview Stage at SPAC",
         "city": "Saratoga Springs",
         "state": "NY",
-        "nightNumber": 3,
+        "nightNumber": 2,
         "totalNights": 3,
         "showDates": [
           "2025-07-25",
@@ -147,34 +146,34 @@
           "2025-07-27"
         ]
       },
-      "tourDate": "2025-07-27",
+      "tourDate": "2025-07-26",
       "tourCity": "Saratoga Springs",
       "tourState": "NY",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 23,
+        "showNumber": 22,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "historicalVenue": "Folsom Field",
-      "historicalCity": "Boulder",
-      "historicalState": "CO",
-      "historicalLastPlayed": "2025-07-05",
-      "formattedHistoricalDate": "7/5/25"
+      "historicalVenue": "Bill Graham Civic Auditorium",
+      "historicalCity": "San Francisco",
+      "historicalState": "CA",
+      "historicalLastPlayed": "2025-04-23",
+      "formattedHistoricalDate": "4/23/25"
     },
     {
-      "id": 867,
-      "songId": 867,
-      "songName": "Golden Age",
-      "gap": 9,
-      "lastPlayed": "2025-07-13",
-      "timesPlayed": 85,
+      "id": 2860,
+      "songId": 2860,
+      "songName": "Beneath a Sea of Stars Part 1",
+      "gap": 21,
+      "lastPlayed": "2025-04-26",
+      "timesPlayed": 21,
       "tourVenue": "Broadview Stage at SPAC",
       "tourVenueRun": {
         "venue": "Broadview Stage at SPAC",
         "city": "Saratoga Springs",
         "state": "NY",
-        "nightNumber": 3,
+        "nightNumber": 1,
         "totalNights": 3,
         "showDates": [
           "2025-07-25",
@@ -182,20 +181,20 @@
           "2025-07-27"
         ]
       },
-      "tourDate": "2025-07-27",
+      "tourDate": "2025-07-25",
       "tourCity": "Saratoga Springs",
       "tourState": "NY",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 23,
+        "showNumber": 21,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "historicalVenue": "North Charleston Coliseum",
-      "historicalCity": "North Charleston",
-      "historicalState": "SC",
-      "historicalLastPlayed": "2025-07-13",
-      "formattedHistoricalDate": "7/13/25"
+      "historicalVenue": "Hollywood Bowl",
+      "historicalCity": "Hollywood",
+      "historicalState": "CA",
+      "historicalLastPlayed": "2025-04-26",
+      "formattedHistoricalDate": "4/26/25"
     }
   ],
   "mostPlayedSongs": [
@@ -203,19 +202,19 @@
       "id": 1712495126,
       "songId": 1712495126,
       "songName": "Tweezer Reprise",
-      "playCount": 6
+      "playCount": 7
     },
     {
-      "id": 2126523946,
-      "songId": 2126523946,
-      "songName": "Buried Alive",
-      "playCount": 1
+      "id": 744171844,
+      "songId": 744171844,
+      "songName": "Tweezer",
+      "playCount": 2
     },
     {
-      "id": 2543058,
-      "songId": 2543058,
-      "songName": "Reba",
-      "playCount": 1
+      "id": 2084439332,
+      "songId": 2084439332,
+      "songName": "Harry Hood",
+      "playCount": 2
     }
   ],
   "tourName": "2025 Early Summer Tour"

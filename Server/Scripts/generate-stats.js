@@ -239,7 +239,6 @@ async function generateTourStatisticsFromControlFile() {
         // Step 2: Load individual show files for statistical analysis
         console.log('📋 Loading individual show files for tour data...');
         const allTourShows = [];
-        const showsDir = join(__dirname, '..', '..', 'api', 'Data', 'shows');
         let showsLoaded = 0;
         let showsSkipped = 0;
         
