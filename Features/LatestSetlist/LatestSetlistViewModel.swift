@@ -9,43 +9,53 @@ class LatestSetlistViewModel: BaseViewModel {
     @Published var tourStatistics: TourSongStatistics?
     @Published var isTourStatisticsLoading: Bool = false
     
-    private let apiClient: any PhishAPIService
-    private let apiManager: APIManager
+    private let tourDashboardClient: TourDashboardDataClient
     
     // MARK: - Initialization
     
-    init(apiClient: any PhishAPIService = PhishAPIClient.shared, apiManager: APIManager = APIManager()) {
-        self.apiClient = apiClient
-        self.apiManager = apiManager
+    init(tourDashboardClient: TourDashboardDataClient = TourDashboardDataClient.shared) {
+        self.tourDashboardClient = tourDashboardClient
     }
     
-    // Fetch the latest show and its setlist, and cache shows for navigation
+    // Fetch the latest show and its setlist from single source
     @MainActor
     func fetchLatestSetlist() async {
         setLoading(true)
         
         do {
-            if let show = try await apiClient.fetchLatestShow() {
-                latestShow = show
-                
-                // Fetch enhanced setlist data with venue run info
-                let enhanced = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
-                enhancedSetlist = enhanced
-                setlistItems = enhanced.setlistItems
-                
-                
-                // Set loading false first to show main content
-                setLoading(false)
-                
-                // Fetch tour statistics in background (non-blocking)
-                Task {
-                    await fetchTourStatistics()
-                }
-            } else {
-                errorMessage = "Still waiting..."
-                setLoading(false)
+            print("📋 [Component A] Fetching latest show from single source...")
+            
+            // Get tour dashboard data to identify latest show
+            let tourData = try await tourDashboardClient.fetchCurrentTourData()
+            
+            // Create Show object from latest show data
+            latestShow = Show(
+                showyear: String(tourData.latestShow.date.prefix(4)),
+                showdate: tourData.latestShow.date,
+                artist_name: "Phish",
+                tour_name: tourData.latestShow.tourPosition.tourName
+            )
+            
+            // Fetch enhanced setlist data from individual show file
+            let showData = try await tourDashboardClient.fetchLatestShowData()
+            let enhanced = tourDashboardClient.convertToEnhancedSetlist(showData)
+            
+            enhancedSetlist = enhanced
+            setlistItems = enhanced.setlistItems
+            
+            print("✅ [Component A] Latest show loaded from single source: \(tourData.latestShow.date)")
+            print("🎵 [Component A] Setlist items: \(setlistItems.count), Durations: \(enhanced.trackDurations.count)")
+            
+            // Set loading false first to show main content
+            setLoading(false)
+            
+            // Fetch tour statistics in background (non-blocking)
+            Task {
+                await fetchTourStatistics()
             }
+            
         } catch {
+            print("❌ [Component A] Failed to load from single source: \(error)")
             handleError(error)
             setLoading(false)
             return
@@ -178,166 +188,5 @@ class LatestSetlistViewModel: BaseViewModel {
         isTourStatisticsLoading = false
     }
     
-    // MARK: - Gap Chart API Testing (Temporary)
-    
-    /// Test potential gap chart API endpoints - temporary method for research
-    @MainActor
-    func testGapChartAPI() async {
-        guard let show = latestShow else {
-            print("❌ No show available for testing")
-            return
-        }
-        
-        await testGapChartEndpoints(for: show.showdate)
-    }
-    
-    /// Test potential gap chart API endpoints to see if any exist
-    private func testGapChartEndpoints(for showDate: String) async {
-        let baseURL = "https://api.phish.net/v5"
-        let apiKey = Secrets.value(for: "PhishNetAPIKey")
-        
-        let potentialEndpoints = [
-            "/setlists/gap-chart/\(showDate).json",
-            "/shows/\(showDate)/gaps.json",
-            "/setlists/\(showDate)/gaps.json",
-            "/gap-chart/\(showDate).json",
-            "/setlists/get/\(showDate).json?include_gaps=true",
-            "/setlists/show/\(showDate).json?gaps=true"
-        ]
-        
-        print("🔍 Testing Gap Chart API Endpoints for \(showDate)")
-        print("==================================================")
-        
-        for endpoint in potentialEndpoints {
-            await testEndpoint(baseURL + endpoint + "?apikey=\(apiKey)")
-        }
-        
-        print("==================================================")
-        print("✅ Gap Chart API endpoint testing complete")
-    }
-    
-    /// Test a specific endpoint and report results
-    private func testEndpoint(_ urlString: String) async {
-        let endpointPath = urlString.components(separatedBy: "api.phish.net/v5").last?.components(separatedBy: "?").first ?? "unknown"
-        
-        guard let url = URL(string: urlString) else {
-            print("❌ Invalid URL: \(endpointPath)")
-            return
-        }
-        
-        do {
-            let request = URLRequest(url: url)
-            let (data, response) = try await URLSession.shared.data(for: request)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                print("❌ \(endpointPath) - Invalid response")
-                return
-            }
-            
-            switch httpResponse.statusCode {
-            case 200:
-                print("✅ \(endpointPath) - SUCCESS! (Response size: \(data.count) bytes)")
-                
-                // Try to parse as JSON to see structure
-                if let jsonObject = try? JSONSerialization.jsonObject(with: data) {
-                    if let dict = jsonObject as? [String: Any] {
-                        print("   📋 Response keys: \(Array(dict.keys).joined(separator: ", "))")
-                        
-                        // Look for gap-related fields
-                        let gapKeys = dict.keys.filter { key in
-                            key.lowercased().contains("gap") || 
-                            key.lowercased().contains("last") ||
-                            key.lowercased().contains("previous")
-                        }
-                        
-                        if !gapKeys.isEmpty {
-                            print("   🎯 Gap-related keys found: \(gapKeys.joined(separator: ", "))")
-                        }
-                    }
-                }
-                
-            case 403:
-                print("🚫 \(endpointPath) - 403 Forbidden (may need different permissions)")
-                
-            case 404:
-                print("📭 \(endpointPath) - 404 Not Found (endpoint doesn't exist)")
-                
-            default:
-                print("⚠️  \(endpointPath) - HTTP \(httpResponse.statusCode)")
-            }
-            
-        } catch {
-            print("💥 \(endpointPath) - Error: \(error.localizedDescription)")
-        }
-    }
-    
-    /// Optimized tour enhanced setlists fetching with comprehensive caching
-    private func fetchTourEnhancedSetlistsOptimized(
-        tourName: String, 
-        currentShow: EnhancedSetlist
-    ) async -> [EnhancedSetlist] {
-        
-        let cacheKey = CacheManager.CacheKeys.tourEnhancedSetlists(tourName)
-        let currentDate = currentShow.showDate
-        
-        // Check if we have cached tour setlists
-        if let cachedTourShows = CacheManager.shared.get([EnhancedSetlist].self, forKey: cacheKey) {
-            print("📦 Found cached tour setlists for \(tourName)")
-            
-            // Filter to current date and check if we need to add new show
-            let upToDateShows = cachedTourShows.filter { $0.showDate <= currentDate }
-            let hasCurrentShow = upToDateShows.contains { $0.showDate == currentDate }
-            
-            if hasCurrentShow {
-                print("✅ Current show already in cache, using cached data (\(upToDateShows.count) shows)")
-                return upToDateShows
-            } else {
-                print("🔄 Adding current show to cached tour data")
-                let updatedShows = (upToDateShows + [currentShow]).sorted { $0.showDate < $1.showDate }
-                
-                // Update cache with new show added
-                CacheManager.shared.set(updatedShows, forKey: cacheKey, ttl: CacheManager.TTL.tourEnhancedSetlists)
-                return updatedShows
-            }
-        }
-        
-        // No cache - fetch full tour data
-        print("🔄 Fetching fresh tour setlists for \(tourName)")
-        
-        do {
-            // Extract year from current show date
-            let year = String(currentDate.prefix(4))
-            
-            // Get all tour shows
-            let allTourShows = try await apiManager.fetchTourShows(tourName: tourName, year: year)
-            let showsUpToCurrent = allTourShows.filter { $0.showdate <= currentDate }
-            
-            print("📊 Processing \(showsUpToCurrent.count) shows from \(tourName)")
-            
-            // Fetch enhanced setlists with individual caching
-            var enhancedTourShows: [EnhancedSetlist] = []
-            for show in showsUpToCurrent {
-                do {
-                    let enhancedShow = try await apiManager.fetchEnhancedSetlist(for: show.showdate)
-                    enhancedTourShows.append(enhancedShow)
-                } catch {
-                    print("Warning: Could not fetch enhanced setlist for \(show.showdate): \(error)")
-                }
-            }
-            
-            let sortedShows = enhancedTourShows.sorted { $0.showDate < $1.showDate }
-            
-            // Cache the full tour collection
-            CacheManager.shared.set(sortedShows, forKey: cacheKey, ttl: CacheManager.TTL.tourEnhancedSetlists)
-            
-            print("✅ Successfully loaded and cached \(sortedShows.count) enhanced setlists from \(tourName)")
-            return sortedShows
-            
-        } catch {
-            print("Warning: Could not fetch tour shows for \(tourName): \(error)")
-            print("🔄 Falling back to single-show gap calculation")
-            return [currentShow]
-        }
-    }
     
 } 
