@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vercel dev",
     "generate-stats": "node Server/Scripts/generate-stats.js",
+    "update-tour-dashboard": "node Server/Scripts/update-tour-dashboard.js",
     "deploy": "npx vercel --prod --yes"
   },
   "dependencies": {
