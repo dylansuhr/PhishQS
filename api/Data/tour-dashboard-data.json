@@ -189,7 +189,8 @@
         "city": "Saratoga Springs",
         "state": "NY",
         "played": true,
-        "showNumber": 23
+        "showNumber": 23,
+        "showFile": "shows/show-2025-07-27.json"
       }
     ]
   },

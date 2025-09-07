@@ -140,46 +140,73 @@ Create a single JSON file that serves as the dynamic reference point for both Co
 
 ## Implementation Phases
 
-### ✅ PHASE 1: Create Update Script [CURRENT FOCUS]
-**Status: In Progress**
+### ✅ PHASE 1: Create Update Script [COMPLETED]
+**Status: Completed**
 
 Create the Node.js script that generates and updates the tour dashboard JSON file.
 
-**Key Tasks:**
-1. Create `Server/Scripts/update-tour-dashboard.js`
-2. Implement API data fetching logic
-3. Build JSON structure generation
-4. Add update detection logic
-5. Test locally with real API data
+**Completed Tasks:**
+1. ✅ Create `Server/Scripts/update-tour-dashboard.js`
+2. ✅ Implement API data fetching logic
+3. ✅ Build JSON structure generation
+4. ✅ Add update detection logic
+5. ✅ Test locally with real API data
 
 ---
 
-### 📋 PHASE 2: GitHub Actions Automation [FUTURE]
+### 📋 PHASE 2: Hybrid Architecture with Individual Show Files [CURRENT FOCUS]
+**Status: In Progress**
+
+Create a hybrid system with a lightweight control file plus individual show files with smart update detection.
+
+**Architecture Overview:**
+- **Control File**: `api/Data/tour-dashboard-data.json` - Lightweight orchestration file with tour metadata and update tracking flags
+- **Individual Show Files**: `api/Data/shows/show-YYYY-MM-DD.json` - Complete setlist and duration data for each show
+- **Smart Update Detection**: Metadata flags to minimize GitHub Actions processing time and API calls
+
+**Key Tasks:**
+1. ✅ Create control file generation script
+2. 🚧 Update generate-stats.js to use control file instead of making API calls
+3. ⏳ Create initialization script for all 23 show files
+4. ⏳ Implement smart update detection logic
+5. ⏳ Add GitHub Actions automation with quick update checks
+
+**Smart Flag System:**
+The control file includes metadata flags for intelligent updates:
+- **High-level tracking**: `lastAPICheck`, `latestShowFromAPI`, `pendingDurationChecks`
+- **Individual show flags**: `exists`, `lastUpdated`, `durationsAvailable`, `dataComplete`, `needsUpdate`
+- **Update lifecycle**: Handles scenario where setlist data arrives immediately but Phish.in duration data comes days later
+
+---
+
+### 📋 PHASE 3: GitHub Actions Automation [FUTURE]
 **Status: Not Started**
 
-Automate the update process using GitHub Actions.
+Automate the update process using GitHub Actions with smart update detection.
 
 **Planned Implementation:**
 - Create `.github/workflows/update-tour-dashboard.yml`
 - Schedule runs every 2 hours during tour season
-- Auto-commit changes when new show detected
+- Quick update checks using metadata flags (5-10 seconds vs full processing)
+- Auto-commit changes when new data detected
 - Add manual trigger option
 
 ---
 
-### 📋 PHASE 3: Create API Endpoint [FUTURE]
+### 📋 PHASE 4: Create API Endpoint [FUTURE]
 **Status: Not Started**
 
 Create server endpoint to serve the tour dashboard data.
 
 **Planned Implementation:**
 - Create `Server/API/tour-dashboard.js`
-- Serve JSON file with appropriate caching headers
+- Serve JSON files with appropriate caching headers
 - Add to Vercel deployment configuration
+- Handle both control file and individual show file requests
 
 ---
 
-### 📋 PHASE 4: iOS Client Updates [FUTURE]
+### 📋 PHASE 5: iOS Client Updates [FUTURE]
 **Status: Not Started**
 
 Update iOS components to consume the single source of truth.
@@ -190,7 +217,238 @@ Update iOS components to consume the single source of truth.
 - Update Component B to reference tour dashboard for context
 - Add fallback mechanisms
 
-## Phase 1 Implementation Details [CURRENT WORK]
+## Phase 2 Implementation Details [CURRENT WORK]
+
+### Hybrid Architecture Overview
+
+The hybrid system separates orchestration data from detailed show data:
+
+#### Control File: `api/Data/tour-dashboard-data.json`
+**Purpose**: Lightweight orchestration and smart update detection
+**Size**: ~10-15KB (manageable for frequent updates)
+
+```json
+{
+  "currentTour": {
+    "name": "2025 Early Summer Tour",
+    "year": "2025",
+    "totalShows": 23,
+    "playedShows": 23,
+    "startDate": "2025-06-20", 
+    "endDate": "2025-07-27",
+    "tourDates": [
+      {
+        "date": "2025-06-20",
+        "venue": "SNHU Arena",
+        "city": "Manchester",
+        "state": "NH", 
+        "played": true,
+        "showNumber": 1,
+        "showFile": "shows/show-2025-06-20.json"
+      }
+      // ... other dates
+    ]
+  },
+  "latestShow": {
+    "date": "2025-07-27",
+    "venue": "Broadview Stage at SPAC",
+    "city": "Saratoga Springs",
+    "state": "NY",
+    "tourPosition": {
+      "showNumber": 23,
+      "totalShows": 23,
+      "tourName": "2025 Early Summer Tour"
+    }
+  },
+  "updateTracking": {
+    "lastAPICheck": "2025-09-07T16:37:46.927Z",
+    "latestShowFromAPI": "2025-07-27",
+    "pendingDurationChecks": ["2025-07-25", "2025-07-26"],
+    "individualShows": {
+      "2025-06-20": {
+        "exists": true,
+        "lastUpdated": "2025-06-21T08:00:00Z",
+        "durationsAvailable": true,
+        "dataComplete": true,
+        "needsUpdate": false
+      },
+      "2025-07-27": {
+        "exists": true,
+        "lastUpdated": "2025-07-27T23:30:00Z", 
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
+      }
+    }
+  }
+}
+```
+
+#### Individual Show Files: `api/Data/shows/show-YYYY-MM-DD.json`
+**Purpose**: Complete setlist and duration data for each show
+**Size**: ~5-15KB per show (depending on setlist length)
+**Total**: ~115-345KB for 23-show tour
+
+```json
+{
+  "showDate": "2025-06-20",
+  "venue": "SNHU Arena",
+  "city": "Manchester", 
+  "state": "NH",
+  "tourPosition": {
+    "showNumber": 1,
+    "totalShows": 23,
+    "tourName": "2025 Early Summer Tour"
+  },
+  "venueRun": {
+    "nightNumber": 1,
+    "totalNights": 3,
+    "dates": ["2025-06-20", "2025-06-21", "2025-06-22"]
+  },
+  "setlistItems": [
+    {
+      "songName": "Wilson",
+      "transition": ">", 
+      "set": "1",
+      "position": 1
+    }
+    // ... complete setlist
+  ],
+  "trackDurations": [
+    {
+      "id": "wilson_2025-06-20_1_1",
+      "songName": "Wilson",
+      "songId": 123,
+      "durationSeconds": 245,
+      "showDate": "2025-06-20",
+      "setNumber": "1",
+      "venue": "SNHU Arena",
+      "city": "Manchester",
+      "state": "NH",
+      "tourPosition": { /* tour context */ }
+    }
+    // ... all track durations with color gradients pre-calculated
+  ],
+  "songGaps": [
+    {
+      "songId": 123,
+      "songName": "Wilson", 
+      "gap": 15,
+      "lastPlayed": "2024-12-31",
+      "timesPlayed": 1432,
+      "tourVenue": "SNHU Arena"
+      // ... gap information
+    }
+    // ... all song gaps
+  ],
+  "metadata": {
+    "setlistSource": "phishnet",
+    "durationsSource": "phishin", 
+    "lastUpdated": "2025-06-21T08:00:00Z",
+    "dataComplete": true
+  }
+}
+```
+
+### Smart Update Detection Logic
+
+#### Flag Lifecycle Example:
+**Scenario**: New show 2025-07-27 gets played
+
+1. **Immediate after show**: 
+   - Setlist data available on Phish.net within hours
+   - Duration data not yet available on Phish.in (typically 2-3 days delay)
+   
+2. **Control file flags after initial update**:
+   ```json
+   "2025-07-27": {
+     "exists": true,
+     "lastUpdated": "2025-07-27T23:30:00Z",
+     "durationsAvailable": false, 
+     "dataComplete": false,
+     "needsUpdate": true
+   }
+   ```
+
+3. **GitHub Actions runs every 2 hours**:
+   - Checks `needsUpdate: true` shows
+   - Quick API check for duration data availability
+   - If still unavailable, skips full processing (saves 55+ seconds)
+   - Updates `lastUpdated` timestamp
+
+4. **Duration data becomes available** (2-3 days later):
+   - GitHub Actions detects Phish.in has duration data
+   - Updates individual show file with complete data
+   - Flags updated:
+   ```json
+   "2025-07-27": {
+     "exists": true,
+     "lastUpdated": "2025-07-30T14:22:00Z",
+     "durationsAvailable": true,
+     "dataComplete": true, 
+     "needsUpdate": false
+   }
+   ```
+
+### Key Implementation Files
+
+#### 1. Update generate-stats.js to use control file
+**File**: `Server/Scripts/generate-stats.js`
+**Changes needed**:
+- Replace API calls with control file reading
+- Read individual show files for statistical calculations
+- Maintain exact same output format
+- Add error handling for missing show files
+
+#### 2. Create show files initialization script
+**File**: `Server/Scripts/initialize-tour-shows.js` 
+**Purpose**: Generate all 23 individual show files for current tour
+**Features**:
+- Create complete show files with current API data
+- Set appropriate flags in control file
+- Handle partial data scenarios (setlist available, durations pending)
+
+#### 3. Smart update detection script
+**File**: `Server/Scripts/smart-update-check.js`
+**Purpose**: Quick update detection for GitHub Actions
+**Features**:
+- 5-10 second execution time (vs 60+ seconds full processing)
+- Check only shows marked with `needsUpdate: true`
+- Update flags based on API availability
+- Trigger full processing only when necessary
+
+### Component B Integration
+
+#### Current generate-stats.js behavior:
+```javascript
+// BEFORE: Makes own API calls
+const year2025Shows = await enhancedService.phishNetClient.fetchShows('2025');
+const tourName = '2025 Summer Tour';
+const allTourShows = await enhancedService.collectTourData(tourName, latestShow.showdate);
+```
+
+#### Updated generate-stats.js behavior:
+```javascript
+// AFTER: Reads from control file + individual show files
+const controlFile = JSON.parse(readFileSync('api/Data/tour-dashboard-data.json'));
+const tourName = controlFile.currentTour.name;
+const allTourShows = [];
+
+for (const tourDate of controlFile.currentTour.tourDates) {
+  if (tourDate.played && tourDate.showFile) {
+    const showData = JSON.parse(readFileSync(`api/Data/${tourDate.showFile}`));
+    allTourShows.push(showData);
+  }
+}
+```
+
+**Benefits**:
+- Zero API calls from Component B (100% reduction)
+- Consistent data with Component A
+- Faster execution (no network latency)
+- Reliable data availability
+
+## Phase 1 Implementation Details [COMPLETED]
 
 ### File: `Server/Scripts/update-tour-dashboard.js`
 
