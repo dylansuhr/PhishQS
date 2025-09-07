@@ -1,200 +1,178 @@
 {
   "longestSongs": [
     {
-      "id": "40491",
-      "songName": "Chalk Dust Torture",
+      "id": "38368",
+      "songName": "What's Going Through Your Mind",
       "songId": null,
-      "durationSeconds": 1729,
-      "showDate": "2025-07-25",
+      "durationSeconds": 2560,
+      "showDate": "2025-06-24",
       "setNumber": "Set 2",
-      "venue": "Saratoga Performing Arts Center",
-      "venueRun": {
-        "venue": "Saratoga Performing Arts Center",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 3,
-        "showDates": [
-          "2025-07-25",
-          "2025-07-26",
-          "2025-07-27"
-        ]
-      },
-      "city": "Saratoga Springs",
-      "state": "NY",
+      "venue": "Petersen Events Center",
+      "venueRun": null,
+      "city": null,
+      "state": null,
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 21,
+        "showNumber": 4,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "28:49"
+      "formattedDuration": "42:40"
     },
     {
-      "id": "40437",
-      "songName": "Carini",
+      "id": "38549",
+      "songName": "Sand",
       "songId": null,
-      "durationSeconds": 1699,
-      "showDate": "2025-07-22",
+      "durationSeconds": 2384,
+      "showDate": "2025-07-15",
       "setNumber": "Set 2",
-      "venue": "Forest Hills Stadium",
+      "venue": "The Mann Center for the Performing Arts",
       "venueRun": {
-        "venue": "Forest Hills Stadium",
-        "city": "Forest Hills",
-        "state": "NY",
+        "venue": "The Mann Center for the Performing Arts",
+        "city": "Philadelphia",
+        "state": "PA",
         "nightNumber": 1,
         "totalNights": 2,
         "showDates": [
-          "2025-07-22",
-          "2025-07-23"
+          "2025-07-15",
+          "2025-07-16"
         ]
       },
-      "city": "Forest Hills",
-      "state": "NY",
+      "city": "Philadelphia",
+      "state": "PA",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 19,
+        "showNumber": 14,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "28:19"
+      "formattedDuration": "39:44"
     },
     {
-      "id": "40473",
+      "id": "38498",
       "songName": "Down with Disease",
       "songId": null,
-      "durationSeconds": 1500,
-      "showDate": "2025-07-26",
+      "durationSeconds": 2048,
+      "showDate": "2025-07-11",
       "setNumber": "Set 2",
-      "venue": "Saratoga Performing Arts Center",
+      "venue": "North Charleston Coliseum",
       "venueRun": {
-        "venue": "Saratoga Performing Arts Center",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "nightNumber": 2,
+        "venue": "North Charleston Coliseum",
+        "city": "North Charleston",
+        "state": "SC",
+        "nightNumber": 1,
         "totalNights": 3,
         "showDates": [
-          "2025-07-25",
-          "2025-07-26",
-          "2025-07-27"
+          "2025-07-11",
+          "2025-07-12",
+          "2025-07-13"
         ]
       },
-      "city": "Saratoga Springs",
-      "state": "NY",
+      "city": "North Charleston",
+      "state": "SC",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 22,
+        "showNumber": 11,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "formattedDuration": "25:00"
+      "formattedDuration": "34:08"
     }
   ],
   "rarestSongs": [
     {
-      "id": 329,
-      "songId": 329,
-      "songName": "Lawn Boy",
-      "gap": 55,
-      "lastPlayed": "2025-03-11",
-      "timesPlayed": 234,
-      "tourVenue": "Broadview Stage at SPAC",
+      "id": 424,
+      "songId": 424,
+      "songName": "On Your Way Down",
+      "gap": 521,
+      "lastPlayed": "2011-09-13",
+      "timesPlayed": 28,
+      "tourVenue": "United Center",
       "tourVenueRun": {
-        "venue": "Broadview Stage at SPAC",
-        "city": "Saratoga Springs",
-        "state": "NY",
+        "venue": "United Center",
+        "city": "Chicago",
+        "state": "IL",
         "nightNumber": 1,
         "totalNights": 3,
         "showDates": [
-          "2025-07-25",
-          "2025-07-26",
-          "2025-07-27"
+          "2025-07-18",
+          "2025-07-19",
+          "2025-07-20"
         ]
       },
-      "tourDate": "2025-07-25",
-      "tourCity": "Saratoga Springs",
-      "tourState": "NY",
+      "tourDate": "2025-07-18",
+      "tourCity": "Chicago",
+      "tourState": "IL",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 21,
+        "showNumber": 16,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "historicalVenue": "F. M. Kirby Center for the Performing Arts",
-      "historicalCity": "Wilkes-Barre",
-      "historicalState": "PA",
-      "historicalLastPlayed": "2025-03-11",
-      "formattedHistoricalDate": "3/11/25"
+      "historicalVenue": "Higher Ground",
+      "historicalCity": "South Burlington",
+      "historicalState": "VT",
+      "historicalLastPlayed": "2011-09-13",
+      "formattedHistoricalDate": "9/13/11"
     },
     {
-      "id": 642,
-      "songId": 642,
-      "songName": "Wading in the Velvet Sea",
-      "gap": 24,
-      "lastPlayed": "2025-04-23",
-      "timesPlayed": 139,
-      "tourVenue": "Broadview Stage at SPAC",
-      "tourVenueRun": {
-        "venue": "Broadview Stage at SPAC",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "nightNumber": 2,
-        "totalNights": 3,
-        "showDates": [
-          "2025-07-25",
-          "2025-07-26",
-          "2025-07-27"
-        ]
-      },
-      "tourDate": "2025-07-26",
-      "tourCity": "Saratoga Springs",
-      "tourState": "NY",
+      "id": 430,
+      "songId": 430,
+      "songName": "Paul and Silas",
+      "gap": 322,
+      "lastPlayed": "2016-07-22",
+      "timesPlayed": 92,
+      "tourVenue": "Petersen Events Center",
+      "tourVenueRun": null,
+      "tourDate": "2025-06-24",
+      "tourCity": null,
+      "tourState": null,
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 22,
+        "showNumber": 4,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "historicalVenue": "Bill Graham Civic Auditorium",
-      "historicalCity": "San Francisco",
+      "historicalVenue": "The Forum",
+      "historicalCity": "Inglewood",
       "historicalState": "CA",
-      "historicalLastPlayed": "2025-04-23",
-      "formattedHistoricalDate": "4/23/25"
+      "historicalLastPlayed": "2016-07-22",
+      "formattedHistoricalDate": "7/22/16"
     },
     {
-      "id": 2860,
-      "songId": 2860,
-      "songName": "Beneath a Sea of Stars Part 1",
-      "gap": 21,
-      "lastPlayed": "2025-04-26",
-      "timesPlayed": 21,
-      "tourVenue": "Broadview Stage at SPAC",
+      "id": 2423,
+      "songId": 2423,
+      "songName": "Devotion To a Dream",
+      "gap": 322,
+      "lastPlayed": "2016-10-15",
+      "timesPlayed": 22,
+      "tourVenue": "North Charleston Coliseum",
       "tourVenueRun": {
-        "venue": "Broadview Stage at SPAC",
-        "city": "Saratoga Springs",
-        "state": "NY",
+        "venue": "North Charleston Coliseum",
+        "city": "North Charleston",
+        "state": "SC",
         "nightNumber": 1,
         "totalNights": 3,
         "showDates": [
-          "2025-07-25",
-          "2025-07-26",
-          "2025-07-27"
+          "2025-07-11",
+          "2025-07-12",
+          "2025-07-13"
         ]
       },
-      "tourDate": "2025-07-25",
-      "tourCity": "Saratoga Springs",
-      "tourState": "NY",
+      "tourDate": "2025-07-11",
+      "tourCity": "North Charleston",
+      "tourState": "SC",
       "tourPosition": {
         "tourName": "2025 Early Summer Tour",
-        "showNumber": 21,
+        "showNumber": 11,
         "totalShows": 23,
         "tourYear": "2025"
       },
-      "historicalVenue": "Hollywood Bowl",
-      "historicalCity": "Hollywood",
-      "historicalState": "CA",
-      "historicalLastPlayed": "2025-04-26",
-      "formattedHistoricalDate": "4/26/25"
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2016-10-15",
+      "formattedHistoricalDate": "10/15/16"
     }
   ],
   "mostPlayedSongs": [
@@ -202,19 +180,19 @@
       "id": 1712495126,
       "songId": 1712495126,
       "songName": "Tweezer Reprise",
-      "playCount": 7
+      "playCount": 10
     },
     {
       "id": 744171844,
       "songId": 744171844,
       "songName": "Tweezer",
-      "playCount": 2
+      "playCount": 7
     },
     {
       "id": 2084439332,
       "songId": 2084439332,
       "songName": "Harry Hood",
-      "playCount": 2
+      "playCount": 6
     }
   ],
   "tourName": "2025 Early Summer Tour"

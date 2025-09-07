@@ -139,7 +139,7 @@ async function generateTourStatisticsOptimized() {
         // Step 1: Collect ALL required data with minimal API calls
         console.log('📊 Using DataCollectionService for optimal data collection...');
         const dataCollectionService = new DataCollectionService(CONFIG.PHISH_NET_API_KEY);
-        const dataContext = await dataCollectionService.collectAllTourData('2025', '2025 Summer Tour');
+        const dataContext = await dataCollectionService.collectAllTourData('2025', '2025 Early Summer Tour');
         
         // Show performance comparison
         console.log(`📈 Performance: Made ${dataContext.apiCalls.total} API calls (vs ~116 in original approach)`);
@@ -277,6 +277,27 @@ async function generateTourStatisticsFromControlFile() {
         
         console.log(`📊 Show files loaded: ${showsLoaded} successful, ${showsSkipped} skipped`);
         
+        // Validate complete show file coverage - NO FALLBACK
+        if (allTourShows.length < controlFileData.currentTour.playedShows) {
+            const missingShows = controlFileData.currentTour.playedShows - allTourShows.length;
+            const missingDates = [];
+            
+            // Identify which specific shows are missing
+            for (const tourDate of controlFileData.currentTour.tourDates) {
+                if (tourDate.played && !tourDate.showFile) {
+                    missingDates.push(tourDate.date);
+                }
+            }
+            
+            console.error(`❌ SINGLE SOURCE ERROR: Only ${allTourShows.length}/${controlFileData.currentTour.playedShows} show files available.`);
+            console.error(`❌ Missing ${missingShows} shows. The following shows need show files generated:`);
+            missingDates.forEach(date => console.error(`   • ${date}`));
+            console.error(`❌ Please run: npm run initialize-tour-shows`);
+            console.error(`❌ This will create all required show files for the single source architecture.`);
+            
+            throw new Error(`Single source of truth violation: Missing ${missingShows} show files. Run 'npm run initialize-tour-shows' to generate all required files.`);
+        }
+        
         if (allTourShows.length === 0) {
             throw new Error('No show data loaded. Please run initialization script to create show files.');
         }
@@ -314,7 +335,20 @@ async function generateTourStatisticsFromControlFile() {
     }
 }
 
-// Run single source version if called directly (updated to use new architecture)
+// Run comparison test: optimized vs single source
 if (import.meta.url === `file://${process.argv[1]}`) {
-    generateTourStatisticsFromControlFile();
+    if (process.argv.includes('--compare')) {
+        console.log('🔍 Running comparison test between optimized API and single source approaches...\n');
+        
+        console.log('=== OPTIMIZED API APPROACH ===');
+        await generateTourStatisticsOptimized();
+        
+        console.log('\n=== SINGLE SOURCE APPROACH ===');
+        await generateTourStatisticsFromControlFile();
+        
+    } else if (process.argv.includes('--optimized')) {
+        generateTourStatisticsOptimized();
+    } else {
+        generateTourStatisticsFromControlFile();
+    }
 }

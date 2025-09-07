@@ -8,6 +8,7 @@
     "generate-stats": "node Server/Scripts/generate-stats.js",
     "update-tour-dashboard": "node Server/Scripts/update-tour-dashboard.js",
     "initialize-tour-shows": "node Server/Scripts/initialize-tour-shows.js",
+    "initialize-remaining-shows": "node Server/Scripts/quick-initialize-remaining-shows.js",
     "deploy": "npx vercel --prod --yes"
   },
   "dependencies": {
