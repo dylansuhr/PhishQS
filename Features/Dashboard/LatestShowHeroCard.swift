@@ -15,38 +15,17 @@ struct LatestShowHeroCard: View {
         HeroCard {
             if let show = viewModel.latestShow, !viewModel.setlistItems.isEmpty {
                 VStack(alignment: .leading, spacing: 16) {
-                    // Header with date and navigation
+                    // Header with date and venue info
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(show.showdate)
-                                    .font(.title2)
-                                    .fontWeight(.bold)
-                                    .foregroundColor(.primary)
-                                
-                                Text(DateUtilities.formatDateWithDayOfWeek(show.showdate))
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                            }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(show.showdate)
+                                .font(.title2)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
                             
-                            Spacer()
-                            
-                            // Navigation buttons
-                            HStack(spacing: 12) {
-                                Button(action: { viewModel.navigateToPreviousShow() }) {
-                                    Image(systemName: "chevron.left")
-                                        .font(.caption)
-                                        .foregroundColor(viewModel.canNavigatePrevious ? .blue : .gray)
-                                }
-                                .disabled(!viewModel.canNavigatePrevious)
-                                
-                                Button(action: { viewModel.navigateToNextShow() }) {
-                                    Image(systemName: "chevron.right")
-                                        .font(.caption)
-                                        .foregroundColor(viewModel.canNavigateNext ? .blue : .gray)
-                                }
-                                .disabled(!viewModel.canNavigateNext)
-                            }
+                            Text(DateUtilities.formatDateWithDayOfWeek(show.showdate))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
                         
                         // Venue info with badges

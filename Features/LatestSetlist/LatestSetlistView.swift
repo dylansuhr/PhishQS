@@ -7,27 +7,6 @@ struct LatestSetlistView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Navigation buttons at top
-            HStack {
-                Button(action: {
-                    viewModel.navigateToPreviousShow()
-                }) {
-                    Text("Previous")
-                        .foregroundColor(viewModel.canNavigatePrevious ? .blue : .gray)
-                }
-                .disabled(!viewModel.canNavigatePrevious)
-                
-                Spacer()
-                
-                Button(action: {
-                    viewModel.navigateToNextShow()
-                }) {
-                    Text("Next")
-                        .foregroundColor(viewModel.canNavigateNext ? .blue : .gray)
-                }
-                .disabled(!viewModel.canNavigateNext)
-            }
-            .padding(.horizontal)
             
             // Show info
             if let show = viewModel.latestShow {

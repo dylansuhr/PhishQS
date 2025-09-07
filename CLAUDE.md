@@ -4,9 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PhishQS is a hybrid iOS/Node.js project consisting of:
-- **iOS App**: Swift/UIKit minimalist app for browsing Phish setlists
-- **Server Components**: Vercel-deployed Node.js serverless functions for tour statistics
+PhishQS is a hybrid iOS/Node.js project with three distinct functional components:
+
+### **iOS App Components:**
+1. **Tour Setlist Browser**: Display of the latest Phish show setlist with color-coded song durations and venue context
+2. **Tour Statistics Display**: Pre-computed statistical cards showing longest/rarest/most-played songs from current tour
+3. **Historical Show Search**: Date-driven search and display of any historical Phish show (1983-present)
+
+### **Server Components:**
+- **Vercel-deployed Node.js serverless functions**: Pre-compute and serve tour statistics via `/api/tour-statistics`
+- **Multi-API coordination services**: Handle real-time data aggregation from Phish.net and Phish.in APIs
 
 ## Plan and Review
 
@@ -48,32 +55,120 @@ npm run deploy             # Deploy to Vercel production
 - iOS target requires iOS 16.0+ and Xcode 15+
 - UI tests are located in `Tests/PhishQSUITests/`
 
+## App Components
+
+### Component A: Tour Setlist Browser
+
+**Purpose**: Display the latest Phish show setlist with rich visual enhancements and venue context.
+
+**Current Implementation**:
+- **Files**: `Features/LatestSetlist/LatestSetlistViewModel.swift`, `Features/Dashboard/LatestShowHeroCard.swift`
+- **Display**: Latest show setlist with comprehensive details
+- **Features**: 
+  - Color-coded song durations with gradients (requires Phish.in duration data)
+  - Venue run badges (N1/N2/N3) and tour position indicators (Show 23/31)
+  - Real-time API coordination between Phish.net and Phish.in
+  - Formatted date display with day of week
+  - Set-based organization with proper transitions
+
+**Data Flow**:
+- **Primary**: Phish.net API for setlists, venues, dates, tour organization
+- **Enhancement**: Phish.in API for song durations (enables color gradients)
+- **Tour Context**: PhishNetTourService for venue runs and tour positions
+- **Performance**: Live API calls with intelligent caching via CacheManager
+
+**Current Scope**: Latest show display only
+
+**Future Evolution**: 
+- Enhanced setlist presentation and interaction
+- Potential features: detailed song information, audio integration, sharing capabilities
+- Goal: Rich, immersive display of the most recent Phish concert
+
+---
+
+### Component B: Tour Statistics Display
+
+**Purpose**: Pre-computed statistical analysis and insights from the current tour.
+
+**Implementation**:
+- **Files**: `Features/Dashboard/TourMetricCards.swift`, `Services/Core/TourStatisticsAPIClient.swift`
+- **Display**: Three statistical cards in vertical layout
+- **Cards**: 
+  1. **Longest Songs**: Top 3 by duration with venue/date context
+  2. **Rarest Songs**: Top 3 by gap (shows since last played) with historical context
+  3. **Most Played Songs**: Top 3 by frequency within current tour
+
+**Data Flow**:
+- **Source**: Pre-computed server JSON via `/api/tour-statistics` endpoint
+- **Performance**: ~140ms server response vs 60+ seconds local calculation
+- **Caching**: 1-hour TTL via CacheManager for dashboard optimization
+- **Generation**: Server uses hybrid Phish.net (gaps, tour structure) + Phish.in (durations) data
+
+**Scope**: Current tour statistical aggregation only
+
+---
+
+### Component C: Historical Show Search
+
+**Purpose**: Search and view any historical Phish show by date from ANY tour or year.
+
+**Implementation**:
+- **Files**: `Features/YearSelection/`, `Features/MonthSelection/`, `Features/DaySelection/`, `Features/Setlist/`
+- **Navigation Flow**: Year → Month → Day → Full Setlist View
+- **Search Pattern**: Date-driven discovery (1983-present excluding hiatus years)
+
+**Data Flow**:
+- **APIs**: Same real-time coordination as Tour Browser (Phish.net + Phish.in + tour services)
+- **Performance**: On-demand API calls (no pre-computation needed)
+- **Caching**: Individual show caching via CacheManager
+- **Scope**: Complete historical archive access
+
+**Features**:
+- Complete setlist display with venue information
+- Color-coded durations when Phish.in data available
+- Venue and location context for historical shows
+
+---
+
 ## Architecture Overview
 
-### iOS App Structure
-The iOS app follows a feature-based architecture with clear separation of concerns:
+### iOS App Structure  
+The iOS app follows a component-based architecture with clear functional boundaries:
 
-- **Features/**: Feature modules with view-viewmodel pairs
-  - `Dashboard/`: Main dashboard with latest show cards
-  - `Setlist/`: Setlist display with detailed track views
-  - `MonthSelection/`, `DaySelection/`, `YearSelection/`: Navigation hierarchy
-  - `TourDashboard/`: Tour-specific statistics view
-  - `LatestSetlist/`: Latest show information
+#### **Component A: Tour Setlist Browser**
+- **Features/LatestSetlist/**: Latest setlist display with enhanced visual features
+- **Features/Dashboard/LatestShowHeroCard.swift**: Latest show card UI for dashboard integration
+- **Shared**: Uses common services (APIManager, CacheManager, tour services)
 
-- **Services/**: Core business logic and API clients
-  - `APIManager.swift`: Central coordinator between different API services
-  - `Core/`: Shared services including:
-    - `TourConfig.swift`: Centralized tour configuration (eliminates hardcoded values)
-    - `SetlistMatchingService.swift`: Shared position-based data matching utilities
-    - `CacheManager.swift`: Data persistence and cache invalidation
-    - `TourStatisticsService.swift`: Core tour statistics calculations
-    - `HistoricalGapCalculator.swift`: Song gap calculations
-  - `PhishNet/`: Phish.net API client and tour services
-  - `PhishIn/`: Phish.in API client (audio data only)
+#### **Component B: Tour Statistics Display**  
+- **Features/Dashboard/TourMetricCards.swift**: Statistical cards UI (longest, rarest, most-played)
+- **Features/TourDashboard/**: Dashboard integration and statistics presentation
+- **Services/Core/TourStatisticsAPIClient.swift**: Server communication for pre-computed stats
 
-- **Models/**: Data models for shows, setlists, and tour statistics
+#### **Component C: Historical Show Search**
+- **Features/YearSelection/**, **Features/MonthSelection/**, **Features/DaySelection/**: Date navigation hierarchy  
+- **Features/Setlist/**: Historical setlist display with detailed track views
+- **Shared**: Uses common services for real-time API coordination
 
+#### **Shared Services Layer**
+
+**Used by ALL Components:**
+- **Services/APIManager.swift**: Central coordinator between Phish.net and Phish.in APIs
+- **Services/Core/CacheManager.swift**: Data persistence and cache invalidation  
+- **Services/PhishNet/**: Phish.net API client and tour services
+- **Services/PhishIn/**: Phish.in API client (song durations only)
+- **Models/**: Shared data models (Show, SetlistItem, EnhancedSetlist, etc.)
 - **Utilities/**: Helper functions and extensions
+
+**Component-Specific Services:**
+- **Component A**: `LatestSetlistViewModel` (latest setlist display logic)
+- **Component B**: `TourStatisticsAPIClient` (server statistics communication)  
+- **Component C**: `SetlistViewModel`, `YearListViewModel` (historical search logic)
+
+**Shared Configuration:**
+- **Services/Core/TourConfig.swift**: Centralized tour configuration (eliminates hardcoded values)
+- **Services/Core/SetlistMatchingService.swift**: Position-based data matching utilities
+- **Services/Core/HistoricalGapCalculator.swift**: Song gap calculations
 
 ### Server Structure
 Node.js serverless functions follow iOS architectural patterns:
@@ -189,39 +284,105 @@ Core tour statistics are calculated using specific algorithms and update rules:
 
 ## Data Flow
 
-### Tour Statistics Pipeline
-1. **Multi-API Data Collection**:
-   - **Primary**: Fetch show dates, setlists, and tour organization from Phish.net API
-   - **Enhancement**: Fetch song durations from Phish.in API (audio data only)
-   - **Tour Context**: Use TourScheduleService for complete tour schedules and accurate positions
-   - Apply venue-date consistency rules during data combination
+### Component A: Tour Setlist Browser Data Flow
+1. **Show Discovery**: `LatestSetlistViewModel` fetches latest show via Phish.net API
+2. **Enhanced Data Collection**:
+   - **Setlist Items**: Phish.net API provides song names, transitions, venue information
+   - **Duration Enhancement**: Phish.in API provides song durations for color gradient calculation  
+   - **Tour Context**: PhishNetTourService provides venue runs (N1/N2/N3) and tour positions (Show 23/31)
+3. **Real-time Updates**: Live API coordination with intelligent caching via CacheManager
+4. **Display**: Color-coded setlists with venue context and tour information
 
-2. **Statistics Calculation**:
-   - `TourStatisticsService` processes all tour shows
-   - Calculate top 3 longest songs using Phish.in duration data
-   - Calculate top 3 rarest songs using Phish.net gap data
-   - Apply tour transition logic for current vs completed tours
-
-3. **Pre-computation and Storage**:
-   - `npm run generate-stats` creates tour data JSON
-   - Statistics stored in `Server/Data/tour-stats.json`
-   - Eliminates real-time calculation delays
-
-4. **API Serving**: 
-   - Vercel functions serve pre-computed data via `/api/tour-statistics`
+### Component B: Tour Statistics Data Flow  
+1. **Server Pre-computation**:
+   - **Data Sources**: Phish.net API (tour structure, gaps) + Phish.in API (durations)
+   - **Processing**: `npm run generate-stats` calculates longest/rarest/most-played songs
+   - **Storage**: Results stored in `Server/Data/tour-stats.json`
+2. **API Serving**: 
+   - Vercel serverless function serves via `/api/tour-statistics`
    - Cache headers set for performance (`s-maxage=3600`)
+3. **iOS Consumption**: 
+   - `TourStatisticsAPIClient` fetches pre-computed data (~140ms response)
+   - CacheManager provides 1-hour local caching for dashboard optimization
+   - Three statistical cards display instantly (no calculation wait)
 
-5. **iOS Consumption**: 
-   - App fetches data via `APIManager` and caches locally via `CacheManager`
-   - ViewModels update SwiftUI views with fetched data
-   - Tour dashboard displays statistics instantly (no calculation wait)
+### Component C: Historical Show Search Data Flow
+1. **Date Navigation**: Year/Month/Day selection provides target date
+2. **On-Demand Fetching**: Same real-time API coordination as Component A
+   - **Setlist Data**: Phish.net API for historical show information
+   - **Duration Enhancement**: Phish.in API for color gradients (when available)
+   - **Context**: Tour services for historical venue/tour information
+3. **Individual Caching**: Each historical show cached separately via CacheManager
+4. **Display**: Complete historical setlist with venue context
 
 ## Testing
 - iOS UI tests in `Tests/PhishQSUITests/`
 - No server-side tests currently implemented
 - Mock implementations available for API clients
 
-## Development Best Practices
+## Component Development Guidelines
+
+### Working on Individual Components
+
+#### **Component A: Tour Setlist Browser Development**
+- **Focus Area**: `Features/LatestSetlist/`, `Features/Dashboard/LatestShowHeroCard.swift`
+- **Key Services**: `LatestSetlistViewModel`, `APIManager`, `CacheManager`
+- **Testing**: Verify latest show display, color gradients, venue run badges
+- **Future Development**: Enhanced setlist presentation, potential audio integration, sharing features
+- **Data Dependencies**: Requires both Phish.net (setlists) AND Phish.in (durations) for full functionality
+
+#### **Component B: Tour Statistics Development**  
+- **Focus Area**: `Features/Dashboard/TourMetricCards.swift`, `Services/Core/TourStatisticsAPIClient.swift`
+- **Key Services**: `TourStatisticsAPIClient`, pre-computed server data
+- **Testing**: Verify 3 statistical cards display, server response performance
+- **Server Dependency**: Requires `npm run generate-stats` and `/api/tour-statistics` endpoint
+- **Development Pattern**: UI changes only - statistics logic handled server-side
+
+#### **Component C: Historical Show Search Development**
+- **Focus Area**: `Features/YearSelection/`, `Features/MonthSelection/`, `Features/DaySelection/`, `Features/Setlist/`  
+- **Key Services**: `SetlistViewModel`, `YearListViewModel`, same API coordination as Component A
+- **Testing**: Verify Year/Month/Day navigation flow, historical setlist display
+- **Data Source**: Real-time API calls (not pre-computed like Component B)
+
+### Component Boundaries and Isolation
+
+#### **Shared Resources:**
+- **APIs**: All components use `APIManager` for Phish.net/Phish.in coordination
+- **Caching**: All components use `CacheManager` with component-specific cache keys
+- **Models**: Shared data models (`Show`, `SetlistItem`, `EnhancedSetlist`) across all components
+- **Configuration**: `TourConfig.swift` provides centralized tour settings
+
+#### **Component Independence:**
+- **Component A**: Can be developed independently - latest show display logic is self-contained
+- **Component B**: Completely independent - only depends on server API, not other components  
+- **Component C**: Independent historical search - shares API layer but separate UI flow
+
+#### **Cross-Component Dependencies:**
+- **None**: Components do not directly depend on each other
+- **Dashboard Integration**: `TourDashboardView` composes all three components but they remain independent
+- **Shared Services**: Components communicate only through shared services, not direct references
+
+### Development Best Practices
+
+#### **Component-Specific Guidelines:**
+
+**For Tour Setlist Browser (Component A):**
+- Focus on latest show display excellence and user experience
+- Maintain color gradient functionality (requires Phish.in duration data)
+- Optimize for fast loading and clean presentation of latest show data
+- Future UI enhancements should improve setlist readability and interaction
+
+**For Tour Statistics (Component B):**
+- Focus on UI/UX improvements - statistical logic is server-side
+- Ensure proper error handling for server API failures
+- Maintain 1-hour caching for dashboard performance  
+- Server changes require both `generate-stats` script updates AND deployment
+
+**For Historical Show Search (Component C):**
+- Optimize for discovery patterns (Year → Month → Day flow)
+- Handle missing historical data gracefully
+- Consider performance for large year/month selections
+- Reuse setlist display logic from other components where possible
 
 ### Tour-Related Functionality
 - **Use TourConfig** for any new tour-related functionality instead of hardcoding values
@@ -248,7 +409,45 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - Leverage the modular calculator architecture for adding new statistics types
 - Follow the established service layer patterns for API coordination
 
+## Component Evolution Roadmap
+
+### Component A: Tour Setlist Browser Evolution
+**Current State**: Latest show display with color gradients and venue context
+**Planned Enhancements**:
+- **Enhanced Display Features**: Improve latest show presentation
+  - Detailed song information and metadata
+  - Audio integration for enhanced experience
+  - Sharing and social features
+- **Rich Content Mode**: Enhanced setlist details and context
+- **Performance**: Optimize for fast loading and smooth scrolling
+
+### Component B: Tour Statistics Evolution  
+**Current State**: Three statistical cards (longest, rarest, most-played songs)
+**Planned Enhancements**:
+- **Additional Statistics**: Show trends, venue patterns, set length analysis
+- **Interactive Charts**: Visual representations of tour progression
+- **Comparison Mode**: Compare current tour to historical tours
+- **Real-time Updates**: Live statistics during active touring
+
+### Component C: Historical Show Search Evolution
+**Current State**: Year/Month/Day navigation with full setlist display
+**Planned Enhancements**:
+- **Advanced Search**: Search by venue, song, tour name
+- **Favorites System**: Save and organize favorite historical shows
+- **Discovery Features**: "Shows like this one" recommendations
+- **Enhanced Display**: Richer historical context and metadata
+
+### Cross-Component Evolution
+**Shared Enhancements**:
+- **Unified Design Language**: Consistent UI/UX across all components
+- **Performance Optimization**: Enhanced caching and API efficiency
+- **Accessibility**: Improved accessibility features across components
+- **Integration Points**: Smart connections between components (e.g., "View this show in tour context")
+
+---
+
 ## Deployment
-- Server: Deployed to Vercel via `npm run deploy`
-- iOS: Standard Xcode build and distribution process
-- Statistics data regenerated via GitHub Actions or manual script execution
+- **Server**: Deployed to Vercel via `npm run deploy`
+- **iOS**: Standard Xcode build and distribution process  
+- **Component B Dependency**: Statistics data regenerated via `npm run generate-stats` and deployment
+- **Component A & C**: No deployment dependencies (use real-time APIs)
