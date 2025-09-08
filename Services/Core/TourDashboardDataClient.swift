@@ -140,19 +140,15 @@ class TourDashboardDataClient: ObservableObject {
             let songId: Int
             let songName: String
             let gap: Int
-            let lastPlayed: String
-            let timesPlayed: Int
-            let tourVenue: String
+            let lastPlayed: String?
+            let timesPlayed: Int?
+            let tourVenue: String?
             let tourVenueRun: VenueRunData?
             let tourDate: String
-            let tourCity: String
-            let tourState: String
-            let tourPosition: TourPositionData
-            let historicalVenue: String
-            let historicalCity: String
-            let historicalState: String
-            let historicalLastPlayed: String
-            let formattedHistoricalDate: String
+            let historicalVenue: String?
+            let historicalCity: String?
+            let historicalState: String?
+            let historicalLastPlayed: String?
         }
         
         struct ShowMetadata: Codable {
