@@ -119,8 +119,8 @@ class TourDashboardDataClient: ObservableObject {
         }
         
         struct SetlistItemData: Codable {
-            let songName: String
-            let transition: String?
+            let song: String
+            let trans_mark: String?
             let set: String
             let position: Int
         }
@@ -242,9 +242,9 @@ class TourDashboardDataClient: ObservableObject {
         let setlistItems = showData.setlistItems.map { item in
             SetlistItem(
                 set: item.set,
-                song: item.songName,
+                song: item.song,
                 songId: nil, // Not stored in show files, but not needed for display
-                transMark: item.transition,
+                transMark: item.trans_mark,
                 venue: showData.venue,
                 city: showData.city,
                 state: showData.state,
