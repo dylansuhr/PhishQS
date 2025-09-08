@@ -28,15 +28,25 @@ struct LatestShowHeroCard: View {
                                 .foregroundColor(.secondary)
                         }
                         
-                        // Venue info with badges
+                        // Venue info with reorganized badges
                         if let firstItem = viewModel.setlistItems.first {
-                            HStack(alignment: .top, spacing: 12) {
-                                VStack(alignment: .leading, spacing: 2) {
+                            VStack(alignment: .leading, spacing: 6) {
+                                // Venue name with venue run badge
+                                HStack {
                                     Text(firstItem.venue)
                                         .font(.body)
                                         .fontWeight(.medium)
                                         .foregroundColor(.primary)
                                     
+                                    Spacer()
+                                    
+                                    if let venueRun = viewModel.venueRunInfo, !venueRun.runDisplayText.isEmpty {
+                                        BadgeView(text: venueRun.runDisplayText, style: .blue)
+                                    }
+                                }
+                                
+                                // City, State
+                                HStack {
                                     Group {
                                         if let state = firstItem.state {
                                             Text("\(firstItem.city), \(state)")
@@ -46,27 +56,22 @@ struct LatestShowHeroCard: View {
                                     }
                                     .font(.caption)
                                     .foregroundColor(.secondary)
+                                    
+                                    Spacer()
                                 }
                                 
-                                Spacer()
-                                
-                                // Badges (venue run and tour position)
-                                HStack(spacing: 8) {
-                                    if let venueRun = viewModel.venueRunInfo, !venueRun.runDisplayText.isEmpty {
-                                        BadgeView(text: venueRun.runDisplayText, style: .blue)
-                                    }
-                                    
-                                    if let tourPosition = viewModel.tourPositionInfo {
+                                // Tour name with tour position badge
+                                if let tourPosition = viewModel.tourPositionInfo {
+                                    HStack {
+                                        Text(tourPosition.tourName)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                        
+                                        Spacer()
+                                        
                                         BadgeView(text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", style: .blue)
                                     }
                                 }
-                            }
-                            
-                            // Tour name
-                            if let tourPosition = viewModel.tourPositionInfo {
-                                Text(tourPosition.tourName)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
                             }
                         }
                     }
@@ -140,7 +145,6 @@ struct CompactSetlistView: View {
         let attributedText = createAttributedSetText(setItems, startPosition: startPosition)
         Text(attributedText)
             .font(.caption)
-            .lineLimit(2)
     }
     
     /// Create AttributedString with colors (simplified from main setlist view)
