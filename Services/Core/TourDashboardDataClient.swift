@@ -102,6 +102,13 @@ class TourDashboardDataClient: ObservableObject {
         let songGaps: [SongGapData]
         let metadata: ShowMetadata
         
+        // Custom coding keys to ignore recordings field
+        enum CodingKeys: String, CodingKey {
+            case showDate, venue, city, state, tourPosition, venueRun
+            case setlistItems, trackDurations, songGaps, metadata
+            // recordings intentionally omitted
+        }
+        
         struct TourPositionData: Codable {
             let showNumber: Int
             let totalShows: Int
