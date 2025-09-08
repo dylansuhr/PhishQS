@@ -223,7 +223,7 @@ async function generateTourStatisticsFromControlFile() {
         console.time('🎯 Total Generation Time');
         
         // Step 1: Read control file for tour orchestration
-        const controlFilePath = join(__dirname, '..', '..', 'api', 'Data', 'tour-dashboard-data.json');
+        const controlFilePath = join(__dirname, '..', 'Data', 'tour-dashboard-data.json');
         
         if (!existsSync(controlFilePath)) {
             throw new Error(`Control file not found: ${controlFilePath}. Please run 'npm run update-tour-dashboard' first.`);
@@ -244,7 +244,7 @@ async function generateTourStatisticsFromControlFile() {
         
         for (const tourDate of controlFileData.currentTour.tourDates) {
             if (tourDate.played && tourDate.showFile) {
-                const showFilePath = join(__dirname, '..', '..', 'api', 'Data', tourDate.showFile);
+                const showFilePath = join(__dirname, '..', 'Data', tourDate.showFile);
                 
                 if (existsSync(showFilePath)) {
                     try {
