@@ -7,12 +7,23 @@
 
 import Foundation
 
-/// Client for reading tour dashboard data from single source of truth files
-/// Provides Component A with access to pre-generated tour data without API calls
+/// Client for fetching tour dashboard data from remote API endpoints
+/// Provides Component A with access to pre-generated tour data via Vercel endpoints
 class TourDashboardDataClient: ObservableObject {
     
     // MARK: - Shared Instance
     static let shared = TourDashboardDataClient()
+    
+    // MARK: - Configuration
+    
+    private let baseURL: String = {
+        #if DEBUG
+        return "http://localhost:3000/api"
+        #else
+        return "https://phish-qs.vercel.app/api"
+        #endif
+    }()
+    private let session = URLSession.shared
     
     // MARK: - Data Models
     
@@ -154,69 +165,69 @@ class TourDashboardDataClient: ObservableObject {
         }
     }
     
-    // MARK: - File Paths
+    // MARK: - URL Construction
     
-    private var controlFilePath: String {
-        // During development, read from project directory
-        let projectPath = "/Users/dylansuhr/Developer/dylan_suhr/ios_apps/PhishQS"
-        let devPath = projectPath + "/api/Data/tour-dashboard-data.json"
-        
-        if FileManager.default.fileExists(atPath: devPath) {
-            return devPath
-        }
-        
-        // Fallback to bundle path for production
-        guard let bundlePath = Bundle.main.resourcePath else {
-            fatalError("Could not find bundle resource path")
-        }
-        return bundlePath + "/api/Data/tour-dashboard-data.json"
+    private var tourDashboardURL: URL {
+        URL(string: "\(baseURL)/tour-dashboard")!
     }
     
-    private func showFilePath(for showFile: String) -> String {
-        // During development, read from project directory
-        let projectPath = "/Users/dylansuhr/Developer/dylan_suhr/ios_apps/PhishQS"
-        let devPath = projectPath + "/api/Data/" + showFile
-        
-        if FileManager.default.fileExists(atPath: devPath) {
-            return devPath
-        }
-        
-        // Fallback to bundle path for production
-        guard let bundlePath = Bundle.main.resourcePath else {
-            fatalError("Could not find bundle resource path")
-        }
-        return bundlePath + "/api/Data/" + showFile
+    private func showURL(for date: String) -> URL {
+        URL(string: "\(baseURL)/shows/\(date)")!
     }
     
     // MARK: - Public Methods
     
-    /// Fetch current tour dashboard data from control file
+    /// Fetch current tour dashboard data from remote API
     func fetchCurrentTourData() async throws -> TourDashboardData {
-        return try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global(qos: .background).async {
-                do {
-                    let data = try Data(contentsOf: URL(fileURLWithPath: self.controlFilePath))
-                    let tourData = try JSONDecoder().decode(TourDashboardData.self, from: data)
-                    continuation.resume(returning: tourData)
-                } catch {
-                    print("❌ Failed to load control file: \(error)")
-                    continuation.resume(throwing: TourDashboardError.controlFileNotFound)
-                }
+        do {
+            let (data, response) = try await session.data(from: tourDashboardURL)
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw TourDashboardError.invalidResponse
             }
+            
+            guard httpResponse.statusCode == 200 else {
+                throw TourDashboardError.httpError(statusCode: httpResponse.statusCode)
+            }
+            
+            let tourData = try JSONDecoder().decode(TourDashboardData.self, from: data)
+            print("✅ [Remote] Successfully fetched tour dashboard data")
+            return tourData
+        } catch let error as TourDashboardError {
+            print("❌ [Remote] Failed to load tour dashboard data: \(error)")
+            throw error
+        } catch {
+            print("❌ [Remote] Network error loading tour dashboard: \(error)")
+            throw TourDashboardError.networkError(error)
         }
     }
     
     /// Fetch individual show data for a specific date
     func fetchShowData(for date: String) async throws -> ShowFileData {
-        let tourData = try await fetchCurrentTourData()
-        
-        // Find the tour date entry for this show
-        guard let tourDate = tourData.currentTour.tourDates.first(where: { $0.date == date }),
-              let showFile = tourDate.showFile else {
-            throw TourDashboardError.showFileNotFound(date: date)
+        do {
+            let (data, response) = try await session.data(from: showURL(for: date))
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw TourDashboardError.invalidResponse
+            }
+            
+            guard httpResponse.statusCode == 200 else {
+                if httpResponse.statusCode == 404 {
+                    throw TourDashboardError.showFileNotFound(date: date)
+                }
+                throw TourDashboardError.httpError(statusCode: httpResponse.statusCode)
+            }
+            
+            let showData = try JSONDecoder().decode(ShowFileData.self, from: data)
+            print("✅ [Remote] Successfully fetched show data for \(date)")
+            return showData
+        } catch let error as TourDashboardError {
+            print("❌ [Remote] Failed to load show data for \(date): \(error)")
+            throw error
+        } catch {
+            print("❌ [Remote] Network error loading show \(date): \(error)")
+            throw TourDashboardError.networkError(error)
         }
-        
-        return try await loadShowFile(showFile)
     }
     
     /// Fetch latest show data
@@ -293,41 +304,26 @@ class TourDashboardDataClient: ObservableObject {
             songGaps: [] // Not needed for Component A functionality
         )
     }
-    
-    // MARK: - Private Methods
-    
-    private func loadShowFile(_ showFile: String) async throws -> ShowFileData {
-        return try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global(qos: .background).async {
-                do {
-                    let filePath = self.showFilePath(for: showFile)
-                    let data = try Data(contentsOf: URL(fileURLWithPath: filePath))
-                    let showData = try JSONDecoder().decode(ShowFileData.self, from: data)
-                    continuation.resume(returning: showData)
-                } catch {
-                    print("❌ Failed to load show file \(showFile): \(error)")
-                    continuation.resume(throwing: TourDashboardError.showFileLoadFailed(file: showFile, error: error))
-                }
-            }
-        }
-    }
 }
 
 // MARK: - Error Types
 
 enum TourDashboardError: Error, LocalizedError {
-    case controlFileNotFound
+    case invalidResponse
+    case httpError(statusCode: Int)
+    case networkError(Error)
     case showFileNotFound(date: String)
-    case showFileLoadFailed(file: String, error: Error)
     
     var errorDescription: String? {
         switch self {
-        case .controlFileNotFound:
-            return "Could not find tour dashboard control file"
+        case .invalidResponse:
+            return "Invalid response from server"
+        case .httpError(let statusCode):
+            return "Server error: HTTP \(statusCode)"
+        case .networkError(let error):
+            return "Network error: \(error.localizedDescription)"
         case .showFileNotFound(let date):
-            return "Could not find show file for date: \(date)"
-        case .showFileLoadFailed(let file, let error):
-            return "Failed to load show file \(file): \(error.localizedDescription)"
+            return "Show data not found for date: \(date)"
         }
     }
 }
