@@ -133,9 +133,7 @@ class TourDashboardDataClient: ObservableObject {
             let showDate: String
             let setNumber: String
             let venue: String
-            let city: String
-            let state: String
-            let tourPosition: TourPositionData
+            let venueRun: VenueRunData?
         }
         
         struct SongGapData: Codable {
@@ -262,14 +260,23 @@ class TourDashboardDataClient: ObservableObject {
                 showDate: track.showDate,
                 setNumber: track.setNumber,
                 venue: track.venue,
-                venueRun: nil, // Not needed for basic functionality
-                city: track.city,
-                state: track.state,
+                venueRun: track.venueRun.map { run in
+                    VenueRun(
+                        venue: run.venue,
+                        city: run.city,
+                        state: run.state,
+                        nightNumber: run.nightNumber,
+                        totalNights: run.totalNights,
+                        showDates: run.showDates
+                    )
+                },
+                city: track.venueRun?.city ?? showData.city,
+                state: track.venueRun?.state ?? showData.state,
                 tourPosition: TourShowPosition(
-                    tourName: track.tourPosition.tourName,
-                    showNumber: track.tourPosition.showNumber,
-                    totalShows: track.tourPosition.totalShows,
-                    tourYear: track.tourPosition.tourYear
+                    tourName: showData.tourPosition.tourName,
+                    showNumber: showData.tourPosition.showNumber,
+                    totalShows: showData.tourPosition.totalShows,
+                    tourYear: showData.tourPosition.tourYear
                 )
             )
         }
