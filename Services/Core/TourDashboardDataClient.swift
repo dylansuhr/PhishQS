@@ -25,6 +25,10 @@ class TourDashboardDataClient: ObservableObject {
     }()
     private let session = URLSession.shared
     
+    // MARK: - Request Deduplication
+    
+    private var currentTourDataTask: Task<TourDashboardData, Error>?
+    
     // MARK: - Data Models
     
     struct TourDashboardData: Codable {
@@ -182,26 +186,48 @@ class TourDashboardDataClient: ObservableObject {
     
     /// Fetch current tour dashboard data from remote API
     func fetchCurrentTourData() async throws -> TourDashboardData {
+        // If there's already a request in progress, wait for it
+        if let existingTask = currentTourDataTask {
+            return try await existingTask.value
+        }
+        
+        // Create a new request task
+        let task = Task<TourDashboardData, Error> {
+            do {
+                let (data, response) = try await session.data(from: tourDashboardURL)
+                
+                guard let httpResponse = response as? HTTPURLResponse else {
+                    throw TourDashboardError.invalidResponse
+                }
+                
+                guard httpResponse.statusCode == 200 else {
+                    throw TourDashboardError.httpError(statusCode: httpResponse.statusCode)
+                }
+                
+                let tourData = try JSONDecoder().decode(TourDashboardData.self, from: data)
+                print("✅ [Remote] Successfully fetched tour dashboard data")
+                return tourData
+            } catch let error as TourDashboardError {
+                print("❌ [Remote] Failed to load tour dashboard data: \(error)")
+                throw error
+            } catch {
+                print("❌ [Remote] Network error loading tour dashboard: \(error)")
+                throw TourDashboardError.networkError(error)
+            }
+        }
+        
+        // Store the task to prevent duplicates
+        currentTourDataTask = task
+        
         do {
-            let (data, response) = try await session.data(from: tourDashboardURL)
-            
-            guard let httpResponse = response as? HTTPURLResponse else {
-                throw TourDashboardError.invalidResponse
-            }
-            
-            guard httpResponse.statusCode == 200 else {
-                throw TourDashboardError.httpError(statusCode: httpResponse.statusCode)
-            }
-            
-            let tourData = try JSONDecoder().decode(TourDashboardData.self, from: data)
-            print("✅ [Remote] Successfully fetched tour dashboard data")
-            return tourData
-        } catch let error as TourDashboardError {
-            print("❌ [Remote] Failed to load tour dashboard data: \(error)")
-            throw error
+            let result = try await task.value
+            // Clear the task when completed successfully
+            currentTourDataTask = nil
+            return result
         } catch {
-            print("❌ [Remote] Network error loading tour dashboard: \(error)")
-            throw TourDashboardError.networkError(error)
+            // Clear the task when it fails so retries can work
+            currentTourDataTask = nil
+            throw error
         }
     }
     

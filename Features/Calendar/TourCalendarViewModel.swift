@@ -18,6 +18,7 @@ class TourCalendarViewModel: ObservableObject {
     @Published var errorMessage: String?
     @Published var tourName: String = ""
     @Published var isMovingToNextMonth: Bool = false // Initialize to false for proper first animation
+    @Published var hasLoadedInitialData: Bool = false
     
     // MARK: - Dependencies
     
@@ -54,6 +55,11 @@ class TourCalendarViewModel: ObservableObject {
     func loadTourCalendar() async {
         guard !isLoading else { return }
         
+        // Skip loading if we already have initial data (prevent duplicate calls during navigation)
+        if hasLoadedInitialData && !calendarMonths.isEmpty {
+            return
+        }
+        
         isLoading = true
         errorMessage = nil
         
@@ -79,6 +85,7 @@ class TourCalendarViewModel: ObservableObject {
             // Set current month to the one containing today (if within tour)
             setCurrentMonthToToday()
             
+            hasLoadedInitialData = true
             isLoading = false
             
         } catch {

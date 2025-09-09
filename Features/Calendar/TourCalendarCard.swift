@@ -52,8 +52,13 @@ struct TourCalendarCard: View {
                 }
             }
         }
-        .task {
-            await viewModel.loadTourCalendar()
+        .onAppear {
+            // Only load if we haven't loaded initial data yet
+            if !viewModel.hasLoadedInitialData {
+                Task {
+                    await viewModel.loadTourCalendar()
+                }
+            }
         }
         .alert("Show Details", isPresented: $showingShowDetails, presenting: selectedDay) { day in
             Button("OK") { }

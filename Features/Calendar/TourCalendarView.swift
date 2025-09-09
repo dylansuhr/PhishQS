@@ -46,7 +46,7 @@ struct TourCalendarView: View {
     
     private var weekDayLabels: some View {
         HStack(spacing: 2) {
-            ForEach(weekDays, id: \.self) { day in
+            ForEach(Array(weekDays.enumerated()), id: \.offset) { index, day in
                 Text(day)
                     .font(.caption)
                     .fontWeight(.medium)
