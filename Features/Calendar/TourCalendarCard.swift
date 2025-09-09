@@ -31,6 +31,19 @@ struct TourCalendarCard: View {
                         removal: .move(edge: .leading)
                     ))
                     .id(currentMonth.id)
+                    .gesture(
+                        DragGesture()
+                            .onEnded { value in
+                                // Swipe right (positive translation) = previous month
+                                if value.translation.x > 50 && viewModel.canNavigateBack {
+                                    viewModel.navigateToPreviousMonth()
+                                }
+                                // Swipe left (negative translation) = next month  
+                                else if value.translation.x < -50 && viewModel.canNavigateForward {
+                                    viewModel.navigateToNextMonth()
+                                }
+                            }
+                    )
                 } else if let error = viewModel.errorMessage {
                     errorView(error)
                 } else {
@@ -61,36 +74,10 @@ struct TourCalendarCard: View {
         impact.impactOccurred()
     }
     
-    // MARK: - Header with Navigation
+    // MARK: - Header (Empty for now)
     
     private var calendarHeader: some View {
-        HStack {
-            Spacer()
-            
-            // Navigation buttons (only show if multiple months)
-            if viewModel.hasMultipleMonths {
-                HStack(spacing: 20) {
-                    Button(action: {
-                        viewModel.navigateToPreviousMonth()
-                    }) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(viewModel.canNavigateBack ? .blue : .gray.opacity(0.3))
-                    }
-                    .disabled(!viewModel.canNavigateBack)
-                    
-                    Button(action: {
-                        viewModel.navigateToNextMonth()
-                    }) {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundColor(viewModel.canNavigateForward ? .blue : .gray.opacity(0.3))
-                    }
-                    .disabled(!viewModel.canNavigateForward)
-                }
-            }
-        }
-        .padding(.horizontal, 4)
+        EmptyView()
     }
     
     // MARK: - Loading View
