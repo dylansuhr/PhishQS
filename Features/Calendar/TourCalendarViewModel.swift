@@ -17,7 +17,7 @@ class TourCalendarViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var tourName: String = ""
-    @Published var isMovingToNextMonth: Bool = true // true = next month (slides left), false = previous month (slides right)
+    @Published var isMovingToNextMonth: Bool = false // Initialize to false for proper first animation
     
     // MARK: - Dependencies
     
