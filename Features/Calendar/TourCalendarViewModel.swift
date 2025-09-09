@@ -19,6 +19,7 @@ class TourCalendarViewModel: ObservableObject {
     @Published var tourName: String = ""
     @Published var isMovingToNextMonth: Bool = false // Initialize to false for proper first animation
     @Published var hasLoadedInitialData: Bool = false
+    @Published var venueRunSpans: [VenueRunSpan] = []
     
     // MARK: - Dependencies
     
@@ -81,6 +82,9 @@ class TourCalendarViewModel: ObservableObject {
             // Update state
             self.calendarMonths = enrichedMonths
             self.tourName = dashboardData.currentTour.name
+            
+            // Detect venue runs for spanning badges
+            self.venueRunSpans = detectVenueRunSpans(from: enrichedMonths)
             
             // Set current month to the one containing today (if within tour)
             setCurrentMonthToToday()
@@ -181,6 +185,92 @@ class TourCalendarViewModel: ObservableObject {
         }
         
         return nil
+    }
+    
+    private func detectVenueRunSpans(from months: [CalendarMonth]) -> [VenueRunSpan] {
+        var venueRuns: [VenueRunSpan] = []
+        let calendar = Calendar.current
+        
+        // Collect all show dates with venue information across all months
+        var showDates: [(date: Date, venue: String, city: String, state: String, gridPosition: GridPosition)] = []
+        
+        for (monthIndex, month) in months.enumerated() {
+            // Calculate the offset for the first day of the month
+            let firstWeekdayOffset: Int = {
+                guard let firstDay = month.days.first else { return 0 }
+                let calendar = Calendar.current
+                let weekday = calendar.component(.weekday, from: firstDay.date)
+                return weekday - 1
+            }()
+            
+            for (dayIndex, day) in month.days.enumerated() {
+                if day.isShowDate, let showInfo = day.showInfo {
+                    // Calculate grid position accounting for month offset
+                    let adjustedIndex = dayIndex + firstWeekdayOffset
+                    let weekIndex = adjustedIndex / 7
+                    let columnIndex = adjustedIndex % 7
+                    
+                    let gridPosition = GridPosition(
+                        weekIndex: weekIndex,
+                        columnIndex: columnIndex,
+                        date: day.date
+                    )
+                    
+                    showDates.append((
+                        date: day.date,
+                        venue: showInfo.venue,
+                        city: showInfo.city,
+                        state: showInfo.state,
+                        gridPosition: gridPosition
+                    ))
+                }
+            }
+        }
+        
+        // Sort by date
+        showDates.sort { $0.date < $1.date }
+        
+        // Group consecutive shows at the same venue
+        var currentRun: [(date: Date, venue: String, city: String, state: String, gridPosition: GridPosition)] = []
+        
+        for showDate in showDates {
+            if currentRun.isEmpty || 
+               (currentRun.last!.venue == showDate.venue && 
+                calendar.dateInterval(of: .day, for: currentRun.last!.date)?.end == calendar.dateInterval(of: .day, for: showDate.date)?.start) {
+                // Same venue and consecutive dates
+                currentRun.append(showDate)
+            } else {
+                // Different venue or non-consecutive dates
+                if currentRun.count > 1 {
+                    // Create span for previous run (only for multi-night runs)
+                    venueRuns.append(createVenueRunSpan(from: currentRun))
+                }
+                currentRun = [showDate]
+            }
+        }
+        
+        // Handle the last run
+        if currentRun.count > 1 {
+            venueRuns.append(createVenueRunSpan(from: currentRun))
+        }
+        
+        return venueRuns
+    }
+    
+    private func createVenueRunSpan(from run: [(date: Date, venue: String, city: String, state: String, gridPosition: GridPosition)]) -> VenueRunSpan {
+        let dates = run.map { $0.date }
+        let gridPositions = run.map { $0.gridPosition }
+        let firstShow = run.first!
+        
+        return VenueRunSpan(
+            venue: firstShow.venue,
+            city: firstShow.city,
+            state: firstShow.state,
+            startDate: dates.first!,
+            endDate: dates.last!,
+            dates: dates,
+            gridPositions: gridPositions
+        )
     }
     
     private func setCurrentMonthToToday() {

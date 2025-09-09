@@ -42,6 +42,61 @@ struct CalendarDay: Identifiable, Equatable {
     }
 }
 
+// MARK: - Venue Run Spanning Models
+
+/// Represents a grid position within the calendar
+struct GridPosition: Equatable {
+    let weekIndex: Int    // Which week row (0, 1, 2, 3, 4)
+    let columnIndex: Int  // Day of week (0=Sun, 6=Sat)
+    let date: Date
+}
+
+/// Represents a venue run spanning multiple dates
+struct VenueRunSpan: Identifiable, Equatable {
+    let id = UUID()
+    let venue: String
+    let city: String
+    let state: String
+    let startDate: Date
+    let endDate: Date
+    let dates: [Date]
+    let gridPositions: [GridPosition]
+    
+    var displayText: String {
+        "\(city), \(state)"
+    }
+    
+    var spansWeeks: Bool {
+        let calendar = Calendar.current
+        let startWeek = calendar.component(.weekOfYear, from: startDate)
+        let endWeek = calendar.component(.weekOfYear, from: endDate)
+        return startWeek != endWeek
+    }
+    
+    var spansMonths: Bool {
+        let calendar = Calendar.current
+        let startMonth = calendar.component(.month, from: startDate)
+        let endMonth = calendar.component(.month, from: endDate)
+        return startMonth != endMonth
+    }
+}
+
+/// Badge geometry for complex spanning layouts
+struct BadgeGeometry {
+    let segments: [BadgeSegment]
+    let totalWidth: CGFloat
+    let shouldMarquee: Bool
+}
+
+/// Individual segment of a potentially multi-segment badge
+struct BadgeSegment {
+    let startX: CGFloat
+    let width: CGFloat
+    let weekIndex: Int
+    let isFirstSegment: Bool
+    let isLastSegment: Bool
+}
+
 /// Configuration for calendar display
 struct CalendarConfiguration {
     let startMonth: DateComponents

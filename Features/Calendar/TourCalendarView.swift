@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TourCalendarView: View {
     let month: CalendarMonth
+    let venueRunSpans: [VenueRunSpan] // Add venue run spans parameter
     var onDateSelected: ((CalendarDay) -> Void)?
     
     // Calendar grid configuration
@@ -16,17 +17,22 @@ struct TourCalendarView: View {
     private let weekDays = ["S", "M", "T", "W", "T", "F", "S"]
     
     var body: some View {
-        VStack(spacing: 12) {
-            // Month header
-            monthHeader
+        ZStack {
+            VStack(spacing: 12) {
+                // Month header
+                monthHeader
+                
+                // Week day labels
+                weekDayLabels
+                
+                // Calendar grid
+                calendarGrid
+            }
+            .padding()
             
-            // Week day labels
-            weekDayLabels
-            
-            // Calendar grid
-            calendarGrid
+            // Spanning venue badges overlay
+            spanningBadgesOverlay
         }
-        .padding()
     }
     
     // MARK: - Month Header
@@ -86,6 +92,221 @@ struct TourCalendarView: View {
         let weekday = calendar.component(.weekday, from: firstDay.date)
         return weekday - 1
     }
+    
+    // MARK: - Spanning Badges Overlay
+    
+    private var spanningBadgesOverlay: some View {
+        // Filter spans that are relevant to this month
+        let monthSpans = venueRunSpans.filter { span in
+            let calendar = Calendar.current
+            let monthStart = month.days.first?.date ?? Date()
+            let monthEnd = month.days.last?.date ?? Date()
+            
+            // Include spans that intersect with this month
+            return span.startDate <= monthEnd && span.endDate >= monthStart
+        }
+        
+        return ZStack {
+            ForEach(monthSpans) { span in
+                SpanningMarqueeBadge(
+                    span: span,
+                    color: venueColor(for: span.venue)
+                )
+            }
+        }
+        .offset(y: 80) // Adjust to position over calendar grid (below headers)
+    }
+}
+
+// MARK: - Venue Color Generation
+
+/// Generate a consistent color for a venue based on its name
+func venueColor(for venue: String) -> Color {
+    // Use a simple hash of the venue name for consistent color assignment
+    let hash = venue.hashValue
+    let colors: [Color] = [
+        .blue, .green, .orange, .purple, .red, .teal, .pink, .indigo
+    ]
+    return colors[abs(hash) % colors.count]
+}
+
+// MARK: - Marquee Text Component
+
+struct MarqueeText: View {
+    let text: String
+    let font: Font
+    let color: Color
+    let width: CGFloat
+    
+    @State private var offset: CGFloat = 0
+    @State private var textWidth: CGFloat = 0
+    
+    private var shouldMarquee: Bool {
+        textWidth > width - 8 // Account for padding
+    }
+    
+    var body: some View {
+        if shouldMarquee {
+            // Category 2: Full marquee scroll
+            GeometryReader { geometry in
+                Text(text)
+                    .font(font)
+                    .foregroundColor(color)
+                    .fixedSize()
+                    .background(
+                        GeometryReader { textGeometry in
+                            Color.clear.onAppear {
+                                textWidth = textGeometry.size.width
+                            }
+                        }
+                    )
+                    .offset(x: offset)
+                    .clipped()
+                    .onAppear {
+                        startMarquee()
+                    }
+            }
+            .frame(width: width)
+        } else {
+            // Category 1: Static display
+            Text(text)
+                .font(font)
+                .foregroundColor(color)
+                .background(
+                    GeometryReader { textGeometry in
+                        Color.clear.onAppear {
+                            textWidth = textGeometry.size.width
+                        }
+                    }
+                )
+                .frame(width: width)
+        }
+    }
+    
+    private func startMarquee() {
+        let scrollDuration = Double(textWidth / 30.0) // 30 pixels per second
+        
+        withAnimation(.linear(duration: scrollDuration).repeatForever(autoreverses: false)) {
+            offset = -(textWidth + 20) // Extra padding at end
+        }
+    }
+}
+
+// MARK: - Spanning Badge Components
+
+struct SpanningMarqueeBadge: View {
+    let span: VenueRunSpan
+    let cellWidth: CGFloat = 44.0
+    let color: Color
+    
+    private var badgeGeometry: BadgeGeometry {
+        calculateBadgeGeometry(for: span)
+    }
+    
+    var body: some View {
+        ForEach(badgeGeometry.segments.indices, id: \.self) { index in
+            let segment = badgeGeometry.segments[index]
+            
+            RoundedRectangle(
+                cornerRadius: segment.isFirstSegment && segment.isLastSegment ? 6 : 
+                             segment.isFirstSegment ? 6 : 
+                             segment.isLastSegment ? 6 : 0
+            )
+            .fill(color)
+            .frame(width: segment.width, height: 16)
+            .overlay(
+                MarqueeText(
+                    text: span.displayText,
+                    font: .system(size: 10, weight: .bold),
+                    color: .white,
+                    width: segment.width - 8
+                )
+                .padding(.horizontal, 4)
+            )
+            .position(
+                x: segment.startX + segment.width / 2,
+                y: calculateBadgeY(for: segment.weekIndex)
+            )
+        }
+    }
+    
+    private func calculateBadgeGeometry(for span: VenueRunSpan) -> BadgeGeometry {
+        let sortedPositions = span.gridPositions.sorted { 
+            ($0.weekIndex, $0.columnIndex) < ($1.weekIndex, $1.columnIndex) 
+        }
+        
+        if span.spansWeeks {
+            // Handle cross-week spans
+            return createMultiSegmentBadge(positions: sortedPositions)
+        } else {
+            // Simple single-row badge
+            return createSimpleBadge(positions: sortedPositions)
+        }
+    }
+    
+    private func createSimpleBadge(positions: [GridPosition]) -> BadgeGeometry {
+        let startColumn = positions.first!.columnIndex
+        let endColumn = positions.last!.columnIndex
+        let weekIndex = positions.first!.weekIndex
+        
+        let width = CGFloat(endColumn - startColumn + 1) * cellWidth
+        let startX = CGFloat(startColumn) * cellWidth
+        
+        let segment = BadgeSegment(
+            startX: startX,
+            width: width,
+            weekIndex: weekIndex,
+            isFirstSegment: true,
+            isLastSegment: true
+        )
+        
+        return BadgeGeometry(
+            segments: [segment],
+            totalWidth: width,
+            shouldMarquee: span.displayText.count > Int(width / 8) // Rough character estimation
+        )
+    }
+    
+    private func createMultiSegmentBadge(positions: [GridPosition]) -> BadgeGeometry {
+        // Group positions by week
+        let positionsByWeek = Dictionary(grouping: positions) { $0.weekIndex }
+        var segments: [BadgeSegment] = []
+        let sortedWeeks = positionsByWeek.keys.sorted()
+        
+        for (index, weekIndex) in sortedWeeks.enumerated() {
+            let weekPositions = positionsByWeek[weekIndex]!.sorted { $0.columnIndex < $1.columnIndex }
+            let startColumn = weekPositions.first!.columnIndex
+            let endColumn = weekPositions.last!.columnIndex
+            
+            let width = CGFloat(endColumn - startColumn + 1) * cellWidth
+            let startX = CGFloat(startColumn) * cellWidth
+            
+            let segment = BadgeSegment(
+                startX: startX,
+                width: width,
+                weekIndex: weekIndex,
+                isFirstSegment: index == 0,
+                isLastSegment: index == sortedWeeks.count - 1
+            )
+            
+            segments.append(segment)
+        }
+        
+        let totalWidth = segments.reduce(0) { $0 + $1.width }
+        
+        return BadgeGeometry(
+            segments: segments,
+            totalWidth: totalWidth,
+            shouldMarquee: span.displayText.count > Int(totalWidth / 8)
+        )
+    }
+    
+    private func calculateBadgeY(for weekIndex: Int) -> CGFloat {
+        // Badge positioned at top of each week row
+        // Each cell is 44pt height + 8pt spacing = 52pt total per row
+        // Add 22pt (half cell height) to center vertically on the cell row
+        return CGFloat(weekIndex) * 52.0 + 22.0 // Center on cell
+    }
 }
 
 // MARK: - Day Cell Component
@@ -118,23 +339,12 @@ struct DayCell: View {
                     )
             }
             
-            // Show indicator dot (smaller, below number)
-            if day.isShowDate && !day.isCurrentDay {
-                VStack(spacing: 2) {
-                    Text("\(day.dayNumber)")
-                        .font(.system(size: 15, weight: .medium, design: .rounded))
-                        .foregroundColor(textColor)
-                    
-                    Circle()
-                        .fill(Color.blue)
-                        .frame(width: 4, height: 4)
-                }
-            } else {
-                // Regular day number
-                Text("\(day.dayNumber)")
-                    .font(.system(size: 15, weight: day.isShowDate ? .medium : .regular, design: .rounded))
-                    .foregroundColor(textColor)
-            }
+            // Day number (unified for all cases)
+            Text("\(day.dayNumber)")
+                .font(.system(size: 15, weight: day.isShowDate ? .medium : .regular, design: .rounded))
+                .foregroundColor(textColor)
+            
+            // Individual venue badges removed - replaced by spanning system
         }
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
@@ -172,7 +382,8 @@ struct DayCell: View {
                     showInfo: nil
                 )
             }
-        )
+        ),
+        venueRunSpans: []
     )
     .background(Color(.systemBackground))
 }
@@ -194,7 +405,8 @@ struct DayCell: View {
                     showInfo: nil
                 )
             }
-        )
+        ),
+        venueRunSpans: []
     )
     .background(Color(.systemBackground))
 }

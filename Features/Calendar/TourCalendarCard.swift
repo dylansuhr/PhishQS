@@ -23,7 +23,10 @@ struct TourCalendarCard: View {
                 if viewModel.isLoading {
                     loadingView
                 } else if let currentMonth = viewModel.currentMonth {
-                    TourCalendarView(month: currentMonth) { day in
+                    TourCalendarView(
+                        month: currentMonth,
+                        venueRunSpans: viewModel.venueRunSpans
+                    ) { day in
                         handleDateSelection(day)
                     }
                     .transition(.asymmetric(
