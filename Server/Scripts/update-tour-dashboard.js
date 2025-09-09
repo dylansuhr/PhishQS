@@ -50,18 +50,37 @@ async function updateTourDashboard() {
         console.log(`📊 Found ${phishShows.length} Phish shows in ${currentYear}`);
         
         // Determine current tour and latest show
-        const { currentTourName, latestShow } = determineCurrentTour(phishShows);
+        let { currentTourName, latestShow } = determineCurrentTour(phishShows);
+        
+        // If no current tour found in current year, search historical years
+        if (!currentTourName) {
+            console.log('🔍 No current year tour found, searching history...');
+            const historicalResult = await findLatestTourFromHistory(currentYear - 1);
+            currentTourName = historicalResult.currentTourName;
+            latestShow = historicalResult.latestShow;
+        }
         
         if (!currentTourName) {
-            console.log('⚠️ No current tour found');
+            console.log('⚠️ No tour found in current year or 3-year history');
             return;
         }
         
         console.log(`🎪 Current tour: ${currentTourName}`);
         console.log(`🎵 Latest show: ${latestShow ? latestShow.date : 'None yet'}`);
         
-        // Build current tour object
-        const currentTour = buildCurrentTour(phishShows, currentTourName);
+        // Build current tour object (may need historical data)
+        let currentTour;
+        if (phishShows.some(show => show.tourname === currentTourName)) {
+            // Current tour exists in current year data
+            currentTour = buildCurrentTour(phishShows, currentTourName);
+        } else {
+            // Need to fetch historical year for complete tour data
+            const tourYear = latestShow ? new Date(latestShow.date).getFullYear() : currentYear - 1;
+            console.log(`🔍 Fetching ${tourYear} data for complete tour info...`);
+            const tourYearShows = await apiClient.fetchShows(tourYear.toString());
+            const tourPhishShows = filterPhishShows(tourYearShows);
+            currentTour = buildCurrentTour(tourPhishShows, currentTourName);
+        }
         
         // Calculate tour position for latest show
         let latestShowWithPosition = null;
@@ -110,6 +129,50 @@ function filterPhishShows(shows) {
         show.artist_name === 'Phish' ||
         !show.artistid // Some shows may not have artistid
     );
+}
+
+/**
+ * Find the latest tour by searching backwards through recent years
+ */
+async function findLatestTourFromHistory(startYear) {
+    const apiClient = new PhishNetClient(CONFIG.PHISH_NET_API_KEY);
+    const maxYearsBack = 3;
+    
+    for (let year = startYear; year >= startYear - maxYearsBack; year--) {
+        console.log(`🔍 Searching ${year} for completed tours...`);
+        
+        try {
+            const yearShows = await apiClient.fetchShows(year.toString());
+            const phishShows = filterPhishShows(yearShows);
+            
+            // Only look at played shows from this year
+            const today = new Date().toISOString().split('T')[0];
+            const playedShows = phishShows.filter(show => show.showdate <= today);
+            
+            if (playedShows.length > 0) {
+                // Found played shows! Use latest one
+                playedShows.sort((a, b) => b.showdate.localeCompare(a.showdate));
+                const latestShow = playedShows[0];
+                
+                console.log(`✅ Found latest tour: ${latestShow.tourname} (${latestShow.showdate})`);
+                return {
+                    currentTourName: latestShow.tourname,
+                    latestShow: {
+                        date: latestShow.showdate,
+                        venue: latestShow.venue || 'Unknown Venue',
+                        city: latestShow.city || '',
+                        state: latestShow.state || ''
+                    }
+                };
+            }
+        } catch (error) {
+            console.warn(`⚠️ Failed to fetch ${year} shows:`, error.message);
+            continue; // Try next year
+        }
+    }
+    
+    // Fallback: No historical tours found
+    return { currentTourName: null, latestShow: null };
 }
 
 /**
