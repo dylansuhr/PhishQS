@@ -95,34 +95,60 @@ struct DayCell: View {
     
     var body: some View {
         ZStack {
-            // Background for current day
-            if day.isCurrentDay {
+            // Background layers
+            if day.isCurrentDay && day.isShowDate {
+                // Both current day and show date
+                Circle()
+                    .fill(Color.blue)
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.white, lineWidth: 2)
+                    )
+            } else if day.isCurrentDay {
+                // Just current day
                 Circle()
                     .fill(Color.blue.opacity(0.15))
-            }
-            
-            // Background for show dates
-            if day.isShowDate {
+            } else if day.isShowDate {
+                // Just show date - filled circle like Apple Calendar
                 Circle()
-                    .strokeBorder(Color.blue, lineWidth: 2)
+                    .fill(Color.blue.opacity(0.2))
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.blue, lineWidth: 1.5)
+                    )
             }
             
-            // Day number
-            Text("\(day.dayNumber)")
-                .font(.system(size: 16, weight: day.isShowDate ? .semibold : .regular))
-                .foregroundColor(textColor)
+            // Show indicator dot (smaller, below number)
+            if day.isShowDate && !day.isCurrentDay {
+                VStack(spacing: 2) {
+                    Text("\(day.dayNumber)")
+                        .font(.system(size: 15, weight: .medium, design: .rounded))
+                        .foregroundColor(textColor)
+                    
+                    Circle()
+                        .fill(Color.blue)
+                        .frame(width: 4, height: 4)
+                }
+            } else {
+                // Regular day number
+                Text("\(day.dayNumber)")
+                    .font(.system(size: 15, weight: day.isShowDate ? .medium : .regular, design: .rounded))
+                    .foregroundColor(textColor)
+            }
         }
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
     }
     
     private var textColor: Color {
-        if day.isCurrentDay {
+        if day.isCurrentDay && day.isShowDate {
+            return .white
+        } else if day.isCurrentDay {
             return .blue
         } else if day.isShowDate {
             return .primary
         } else {
-            return .secondary
+            return .secondary.opacity(0.8)
         }
     }
 }

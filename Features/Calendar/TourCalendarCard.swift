@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct TourCalendarCard: View {
     @StateObject private var viewModel = TourCalendarViewModel()
