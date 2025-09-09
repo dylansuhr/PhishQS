@@ -90,13 +90,13 @@ class TourCalendarViewModel: ObservableObject {
     
     func navigateToPreviousMonth() {
         guard canNavigateBack else { return }
-        isMovingToNextMonth = false // Previous month comes from left, current goes right
+        isMovingToNextMonth = true // Previous month comes from left, current goes right
         currentMonthIndex -= 1
     }
     
     func navigateToNextMonth() {
         guard canNavigateForward else { return }
-        isMovingToNextMonth = true // Next month comes from right, current goes left
+        isMovingToNextMonth = false // Next month comes from right, current goes left
         currentMonthIndex += 1
     }
     
