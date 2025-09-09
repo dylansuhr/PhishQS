@@ -36,14 +36,6 @@ struct TourDashboardView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Image("QS_transparent")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: 28)
-            }
-        }
         .sheet(isPresented: $showingDateSearch) {
             NavigationStack {
                 YearListView()
