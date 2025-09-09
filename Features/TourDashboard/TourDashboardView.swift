@@ -12,6 +12,11 @@ struct TourDashboardView: View {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
             }
             
+            // Tour Calendar (Component D)
+            DashboardSection {
+                TourCalendarCard()
+            }
+            
             // Tour Statistics Cards
             if let statistics = latestSetlistViewModel.tourStatistics, statistics.hasData {
                 DashboardSection {
