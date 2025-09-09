@@ -27,7 +27,7 @@ struct TourCalendarCard: View {
                         handleDateSelection(day)
                     }
                     .transition(.asymmetric(
-                        insertion: .move(edge: viewModel.isMovingToNextMonth ? .trailing : .leading),
+                        insertion: .move(edge: viewModel.isMovingToNextMonth ? .leading : .trailing),
                         removal: .move(edge: viewModel.isMovingToNextMonth ? .leading : .trailing)
                     ))
                     .id(currentMonth.id)
