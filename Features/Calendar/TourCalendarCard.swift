@@ -12,7 +12,6 @@ struct TourCalendarCard: View {
     @StateObject private var viewModel = TourCalendarViewModel()
     @State private var selectedDay: CalendarDay?
     @State private var showingShowDetails = false
-    @State private var isNavigatingForward = true
     
     var body: some View {
         DashboardCard {
@@ -28,8 +27,8 @@ struct TourCalendarCard: View {
                         handleDateSelection(day)
                     }
                     .transition(.asymmetric(
-                        insertion: .move(edge: isNavigatingForward ? .trailing : .leading),
-                        removal: .move(edge: isNavigatingForward ? .leading : .trailing)
+                        insertion: .move(edge: viewModel.isMovingToNextMonth ? .trailing : .leading),
+                        removal: .move(edge: viewModel.isMovingToNextMonth ? .leading : .trailing)
                     ))
                     .id(currentMonth.id)
                     .animation(.easeInOut(duration: 0.3), value: viewModel.currentMonthIndex)
@@ -38,12 +37,10 @@ struct TourCalendarCard: View {
                             .onEnded { value in
                                 // Swipe right (positive translation) = previous month
                                 if value.translation.width > 50 && viewModel.canNavigateBack {
-                                    isNavigatingForward = false
                                     viewModel.navigateToPreviousMonth()
                                 }
                                 // Swipe left (negative translation) = next month  
                                 else if value.translation.width < -50 && viewModel.canNavigateForward {
-                                    isNavigatingForward = true
                                     viewModel.navigateToNextMonth()
                                 }
                             }

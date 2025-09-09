@@ -17,6 +17,7 @@ class TourCalendarViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var tourName: String = ""
+    @Published var isMovingToNextMonth: Bool = true // true = next month (slides left), false = previous month (slides right)
     
     // MARK: - Dependencies
     
@@ -89,11 +90,13 @@ class TourCalendarViewModel: ObservableObject {
     
     func navigateToPreviousMonth() {
         guard canNavigateBack else { return }
+        isMovingToNextMonth = false // Previous month comes from left, current goes right
         currentMonthIndex -= 1
     }
     
     func navigateToNextMonth() {
         guard canNavigateForward else { return }
+        isMovingToNextMonth = true // Next month comes from right, current goes left
         currentMonthIndex += 1
     }
     
