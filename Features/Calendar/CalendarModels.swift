@@ -15,7 +15,7 @@ struct CalendarMonth: Identifiable, Equatable {
     let year: Int
     let month: Int
     let monthName: String
-    let days: [CalendarDay]
+    var days: [CalendarDay]
     
     var displayTitle: String {
         "\(monthName) \(year)"
@@ -30,7 +30,7 @@ struct CalendarDay: Identifiable, Equatable {
     let dateComponents: DateComponents
     let isShowDate: Bool
     let isCurrentDay: Bool
-    let showInfo: ShowInfo?
+    var showInfo: ShowInfo?
     
     /// Information about a show on this date
     struct ShowInfo: Equatable {

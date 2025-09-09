@@ -58,7 +58,7 @@ class TourCalendarViewModel: ObservableObject {
         
         do {
             // Fetch tour dashboard data
-            let dashboardData = try await dataClient.fetchTourDashboard()
+            let dashboardData = try await dataClient.fetchCurrentTourData()
             
             // Create calendar configuration
             guard let config = CalendarConfiguration.from(tourData: dashboardData.currentTour) else {
