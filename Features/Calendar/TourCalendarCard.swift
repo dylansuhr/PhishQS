@@ -35,11 +35,11 @@ struct TourCalendarCard: View {
                         DragGesture()
                             .onEnded { value in
                                 // Swipe right (positive translation) = previous month
-                                if value.translation.x > 50 && viewModel.canNavigateBack {
+                                if value.translation.width > 50 && viewModel.canNavigateBack {
                                     viewModel.navigateToPreviousMonth()
                                 }
                                 // Swipe left (negative translation) = next month  
-                                else if value.translation.x < -50 && viewModel.canNavigateForward {
+                                else if value.translation.width < -50 && viewModel.canNavigateForward {
                                     viewModel.navigateToNextMonth()
                                 }
                             }
