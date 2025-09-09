@@ -10,6 +10,7 @@ import SwiftUI
 struct TourCalendarCard: View {
     @StateObject private var viewModel = TourCalendarViewModel()
     @State private var selectedDay: CalendarDay?
+    @State private var showingShowDetails = false
     
     var body: some View {
         DashboardCard {
@@ -21,12 +22,14 @@ struct TourCalendarCard: View {
                 if viewModel.isLoading {
                     loadingView
                 } else if let currentMonth = viewModel.currentMonth {
-                    TourCalendarView(month: currentMonth)
-                        .transition(.asymmetric(
-                            insertion: .move(edge: .trailing),
-                            removal: .move(edge: .leading)
-                        ))
-                        .id(currentMonth.id)
+                    TourCalendarView(month: currentMonth) { day in
+                        handleDateSelection(day)
+                    }
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing),
+                        removal: .move(edge: .leading)
+                    ))
+                    .id(currentMonth.id)
                 } else if let error = viewModel.errorMessage {
                     errorView(error)
                 } else {
@@ -37,6 +40,24 @@ struct TourCalendarCard: View {
         .task {
             await viewModel.loadTourCalendar()
         }
+        .alert("Show Details", isPresented: $showingShowDetails, presenting: selectedDay) { day in
+            Button("OK") { }
+        } message: { day in
+            if let showInfo = day.showInfo {
+                Text("\(showInfo.venue)\n\(showInfo.city), \(showInfo.state)\n\nShow #\(showInfo.showNumber)\(showInfo.venueRun != nil ? " (\(showInfo.venueRun!))" : "")")
+            }
+        }
+    }
+    
+    // MARK: - Date Selection
+    
+    private func handleDateSelection(_ day: CalendarDay) {
+        selectedDay = day
+        showingShowDetails = true
+        
+        // Haptic feedback
+        let impact = UIImpactFeedbackGenerator(style: .light)
+        impact.impactOccurred()
     }
     
     // MARK: - Header with Navigation

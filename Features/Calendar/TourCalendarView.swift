@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TourCalendarView: View {
     let month: CalendarMonth
+    var onDateSelected: ((CalendarDay) -> Void)?
     
     // Calendar grid configuration
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 7)
@@ -69,6 +70,11 @@ struct TourCalendarView: View {
             // Add day cells
             ForEach(month.days) { day in
                 DayCell(day: day)
+                    .onTapGesture {
+                        if day.isShowDate {
+                            onDateSelected?(day)
+                        }
+                    }
             }
         }
     }
