@@ -89,16 +89,12 @@ class TourCalendarViewModel: ObservableObject {
     
     func navigateToPreviousMonth() {
         guard canNavigateBack else { return }
-        withAnimation(.easeInOut(duration: 0.3)) {
-            currentMonthIndex -= 1
-        }
+        currentMonthIndex -= 1
     }
     
     func navigateToNextMonth() {
         guard canNavigateForward else { return }
-        withAnimation(.easeInOut(duration: 0.3)) {
-            currentMonthIndex += 1
-        }
+        currentMonthIndex += 1
     }
     
     func handleDateSelection(_ day: CalendarDay) {
@@ -192,8 +188,8 @@ class TourCalendarViewModel: ObservableObject {
             }
         }
         
-        // Default to first month if today not in tour
-        currentMonthIndex = 0
+        // Default to last month (latest tour month) if today not in tour
+        currentMonthIndex = max(0, calendarMonths.count - 1)
     }
 }
 
