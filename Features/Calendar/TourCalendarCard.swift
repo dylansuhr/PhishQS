@@ -64,52 +64,29 @@ struct TourCalendarCard: View {
     // MARK: - Header with Navigation
     
     private var calendarHeader: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Tour name
-            if !viewModel.tourName.isEmpty {
-                Text(viewModel.tourName)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
+        HStack {
+            Spacer()
             
-            // Month navigation
-            HStack {
-                // Month title
-                if let month = viewModel.currentMonth {
-                    Text(month.displayTitle)
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                } else {
-                    Text("Tour Calendar")
-                        .font(.title2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-                }
-                
-                Spacer()
-                
-                // Navigation buttons (only show if multiple months)
-                if viewModel.hasMultipleMonths {
-                    HStack(spacing: 20) {
-                        Button(action: {
-                            viewModel.navigateToPreviousMonth()
-                        }) {
-                            Image(systemName: "chevron.left")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(viewModel.canNavigateBack ? .blue : .gray.opacity(0.3))
-                        }
-                        .disabled(!viewModel.canNavigateBack)
-                        
-                        Button(action: {
-                            viewModel.navigateToNextMonth()
-                        }) {
-                            Image(systemName: "chevron.right")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(viewModel.canNavigateForward ? .blue : .gray.opacity(0.3))
-                        }
-                        .disabled(!viewModel.canNavigateForward)
+            // Navigation buttons (only show if multiple months)
+            if viewModel.hasMultipleMonths {
+                HStack(spacing: 20) {
+                    Button(action: {
+                        viewModel.navigateToPreviousMonth()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(viewModel.canNavigateBack ? .blue : .gray.opacity(0.3))
                     }
+                    .disabled(!viewModel.canNavigateBack)
+                    
+                    Button(action: {
+                        viewModel.navigateToNextMonth()
+                    }) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundColor(viewModel.canNavigateForward ? .blue : .gray.opacity(0.3))
+                    }
+                    .disabled(!viewModel.canNavigateForward)
                 }
             }
         }
