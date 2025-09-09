@@ -6,7 +6,7 @@
  * 
  * Architecture Features:
  * - Reads control file to determine which shows need initialization
- * - Creates individual show files in api/Data/shows/ directory
+ * - Creates individual show files in Server/Data/tours/ directory
  * - Uses existing enhanced setlist services for data collection
  * - Updates control file with show file references and smart flags
  * - Handles partial data scenarios (setlist available, durations pending)
@@ -44,7 +44,7 @@ async function initializeTourShows() {
         console.time('🚀 Total Initialization Time');
         
         // Step 1: Read control file
-        const controlFilePath = join(__dirname, '..', '..', 'api', 'Data', 'tour-dashboard-data.json');
+        const controlFilePath = join(__dirname, '..', 'Data', 'tour-dashboard-data.json');
         
         if (!existsSync(controlFilePath)) {
             throw new Error(`Control file not found: ${controlFilePath}. Please run 'npm run update-tour-dashboard' first.`);
@@ -59,7 +59,7 @@ async function initializeTourShows() {
         
         // Step 2: Create tour-specific shows directory
         const tourSlug = tourName.toLowerCase().replace(/\s+/g, '-'); // "2025-early-summer-tour"
-        const tourShowsDir = join(__dirname, '..', '..', 'api', 'Data', 'tours', tourSlug);
+        const tourShowsDir = join(__dirname, '..', 'Data', 'tours', tourSlug);
         if (!existsSync(tourShowsDir)) {
             mkdirSync(tourShowsDir, { recursive: true });
             console.log(`📁 Created tour shows directory: ${tourShowsDir}`);

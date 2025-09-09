@@ -70,9 +70,11 @@ class TourDashboardDataClient: ObservableObject {
         struct FutureTour: Codable {
             let name: String
             let year: String
+            let totalShows: Int
+            let playedShows: Int
             let startDate: String
             let endDate: String
-            let shows: Int
+            let tourDates: [TourDate]
         }
         
         struct Metadata: Codable {

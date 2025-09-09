@@ -23,11 +23,11 @@ async function initializeRemainingShows() {
         console.log('🎯 Initializing remaining show files for single source architecture...');
         
         // Read control file to see what's missing
-        const controlFilePath = join(__dirname, '..', '..', 'api', 'Data', 'tour-dashboard-data.json');
+        const controlFilePath = join(__dirname, '..', 'Data', 'tour-dashboard-data.json');
         const controlFileData = JSON.parse(readFileSync(controlFilePath, 'utf8'));
         
         const tourSlug = '2025-early-summer-tour';
-        const tourShowsDir = join(__dirname, '..', '..', 'api', 'Data', 'tours', tourSlug);
+        const tourShowsDir = join(__dirname, '..', 'Data', 'tours', tourSlug);
         
         // Find dates that need show files
         const missingDates = [];

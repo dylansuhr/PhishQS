@@ -27,7 +27,7 @@ const __dirname = dirname(__filename);
 const apiConfig = StatisticsConfig.getApiConfig('phishNet');
 const CONFIG = {
     PHISH_NET_API_KEY: apiConfig.defaultApiKey, // TODO: Move to environment variables
-    OUTPUT_PATH: join(__dirname, '..', '..', 'api', 'Data', 'tour-dashboard-data.json')
+    OUTPUT_PATH: join(__dirname, '..', 'Data', 'tour-dashboard-data.json')
 };
 
 /**
@@ -91,9 +91,23 @@ async function updateTourDashboard() {
             };
         }
         
-        // Find future tours
-        const futureTours = findFutureTours(phishShows, currentTourName);
-        console.log(`🔮 Found ${futureTours.length} future tours`);
+        // Fetch multiple years of data for finding future tours
+        console.log('🔮 Fetching future years for comprehensive tour search...');
+        const futureYearShows = await fetchFutureYears(apiClient, currentYear, 3);
+        
+        // Combine current year and future year shows for finding all future tours
+        const allShowsForFutureTours = [...phishShows, ...futureYearShows];
+        
+        // Remove duplicates (current year shows might be in both arrays)
+        const uniqueShows = Array.from(
+            new Map(allShowsForFutureTours.map(show => 
+                [`${show.showdate}-${show.venue}`, show]
+            )).values()
+        );
+        
+        // Find future tours from combined dataset
+        const futureTours = findFutureTours(uniqueShows, currentTourName);
+        console.log(`🔮 Found ${futureTours.length} future tours across multiple years`);
         
         // Build the complete data structure
         const tourDashboardData = {
@@ -176,6 +190,35 @@ async function findLatestTourFromHistory(startYear) {
 }
 
 /**
+ * Fetch shows from current and future years for finding future tours
+ */
+async function fetchFutureYears(apiClient, startYear, yearsAhead = 3) {
+    const allShows = [];
+    
+    // Fetch current year plus next 3 years
+    for (let yearOffset = 0; yearOffset <= yearsAhead; yearOffset++) {
+        const year = (parseInt(startYear) + yearOffset).toString();
+        
+        try {
+            console.log(`🔮 Fetching ${year} shows for future tours...`);
+            const yearShows = await apiClient.fetchShows(year);
+            const phishShows = filterPhishShows(yearShows);
+            
+            if (phishShows.length > 0) {
+                console.log(`   📅 Found ${phishShows.length} shows in ${year}`);
+                allShows.push(...phishShows);
+            }
+        } catch (error) {
+            console.warn(`⚠️ Failed to fetch ${year} shows:`, error.message);
+            // Continue with other years even if one fails
+        }
+    }
+    
+    console.log(`📊 Total shows found across ${yearsAhead + 1} years: ${allShows.length}`);
+    return allShows;
+}
+
+/**
  * Determine the current tour based on the latest played show
  */
 function determineCurrentTour(shows) {
@@ -213,26 +256,43 @@ function determineCurrentTour(shows) {
 }
 
 /**
- * Build the current tour object with all tour dates
+ * Build tour data with detailed structure - reusable for current and future tours
  */
-function buildCurrentTour(shows, tourName) {
+function buildTourData(shows, tourName, options = {}) {
+    const {
+        played = null, // null = determine from date, true/false = override
+        includeShowFiles = true
+    } = options;
+    
     const today = new Date().toISOString().split('T')[0];
     
-    // Filter to shows in current tour
+    // Filter to shows in specified tour
     const tourShows = shows.filter(show => show.tourname === tourName);
     
     // Sort by date ascending
     tourShows.sort((a, b) => a.showdate.localeCompare(b.showdate));
     
-    // Build tour dates array
-    const tourDates = tourShows.map((show, index) => ({
-        date: show.showdate,
-        venue: show.venue || 'Unknown Venue',
-        city: show.city || '',
-        state: show.state || '',
-        played: show.showdate <= today,
-        showNumber: index + 1
-    }));
+    // Generate tour slug for show file paths
+    const tourSlug = tourName.toLowerCase().replace(/\s+/g, '-');
+    
+    // Build tour dates array with complete information
+    const tourDates = tourShows.map((show, index) => {
+        const showDate = {
+            date: show.showdate,
+            venue: show.venue || 'Unknown Venue',
+            city: show.city || '',
+            state: show.state || '',
+            played: played !== null ? played : show.showdate <= today,
+            showNumber: index + 1
+        };
+        
+        // Add show file path if requested
+        if (includeShowFiles) {
+            showDate.showFile = `tours/${tourSlug}/show-${show.showdate}.json`;
+        }
+        
+        return showDate;
+    });
     
     // Count played shows
     const playedShows = tourDates.filter(show => show.played).length;
@@ -246,6 +306,16 @@ function buildCurrentTour(shows, tourName) {
         endDate: tourShows[tourShows.length - 1]?.showdate || '',
         tourDates: tourDates
     };
+}
+
+/**
+ * Build the current tour object with all tour dates
+ */
+function buildCurrentTour(shows, tourName) {
+    return buildTourData(shows, tourName, {
+        played: null, // Determine from actual dates
+        includeShowFiles: true
+    });
 }
 
 /**
@@ -266,7 +336,7 @@ function calculateTourPosition(tourDates, latestShowDate, tourName) {
 }
 
 /**
- * Find future tours that haven't started yet
+ * Find future tours that haven't started yet - with complete detailed structure
  */
 function findFutureTours(shows, currentTourName) {
     const today = new Date().toISOString().split('T')[0];
@@ -282,19 +352,17 @@ function findFutureTours(shows, currentTourName) {
         }
     });
     
-    // Find tours where all shows are in the future
+    // Find tours where all shows are in the future and build detailed structure
     const futureTours = [];
     for (const [tourName, tourShows] of Object.entries(tourGroups)) {
         const allFuture = tourShows.every(show => show.showdate > today);
         if (allFuture && tourShows.length > 0) {
-            tourShows.sort((a, b) => a.showdate.localeCompare(b.showdate));
-            futureTours.push({
-                name: tourName,
-                year: tourShows[0].showyear || new Date().getFullYear().toString(),
-                startDate: tourShows[0].showdate,
-                endDate: tourShows[tourShows.length - 1].showdate,
-                shows: tourShows.length
+            // Build complete tour structure using buildTourData
+            const completeTourData = buildTourData(shows, tourName, {
+                played: false, // All future shows are unplayed
+                includeShowFiles: true
             });
+            futureTours.push(completeTourData);
         }
     }
     
