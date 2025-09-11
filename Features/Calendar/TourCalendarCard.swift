@@ -22,37 +22,21 @@ struct TourCalendarCard: View {
                 // Calendar content
                 if viewModel.isLoading {
                     loadingView
-                } else if let currentMonth = viewModel.currentMonth {
-                    TourCalendarView(
-                        month: currentMonth,
-                        venueRunSpans: viewModel.venueRunSpans,
-                        isMovingToNextMonth: viewModel.isMovingToNextMonth
-                    ) { day in
-                        handleDateSelection(day)
-                    }
-                    .transition(.asymmetric(
-                        insertion: .move(edge: viewModel.isMovingToNextMonth ? .leading : .trailing),
-                        removal: .move(edge: viewModel.isMovingToNextMonth ? .leading : .trailing)
-                    ))
-                    .id(currentMonth.id)
-                    .animation(.easeInOut(duration: 0.3), value: viewModel.currentMonthIndex)
-                    .simultaneousGesture(
-                        DragGesture()
-                            .onEnded { value in
-                                // Only handle if gesture is primarily horizontal
-                                if abs(value.translation.width) > abs(value.translation.height) {
-                                    // Swipe right (positive translation) = previous month
-                                    if value.translation.width > 50 && viewModel.canNavigateBack {
-                                        viewModel.navigateToPreviousMonth()
-                                    }
-                                    // Swipe left (negative translation) = next month  
-                                    else if value.translation.width < -50 && viewModel.canNavigateForward {
-                                        viewModel.navigateToNextMonth()
-                                    }
-                                }
-                                // If gesture is primarily vertical, do nothing - let parent ScrollView handle it
+                } else if !viewModel.calendarMonths.isEmpty {
+                    TabView(selection: $viewModel.currentMonthIndex) {
+                        ForEach(Array(viewModel.calendarMonths.enumerated()), id: \.element.id) { index, month in
+                            TourCalendarView(
+                                month: month,
+                                venueRunSpans: viewModel.venueRunSpans
+                            ) { day in
+                                handleDateSelection(day)
                             }
-                    )
+                            .tag(index)
+                        }
+                    }
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                    .frame(height: 350)
+                    .animation(.easeInOut(duration: 0.3), value: viewModel.currentMonthIndex)
                 } else if let error = viewModel.errorMessage {
                     errorView(error)
                 } else {

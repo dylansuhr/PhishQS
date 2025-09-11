@@ -17,7 +17,6 @@ class TourCalendarViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var tourName: String = ""
-    @Published var isMovingToNextMonth: Bool = false // Initialize to false for proper first animation
     @Published var hasLoadedInitialData: Bool = false
     @Published var venueRunSpans: [VenueRunSpan] = []
     
@@ -44,6 +43,7 @@ class TourCalendarViewModel: ObservableObject {
     var canNavigateForward: Bool {
         currentMonthIndex < calendarMonths.count - 1
     }
+    
     
     // MARK: - Initialization
     
@@ -101,13 +101,11 @@ class TourCalendarViewModel: ObservableObject {
     
     func navigateToPreviousMonth() {
         guard canNavigateBack else { return }
-        isMovingToNextMonth = true // Previous month comes from left, current goes right
         currentMonthIndex -= 1
     }
     
     func navigateToNextMonth() {
         guard canNavigateForward else { return }
-        isMovingToNextMonth = false // Next month comes from right, current goes left
         currentMonthIndex += 1
     }
     
@@ -277,6 +275,7 @@ class TourCalendarViewModel: ObservableObject {
         let today = Date()
         let calendar = Calendar.current
         
+        // Find the month that contains today's date
         for (index, month) in calendarMonths.enumerated() {
             let hasToday = month.days.contains { day in
                 calendar.isDate(day.date, inSameDayAs: today)
@@ -288,7 +287,16 @@ class TourCalendarViewModel: ObservableObject {
             }
         }
         
-        // Default to last month (latest tour month) if today not in tour
+        // Fallback: find current month by year/month components (in case current month was added but doesn't contain exact today date)
+        let currentComponents = calendar.dateComponents([.year, .month], from: today)
+        for (index, month) in calendarMonths.enumerated() {
+            if month.year == currentComponents.year && month.month == currentComponents.month {
+                currentMonthIndex = index
+                return
+            }
+        }
+        
+        // Final fallback: default to last month if current month somehow not found
         currentMonthIndex = max(0, calendarMonths.count - 1)
     }
 }

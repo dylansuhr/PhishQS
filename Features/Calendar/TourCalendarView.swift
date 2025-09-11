@@ -47,8 +47,7 @@ struct RealBadgeSegment {
 
 struct TourCalendarView: View {
     let month: CalendarMonth
-    let venueRunSpans: [VenueRunSpan] // Add venue run spans parameter
-    let isMovingToNextMonth: Bool // Direction for transitions
+    let venueRunSpans: [VenueRunSpan]
     var onDateSelected: ((CalendarDay) -> Void)?
     
     // Calendar grid configuration
@@ -487,8 +486,7 @@ struct DayCell: View {
                 )
             }
         ),
-        venueRunSpans: [],
-        isMovingToNextMonth: true
+        venueRunSpans: []
     )
     .background(Color(.systemBackground))
 }
@@ -511,8 +509,7 @@ struct DayCell: View {
                 )
             }
         ),
-        venueRunSpans: [],
-        isMovingToNextMonth: false
+        venueRunSpans: []
     )
     .background(Color(.systemBackground))
 }

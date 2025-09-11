@@ -103,30 +103,63 @@ struct CalendarConfiguration {
     let endMonth: DateComponents
     let showDates: [Date]
     let tourName: String
+    let includeCurrentMonth: Bool
+    let currentMonthComponents: DateComponents
     
     /// Create configuration from tour dashboard data
     static func from(tourData: TourDashboardDataClient.TourDashboardData.CurrentTour) -> CalendarConfiguration? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        guard let startDate = dateFormatter.date(from: tourData.startDate),
-              let endDate = dateFormatter.date(from: tourData.endDate) else {
+        guard let tourStartDate = dateFormatter.date(from: tourData.startDate),
+              let tourEndDate = dateFormatter.date(from: tourData.endDate) else {
             return nil
         }
         
         let calendar = Calendar.current
-        let startComponents = calendar.dateComponents([.year, .month], from: startDate)
-        let endComponents = calendar.dateComponents([.year, .month], from: endDate)
+        let currentDate = Date()
+        
+        // Get tour month components
+        let tourStartComponents = calendar.dateComponents([.year, .month], from: tourStartDate)
+        let tourEndComponents = calendar.dateComponents([.year, .month], from: tourEndDate)
+        let currentComponents = calendar.dateComponents([.year, .month], from: currentDate)
+        
+        // Check if current month is already within tour range
+        let currentMonthDate = calendar.date(from: currentComponents) ?? currentDate
+        let tourStartMonthDate = calendar.date(from: tourStartComponents) ?? tourStartDate
+        let tourEndMonthDate = calendar.date(from: tourEndComponents) ?? tourEndDate
+        
+        let currentMonthInTour = currentMonthDate >= tourStartMonthDate && currentMonthDate <= tourEndMonthDate
+        
+        // Determine range: tour months + current month (if not already included)
+        let startComponents: DateComponents
+        let endComponents: DateComponents
+        
+        if currentMonthInTour {
+            // Current month is within tour range, use tour range
+            startComponents = tourStartComponents
+            endComponents = tourEndComponents
+        } else if currentMonthDate < tourStartMonthDate {
+            // Current month is before tour, extend range backward
+            startComponents = currentComponents
+            endComponents = tourEndComponents
+        } else {
+            // Current month is after tour, extend range forward
+            startComponents = tourStartComponents
+            endComponents = currentComponents
+        }
         
         let showDates = tourData.tourDates.compactMap { tourDate in
             dateFormatter.date(from: tourDate.date)
         }
         
         return CalendarConfiguration(
-            startMonth: startComponents,
-            endMonth: endComponents,
+            startMonth: tourStartComponents,
+            endMonth: tourEndComponents,
             showDates: showDates,
-            tourName: tourData.name
+            tourName: tourData.name,
+            includeCurrentMonth: !currentMonthInTour,
+            currentMonthComponents: currentComponents
         )
     }
 }
@@ -139,13 +172,13 @@ struct CalendarBuilder {
     func buildMonths(from config: CalendarConfiguration) -> [CalendarMonth] {
         var months: [CalendarMonth] = []
         
+        // Build tour months (consecutive range)
         guard let startDate = calendar.date(from: config.startMonth),
               let endDate = calendar.date(from: config.endMonth) else {
             return []
         }
         
         var currentDate = startDate
-        
         while currentDate <= endDate {
             if let month = buildMonth(for: currentDate, showDates: config.showDates) {
                 months.append(month)
@@ -155,6 +188,28 @@ struct CalendarBuilder {
                 break
             }
             currentDate = nextMonth
+        }
+        
+        // Add current month if it's not already included in tour range
+        if config.includeCurrentMonth {
+            guard let currentMonthDate = calendar.date(from: config.currentMonthComponents),
+                  let currentMonth = buildMonth(for: currentMonthDate, showDates: config.showDates) else {
+                return months
+            }
+            
+            // Insert current month in chronological order
+            let currentMonthSortDate = currentMonthDate
+            var insertIndex = months.count // Default to end
+            
+            for (index, existingMonth) in months.enumerated() {
+                if let existingMonthDate = calendar.date(from: DateComponents(year: existingMonth.year, month: existingMonth.month)),
+                   currentMonthSortDate < existingMonthDate {
+                    insertIndex = index
+                    break
+                }
+            }
+            
+            months.insert(currentMonth, at: insertIndex)
         }
         
         return months
