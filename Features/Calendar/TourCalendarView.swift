@@ -423,15 +423,15 @@ struct DayCell: View {
             if day.isCurrentDay && day.isShowDate {
                 // Both current day and show date
                 Circle()
-                    .fill(Color.blue)
+                    .fill(Color.blue.opacity(0.2))
                     .overlay(
                         Circle()
-                            .strokeBorder(Color.white, lineWidth: 2)
+                            .strokeBorder(Color(red: 0.961, green: 0.286, blue: 0.153), lineWidth: 7.0)
                     )
             } else if day.isCurrentDay {
                 // Just current day
                 Circle()
-                    .fill(Color.blue.opacity(0.15))
+                    .strokeBorder(Color(red: 0.961, green: 0.286, blue: 0.153), lineWidth: 7.0)
             } else if day.isShowDate {
                 // Just show date - filled circle like Apple Calendar
                 Circle()
@@ -461,9 +461,9 @@ struct DayCell: View {
     
     private var textColor: Color {
         if day.isCurrentDay && day.isShowDate {
-            return .white
+            return .primary
         } else if day.isCurrentDay {
-            return .blue
+            return .primary
         } else if day.isShowDate {
             return .primary
         } else {
