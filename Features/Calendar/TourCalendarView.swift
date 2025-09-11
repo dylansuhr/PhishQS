@@ -48,6 +48,7 @@ struct RealBadgeSegment {
 struct TourCalendarView: View {
     let month: CalendarMonth
     let venueRunSpans: [VenueRunSpan]
+    let showBadges: Bool // Pass from ViewModel instead of local state
     var onDateSelected: ((CalendarDay) -> Void)?
     
     // Calendar grid configuration
@@ -56,7 +57,9 @@ struct TourCalendarView: View {
     
     // Coordinate tracking
     @StateObject private var coordinateMap = CircleCoordinateMap()
-    @State private var showBadges = false
+    
+    // Badge reset trigger - changes when month changes to force marquee reset
+    @State private var badgeResetID = UUID()
     
     var body: some View {
         ZStack {
@@ -79,17 +82,8 @@ struct TourCalendarView: View {
         }
         .coordinateSpace(name: "CalendarContainer")
         .onAppear {
-            // Delay badge appearance to allow calendar transition to complete
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                showBadges = true
-            }
-        }
-        .onChange(of: month.id) { _ in
-            // Hide badges immediately when month changes, then show after transition
-            showBadges = false
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                showBadges = true
-            }
+            // Reset all marquee animations to start fresh with consistent timing
+            badgeResetID = UUID()
         }
     }
     
@@ -178,6 +172,7 @@ struct TourCalendarView: View {
                     coordinateMap: coordinateMap,
                     color: venueColor(for: span.venue)
                 )
+                .id("\(span.id)-\(badgeResetID)") // Force view recreation when reset ID changes
             }
         }
         // No offset needed - badges now calculate proper position internally
@@ -206,6 +201,11 @@ struct MarqueeText: View {
     
     @State private var offset: CGFloat = 0
     @State private var textWidth: CGFloat = 0
+    
+    // Create a stable animation key based on text content
+    private var animationKey: String {
+        "\(text)-\(width)"
+    }
     
     private var shouldMarquee: Bool {
         textWidth > width - 8 // Account for padding
@@ -253,15 +253,21 @@ struct MarqueeText: View {
     }
     
     private func startMarquee() {
+        // UNIFORM SPEED: Consistent pixels per second across all badges
+        let scrollSpeedPixelsPerSecond: Double = 25.0 // Easily adjustable speed
+        
         // Calculate total scroll distance (from right edge to completely off left edge)
-        let totalDistance = textWidth + width
-        let scrollDuration = Double(totalDistance / 30.0) // 30 pixels per second
+        let totalDistance = textWidth + width + 20 // +20 for clean exit
+        let scrollDuration = totalDistance / scrollSpeedPixelsPerSecond
         
         // Start from right edge, scroll to left edge and beyond
         offset = width  // Start position: right edge of container
         
-        withAnimation(.linear(duration: scrollDuration).repeatForever(autoreverses: false)) {
-            offset = -textWidth - 20  // End position: completely off left edge
+        // Small delay to ensure all marquees start together after reset
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            withAnimation(.linear(duration: scrollDuration).repeatForever(autoreverses: false)) {
+                offset = -textWidth - 20  // End position: completely off left edge
+            }
         }
     }
 }
@@ -486,7 +492,8 @@ struct DayCell: View {
                 )
             }
         ),
-        venueRunSpans: []
+        venueRunSpans: [],
+        showBadges: true
     )
     .background(Color(.systemBackground))
 }
@@ -509,7 +516,8 @@ struct DayCell: View {
                 )
             }
         ),
-        venueRunSpans: []
+        venueRunSpans: [],
+        showBadges: true
     )
     .background(Color(.systemBackground))
 }

@@ -19,6 +19,7 @@ class TourCalendarViewModel: ObservableObject {
     @Published var tourName: String = ""
     @Published var hasLoadedInitialData: Bool = false
     @Published var venueRunSpans: [VenueRunSpan] = []
+    @Published var showBadges: Bool = false // Move badge state to ViewModel level
     
     // MARK: - Dependencies
     
@@ -91,6 +92,9 @@ class TourCalendarViewModel: ObservableObject {
             
             hasLoadedInitialData = true
             isLoading = false
+            
+            // Show badges once everything is loaded
+            showBadges = true
             
         } catch {
             errorMessage = "Failed to load tour calendar"

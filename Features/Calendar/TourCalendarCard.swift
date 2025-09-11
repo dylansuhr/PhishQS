@@ -27,7 +27,8 @@ struct TourCalendarCard: View {
                         ForEach(Array(viewModel.calendarMonths.enumerated()), id: \.element.id) { index, month in
                             TourCalendarView(
                                 month: month,
-                                venueRunSpans: viewModel.venueRunSpans
+                                venueRunSpans: viewModel.venueRunSpans,
+                                showBadges: viewModel.showBadges
                             ) { day in
                                 handleDateSelection(day)
                             }
