@@ -103,25 +103,6 @@ class TourCalendarViewModel: ObservableObject {
         }
     }
     
-    func navigateToPreviousMonth() {
-        guard canNavigateBack else { return }
-        currentMonthIndex -= 1
-    }
-    
-    func navigateToNextMonth() {
-        guard canNavigateForward else { return }
-        currentMonthIndex += 1
-    }
-    
-    func handleDateSelection(_ day: CalendarDay) {
-        guard day.isShowDate else { return }
-        
-        // For now, just print - will be enhanced in later step
-        if let showInfo = day.showInfo {
-            print("Selected show: \(showInfo.venue) - \(day.date)")
-        }
-    }
-    
     // MARK: - Private Methods
     
     private func enrichMonths(_ months: [CalendarMonth], with tourData: TourDashboardDataClient.TourDashboardData.CurrentTour) -> [CalendarMonth] {

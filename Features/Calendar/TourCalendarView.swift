@@ -202,10 +202,6 @@ struct MarqueeText: View {
     @State private var offset: CGFloat = 0
     @State private var textWidth: CGFloat = 0
     
-    // Create a stable animation key based on text content
-    private var animationKey: String {
-        "\(text)-\(width)"
-    }
     
     private var shouldMarquee: Bool {
         textWidth > width - 8 // Account for padding
@@ -442,12 +438,10 @@ struct DayCell: View {
                     )
             }
             
-            // Day number (unified for all cases)
+            // Day number
             Text("\(day.dayNumber)")
                 .font(.system(size: 15, weight: day.isShowDate ? .medium : .regular, design: .rounded))
                 .foregroundColor(textColor)
-            
-            // Individual venue badges removed - replaced by spanning system
         }
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
@@ -460,11 +454,7 @@ struct DayCell: View {
     }
     
     private var textColor: Color {
-        if day.isCurrentDay && day.isShowDate {
-            return .primary
-        } else if day.isCurrentDay {
-            return .primary
-        } else if day.isShowDate {
+        if day.isCurrentDay || day.isShowDate {
             return .primary
         } else {
             return .secondary.opacity(0.8)
