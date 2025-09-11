@@ -48,6 +48,7 @@ struct RealBadgeSegment {
 struct TourCalendarView: View {
     let month: CalendarMonth
     let venueRunSpans: [VenueRunSpan] // Add venue run spans parameter
+    let isMovingToNextMonth: Bool // Direction for transitions
     var onDateSelected: ((CalendarDay) -> Void)?
     
     // Calendar grid configuration
@@ -56,6 +57,7 @@ struct TourCalendarView: View {
     
     // Coordinate tracking
     @StateObject private var coordinateMap = CircleCoordinateMap()
+    @State private var showBadges = false
     
     var body: some View {
         ZStack {
@@ -71,10 +73,25 @@ struct TourCalendarView: View {
             }
             .padding()
             
-            // Spanning venue badges overlay
-            spanningBadgesOverlay
+            // Spanning venue badges overlay - only show when ready
+            if showBadges {
+                spanningBadgesOverlay
+            }
         }
         .coordinateSpace(name: "CalendarContainer")
+        .onAppear {
+            // Delay badge appearance to allow calendar transition to complete
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                showBadges = true
+            }
+        }
+        .onChange(of: month.id) { _ in
+            // Hide badges immediately when month changes, then show after transition
+            showBadges = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                showBadges = true
+            }
+        }
     }
     
     // MARK: - Month Header
@@ -461,7 +478,8 @@ struct DayCell: View {
                 )
             }
         ),
-        venueRunSpans: []
+        venueRunSpans: [],
+        isMovingToNextMonth: true
     )
     .background(Color(.systemBackground))
 }
@@ -484,7 +502,8 @@ struct DayCell: View {
                 )
             }
         ),
-        venueRunSpans: []
+        venueRunSpans: [],
+        isMovingToNextMonth: false
     )
     .background(Color(.systemBackground))
 }

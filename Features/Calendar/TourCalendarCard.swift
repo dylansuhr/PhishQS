@@ -25,7 +25,8 @@ struct TourCalendarCard: View {
                 } else if let currentMonth = viewModel.currentMonth {
                     TourCalendarView(
                         month: currentMonth,
-                        venueRunSpans: viewModel.venueRunSpans
+                        venueRunSpans: viewModel.venueRunSpans,
+                        isMovingToNextMonth: viewModel.isMovingToNextMonth
                     ) { day in
                         handleDateSelection(day)
                     }
