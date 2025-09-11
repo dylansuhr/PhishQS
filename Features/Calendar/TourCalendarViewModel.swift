@@ -241,8 +241,8 @@ class TourCalendarViewModel: ObservableObject {
                 currentRun.append(showDate)
             } else {
                 // Different venue or non-consecutive dates
-                if currentRun.count > 1 {
-                    // Create span for previous run (only for multi-night runs)
+                if !currentRun.isEmpty {
+                    // Create span for previous run (both single day shows and multi-day venue runs)
                     venueRuns.append(createVenueRunSpan(from: currentRun))
                 }
                 currentRun = [showDate]
@@ -250,7 +250,7 @@ class TourCalendarViewModel: ObservableObject {
         }
         
         // Handle the last run
-        if currentRun.count > 1 {
+        if !currentRun.isEmpty {
             venueRuns.append(createVenueRunSpan(from: currentRun))
         }
         
