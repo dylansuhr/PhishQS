@@ -224,10 +224,13 @@ struct MarqueeText: View {
                         GeometryReader { textGeometry in
                             Color.clear.onAppear {
                                 textWidth = textGeometry.size.width
+                                // Start from right edge when marquee is needed
+                                offset = width
                             }
                         }
                     )
                     .offset(x: offset)
+                    .frame(height: geometry.size.height, alignment: .center)
                     .clipped()
                     .onAppear {
                         startMarquee()
@@ -251,10 +254,15 @@ struct MarqueeText: View {
     }
     
     private func startMarquee() {
-        let scrollDuration = Double(textWidth / 30.0) // 30 pixels per second
+        // Calculate total scroll distance (from right edge to completely off left edge)
+        let totalDistance = textWidth + width
+        let scrollDuration = Double(totalDistance / 30.0) // 30 pixels per second
+        
+        // Start from right edge, scroll to left edge and beyond
+        offset = width  // Start position: right edge of container
         
         withAnimation(.linear(duration: scrollDuration).repeatForever(autoreverses: false)) {
-            offset = -(textWidth + 20) // Extra padding at end
+            offset = -textWidth - 20  // End position: completely off left edge
         }
     }
 }
@@ -290,6 +298,7 @@ struct SpanningMarqueeBadge: View {
                     )
                     .padding(.horizontal, 4)
                 )
+                .clipped()  // Clip content to RoundedRectangle boundaries
                 .position(
                     x: segment.centerX,
                     y: segment.centerY

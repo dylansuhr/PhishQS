@@ -36,17 +36,21 @@ struct TourCalendarCard: View {
                     ))
                     .id(currentMonth.id)
                     .animation(.easeInOut(duration: 0.3), value: viewModel.currentMonthIndex)
-                    .gesture(
+                    .simultaneousGesture(
                         DragGesture()
                             .onEnded { value in
-                                // Swipe right (positive translation) = previous month
-                                if value.translation.width > 50 && viewModel.canNavigateBack {
-                                    viewModel.navigateToPreviousMonth()
+                                // Only handle if gesture is primarily horizontal
+                                if abs(value.translation.width) > abs(value.translation.height) {
+                                    // Swipe right (positive translation) = previous month
+                                    if value.translation.width > 50 && viewModel.canNavigateBack {
+                                        viewModel.navigateToPreviousMonth()
+                                    }
+                                    // Swipe left (negative translation) = next month  
+                                    else if value.translation.width < -50 && viewModel.canNavigateForward {
+                                        viewModel.navigateToNextMonth()
+                                    }
                                 }
-                                // Swipe left (negative translation) = next month  
-                                else if value.translation.width < -50 && viewModel.canNavigateForward {
-                                    viewModel.navigateToNextMonth()
-                                }
+                                // If gesture is primarily vertical, do nothing - let parent ScrollView handle it
                             }
                     )
                 } else if let error = viewModel.errorMessage {
