@@ -7,6 +7,44 @@
 
 import SwiftUI
 
+// MARK: - Coordinate Collection System
+
+class CircleCoordinateMap: ObservableObject {
+    @Published var coordinates: [String: CGRect] = [:]
+    
+    func setCoordinate(for dayKey: String, rect: CGRect) {
+        coordinates[dayKey] = rect
+    }
+    
+    func getCoordinate(for dayKey: String) -> CGRect? {
+        return coordinates[dayKey]
+    }
+    
+    func hasCoordinatesFor(days: [Int]) -> Bool {
+        return days.allSatisfy { coordinates["\($0)"] != nil }
+    }
+}
+
+// MARK: - Preference Key for Circle Positions
+
+struct CirclePositionPreferenceKey: PreferenceKey {
+    static var defaultValue: [Int: CGRect] = [:]
+    
+    static func reduce(value: inout [Int: CGRect], nextValue: () -> [Int: CGRect]) {
+        value.merge(nextValue(), uniquingKeysWith: { _, new in new })
+    }
+}
+
+// MARK: - Real Badge Segment
+
+struct RealBadgeSegment {
+    let centerX: CGFloat
+    let centerY: CGFloat
+    let width: CGFloat
+    let isFirstSegment: Bool
+    let isLastSegment: Bool
+}
+
 struct TourCalendarView: View {
     let month: CalendarMonth
     let venueRunSpans: [VenueRunSpan] // Add venue run spans parameter
@@ -15,6 +53,9 @@ struct TourCalendarView: View {
     // Calendar grid configuration
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 2), count: 7)
     private let weekDays = ["S", "M", "T", "W", "T", "F", "S"]
+    
+    // Coordinate tracking
+    @StateObject private var coordinateMap = CircleCoordinateMap()
     
     var body: some View {
         ZStack {
@@ -33,6 +74,7 @@ struct TourCalendarView: View {
             // Spanning venue badges overlay
             spanningBadgesOverlay
         }
+        .coordinateSpace(name: "CalendarContainer")
     }
     
     // MARK: - Month Header
@@ -75,12 +117,19 @@ struct TourCalendarView: View {
             
             // Add day cells
             ForEach(month.days) { day in
-                DayCell(day: day)
+                DayCell(day: day, coordinateMap: coordinateMap)
                     .onTapGesture {
                         if day.isShowDate {
                             onDateSelected?(day)
                         }
                     }
+            }
+        }
+        .coordinateSpace(name: "CalendarGrid")
+        .onPreferenceChange(CirclePositionPreferenceKey.self) { positions in
+            // Update coordinate map when preferences change
+            for (dayNumber, rect) in positions {
+                coordinateMap.setCoordinate(for: "\(dayNumber)", rect: rect)
             }
         }
     }
@@ -110,11 +159,12 @@ struct TourCalendarView: View {
             ForEach(monthSpans) { span in
                 SpanningMarqueeBadge(
                     span: span,
+                    coordinateMap: coordinateMap,
                     color: venueColor(for: span.venue)
                 )
             }
         }
-        .offset(y: 80) // Adjust to position over calendar grid (below headers)
+        // No offset needed - badges now calculate proper position internally
     }
 }
 
@@ -196,116 +246,137 @@ struct MarqueeText: View {
 
 struct SpanningMarqueeBadge: View {
     let span: VenueRunSpan
-    let cellWidth: CGFloat = 44.0
+    @ObservedObject var coordinateMap: CircleCoordinateMap
     let color: Color
     
-    private var badgeGeometry: BadgeGeometry {
-        calculateBadgeGeometry(for: span)
-    }
-    
     var body: some View {
-        ForEach(badgeGeometry.segments.indices, id: \.self) { index in
-            let segment = badgeGeometry.segments[index]
+        // Check if coordinates are ready before rendering
+        if coordinatesReady {
+            let coordinateSegments = calculateRealCoordinateSegments()
             
-            RoundedRectangle(
-                cornerRadius: segment.isFirstSegment && segment.isLastSegment ? 6 : 
-                             segment.isFirstSegment ? 6 : 
-                             segment.isLastSegment ? 6 : 0
-            )
-            .fill(color)
-            .frame(width: segment.width, height: 16)
-            .overlay(
-                MarqueeText(
-                    text: span.displayText,
-                    font: .system(size: 10, weight: .bold),
-                    color: .white,
-                    width: segment.width - 8
+            ForEach(coordinateSegments.indices, id: \.self) { index in
+                let segment = coordinateSegments[index]
+                
+                RoundedRectangle(
+                    cornerRadius: segment.isFirstSegment && segment.isLastSegment ? 6 : 
+                                 segment.isFirstSegment ? 6 : 
+                                 segment.isLastSegment ? 6 : 0
                 )
-                .padding(.horizontal, 4)
-            )
-            .position(
-                x: segment.startX + segment.width / 2,
-                y: calculateBadgeY(for: segment.weekIndex)
-            )
+                .fill(color)
+                .frame(width: segment.width, height: 16)
+                .overlay(
+                    MarqueeText(
+                        text: span.displayText,
+                        font: .system(size: 10, weight: .bold),
+                        color: .white,
+                        width: segment.width - 8
+                    )
+                    .padding(.horizontal, 4)
+                )
+                .position(
+                    x: segment.centerX,
+                    y: segment.centerY
+                )
+            }
         }
     }
     
-    private func calculateBadgeGeometry(for span: VenueRunSpan) -> BadgeGeometry {
-        let sortedPositions = span.gridPositions.sorted { 
-            ($0.weekIndex, $0.columnIndex) < ($1.weekIndex, $1.columnIndex) 
-        }
-        
-        if span.spansWeeks {
-            // Handle cross-week spans
-            return createMultiSegmentBadge(positions: sortedPositions)
-        } else {
-            // Simple single-row badge
-            return createSimpleBadge(positions: sortedPositions)
-        }
+    private var coordinatesReady: Bool {
+        let requiredDays = getRequiredDaysFromSpan()
+        return coordinateMap.hasCoordinatesFor(days: requiredDays)
     }
     
-    private func createSimpleBadge(positions: [GridPosition]) -> BadgeGeometry {
-        let startColumn = positions.first!.columnIndex
-        let endColumn = positions.last!.columnIndex
-        let weekIndex = positions.first!.weekIndex
+    private func getRequiredDaysFromSpan() -> [Int] {
+        let calendar = Calendar.current
+        var days: [Int] = []
+        var current = span.startDate
         
-        let width = CGFloat(endColumn - startColumn + 1) * cellWidth
-        let startX = CGFloat(startColumn) * cellWidth
+        while current <= span.endDate {
+            let dayNumber = calendar.component(.day, from: current)
+            days.append(dayNumber)
+            current = calendar.date(byAdding: .day, value: 1, to: current) ?? current
+        }
         
-        let segment = BadgeSegment(
-            startX: startX,
+        return days
+    }
+    
+    private func calculateRealCoordinateSegments() -> [RealBadgeSegment] {
+        // Group dates by week to handle Saturday-Sunday spans
+        let datesByWeek = groupDatesByWeek()
+        var segments: [RealBadgeSegment] = []
+        
+        for (weekIndex, dates) in datesByWeek.enumerated() {
+            if let segment = createSegmentFromRealCoordinates(dates: dates, isFirst: weekIndex == 0, isLast: weekIndex == datesByWeek.count - 1) {
+                segments.append(segment)
+            }
+        }
+        
+        return segments
+    }
+    
+    private func groupDatesByWeek() -> [[Int]] {
+        // Extract day numbers from the span's dates
+        let calendar = Calendar.current
+        var datesByWeek: [[Int]] = []
+        var currentWeekDates: [Int] = []
+        var lastWeekday: Int? = nil
+        
+        // Create date range from span
+        var current = span.startDate
+        while current <= span.endDate {
+            let dayNumber = calendar.component(.day, from: current)
+            let weekday = calendar.component(.weekday, from: current)
+            
+            // Check if we've moved to a new week (Sunday = 1)
+            if let lastDay = lastWeekday, weekday == 1 && lastDay != 1 {
+                // Starting a new week, save current and start fresh
+                if !currentWeekDates.isEmpty {
+                    datesByWeek.append(currentWeekDates)
+                    currentWeekDates = []
+                }
+            }
+            
+            currentWeekDates.append(dayNumber)
+            lastWeekday = weekday
+            current = calendar.date(byAdding: .day, value: 1, to: current) ?? current
+        }
+        
+        // Add final week
+        if !currentWeekDates.isEmpty {
+            datesByWeek.append(currentWeekDates)
+        }
+        
+        return datesByWeek
+    }
+    
+    private func createSegmentFromRealCoordinates(dates: [Int], isFirst: Bool, isLast: Bool) -> RealBadgeSegment? {
+        guard !dates.isEmpty else { return nil }
+        
+        // Get coordinates for first and last date in this week segment
+        let firstDay = dates.first!
+        let lastDay = dates.last!
+        
+        guard let firstRect = coordinateMap.getCoordinate(for: "\(firstDay)"),
+              let lastRect = coordinateMap.getCoordinate(for: "\(lastDay)") else {
+            return nil
+        }
+        
+        // Calculate badge position from left edge of first circle to right edge of last circle
+        let startX = firstRect.minX
+        let endX = lastRect.maxX
+        let width = endX - startX
+        let centerX = startX + width / 2
+        
+        // Position badge at top of the date circles with small offset
+        let centerY = firstRect.minY - 8 // Position above the circles
+        
+        return RealBadgeSegment(
+            centerX: centerX,
+            centerY: centerY,
             width: width,
-            weekIndex: weekIndex,
-            isFirstSegment: true,
-            isLastSegment: true
+            isFirstSegment: isFirst,
+            isLastSegment: isLast
         )
-        
-        return BadgeGeometry(
-            segments: [segment],
-            totalWidth: width,
-            shouldMarquee: span.displayText.count > Int(width / 8) // Rough character estimation
-        )
-    }
-    
-    private func createMultiSegmentBadge(positions: [GridPosition]) -> BadgeGeometry {
-        // Group positions by week
-        let positionsByWeek = Dictionary(grouping: positions) { $0.weekIndex }
-        var segments: [BadgeSegment] = []
-        let sortedWeeks = positionsByWeek.keys.sorted()
-        
-        for (index, weekIndex) in sortedWeeks.enumerated() {
-            let weekPositions = positionsByWeek[weekIndex]!.sorted { $0.columnIndex < $1.columnIndex }
-            let startColumn = weekPositions.first!.columnIndex
-            let endColumn = weekPositions.last!.columnIndex
-            
-            let width = CGFloat(endColumn - startColumn + 1) * cellWidth
-            let startX = CGFloat(startColumn) * cellWidth
-            
-            let segment = BadgeSegment(
-                startX: startX,
-                width: width,
-                weekIndex: weekIndex,
-                isFirstSegment: index == 0,
-                isLastSegment: index == sortedWeeks.count - 1
-            )
-            
-            segments.append(segment)
-        }
-        
-        let totalWidth = segments.reduce(0) { $0 + $1.width }
-        
-        return BadgeGeometry(
-            segments: segments,
-            totalWidth: totalWidth,
-            shouldMarquee: span.displayText.count > Int(totalWidth / 8)
-        )
-    }
-    
-    private func calculateBadgeY(for weekIndex: Int) -> CGFloat {
-        // Badge positioned at top of each week row
-        // Each cell is 44pt height + 8pt spacing = 52pt total per row
-        // Add 22pt (half cell height) to center vertically on the cell row
-        return CGFloat(weekIndex) * 52.0 + 22.0 // Center on cell
     }
 }
 
@@ -313,6 +384,7 @@ struct SpanningMarqueeBadge: View {
 
 struct DayCell: View {
     let day: CalendarDay
+    let coordinateMap: CircleCoordinateMap
     
     var body: some View {
         ZStack {
@@ -348,6 +420,12 @@ struct DayCell: View {
         }
         .frame(width: 44, height: 44)
         .contentShape(Rectangle())
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .preference(key: CirclePositionPreferenceKey.self, value: [day.dayNumber: geometry.frame(in: .named("CalendarContainer"))])
+            }
+        )
     }
     
     private var textColor: Color {
