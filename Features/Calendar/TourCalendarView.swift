@@ -367,8 +367,8 @@ struct SpanningMarqueeBadge: View {
         let width = endX - startX
         let centerX = startX + width / 2
         
-        // Position badge at top of the date circles with small offset
-        let centerY = firstRect.minY - 8 // Position above the circles
+        // Position badge so its center is slightly below the top edge of the circles
+        let centerY = firstRect.minY + 2 // Move badge center 2pt below top edge
         
         return RealBadgeSegment(
             centerX: centerX,
