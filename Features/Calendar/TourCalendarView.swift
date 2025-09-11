@@ -157,7 +157,7 @@ struct TourCalendarView: View {
     private var spanningBadgesOverlay: some View {
         // Filter spans that are relevant to this month
         let monthSpans = venueRunSpans.filter { span in
-            let calendar = Calendar.current
+            let _ = Calendar.current
             let monthStart = month.days.first?.date ?? Date()
             let monthEnd = month.days.last?.date ?? Date()
             
@@ -183,12 +183,7 @@ struct TourCalendarView: View {
 
 /// Generate a consistent color for a venue based on its name
 func venueColor(for venue: String) -> Color {
-    // Use a simple hash of the venue name for consistent color assignment
-    let hash = venue.hashValue
-    let colors: [Color] = [
-        .blue, .green, .orange, .purple, .red, .teal, .pink, .indigo
-    ]
-    return colors[abs(hash) % colors.count]
+    return generateConsistentColor(for: venue)
 }
 
 // MARK: - Marquee Text Component
@@ -419,7 +414,7 @@ struct DayCell: View {
             if day.isCurrentDay && day.isShowDate {
                 // Both current day and show date
                 Circle()
-                    .fill(Color.blue.opacity(0.2))
+                    .fill(showDateColor.opacity(0.2))
                     .overlay(
                         Circle()
                             .strokeBorder(Color(red: 0.961, green: 0.286, blue: 0.153), lineWidth: 7.0)
@@ -429,12 +424,12 @@ struct DayCell: View {
                 Circle()
                     .strokeBorder(Color(red: 0.961, green: 0.286, blue: 0.153), lineWidth: 7.0)
             } else if day.isShowDate {
-                // Just show date - filled circle like Apple Calendar
+                // Just show date - filled circle with tour-specific color
                 Circle()
-                    .fill(Color.blue.opacity(0.2))
+                    .fill(showDateColor.opacity(0.2))
                     .overlay(
                         Circle()
-                            .strokeBorder(Color.blue, lineWidth: 1.5)
+                            .strokeBorder(showDateColor, lineWidth: 1.5)
                     )
             }
             
@@ -459,6 +454,11 @@ struct DayCell: View {
         } else {
             return .secondary.opacity(0.8)
         }
+    }
+    
+    private var showDateColor: Color {
+        // Use tour-specific color from showInfo, default to blue
+        return day.showInfo?.tourColor ?? .blue
     }
 }
 

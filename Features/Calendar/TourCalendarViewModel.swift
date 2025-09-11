@@ -21,6 +21,11 @@ class TourCalendarViewModel: ObservableObject {
     @Published var venueRunSpans: [VenueRunSpan] = []
     @Published var showBadges: Bool = false // Move badge state to ViewModel level
     
+    // MARK: - Private Properties
+    
+    private var currentTourData: TourDashboardDataClient.TourDashboardData.CurrentTour?
+    private var futureTourData: [TourDashboardDataClient.TourDashboardData.FutureTour] = []
+    
     // MARK: - Dependencies
     
     private let dataClient = TourDashboardDataClient.shared
@@ -69,16 +74,21 @@ class TourCalendarViewModel: ObservableObject {
             // Fetch tour dashboard data
             let dashboardData = try await dataClient.fetchCurrentTourData()
             
-            // Create calendar configuration
-            guard let config = CalendarConfiguration.from(tourData: dashboardData.currentTour) else {
+            // Store tour data for enrichment
+            self.currentTourData = dashboardData.currentTour
+            self.futureTourData = dashboardData.futureTours
+            
+            // Create calendar configuration including future tours
+            guard let config = CalendarConfiguration.from(currentTour: dashboardData.currentTour, 
+                                                         futureTours: dashboardData.futureTours) else {
                 throw CalendarError.invalidTourData
             }
             
             // Build calendar months
             let months = calendarBuilder.buildMonths(from: config)
             
-            // Enrich with show information
-            let enrichedMonths = enrichMonths(months, with: dashboardData.currentTour)
+            // Enrich with show information from all tours
+            let enrichedMonths = enrichMonths(months, with: config)
             
             // Update state
             self.calendarMonths = enrichedMonths
@@ -105,26 +115,57 @@ class TourCalendarViewModel: ObservableObject {
     
     // MARK: - Private Methods
     
-    private func enrichMonths(_ months: [CalendarMonth], with tourData: TourDashboardDataClient.TourDashboardData.CurrentTour) -> [CalendarMonth] {
+    private func enrichMonths(_ months: [CalendarMonth], with config: CalendarConfiguration) -> [CalendarMonth] {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        // Create a map of dates to tour information
+        // Create a map of dates to tour information across all tours
         var dateToShowInfo: [String: CalendarDay.ShowInfo] = [:]
         
-        for (index, tourDate) in tourData.tourDates.enumerated() {
-            // Calculate venue run info
-            let venueRun = calculateVenueRun(for: index, in: tourData.tourDates)
+        // Process current tour
+        if let currentTour = currentTourData {
+            let tourColor = tourColor(for: "current-\(currentTour.year)", tourName: currentTour.name)
             
-            let showInfo = CalendarDay.ShowInfo(
-                venue: tourDate.venue,
-                city: tourDate.city,
-                state: tourDate.state,
-                showNumber: tourDate.showNumber,
-                venueRun: venueRun
-            )
+            for (index, tourDate) in currentTour.tourDates.enumerated() {
+                // Calculate venue run info
+                let venueRun = calculateVenueRun(for: index, in: currentTour.tourDates)
+                
+                let showInfo = CalendarDay.ShowInfo(
+                    venue: tourDate.venue,
+                    city: tourDate.city,
+                    state: tourDate.state,
+                    showNumber: tourDate.showNumber,
+                    venueRun: venueRun,
+                    tourId: "current-\(currentTour.year)",
+                    tourName: currentTour.name,
+                    tourColor: tourColor
+                )
+                
+                dateToShowInfo[tourDate.date] = showInfo
+            }
+        }
+        
+        // Process future tours
+        for futureTour in futureTourData {
+            let tourColor = tourColor(for: "future-\(futureTour.year)", tourName: futureTour.name)
             
-            dateToShowInfo[tourDate.date] = showInfo
+            for (index, tourDate) in futureTour.tourDates.enumerated() {
+                // Calculate venue run info for future tour
+                let venueRun = calculateVenueRun(for: index, in: futureTour.tourDates)
+                
+                let showInfo = CalendarDay.ShowInfo(
+                    venue: tourDate.venue,
+                    city: tourDate.city,
+                    state: tourDate.state,
+                    showNumber: tourDate.showNumber,
+                    venueRun: venueRun,
+                    tourId: "future-\(futureTour.year)",
+                    tourName: futureTour.name,
+                    tourColor: tourColor
+                )
+                
+                dateToShowInfo[tourDate.date] = showInfo
+            }
         }
         
         // Enrich calendar days with show information
