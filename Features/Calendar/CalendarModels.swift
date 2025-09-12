@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 // MARK: - Calendar Display Models
 
@@ -39,6 +40,9 @@ struct CalendarDay: Identifiable, Equatable {
         let state: String
         let showNumber: Int
         let venueRun: String? // e.g., "N1", "N2", "N3"
+        let tourId: String
+        let tourName: String
+        let tourColor: Color
     }
 }
 
@@ -101,65 +105,80 @@ struct BadgeSegment {
 struct CalendarConfiguration {
     let startMonth: DateComponents
     let endMonth: DateComponents
-    let showDates: [Date]
-    let tourName: String
+    let allTours: [TourInfo]
     let includeCurrentMonth: Bool
     let currentMonthComponents: DateComponents
+    let tourMonths: Set<DateComponents>
     
-    /// Create configuration from tour dashboard data
-    static func from(tourData: TourDashboardDataClient.TourDashboardData.CurrentTour) -> CalendarConfiguration? {
+    struct TourInfo {
+        let id: String
+        let name: String
+        let showDates: [Date]
+        let isCurrentTour: Bool
+    }
+    
+    /// Create configuration from tour dashboard data including future tours
+    static func from(currentTour: TourDashboardDataClient.TourDashboardData.CurrentTour, 
+                    futureTours: [TourDashboardDataClient.TourDashboardData.FutureTour]) -> CalendarConfiguration? {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         
-        guard let tourStartDate = dateFormatter.date(from: tourData.startDate),
-              let tourEndDate = dateFormatter.date(from: tourData.endDate) else {
+        let calendar = Calendar.current
+        let currentDate = Date()
+        let currentComponents = calendar.dateComponents([.year, .month], from: currentDate)
+        
+        // Process current tour
+        guard let _ = dateFormatter.date(from: currentTour.startDate),
+              let _ = dateFormatter.date(from: currentTour.endDate) else {
             return nil
         }
         
-        let calendar = Calendar.current
-        let currentDate = Date()
-        
-        // Get tour month components
-        let tourStartComponents = calendar.dateComponents([.year, .month], from: tourStartDate)
-        let tourEndComponents = calendar.dateComponents([.year, .month], from: tourEndDate)
-        let currentComponents = calendar.dateComponents([.year, .month], from: currentDate)
-        
-        // Check if current month is already within tour range
-        let currentMonthDate = calendar.date(from: currentComponents) ?? currentDate
-        let tourStartMonthDate = calendar.date(from: tourStartComponents) ?? tourStartDate
-        let tourEndMonthDate = calendar.date(from: tourEndComponents) ?? tourEndDate
-        
-        let currentMonthInTour = currentMonthDate >= tourStartMonthDate && currentMonthDate <= tourEndMonthDate
-        
-        // Determine range: tour months + current month (if not already included)
-        let startComponents: DateComponents
-        let endComponents: DateComponents
-        
-        if currentMonthInTour {
-            // Current month is within tour range, use tour range
-            startComponents = tourStartComponents
-            endComponents = tourEndComponents
-        } else if currentMonthDate < tourStartMonthDate {
-            // Current month is before tour, extend range backward
-            startComponents = currentComponents
-            endComponents = tourEndComponents
-        } else {
-            // Current month is after tour, extend range forward
-            startComponents = tourStartComponents
-            endComponents = currentComponents
-        }
-        
-        let showDates = tourData.tourDates.compactMap { tourDate in
+        let currentTourShowDates = currentTour.tourDates.compactMap { tourDate in
             dateFormatter.date(from: tourDate.date)
         }
         
+        var allTours: [TourInfo] = [
+            TourInfo(
+                id: "current-\(currentTour.year)",
+                name: currentTour.name,
+                showDates: currentTourShowDates,
+                isCurrentTour: true
+            )
+        ]
+        
+        // Process future tours
+        for futureTour in futureTours {
+            let futureTourShowDates = futureTour.tourDates.compactMap { tourDate in
+                dateFormatter.date(from: tourDate.date)
+            }
+            
+            allTours.append(TourInfo(
+                id: "future-\(futureTour.year)",
+                name: futureTour.name,
+                showDates: futureTourShowDates,
+                isCurrentTour: false
+            ))
+        }
+        
+        // Find unique months that contain tour dates
+        var tourMonths: Set<DateComponents> = Set()
+        for tour in allTours {
+            for showDate in tour.showDates {
+                let monthComponents = calendar.dateComponents([.year, .month], from: showDate)
+                tourMonths.insert(monthComponents)
+            }
+        }
+        
+        // Check if current month should be included
+        let currentMonthInTourMonths = tourMonths.contains(currentComponents)
+        
         return CalendarConfiguration(
-            startMonth: tourStartComponents,
-            endMonth: tourEndComponents,
-            showDates: showDates,
-            tourName: tourData.name,
-            includeCurrentMonth: !currentMonthInTour,
-            currentMonthComponents: currentComponents
+            startMonth: DateComponents(), // Not used in new approach
+            endMonth: DateComponents(), // Not used in new approach  
+            allTours: allTours,
+            includeCurrentMonth: !currentMonthInTourMonths,
+            currentMonthComponents: currentComponents,
+            tourMonths: tourMonths
         )
     }
 }
@@ -172,47 +191,40 @@ struct CalendarBuilder {
     func buildMonths(from config: CalendarConfiguration) -> [CalendarMonth] {
         var months: [CalendarMonth] = []
         
-        // Build tour months (consecutive range)
-        guard let startDate = calendar.date(from: config.startMonth),
-              let endDate = calendar.date(from: config.endMonth) else {
-            return []
+        // Collect all show dates from all tours
+        var allShowDates: [Date] = []
+        for tour in config.allTours {
+            allShowDates.append(contentsOf: tour.showDates)
         }
         
-        var currentDate = startDate
-        while currentDate <= endDate {
-            if let month = buildMonth(for: currentDate, showDates: config.showDates) {
-                months.append(month)
+        // Build only months that have tour dates
+        for monthComponents in config.tourMonths {
+            guard let monthDate = calendar.date(from: monthComponents),
+                  let month = buildMonth(for: monthDate, showDates: allShowDates) else {
+                continue
             }
-            
-            guard let nextMonth = calendar.date(byAdding: .month, value: 1, to: currentDate) else {
-                break
-            }
-            currentDate = nextMonth
+            months.append(month)
         }
         
-        // Add current month if it's not already included in tour range
+        // Add current month if it's not already included in tour months
         if config.includeCurrentMonth {
             guard let currentMonthDate = calendar.date(from: config.currentMonthComponents),
-                  let currentMonth = buildMonth(for: currentMonthDate, showDates: config.showDates) else {
-                return months
-            }
-            
-            // Insert current month in chronological order
-            let currentMonthSortDate = currentMonthDate
-            var insertIndex = months.count // Default to end
-            
-            for (index, existingMonth) in months.enumerated() {
-                if let existingMonthDate = calendar.date(from: DateComponents(year: existingMonth.year, month: existingMonth.month)),
-                   currentMonthSortDate < existingMonthDate {
-                    insertIndex = index
-                    break
+                  let currentMonth = buildMonth(for: currentMonthDate, showDates: allShowDates) else {
+                return months.sorted { month1, month2 in
+                    let date1 = calendar.date(from: DateComponents(year: month1.year, month: month1.month)) ?? Date.distantPast
+                    let date2 = calendar.date(from: DateComponents(year: month2.year, month: month2.month)) ?? Date.distantPast
+                    return date1 < date2
                 }
             }
-            
-            months.insert(currentMonth, at: insertIndex)
+            months.append(currentMonth)
         }
         
-        return months
+        // Sort months chronologically
+        return months.sorted { month1, month2 in
+            let date1 = calendar.date(from: DateComponents(year: month1.year, month: month1.month)) ?? Date.distantPast
+            let date2 = calendar.date(from: DateComponents(year: month2.year, month: month2.month)) ?? Date.distantPast
+            return date1 < date2
+        }
     }
     
     /// Build a single month
@@ -259,4 +271,30 @@ struct CalendarBuilder {
             days: days
         )
     }
+}
+
+// MARK: - Unified Color Generation System
+
+/// Generate a consistent color for any calendar element (tours, venues, etc.)
+func generateConsistentColor(for identifier: String, seedText: String = "") -> Color {
+    // Use seedText for better uniqueness, fallback to identifier
+    let seedString = seedText.isEmpty ? identifier : seedText
+    
+    // Create a stable hash using string characters
+    var hash = 0
+    for char in seedString.lowercased() {
+        hash = hash &* 31 &+ Int(char.asciiValue ?? 0)
+    }
+    
+    // Consistent app-wide color palette (matches venue badge colors and statistics colors)
+    // Red and pink removed to preserve current day indicator distinctiveness
+    let appColors: [Color] = [
+        .blue, .orange, .green, .purple, .teal, .indigo
+    ]
+    return appColors[abs(hash) % appColors.count]
+}
+
+/// Generate a consistent color for a tour based on its name and ID
+func tourColor(for tourId: String, tourName: String = "") -> Color {
+    return generateConsistentColor(for: tourId, seedText: tourName)
 }
