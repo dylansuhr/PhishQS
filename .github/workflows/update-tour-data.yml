@@ -1,0 +1,81 @@
+name: Update Tour Data
+
+on:
+  schedule:
+    # Strategic timing for optimal tour data coverage
+    - cron: '0 4 * * *'   # Midnight EDT (post-show) - catches East Coast shows
+    - cron: '0 8 * * *'   # 4am EDT (late shows) - catches West Coast/late shows
+    - cron: '0 20 * * *'  # 4pm EDT (pre-show) - data refresh + Phish.in retry
+  
+  # Allow manual triggering for immediate updates
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm install
+    
+    - name: Update tour dashboard
+      env:
+        PHISH_NET_API_KEY: ${{ secrets.PHISH_NET_API_KEY }}
+      run: npm run update-tour-dashboard
+    
+    - name: Initialize tour shows
+      env:
+        PHISH_NET_API_KEY: ${{ secrets.PHISH_NET_API_KEY }}
+      run: npm run initialize-tour-shows
+    
+    - name: Generate statistics
+      env:
+        PHISH_NET_API_KEY: ${{ secrets.PHISH_NET_API_KEY }}
+      run: npm run generate-stats
+    
+    - name: Check for data changes
+      id: verify
+      run: |
+        if [[ `git status --porcelain` ]]; then
+          echo "changes=true" >> $GITHUB_OUTPUT
+          echo "Changes detected in tour data files"
+          git status --porcelain
+        else
+          echo "changes=false" >> $GITHUB_OUTPUT
+          echo "No changes detected - data is up to date"
+        fi
+    
+    - name: Commit and push changes
+      if: steps.verify.outputs.changes == 'true'
+      run: |
+        git config --local user.email "github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git add Server/Data/
+        git commit -m "🎵 Auto-update: New show data detected
+        
+        Automated tour data update detected new Phish show(s).
+        Updated tour dashboard, show files, and statistics.
+        
+        🤖 Generated with GitHub Actions"
+        git push
+        echo "Successfully pushed tour data updates"
+    
+    - name: Summary
+      run: |
+        if [[ "${{ steps.verify.outputs.changes }}" == "true" ]]; then
+          echo "✅ Tour data updated and deployed"
+          echo "Vercel will auto-deploy the changes"
+        else
+          echo "ℹ️ No updates needed - tour data is current"
+        fi

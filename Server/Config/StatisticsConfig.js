@@ -93,7 +93,7 @@ const baseConfig = {
     /** @type {Object} Phish.net API configuration */
     phishNetApi: {
         baseUrl: 'https://api.phish.net/v5',
-        defaultApiKey: '4771B8589CD3E53848E7', // TODO: Move to environment variables
+        defaultApiKey: process.env.PHISH_NET_API_KEY || '4771B8589CD3E53848E7',
         endpoints: {
             shows: '/setlists/showyear/{year}.json',
             setlist: '/setlists/showdate/{date}.json',

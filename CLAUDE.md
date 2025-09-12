@@ -4,12 +4,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-PhishQS is a hybrid iOS/Node.js project with three distinct functional components:
+PhishQS is a hybrid iOS/Node.js project with four distinct functional components:
 
 ### **iOS App Components:**
-1. **Tour Setlist Browser**: Display of the latest Phish show setlist with color-coded song durations and venue context
-2. **Tour Statistics Display**: Pre-computed statistical cards showing longest/rarest/most-played songs from current tour
-3. **Historical Show Search**: Date-driven search and display of any historical Phish show (1983-present)
+1. **Tour Setlist Browser (Component A)**: Display of the latest Phish show setlist with color-coded song durations and venue context
+2. **Tour Statistics Display (Component B)**: Pre-computed statistical cards showing longest/rarest/most-played songs from current tour
+3. **Historical Show Search (Component C)**: Date-driven search and display of any historical Phish show (1983-present)
+4. **Tour Calendar (Component D)**: Interactive calendar view showing tour dates across multiple months with venue badges
 
 ### **Server Components:**
 - **Vercel-deployed Node.js serverless functions**: Serve pre-computed data via multiple endpoints
@@ -96,15 +97,29 @@ This ensures that progress and next steps are clear and can be easily handed ove
 
 ### Server/Node.js Commands
 ```bash
-npm run dev                # Start Vercel development server
-npm run generate-stats     # Generate tour statistics JSON data
-npm run deploy             # Deploy to Vercel production
+npm run dev                        # Start Vercel development server
+npm run generate-stats             # Generate tour statistics JSON data
+npm run update-tour-dashboard      # Update tour dashboard data
+npm run initialize-tour-shows      # Initialize all tour shows data
+npm run initialize-remaining-shows # Quick initialize remaining shows
+npm run deploy                     # Deploy to Vercel production
 ```
 
 ### iOS Development
-- Use Xcode to build and run the iOS app
+```bash
+# Build and run in Xcode
+open PhishQS.xcodeproj             # Open project in Xcode
+# Press Cmd+R to build and run
+# Press Cmd+U to run tests
+
+# Build from command line (optional)
+xcodebuild -scheme PhishQS -configuration Debug -sdk iphonesimulator build
+xcodebuild -scheme PhishQS test
+```
+
 - iOS target requires iOS 16.0+ and Xcode 15+
 - UI tests are located in `Tests/PhishQSUITests/`
+- Test files: `PhishQSTests` and `PhishQSUITests` targets
 
 ## App Components
 
@@ -182,6 +197,36 @@ npm run deploy             # Deploy to Vercel production
 
 ---
 
+### Component D: Tour Calendar
+
+**Purpose**: Visual calendar display showing all tour dates across multiple months with interactive navigation.
+
+**Implementation**:
+- **Files**: `Features/Calendar/TourCalendarView.swift`, `Features/Calendar/TourCalendarViewModel.swift`, `Features/Calendar/CalendarModels.swift`
+- **Display**: Swipeable month-by-month calendar with tour dates marked
+- **Features**:
+  - Multi-month tour visualization with only tour-relevant months shown
+  - Venue badges with city/state for multi-night runs
+  - Color-coded tours (current and future tours)
+  - Current day indicator with red circle outline
+  - Smooth TabView swiping between months
+  - Marquee scrolling for long venue names
+
+**Data Flow**:
+- **Source**: Tour dashboard data from `TourDashboardDataClient`
+- **Processing**: Builds calendar months only for months containing tour dates
+- **Display**: Interactive calendar with venue run spanning and tour color coding
+- **Performance**: Efficient rendering with only necessary months displayed
+
+**Visual Design**:
+- Tour dates shown as colored circles matching tour colors
+- Venue badges span across multi-night runs
+- Current day has distinctive red circle outline
+- Non-tour dates shown as plain text
+- Consistent color system using `generateConsistentColor` function
+
+---
+
 ## Architecture Overview
 
 ### iOS App Structure  
@@ -201,6 +246,12 @@ The iOS app follows a component-based architecture with clear functional boundar
 - **Features/YearSelection/**, **Features/MonthSelection/**, **Features/DaySelection/**: Date navigation hierarchy  
 - **Features/Setlist/**: Historical setlist display with detailed track views
 - **Shared**: Uses common services for real-time API coordination
+
+#### **Component D: Tour Calendar**
+- **Features/Calendar/**: Complete calendar implementation with models, views, and view models
+- **CalendarModels.swift**: Data structures for calendar display, venue runs, and tour configuration
+- **TourCalendarView.swift**: SwiftUI calendar interface with month swiping and venue badges
+- **TourCalendarViewModel.swift**: Business logic for calendar data processing and venue run detection
 
 #### **Shared Services Layer**
 
@@ -396,6 +447,14 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - **Testing**: Verify Year/Month/Day navigation flow, historical setlist display
 - **Data Source**: Real-time API calls (not pre-computed like Component B)
 
+#### **Component D: Tour Calendar Development**
+- **Focus Area**: `Features/Calendar/`
+- **Key Services**: `TourCalendarViewModel`, `TourDashboardDataClient`
+- **Testing**: Verify calendar month generation, venue badge spanning, tour color consistency
+- **Data Dependencies**: Uses tour dashboard data including future tours
+- **UI Framework**: SwiftUI-based component integrated into UIKit app
+- **Key Features**: Month swiping, venue run detection, current day highlighting
+
 ### Component Boundaries and Isolation
 
 #### **Shared Resources:**
@@ -408,10 +467,11 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - **Component A**: Can be developed independently - latest show display logic is self-contained
 - **Component B**: Completely independent - only depends on server API, not other components  
 - **Component C**: Independent historical search - shares API layer but separate UI flow
+- **Component D**: Self-contained calendar component - uses tour dashboard data but independent UI
 
 #### **Cross-Component Dependencies:**
 - **None**: Components do not directly depend on each other
-- **Dashboard Integration**: `TourDashboardView` composes all three components but they remain independent
+- **Dashboard Integration**: `TourDashboardView` composes all four components but they remain independent
 - **Shared Services**: Components communicate only through shared services, not direct references
 
 ### Development Best Practices
@@ -435,6 +495,14 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - Handle missing historical data gracefully
 - Consider performance for large year/month selections
 - Reuse setlist display logic from other components where possible
+
+**For Tour Calendar (Component D):**
+- Maintain consistent color generation across tour dates
+- Ensure venue badges properly span multi-night runs
+- Keep current day indicator visually distinct (red circle outline)
+- Optimize calendar month generation to only include tour-relevant months
+- Test swipe navigation performance with multiple months
+- Preserve marquee scrolling for long venue names
 
 ### Tour-Related Functionality
 - **Use TourConfig** for any new tour-related functionality instead of hardcoding values
@@ -460,6 +528,13 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - Use centralized services instead of hardcoded values throughout the codebase
 - Leverage the modular calculator architecture for adding new statistics types
 - Follow the established service layer patterns for API coordination
+
+### Unified Color System
+- **Color Generation**: Use `generateConsistentColor(for:seedText:)` for all dynamic colors
+- **Tour Colors**: Generated using `tourColor(for:tourName:)` function
+- **Color Palette**: Blue, orange, green, purple, teal, indigo (red/pink reserved for UI indicators)
+- **Current Day Indicator**: Red circle outline is reserved exclusively for calendar current day
+- **Consistency**: Same color algorithm used across venue badges, tour dates, and statistics
 
 ## Component Evolution Roadmap
 
@@ -489,6 +564,15 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - **Discovery Features**: "Shows like this one" recommendations
 - **Enhanced Display**: Richer historical context and metadata
 
+### Component D: Tour Calendar Evolution
+**Current State**: Interactive calendar with tour dates, venue badges, and tour color coding
+**Planned Enhancements**:
+- **Show Details on Tap**: Quick access to setlist from calendar date
+- **Tour Filtering**: Toggle visibility of different tours
+- **Historical Tours**: Extend calendar to show past tours
+- **Export Features**: Save tour calendar as image or add to device calendar
+- **Venue Details**: Enhanced venue information in popover views
+
 ### Cross-Component Evolution
 **Shared Enhancements**:
 - **Unified Design Language**: Consistent UI/UX across all components
@@ -499,7 +583,34 @@ Core tour statistics are calculated using specific algorithms and update rules:
 ---
 
 ## Deployment
+
+### Automated Deployment (GitHub Actions)
+**✅ ACTIVE: Automated tour data updates via GitHub Actions**
+
+The system automatically detects and updates tour data 3 times daily:
+- **Midnight EDT**: Post-show detection for East Coast shows
+- **4am EDT**: Late shows and West Coast coverage  
+- **4pm EDT**: Pre-show data refresh and Phish.in retry
+
+**Setup Requirements (One-time):**
+1. **GitHub Secret Configuration**:
+   - Go to Repository Settings → Secrets and variables → Actions
+   - Add secret: `PHISH_NET_API_KEY` = `4771B8589CD3E53848E7`
+
+2. **Workflow File**: Already configured in `.github/workflows/update-tour-data.yml`
+
+3. **Manual Trigger**: Available via Actions tab → "Update Tour Data" → "Run workflow"
+
+**How It Works:**
+1. GitHub Actions runs on schedule
+2. Executes: `update-tour-dashboard` → `initialize-tour-shows` → `generate-stats`
+3. Commits changes only when new shows detected
+4. Vercel auto-deploys updated data
+5. All 4 app components update automatically
+
+### Manual Deployment (Fallback)
 - **Server**: Deployed to Vercel via `npm run deploy`
 - **iOS**: Standard Xcode build and distribution process  
 - **Component B Dependency**: Statistics data regenerated via `npm run generate-stats` and deployment
 - **Component A & C**: No deployment dependencies (use real-time APIs)
+- **Component D**: Uses tour dashboard data, requires `npm run update-tour-dashboard` for data updates
