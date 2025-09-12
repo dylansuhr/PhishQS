@@ -287,8 +287,9 @@ func generateConsistentColor(for identifier: String, seedText: String = "") -> C
     }
     
     // Consistent app-wide color palette (matches venue badge colors and statistics colors)
+    // Red and pink removed to preserve current day indicator distinctiveness
     let appColors: [Color] = [
-        .blue, .orange, .green, .purple, .red, .teal, .pink, .indigo
+        .blue, .orange, .green, .purple, .teal, .indigo
     ]
     return appColors[abs(hash) % appColors.count]
 }
