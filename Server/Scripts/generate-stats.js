@@ -277,25 +277,22 @@ async function generateTourStatisticsFromControlFile() {
         
         console.log(`📊 Show files loaded: ${showsLoaded} successful, ${showsSkipped} skipped`);
         
-        // Validate complete show file coverage - NO FALLBACK
-        if (allTourShows.length < controlFileData.currentTour.playedShows) {
-            const missingShows = controlFileData.currentTour.playedShows - allTourShows.length;
-            const missingDates = [];
-            
-            // Identify which specific shows are missing
-            for (const tourDate of controlFileData.currentTour.tourDates) {
-                if (tourDate.played && !tourDate.showFile) {
-                    missingDates.push(tourDate.date);
-                }
-            }
-            
-            console.error(`❌ SINGLE SOURCE ERROR: Only ${allTourShows.length}/${controlFileData.currentTour.playedShows} show files available.`);
-            console.error(`❌ Missing ${missingShows} shows. The following shows need show files generated:`);
-            missingDates.forEach(date => console.error(`   • ${date}`));
-            console.error(`❌ Please run: npm run initialize-tour-shows`);
-            console.error(`❌ This will create all required show files for the single source architecture.`);
-            
-            throw new Error(`Single source of truth violation: Missing ${missingShows} show files. Run 'npm run initialize-tour-shows' to generate all required files.`);
+        // Check for shows that are played, have show files, but couldn't be loaded
+        // This is more lenient - we only fail if a show file exists but can't be loaded
+        const showsWithFiles = controlFileData.currentTour.tourDates.filter(td => td.played && td.showFile);
+        if (showsLoaded < showsWithFiles.length) {
+            const failedToLoad = showsWithFiles.length - showsLoaded;
+            console.error(`❌ SINGLE SOURCE ERROR: Could not load ${failedToLoad} show files that should exist.`);
+            console.error(`❌ Please check the show files or run: npm run initialize-tour-shows`);
+            throw new Error(`Single source of truth violation: Failed to load ${failedToLoad} existing show files.`);
+        }
+        
+        // Info message about shows without setlists yet (not an error)
+        const showsWithoutSetlists = controlFileData.currentTour.tourDates.filter(td => td.played && !td.showFile);
+        if (showsWithoutSetlists.length > 0) {
+            console.log(`ℹ️  ${showsWithoutSetlists.length} played show(s) don't have setlists yet (likely just finished):`);
+            showsWithoutSetlists.forEach(td => console.log(`   • ${td.date} at ${td.venue}`));
+            console.log(`   These will be processed in the next update once setlist data is available.`);
         }
         
         if (allTourShows.length === 0) {
@@ -312,8 +309,8 @@ async function generateTourStatisticsFromControlFile() {
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 5: Save result to API directory (same output as optimized version)
-        const apiOutputPath = join(__dirname, '..', '..', 'api', 'Data', 'tour-stats.json');
+        // Step 5: Save result to Server/Data directory (single source of truth)
+        const apiOutputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
         
         const jsonData = JSON.stringify(enhancedTourStats, null, 2);
         writeFileSync(apiOutputPath, jsonData);
