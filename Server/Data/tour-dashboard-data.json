@@ -1,315 +1,98 @@
 {
   "currentTour": {
-    "name": "2025 Early Summer Tour",
+    "name": "2025 Late Summer Tour",
     "year": "2025",
-    "totalShows": 23,
-    "playedShows": 23,
-    "startDate": "2025-06-20",
-    "endDate": "2025-07-27",
+    "totalShows": 8,
+    "playedShows": 1,
+    "startDate": "2025-09-12",
+    "endDate": "2025-09-21",
     "tourDates": [
       {
-        "date": "2025-06-20",
-        "venue": "SNHU Arena",
-        "city": "Manchester",
-        "state": "NH",
+        "date": "2025-09-12",
+        "venue": "Highland Festival Grounds at Kentucky Expo Center",
+        "city": "Louisville",
+        "state": "KY",
         "played": true,
         "showNumber": 1,
-        "showFile": "tours/2025-early-summer-tour/show-2025-06-20.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-12.json"
       },
       {
-        "date": "2025-06-21",
-        "venue": "SNHU Arena",
-        "city": "Manchester",
-        "state": "NH",
-        "played": true,
+        "date": "2025-09-13",
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "played": false,
         "showNumber": 2,
-        "showFile": "tours/2025-early-summer-tour/show-2025-06-21.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-13.json"
       },
       {
-        "date": "2025-06-22",
-        "venue": "SNHU Arena",
-        "city": "Manchester",
-        "state": "NH",
-        "played": true,
+        "date": "2025-09-14",
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "played": false,
         "showNumber": 3,
-        "showFile": "tours/2025-early-summer-tour/show-2025-06-22.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-14.json"
       },
       {
-        "date": "2025-06-24",
-        "venue": "Petersen Events Center",
-        "city": "Pittsburgh",
-        "state": "PA",
-        "played": true,
+        "date": "2025-09-16",
+        "venue": "Ameris Bank Amphitheatre",
+        "city": "Alpharetta",
+        "state": "GA",
+        "played": false,
         "showNumber": 4,
-        "showFile": "tours/2025-early-summer-tour/show-2025-06-24.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-16.json"
       },
       {
-        "date": "2025-06-27",
-        "venue": "Moody Center",
-        "city": "Austin",
-        "state": "TX",
-        "played": true,
+        "date": "2025-09-17",
+        "venue": "Ameris Bank Amphitheatre",
+        "city": "Alpharetta",
+        "state": "GA",
+        "played": false,
         "showNumber": 5,
-        "showFile": "tours/2025-early-summer-tour/show-2025-06-27.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-17.json"
       },
       {
-        "date": "2025-06-28",
-        "venue": "Moody Center",
-        "city": "Austin",
-        "state": "TX",
-        "played": true,
+        "date": "2025-09-19",
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "played": false,
         "showNumber": 6,
-        "showFile": "tours/2025-early-summer-tour/show-2025-06-28.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-19.json"
       },
       {
-        "date": "2025-07-03",
-        "venue": "Folsom Field",
-        "city": "Boulder",
-        "state": "CO",
-        "played": true,
+        "date": "2025-09-20",
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "played": false,
         "showNumber": 7,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-03.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-20.json"
       },
       {
-        "date": "2025-07-04",
-        "venue": "Folsom Field",
-        "city": "Boulder",
-        "state": "CO",
-        "played": true,
+        "date": "2025-09-21",
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "played": false,
         "showNumber": 8,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-04.json"
-      },
-      {
-        "date": "2025-07-05",
-        "venue": "Folsom Field",
-        "city": "Boulder",
-        "state": "CO",
-        "played": true,
-        "showNumber": 9,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-05.json"
-      },
-      {
-        "date": "2025-07-09",
-        "venue": "Jerome Schottenstein Center",
-        "city": "Columbus",
-        "state": "OH",
-        "played": true,
-        "showNumber": 10,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-09.json"
-      },
-      {
-        "date": "2025-07-11",
-        "venue": "North Charleston Coliseum",
-        "city": "North Charleston",
-        "state": "SC",
-        "played": true,
-        "showNumber": 11,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-11.json"
-      },
-      {
-        "date": "2025-07-12",
-        "venue": "North Charleston Coliseum",
-        "city": "North Charleston",
-        "state": "SC",
-        "played": true,
-        "showNumber": 12,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-12.json"
-      },
-      {
-        "date": "2025-07-13",
-        "venue": "North Charleston Coliseum",
-        "city": "North Charleston",
-        "state": "SC",
-        "played": true,
-        "showNumber": 13,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-13.json"
-      },
-      {
-        "date": "2025-07-15",
-        "venue": "TD Pavilion at the Mann",
-        "city": "Philadelphia",
-        "state": "PA",
-        "played": true,
-        "showNumber": 14,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-15.json"
-      },
-      {
-        "date": "2025-07-16",
-        "venue": "TD Pavilion at the Mann",
-        "city": "Philadelphia",
-        "state": "PA",
-        "played": true,
-        "showNumber": 15,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-16.json"
-      },
-      {
-        "date": "2025-07-18",
-        "venue": "United Center",
-        "city": "Chicago",
-        "state": "IL",
-        "played": true,
-        "showNumber": 16,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-18.json"
-      },
-      {
-        "date": "2025-07-19",
-        "venue": "United Center",
-        "city": "Chicago",
-        "state": "IL",
-        "played": true,
-        "showNumber": 17,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-19.json"
-      },
-      {
-        "date": "2025-07-20",
-        "venue": "United Center",
-        "city": "Chicago",
-        "state": "IL",
-        "played": true,
-        "showNumber": 18,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-20.json"
-      },
-      {
-        "date": "2025-07-22",
-        "venue": "Forest Hills Stadium",
-        "city": "Forest Hills",
-        "state": "NY",
-        "played": true,
-        "showNumber": 19,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-22.json"
-      },
-      {
-        "date": "2025-07-23",
-        "venue": "Forest Hills Stadium",
-        "city": "Forest Hills",
-        "state": "NY",
-        "played": true,
-        "showNumber": 20,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-23.json"
-      },
-      {
-        "date": "2025-07-25",
-        "venue": "Broadview Stage at SPAC",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "played": true,
-        "showNumber": 21,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-25.json"
-      },
-      {
-        "date": "2025-07-26",
-        "venue": "Broadview Stage at SPAC",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "played": true,
-        "showNumber": 22,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-26.json"
-      },
-      {
-        "date": "2025-07-27",
-        "venue": "Broadview Stage at SPAC",
-        "city": "Saratoga Springs",
-        "state": "NY",
-        "played": true,
-        "showNumber": 23,
-        "showFile": "tours/2025-early-summer-tour/show-2025-07-27.json"
+        "showFile": "tours/2025-late-summer-tour/show-2025-09-21.json"
       }
     ]
   },
   "latestShow": {
-    "date": "2025-07-27",
-    "venue": "Broadview Stage at SPAC",
-    "city": "Saratoga Springs",
-    "state": "NY",
+    "date": "2025-09-12",
+    "venue": "Highland Festival Grounds at Kentucky Expo Center",
+    "city": "Louisville",
+    "state": "KY",
     "tourPosition": {
-      "showNumber": 23,
-      "totalShows": 23,
-      "tourName": "2025 Early Summer Tour"
+      "showNumber": 1,
+      "totalShows": 8,
+      "tourName": "2025 Late Summer Tour"
     }
   },
   "futureTours": [
-    {
-      "name": "2025 Late Summer Tour",
-      "year": "2025",
-      "totalShows": 8,
-      "playedShows": 0,
-      "startDate": "2025-09-12",
-      "endDate": "2025-09-21",
-      "tourDates": [
-        {
-          "date": "2025-09-12",
-          "venue": "Highland Festival Grounds at Kentucky Expo Center",
-          "city": "Louisville",
-          "state": "KY",
-          "played": false,
-          "showNumber": 1,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-12.json"
-        },
-        {
-          "date": "2025-09-13",
-          "venue": "Coca-Cola Amphitheater",
-          "city": "Birmingham",
-          "state": "AL",
-          "played": false,
-          "showNumber": 2,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-13.json"
-        },
-        {
-          "date": "2025-09-14",
-          "venue": "Coca-Cola Amphitheater",
-          "city": "Birmingham",
-          "state": "AL",
-          "played": false,
-          "showNumber": 3,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-14.json"
-        },
-        {
-          "date": "2025-09-16",
-          "venue": "Ameris Bank Amphitheatre",
-          "city": "Alpharetta",
-          "state": "GA",
-          "played": false,
-          "showNumber": 4,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-16.json"
-        },
-        {
-          "date": "2025-09-17",
-          "venue": "Ameris Bank Amphitheatre",
-          "city": "Alpharetta",
-          "state": "GA",
-          "played": false,
-          "showNumber": 5,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-17.json"
-        },
-        {
-          "date": "2025-09-19",
-          "venue": "Hampton Coliseum",
-          "city": "Hampton",
-          "state": "VA",
-          "played": false,
-          "showNumber": 6,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-19.json"
-        },
-        {
-          "date": "2025-09-20",
-          "venue": "Hampton Coliseum",
-          "city": "Hampton",
-          "state": "VA",
-          "played": false,
-          "showNumber": 7,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-20.json"
-        },
-        {
-          "date": "2025-09-21",
-          "venue": "Hampton Coliseum",
-          "city": "Hampton",
-          "state": "VA",
-          "played": false,
-          "showNumber": 8,
-          "showFile": "tours/2025-late-summer-tour/show-2025-09-21.json"
-        }
-      ]
-    },
     {
       "name": "2026 Mexico",
       "year": "2026",
@@ -358,9 +141,30 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-09-09T18:16:33.172Z",
+    "lastUpdated": "2025-09-13T16:07:01.448Z",
     "dataVersion": "1.0",
-    "updateReason": "future_tours_changed",
-    "nextShow": null
+    "updateReason": "new_show",
+    "nextShow": {
+      "date": "2025-09-13",
+      "venue": "Coca-Cola Amphitheater",
+      "city": "Birmingham",
+      "state": "AL"
+    }
+  },
+  "updateTracking": {
+    "lastAPICheck": "2025-09-13T16:07:12.949Z",
+    "latestShowFromAPI": "2025-09-12",
+    "pendingDurationChecks": [
+      "2025-09-12"
+    ],
+    "individualShows": {
+      "2025-09-12": {
+        "exists": true,
+        "lastUpdated": "2025-09-13T16:07:12.949Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
+      }
+    }
   }
 }
