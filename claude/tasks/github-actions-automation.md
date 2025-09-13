@@ -70,18 +70,26 @@ defaultApiKey: process.env.PHISH_NET_API_KEY || '4771B8589CD3E53848E7',
 - **4am EDT** (8am UTC): Late shows and West Coast coverage
 - **4pm EDT** (8pm UTC): Pre-show data refresh and Phish.in retry logic
 
-### Data Flow Analysis
-**Tonight's Expected Behavior (2025-09-12 Louisville show)**:
-1. Midnight run detects new show vs previous 2025-07-27
-2. Creates "2025 Late Summer Tour" (dynamic from Phish.net API)
-3. Generates show file with setlist data (durations empty initially)
-4. Updates statistics:
-   - ✅ Rarest songs: 3 highest gaps from tonight's show
-   - ✅ Most played songs: from tonight's setlist (1 play each, or 2 if repeats)
-   - ❌ Longest songs: empty until Phish.in data arrives
-5. Calendar displays: September 2025 + January 2026 months only
-6. Commits trigger Vercel deployment
-7. All app components update within minutes
+### Data Flow Analysis - SETLIST-BASED DETECTION IMPLEMENTED
+**System Enhancement (2025-09-13)**:
+✅ **CRITICAL FIX**: Implemented setlist-based played detection instead of timezone-prone date comparisons
+- **Root Cause**: Scripts used `showdate <= today` causing 9/13 show to be marked "played" at midnight EDT
+- **Solution**: Now uses Phish.net setlist API - only shows with actual song data are marked as played
+- **Benefits**: Eliminates timezone issues, uses single source of truth (API data)
+
+**Current State (After Fix)**:
+1. ✅ **9/12 Louisville Show**: Correctly detected as PLAYED (19 songs in setlist)
+2. ✅ **9/13 Birmingham Show**: Correctly shows as NOT PLAYED YET (0 songs until show ends)
+3. ✅ **Latest Show**: 2025-09-12 (not incorrectly showing 9/13)
+4. ✅ **Tour Dashboard**: 2025 Late Summer Tour - 1/8 shows played
+5. ✅ **Statistics**: Generated from 9/12 show only (Dreams - gap 218 as top rare song)
+6. ✅ **All Scripts**: Pass full sequence test without errors
+
+**Tonight's Expected Behavior (2025-09-13 Birmingham show)**:
+1. Midnight automation checks setlist API for 2025-09-13
+2. If show has ended: setlist data exists → process as new played show
+3. If show hasn't ended: no setlist data → wait for next run
+4. Updates will include both 9/12 + 9/13 show data when available
 
 ### Component Impact Verification
 **Component A (Tour Setlist Browser)**:
@@ -116,11 +124,13 @@ defaultApiKey: process.env.PHISH_NET_API_KEY || '4771B8589CD3E53848E7',
 - Verified data flows correctly through all components
 - Tested visual handling of missing duration data
 
-### Post-Implementation Testing Plan
-1. **Manual Trigger Test**: Use GitHub Actions "Run workflow" to test immediately
-2. **Schedule Verification**: Confirm midnight run catches tonight's Louisville show
-3. **Component Integration**: Verify all 4 components display new tour correctly
-4. **Phish.in Retry**: Confirm subsequent runs fill in durations when available
+### Post-Implementation Testing ✅ COMPLETED
+1. ✅ **Manual Trigger Test**: All scripts run successfully in sequence
+2. ✅ **Component Integration**: All 4 components display 2025 Late Summer Tour correctly
+3. ✅ **API Endpoints**: Both tour-dashboard and tour-statistics serve correct data
+4. ✅ **Setlist Detection**: Properly identifies 9/12 as played, 9/13 as not played yet
+5. ✅ **Error Resolution**: Fixed GitHub Actions automation failure caused by timezone issues
+6. ✅ **Comprehensive Verification**: System ready for tonight's automated run
 
 ## Future Maintenance
 - **Zero maintenance required** after GitHub secret setup
@@ -135,10 +145,19 @@ defaultApiKey: process.env.PHISH_NET_API_KEY || '4771B8589CD3E53848E7',
 - ✅ **GitHub Secret**: Configured and active
 - 🚀 **FULLY AUTOMATED**: System is live and operational
 
-## Automation Active
-✅ GitHub secret `PHISH_NET_API_KEY` configured
-✅ Automation running 3x daily (midnight, 4am, 4pm EDT)
-✅ Manual trigger available via Actions tab
-✅ Ready for automatic show detection and updates
+## Automation Active - FULLY OPERATIONAL
+✅ **GitHub secret `PHISH_NET_API_KEY`**: Configured and tested
+✅ **Automation schedule**: Running 3x daily (midnight, 4am, 4pm EDT)  
+✅ **Manual trigger**: Available via Actions tab
+✅ **Setlist-based detection**: Implemented and verified
+✅ **Error resolution**: Timezone issues fixed
+✅ **Comprehensive testing**: All systems verified operational
+✅ **Ready for production**: Tonight's show will be processed correctly
 
-This implementation leverages the existing architecture perfectly and requires minimal code changes while providing maximum automation value.
+## Technical Achievements
+- **Fixed critical automation failure**: Resolved timezone-based date comparison issues
+- **Implemented robust detection**: Uses Phish.net setlist API as single source of truth
+- **Verified end-to-end functionality**: All scripts, APIs, and app components working correctly
+- **Zero-maintenance system**: Fully automated with proper error handling and fallbacks
+
+This implementation leverages the existing architecture perfectly, uses minimal code changes, and provides maximum automation value with bulletproof reliability.
