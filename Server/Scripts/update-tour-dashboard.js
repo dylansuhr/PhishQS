@@ -159,9 +159,21 @@ async function findLatestTourFromHistory(startYear) {
             const yearShows = await apiClient.fetchShows(year.toString());
             const phishShows = filterPhishShows(yearShows);
             
-            // Only look at played shows from this year
-            const today = new Date().toISOString().split('T')[0];
-            const playedShows = phishShows.filter(show => show.showdate <= today);
+            // Check which shows actually have setlist data (played shows)
+            const playedShows = [];
+            
+            // Check setlist data for all shows to determine which are played
+            for (const show of phishShows) {
+                try {
+                    const setlist = await apiClient.fetchSetlist(show.showdate);
+                    if (setlist && setlist.length > 0) {
+                        playedShows.push(show);
+                    }
+                } catch (error) {
+                    // No setlist = not played yet
+                    continue;
+                }
+            }
             
             if (playedShows.length > 0) {
                 // Found played shows! Use latest one
@@ -220,12 +232,15 @@ async function fetchFutureYears(apiClient, startYear, yearsAhead = 3) {
 
 /**
  * Determine the current tour based on the latest played show
+ * NOTE: This is a fallback function - main determination should use setlist data
  */
 function determineCurrentTour(shows) {
-    const today = new Date().toISOString().split('T')[0];
+    // This function is used as fallback when we already have show data
+    // For proper determination, use determineCurrentTourFromHistory which checks setlists
     
-    // Find shows that have been played (date <= today)
-    const playedShows = shows.filter(show => show.showdate <= today);
+    // For this fallback, use strict date comparison (< not <=) to avoid timezone issues
+    const today = new Date().toISOString().split('T')[0];
+    const playedShows = shows.filter(show => show.showdate < today);
     
     if (playedShows.length === 0) {
         // No shows played yet, find first upcoming tour
@@ -282,7 +297,7 @@ function buildTourData(shows, tourName, options = {}) {
             venue: show.venue || 'Unknown Venue',
             city: show.city || '',
             state: show.state || '',
-            played: played !== null ? played : show.showdate <= today,
+            played: played !== null ? played : show.showdate < today,
             showNumber: index + 1
         };
         

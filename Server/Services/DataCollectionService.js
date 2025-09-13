@@ -56,24 +56,32 @@ export class DataCollectionService {
         const tourShows = allYearShows.filter(show => show.tourname === tourName);
         console.log(`   🎪 Filtered to ${tourShows.length} ${tourName} shows`);
         
-        // Get the current date to filter played vs future shows
-        const today = new Date().toISOString().split('T')[0];
-        const playedShows = tourShows.filter(show => show.showdate <= today);
-        const futureShows = tourShows.filter(show => show.showdate > today);
-        console.log(`   📊 ${playedShows.length} played shows, ${futureShows.length} future shows`);
-        
-        // Step 3: Collect setlists for all played shows (multiple API calls, but only for played shows)
-        console.log('   🎯 Step 2: Fetching setlists for played shows...');
+        // Step 3: Collect setlists for ALL tour shows to determine which are actually played
+        console.log('   🎯 Step 2: Fetching setlists to determine played status...');
         const setlistsMap = new Map();
-        const setlistPromises = playedShows.map(async (show) => {
+        const playedShows = [];
+        const futureShows = [];
+        
+        const setlistPromises = tourShows.map(async (show) => {
             try {
                 const setlist = await this.phishNetClient.fetchSetlist(show.showdate);
                 setlistsMap.set(show.showdate, setlist);
-                console.log(`     📋 ${show.showdate}: ${setlist.length} songs`);
+                
+                // Determine played status based on setlist data
+                if (setlist.length > 0) {
+                    playedShows.push(show);
+                    console.log(`     📋 ${show.showdate}: ${setlist.length} songs (PLAYED)`);
+                } else {
+                    futureShows.push(show);
+                    console.log(`     📋 ${show.showdate}: 0 songs (NOT PLAYED)`);
+                }
+                
                 return { date: show.showdate, setlist };
             } catch (error) {
-                console.log(`     ⚠️  ${show.showdate}: No setlist available - ${error.message}`);
+                // No setlist available - treat as not played
+                futureShows.push(show);
                 setlistsMap.set(show.showdate, []);
+                console.log(`     ⚠️  ${show.showdate}: No setlist available (NOT PLAYED) - ${error.message}`);
                 return { date: show.showdate, setlist: [] };
             }
         });
@@ -81,6 +89,7 @@ export class DataCollectionService {
         // Wait for all setlist fetches to complete
         await Promise.allSettled(setlistPromises);
         console.log(`   ✅ Collected setlists for ${setlistsMap.size} shows`);
+        console.log(`   📊 ${playedShows.length} played shows, ${futureShows.length} future shows (determined from setlist data)`);
         
         // Step 4: Collect Phish.in enhancement data for all played shows (AUDIO DATA ONLY)
         console.log('   🎯 Step 3: Fetching Phish.in audio enhancement data (durations + recordings only)...');
