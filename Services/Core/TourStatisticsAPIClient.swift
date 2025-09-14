@@ -25,10 +25,8 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
     /// Base URL for the Vercel serverless functions
     internal let baseURL: String = {
         #if DEBUG
-        // TEMPORARY: Use production for testing top 10 feature (revert after testing)
-        return "https://phish-qs.vercel.app"
+        return "http://localhost:3000"
         #else
-        // Production Vercel deployment URL
         return "https://phish-qs.vercel.app"
         #endif
     }()
