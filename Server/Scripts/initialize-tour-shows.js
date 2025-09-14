@@ -36,6 +36,68 @@ const CONFIG = {
 };
 
 /**
+ * Check if a show file needs updating by comparing existing content with new data
+ *
+ * This optimization prevents unnecessary file rewrites when show data hasn't changed.
+ *
+ * @param {string} filePath - Path to the show file
+ * @param {Object} newShowData - New show data to compare
+ * @returns {{shouldUpdate: boolean, reason: string}}
+ */
+function checkShowFileNeedsUpdate(filePath, newShowData) {
+    // Always update if file doesn't exist
+    if (!existsSync(filePath)) {
+        return { shouldUpdate: true, reason: 'Show file created (new)' };
+    }
+
+    try {
+        // Load existing show file
+        const existingData = JSON.parse(readFileSync(filePath, 'utf8'));
+
+        // Compare key data completeness indicators
+        const existingComplete = existingData.metadata?.dataComplete || false;
+        const newComplete = newShowData.metadata?.dataComplete || false;
+
+        // If new data is more complete, update
+        if (!existingComplete && newComplete) {
+            return { shouldUpdate: true, reason: 'Show file updated (data now complete)' };
+        }
+
+        // Compare data availability flags
+        const existingDurations = existingData.metadata?.hasDurationData || false;
+        const newDurations = newShowData.metadata?.hasDurationData || false;
+
+        if (!existingDurations && newDurations) {
+            return { shouldUpdate: true, reason: 'Show file updated (durations now available)' };
+        }
+
+        // Compare setlist item count (basic change detection)
+        const existingSetlistCount = existingData.setlistItems?.length || 0;
+        const newSetlistCount = newShowData.setlistItems?.length || 0;
+
+        if (existingSetlistCount !== newSetlistCount) {
+            return { shouldUpdate: true, reason: `Show file updated (setlist changed: ${existingSetlistCount} → ${newSetlistCount} songs)` };
+        }
+
+        // Compare track durations count
+        const existingDurationCount = existingData.trackDurations?.length || 0;
+        const newDurationCount = newShowData.trackDurations?.length || 0;
+
+        if (existingDurationCount !== newDurationCount) {
+            return { shouldUpdate: true, reason: `Show file updated (durations changed: ${existingDurationCount} → ${newDurationCount} tracks)` };
+        }
+
+        // If we reach here, no significant changes detected
+        return { shouldUpdate: false, reason: 'Show file skipped (no changes detected)' };
+
+    } catch (error) {
+        // If we can't read existing file, recreate it
+        console.warn(`⚠️ Error reading existing show file ${filePath}: ${error.message}`);
+        return { shouldUpdate: true, reason: 'Show file recreated (error reading existing)' };
+    }
+}
+
+/**
  * Initialize all tour show files from the control file
  */
 async function initializeTourShows() {
@@ -79,6 +141,7 @@ async function initializeTourShows() {
         const updatedTourDates = [];
         const individualShowsTracking = {};
         let showsCreated = 0;
+        let showsUpdated = 0;
         let showsSkipped = 0;
         let showsWithPartialData = 0;
         
@@ -118,7 +181,7 @@ async function initializeTourShows() {
                     // Create show file
                     const showFileName = `show-${tourDate.date}.json`;
                     const showFilePath = join(tourShowsDir, showFileName);
-                    
+
                     const showFileData = {
                         showDate: enhancedSetlist.showDate,
                         venue: tourDate.venue,
@@ -140,33 +203,45 @@ async function initializeTourShows() {
                             hasGapData: hasGapData
                         }
                     };
-                    
-                    // Write show file
-                    writeFileSync(showFilePath, JSON.stringify(showFileData, null, 2));
-                    
+
+                    // OPTIMIZATION: Check if show file needs updating
+                    const updateCheck = checkShowFileNeedsUpdate(showFilePath, showFileData);
+                    if (updateCheck.shouldUpdate) {
+                        // Write show file only if it needs updating
+                        writeFileSync(showFilePath, JSON.stringify(showFileData, null, 2));
+                        console.log(`   📝 ${updateCheck.reason}`);
+
+                        if (updateCheck.reason.includes('created (new)')) {
+                            showsCreated++;
+                        } else {
+                            showsUpdated++;
+                        }
+                    } else {
+                        console.log(`   ⏭️  ${updateCheck.reason}`);
+                        // File exists and no update needed - count as processed but not created/updated
+                    }
+
                     // Update tour date with show file reference
                     const updatedTourDate = {
                         ...tourDate,
                         showFile: `tours/${tourSlug}/${showFileName}`
                     };
                     updatedTourDates.push(updatedTourDate);
-                    
+
                     // Track individual show status for smart updates
                     individualShowsTracking[tourDate.date] = {
                         exists: true,
-                        lastUpdated: new Date().toISOString(),
+                        lastUpdated: updateCheck.shouldUpdate ? new Date().toISOString() : (existsSync(showFilePath) ? readFileSync(showFilePath, 'utf8').match(/"lastUpdated":\s*"([^"]+)"/)?.[1] || new Date().toISOString() : new Date().toISOString()),
                         durationsAvailable: durationsAvailable,
                         dataComplete: dataComplete,
                         needsUpdate: !dataComplete // Need update if data is incomplete
                     };
-                    
-                    showsCreated++;
-                    
+
                     if (!dataComplete) {
                         showsWithPartialData++;
-                        console.log(`   ⏳ Show file created with partial data (setlist: ${hasSetlistData}, durations: ${hasDurationData}, gaps: ${hasGapData})`);
+                        console.log(`   ⏳ Show file has partial data (setlist: ${hasSetlistData}, durations: ${hasDurationData}, gaps: ${hasGapData})`);
                     } else {
-                        console.log(`   ✅ Complete show file created (${enhancedSetlist.setlistItems.length} songs, ${enhancedSetlist.trackDurations.length} durations, ${enhancedSetlist.songGaps.length} gaps)`);
+                        console.log(`   ✅ Complete show file (${enhancedSetlist.setlistItems.length} songs, ${enhancedSetlist.trackDurations.length} durations, ${enhancedSetlist.songGaps.length} gaps)`);
                     }
                     
                 } catch (error) {
@@ -202,12 +277,15 @@ async function initializeTourShows() {
         console.timeEnd('🚀 Total Initialization Time');
         console.log('\\n✅ Tour show files initialization completed!');
         console.log(`📊 Results:`);
-        console.log(`   🎯 Shows created: ${showsCreated}`);
+        console.log(`   🆕 Shows created: ${showsCreated}`);
+        console.log(`   📝 Shows updated: ${showsUpdated}`);
+        console.log(`   ⏭️  Shows skipped (no changes): ${controlFileData.currentTour.playedShows - showsCreated - showsUpdated - showsSkipped}`);
         console.log(`   ⏳ Shows with partial data: ${showsWithPartialData}`);
-        console.log(`   ❌ Shows skipped: ${showsSkipped}`);
+        console.log(`   ❌ Shows failed: ${showsSkipped}`);
         console.log(`📁 Show files location: ${tourShowsDir}`);
         console.log(`🔄 Control file updated with show file references and smart tracking flags`);
         console.log(`🚀 API Performance: ${dataContext.apiCalls.total} total calls for entire tour`);
+        console.log(`✨ Optimization: Only ${showsCreated + showsUpdated} of ${controlFileData.currentTour.playedShows} shows required file writes`);
         
         if (showsWithPartialData > 0) {
             console.log(`\\n🔍 Next steps:`);

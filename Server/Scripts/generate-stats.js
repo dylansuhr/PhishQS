@@ -199,17 +199,18 @@ async function generateTourStatisticsOptimized() {
 
 /**
  * SINGLE SOURCE: Generate tour statistics using control file + individual show files
- * 
+ *
  * This version implements the "Current Tour Single Source of Truth" architecture.
  * Instead of making API calls, it reads data from the control file and individual
  * show files created by the update-tour-dashboard.js script.
- * 
+ *
  * Performance improvements:
  * - Zero API calls (100% reduction from optimized version)
  * - No network latency (instant data access)
  * - Consistent data with Component A
  * - Same exact output format as previous functions
- * 
+ * - SMART EARLY EXIT: Skip processing if latest show unchanged
+ *
  * Architecture:
  * - Control file: Server/Data/tour-dashboard-data.json (tour orchestration)
  * - Show files: Server/Data/tours/[tour-name]/show-YYYY-MM-DD.json (detailed setlist data)
@@ -218,17 +219,29 @@ async function generateTourStatisticsFromControlFile() {
     try {
         console.log('🎯 Starting SINGLE SOURCE tour statistics generation...');
         console.time('🎯 Total Generation Time');
-        
+
         // Step 1: Read control file for tour orchestration
         const controlFilePath = join(__dirname, '..', 'Data', 'tour-dashboard-data.json');
-        
+
         if (!existsSync(controlFilePath)) {
             throw new Error(`Control file not found: ${controlFilePath}. Please run 'npm run update-tour-dashboard' first.`);
         }
-        
+
         console.log('📖 Reading tour control file...');
         const controlFileData = JSON.parse(readFileSync(controlFilePath, 'utf8'));
         const tourName = controlFileData.currentTour.name;
+
+        // OPTIMIZATION: Early exit if statistics don't need updating
+        console.log('🔍 Checking if statistics update is needed...');
+        const updateCheck = await checkIfStatisticsUpdateNeeded(controlFileData);
+        if (!updateCheck.shouldUpdate) {
+            console.timeEnd('🎯 Total Generation Time');
+            console.log(`ℹ️ Statistics update not needed: ${updateCheck.reason}`);
+            console.log('✅ Early exit - no processing required');
+            return;
+        }
+
+        console.log(`🎯 Statistics update needed: ${updateCheck.reason}`);
         
         console.log(`📍 Tour identified from control file: ${tourName}`);
         console.log(`🎪 Tour shows: ${controlFileData.currentTour.playedShows} played of ${controlFileData.currentTour.totalShows} total`);
@@ -309,7 +322,15 @@ async function generateTourStatisticsFromControlFile() {
         // Step 5: Save result to Server/Data directory (single source of truth)
         const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
 
-        const jsonData = JSON.stringify(enhancedTourStats, null, 2);
+        // Add tracking information for future optimization checks
+        const statisticsWithTracking = {
+            ...enhancedTourStats,
+            latestShowProcessed: controlFileData.latestShow.date,
+            generatedAt: new Date().toISOString(),
+            tourName: tourName // Ensure tour name is preserved
+        };
+
+        const jsonData = JSON.stringify(statisticsWithTracking, null, 2);
         writeFileSync(outputPath, jsonData);
 
         console.timeEnd('🎯 Total Generation Time');
@@ -326,6 +347,61 @@ async function generateTourStatisticsFromControlFile() {
         console.error('❌ Error generating single source tour statistics:', error);
         console.error('Stack trace:', error.stack);
         process.exit(1);
+    }
+}
+
+/**
+ * Check if statistics update is needed by comparing latest show with existing statistics
+ *
+ * This is the key optimization: if the latest show hasn't changed, statistics can't change.
+ *
+ * @param {Object} controlFileData - Tour dashboard control data
+ * @returns {Promise<{shouldUpdate: boolean, reason: string}>}
+ */
+async function checkIfStatisticsUpdateNeeded(controlFileData) {
+    const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
+
+    // Always update if no existing statistics file
+    if (!existsSync(outputPath)) {
+        return { shouldUpdate: true, reason: 'no_existing_statistics_file' };
+    }
+
+    try {
+        // Load existing statistics
+        const existingStats = JSON.parse(readFileSync(outputPath, 'utf8'));
+
+        // Get current latest show from control file
+        const currentLatestShow = controlFileData.latestShow;
+
+        if (!currentLatestShow) {
+            return { shouldUpdate: true, reason: 'no_latest_show_in_control_file' };
+        }
+
+        // Check if latest show has changed since last statistics generation
+        const existingLatestShow = existingStats.latestShowProcessed;
+
+        if (!existingLatestShow) {
+            // Old format statistics file - needs update to track latest show
+            return { shouldUpdate: true, reason: 'statistics_format_upgrade_needed' };
+        }
+
+        if (existingLatestShow !== currentLatestShow.date) {
+            return {
+                shouldUpdate: true,
+                reason: `latest_show_changed (${existingLatestShow} → ${currentLatestShow.date})`
+            };
+        }
+
+        // Latest show unchanged - no statistics update needed
+        return {
+            shouldUpdate: false,
+            reason: `latest_show_unchanged (${currentLatestShow.date})`
+        };
+
+    } catch (error) {
+        // If we can't read existing statistics, regenerate them
+        console.warn(`⚠️ Error reading existing statistics: ${error.message}`);
+        return { shouldUpdate: true, reason: 'error_reading_existing_statistics' };
     }
 }
 
