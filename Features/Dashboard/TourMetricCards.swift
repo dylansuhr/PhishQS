@@ -14,7 +14,7 @@ struct LongestSongsCard: View {
     var body: some View {
         MetricCard("Longest Songs") {
             if songs.isEmpty {
-                Text("No duration data available")
+                Text("Still waiting...for Phish.in song length data")
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .italic()

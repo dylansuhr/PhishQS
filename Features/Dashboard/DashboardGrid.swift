@@ -21,6 +21,7 @@ struct DashboardGrid<Content: View>: View {
                 content
             }
             .padding()
+            .padding(.top, 20) // Additional top padding for blue header area
         }
         .background(Color(.systemGray6))
     }

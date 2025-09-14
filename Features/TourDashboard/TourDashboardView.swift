@@ -11,12 +11,12 @@ struct TourDashboardView: View {
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
             }
-            
+
             // Tour Calendar (Component D)
             DashboardSection {
                 TourCalendarCard()
             }
-            
+
             // Tour Statistics Cards
             if let statistics = latestSetlistViewModel.tourStatistics, statistics.hasData {
                 DashboardSection {
@@ -34,13 +34,21 @@ struct TourDashboardView: View {
                     )
                 }
             }
-            
+
             // Search Action Card
             DashboardSection {
                 SearchActionCard(showingDateSearch: $showingDateSearch)
             }
         }
+        .background(
+            // Blue background extending into safe area for status bar visibility
+            Color.appHeaderBlue
+                .ignoresSafeArea(.container, edges: .top)
+        )
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarBackground(Color.appHeaderBlue, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .preferredColorScheme(.dark) // Ensures white status bar content on blue background
         .sheet(isPresented: $showingDateSearch) {
             NavigationStack {
                 YearListView()
