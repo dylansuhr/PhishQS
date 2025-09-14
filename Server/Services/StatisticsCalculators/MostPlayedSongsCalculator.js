@@ -5,7 +5,7 @@
  * across all shows in a tour. Identifies which songs appear most often
  * to highlight tour favorites and recurring themes.
  * 
- * Data Source: Song names from track durations (Phish.in) or setlist items (Phish.net)
+ * Data Source: Song names from setlist items (Phish.net)
  * Algorithm: Count frequency of each unique song, sort by play count
  * Business Logic: More plays = tour staples, fan favorites, or thematic elements
  */
@@ -53,55 +53,55 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
     
     /**
      * Process a single show and update song frequency counts
-     * 
-     * Counts each unique song played in the show. Uses track durations
-     * as the primary source since they contain the most complete song data
-     * with proper song identification.
-     * 
+     *
+     * Counts each unique song played in the show. Uses setlist items
+     * from Phish.net as the primary source since they contain complete
+     * song data with proper song identification.
+     *
      * @param {Object} show - Enhanced setlist data for one show
      * @param {Object} dataContainer - Data collection container
      */
     processShow(show, dataContainer) {
         const { songPlayCounts, allTourShows } = dataContainer;
-        
+
         // Add this show to the collection for finding most recent performances
         allTourShows.push(show);
-        
-        // Count song frequencies using track durations as primary source
-        if (show.trackDurations && Array.isArray(show.trackDurations)) {
-            
-            this.log(`🎵 Processing ${show.trackDurations.length} tracks from ${show.showDate}`);
-            
-            show.trackDurations.forEach(track => {
-                const songKey = track.songName.toLowerCase();
-                
+
+        // Count song frequencies using setlist items from Phish.net
+        if (show.setlistItems && Array.isArray(show.setlistItems)) {
+
+            this.log(`🎵 Processing ${show.setlistItems.length} songs from ${show.showDate}`);
+
+            show.setlistItems.forEach(item => {
+                const songKey = item.song.toLowerCase();
+
                 if (songPlayCounts.has(songKey)) {
                     // Increment existing song count and update most recent show if this is newer
                     const existing = songPlayCounts.get(songKey);
                     const isMoreRecent = new Date(show.showDate) >= new Date(existing.mostRecentShow?.showDate || '1970-01-01');
-                    
+
                     songPlayCounts.set(songKey, {
                         count: existing.count + 1,
-                        songId: existing.songId || track.songId,
-                        songName: track.songName, // Keep original case formatting
+                        songId: existing.songId || item.songid,
+                        songName: item.song, // Keep original case formatting
                         mostRecentShow: isMoreRecent ? show : existing.mostRecentShow
                     });
-                    
-                    this.log(`📈 ${track.songName}: ${existing.count} → ${existing.count + 1} plays`);
+
+                    this.log(`📈 ${item.song}: ${existing.count} → ${existing.count + 1} plays`);
                 } else {
                     // First occurrence of this song
                     songPlayCounts.set(songKey, {
                         count: 1,
-                        songId: track.songId,
-                        songName: track.songName,
+                        songId: item.songid,
+                        songName: item.song,
                         mostRecentShow: show
                     });
-                    
-                    this.log(`➕ ${track.songName}: First play tracked`);
+
+                    this.log(`➕ ${item.song}: First play tracked`);
                 }
             });
         } else {
-            this.log(`⚠️  No track duration data available for ${show.showDate}`);
+            this.log(`⚠️  No setlist data available for ${show.showDate}`);
         }
     }
     
@@ -170,18 +170,18 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
         if (!super.validateInput(tourShows, tourName)) {
             return false;
         }
-        
-        // Check if at least some shows have track duration data for song counting
-        const showsWithTracks = tourShows.filter(show => 
-            show.trackDurations && show.trackDurations.length > 0
+
+        // Check if at least some shows have setlist data for song counting
+        const showsWithSongs = tourShows.filter(show =>
+            show.setlistItems && show.setlistItems.length > 0
         );
-        
-        if (showsWithTracks.length === 0) {
-            this.log(`⚠️  No track data found in ${tourShows.length} shows`);
+
+        if (showsWithSongs.length === 0) {
+            this.log(`⚠️  No setlist data found in ${tourShows.length} shows`);
             return false;
         }
-        
-        this.log(`✅ Found track data in ${showsWithTracks.length}/${tourShows.length} shows`);
+
+        this.log(`✅ Found setlist data in ${showsWithSongs.length}/${tourShows.length} shows`);
         return true;
     }
 }

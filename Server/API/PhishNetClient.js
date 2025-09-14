@@ -151,15 +151,24 @@ export class PhishNetClient {
      */
     async fetchSetlist(showDate) {
         const url = `${this.baseURL}/setlists/showdate/${showDate}.json?apikey=${this.apiKey}&artist=phish`;
-        
+
         const response = await fetch(url);
-        
+
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
 
         const setlistResponse = await response.json();
-        return setlistResponse.data || [];
+        const allSetlistData = setlistResponse.data || [];
+
+        // Filter to only include Phish performances (exclude guest appearances by other artists)
+        const phishOnlySetlist = allSetlistData.filter(item => {
+            return item.artist_name &&
+                   (item.artist_name.toLowerCase().includes('phish') ||
+                    (item.artist_slug && item.artist_slug.toLowerCase() === 'phish'));
+        });
+
+        return phishOnlySetlist;
     }
 
 

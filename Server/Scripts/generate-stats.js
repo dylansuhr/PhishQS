@@ -96,17 +96,14 @@ async function generateTourStatistics() {
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 7: Save result to both locations (Server/Data and api/Data)
-        const serverOutputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
-        const apiOutputPath = join(__dirname, '..', '..', 'api', 'Data', 'tour-stats.json');
-        
+        // Step 7: Save result to Server/Data directory (single source of truth)
+        const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
+
         const jsonData = JSON.stringify(enhancedTourStats, null, 2);
-        writeFileSync(serverOutputPath, jsonData);
-        writeFileSync(apiOutputPath, jsonData);
-        
+        writeFileSync(outputPath, jsonData);
+
         console.log('✅ Real tour statistics generated successfully!');
-        console.log(`📁 Server data: ${serverOutputPath}`);
-        console.log(`📁 API data: ${apiOutputPath}`);
+        console.log(`📁 Data saved to: ${outputPath}`);
         console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
         console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
         console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
@@ -178,15 +175,15 @@ async function generateTourStatisticsOptimized() {
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 7: Save result to API directory only (eliminates Xcode duplicate file conflict)
-        const apiOutputPath = join(__dirname, '..', '..', 'api', 'Data', 'tour-stats.json');
-        
+        // Step 7: Save result to Server/Data directory (single source of truth)
+        const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
+
         const jsonData = JSON.stringify(enhancedTourStats, null, 2);
-        writeFileSync(apiOutputPath, jsonData);
-        
+        writeFileSync(outputPath, jsonData);
+
         console.timeEnd('🚀 Total Generation Time');
         console.log('✅ OPTIMIZED tour statistics generated successfully!');
-        console.log(`📁 API data: ${apiOutputPath}`);
+        console.log(`📁 Data saved to: ${outputPath}`);
         console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
         console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
         console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
@@ -214,8 +211,8 @@ async function generateTourStatisticsOptimized() {
  * - Same exact output format as previous functions
  * 
  * Architecture:
- * - Control file: api/Data/tour-dashboard-data.json (tour orchestration)
- * - Show files: api/Data/shows/show-YYYY-MM-DD.json (detailed setlist data)
+ * - Control file: Server/Data/tour-dashboard-data.json (tour orchestration)
+ * - Show files: Server/Data/tours/[tour-name]/show-YYYY-MM-DD.json (detailed setlist data)
  */
 async function generateTourStatisticsFromControlFile() {
     try {
@@ -310,14 +307,14 @@ async function generateTourStatisticsFromControlFile() {
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
         // Step 5: Save result to Server/Data directory (single source of truth)
-        const apiOutputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
-        
+        const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
+
         const jsonData = JSON.stringify(enhancedTourStats, null, 2);
-        writeFileSync(apiOutputPath, jsonData);
-        
+        writeFileSync(outputPath, jsonData);
+
         console.timeEnd('🎯 Total Generation Time');
         console.log('✅ SINGLE SOURCE tour statistics generated successfully!');
-        console.log(`📁 API data: ${apiOutputPath}`);
+        console.log(`📁 Data saved to: ${outputPath}`);
         console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
         console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
         console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
