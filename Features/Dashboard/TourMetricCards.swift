@@ -7,10 +7,11 @@
 
 import SwiftUI
 
-/// Card displaying top 3 longest songs from the current tour
+/// Card displaying longest songs from the current tour with accordion expansion
 struct LongestSongsCard: View {
     let songs: [TrackDuration]
-    
+    @State private var isExpanded: Bool = false
+
     var body: some View {
         MetricCard("Longest Songs") {
             if songs.isEmpty {
@@ -20,12 +21,32 @@ struct LongestSongsCard: View {
                     .italic()
             } else {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Array(songs.prefix(3).enumerated()), id: \.offset) { index, song in
+                    ForEach(Array(songs.prefix(isExpanded ? 10 : 3).enumerated()), id: \.offset) { index, song in
                         LongestSongRow(position: index + 1, song: song)
-                        
-                        if index < min(songs.count, 3) - 1 {
+
+                        if index < min(songs.count, isExpanded ? 10 : 3) - 1 {
                             Divider()
                         }
+                    }
+
+                    // Show More/Less button when there are more than 3 songs
+                    if songs.count > 3 {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isExpanded.toggle()
+                            }
+                        }) {
+                            HStack {
+                                Text(isExpanded ? "Show Less" : "Show More (\(songs.count - 3) more)")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                        .padding(.top, 8)
                     }
                 }
             }
@@ -45,10 +66,11 @@ struct LongestSongRow: View {
     }
 }
 
-/// Card displaying top 3 rarest songs (highest gap) from the current tour
+/// Card displaying rarest songs (highest gap) from the current tour with accordion expansion
 struct RarestSongsCard: View {
     let songs: [SongGapInfo]
-    
+    @State private var isExpanded: Bool = false
+
     var body: some View {
         MetricCard("Rarest Songs") {
             if songs.isEmpty {
@@ -58,12 +80,32 @@ struct RarestSongsCard: View {
                     .italic()
             } else {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Array(songs.prefix(3).enumerated()), id: \.offset) { index, song in
+                    ForEach(Array(songs.prefix(isExpanded ? 10 : 3).enumerated()), id: \.offset) { index, song in
                         RarestSongRow(position: index + 1, song: song)
-                        
-                        if index < min(songs.count, 3) - 1 {
+
+                        if index < min(songs.count, isExpanded ? 10 : 3) - 1 {
                             Divider()
                         }
+                    }
+
+                    // Show More/Less button when there are more than 3 songs
+                    if songs.count > 3 {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isExpanded.toggle()
+                            }
+                        }) {
+                            HStack {
+                                Text(isExpanded ? "Show Less" : "Show More (\(songs.count - 3) more)")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                        .padding(.top, 8)
                     }
                 }
             }
@@ -83,10 +125,11 @@ struct RarestSongRow: View {
     }
 }
 
-/// Card displaying top 3 most played songs from the current tour
+/// Card displaying most played songs from the current tour with accordion expansion
 struct MostPlayedSongsCard: View {
     let songs: [MostPlayedSong]
-    
+    @State private var isExpanded: Bool = false
+
     var body: some View {
         MetricCard("Most Played Songs") {
             if songs.isEmpty {
@@ -96,12 +139,32 @@ struct MostPlayedSongsCard: View {
                     .italic()
             } else {
                 VStack(alignment: .leading, spacing: 8) {
-                    ForEach(Array(songs.prefix(3).enumerated()), id: \.offset) { index, song in
+                    ForEach(Array(songs.prefix(isExpanded ? 10 : 3).enumerated()), id: \.offset) { index, song in
                         MostPlayedSongRow(position: index + 1, song: song)
-                        
-                        if index < min(songs.count, 3) - 1 {
+
+                        if index < min(songs.count, isExpanded ? 10 : 3) - 1 {
                             Divider()
                         }
+                    }
+
+                    // Show More/Less button when there are more than 3 songs
+                    if songs.count > 3 {
+                        Button(action: {
+                            withAnimation(.easeInOut(duration: 0.3)) {
+                                isExpanded.toggle()
+                            }
+                        }) {
+                            HStack {
+                                Text(isExpanded ? "Show Less" : "Show More (\(songs.count - 3) more)")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
+                        }
+                        .padding(.top, 8)
                     }
                 }
             }
