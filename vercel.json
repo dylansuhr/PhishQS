@@ -1,5 +1,16 @@
 {
   "version": 2,
+  "functions": {
+    "api/shows/[date].js": {
+      "includeFiles": "Server/Data/**"
+    },
+    "api/tour-dashboard.js": {
+      "includeFiles": "Server/Data/**"
+    },
+    "api/tour-statistics.js": {
+      "includeFiles": "Server/Data/**"
+    }
+  },
   "headers": [
     {
       "source": "/api/(.*)",
