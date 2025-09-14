@@ -13,7 +13,9 @@ on:
 jobs:
   update:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: write  # Allow writing/pushing to the repository
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
