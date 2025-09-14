@@ -145,9 +145,16 @@ export class RarestSongsCalculator extends BaseStatisticsCalculator {
             return [];
         }
         
-        // Sort gaps by highest gap value (rarest first)
+        // Sort gaps by highest gap value (rarest first), then alphabetically for ties
         const rarestSongs = allGapSongs
-            .sort((a, b) => b.gap - a.gap)
+            .sort((a, b) => {
+                // Primary sort: by gap (descending) - highest gaps first
+                if (b.gap !== a.gap) {
+                    return b.gap - a.gap;
+                }
+                // Secondary sort: by song name (ascending/alphabetical) when gaps are tied
+                return a.songName.localeCompare(b.songName);
+            })
             .slice(0, this.resultLimit);
         
         // Debug logging for top results
