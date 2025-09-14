@@ -35,13 +35,13 @@ const baseConfig = {
     // Control how many results each statistics type returns
     
     /** @type {number} Default number of results for each statistics type */
-    defaultResultLimit: 3,
-    
+    defaultResultLimit: 10,
+
     /** @type {Object} Specific limits for each statistics type */
     resultLimits: {
-        longestSongs: 3,
-        rarestSongs: 3,
-        mostPlayedSongs: 3
+        longestSongs: 10,
+        rarestSongs: 10,
+        mostPlayedSongs: 10
     },
     
     // ===== HISTORICAL DATA ENHANCEMENT =====
@@ -56,15 +56,15 @@ const baseConfig = {
         categories: {
             rarestSongs: {
                 enabled: true,
-                enhanceTopN: 3  // Easy to change to 10 for top 10
+                enhanceTopN: 10  // Updated for top 10 historical enhancement
             },
             longestSongs: {
                 enabled: false, // Could add venue history later
-                enhanceTopN: 3
+                enhanceTopN: 10
             },
             mostPlayedSongs: {
-                enabled: false, // Could add debut dates later  
-                enhanceTopN: 3
+                enabled: false, // Could add debut dates later
+                enhanceTopN: 10
             }
         },
         
