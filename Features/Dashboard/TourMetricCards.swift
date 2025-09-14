@@ -72,7 +72,7 @@ struct RarestSongsCard: View {
     @State private var isExpanded: Bool = false
 
     var body: some View {
-        MetricCard("Rarest Songs") {
+        MetricCard("Biggest Song Gaps") {
             if songs.isEmpty {
                 Text("No gap data available")
                     .font(.caption)

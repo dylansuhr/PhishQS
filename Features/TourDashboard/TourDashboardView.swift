@@ -63,41 +63,33 @@ struct TourStatisticsHeaderView: View {
     let tourPosition: TourShowPosition?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Tour Statistics")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-            }
-            
+        VStack(alignment: .leading, spacing: 12) {
             if let tourName = tourName {
                 HStack {
+                    Spacer()
                     Text(tourName)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
-                    if let tourPosition = tourPosition {
-                        Spacer()
-                        
-                        Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundColor(.blue)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(4)
-                    }
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    Spacer()
                 }
+                .padding(.vertical, 16)
+                .background(Color.appHeaderBlue)
+                .cornerRadius(12)
+
+                // TODO: Show count moved elsewhere - keeping for future use
+                // if let tourPosition = tourPosition {
+                //     Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                //         .font(.subheadline)
+                //         .fontWeight(.medium)
+                //         .foregroundColor(.blue)
+                //         .padding(.horizontal, 8)
+                //         .padding(.vertical, 2)
+                //         .background(Color.blue.opacity(0.1))
+                //         .cornerRadius(4)
+                // }
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
     }
 }
 
@@ -152,36 +144,31 @@ struct TourStatisticsLoadingView: View {
     let tourPosition: TourShowPosition?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Tour Statistics")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-            }
-            
+        VStack(alignment: .leading, spacing: 12) {
             if let tourPosition = tourPosition {
                 HStack {
-                    Text(tourPosition.tourName)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
                     Spacer()
-                    
-                    Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.blue)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 2)
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(4)
+                    Text(tourPosition.tourName)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    Spacer()
                 }
+                .padding(.vertical, 16)
+                .background(Color.appHeaderBlue)
+                .cornerRadius(12)
+
+                // TODO: Show count moved elsewhere - keeping for future use
+                // Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                //     .font(.subheadline)
+                //     .fontWeight(.medium)
+                //     .foregroundColor(.blue)
+                //     .padding(.horizontal, 8)
+                //     .padding(.vertical, 2)
+                //     .background(Color.blue.opacity(0.1))
+                //     .cornerRadius(4)
             }
-            
+
             // Loading indicator
             HStack {
                 ProgressView()
@@ -192,9 +179,6 @@ struct TourStatisticsLoadingView: View {
             }
             .padding(.top, 8)
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
     }
 }
 
