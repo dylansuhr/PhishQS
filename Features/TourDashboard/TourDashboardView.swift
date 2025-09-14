@@ -48,7 +48,7 @@ struct TourDashboardView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.appHeaderBlue, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
-        .preferredColorScheme(.dark) // Ensures white status bar content on blue background
+        .toolbarColorScheme(.dark, for: .navigationBar) // Only affects navigation/status bar, not content
         .sheet(isPresented: $showingDateSearch) {
             NavigationStack {
                 YearListView()
