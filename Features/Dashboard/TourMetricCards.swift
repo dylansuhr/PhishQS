@@ -37,7 +37,7 @@ struct LongestSongsCard: View {
                             }
                         }) {
                             HStack {
-                                Text(isExpanded ? "Show Less" : "Show More (\(songs.count - 3) more)")
+                                Text(isExpanded ? "Show Less" : "Show More")
                                     .font(.caption)
                                     .foregroundColor(.blue)
 
@@ -96,7 +96,7 @@ struct RarestSongsCard: View {
                             }
                         }) {
                             HStack {
-                                Text(isExpanded ? "Show Less" : "Show More (\(songs.count - 3) more)")
+                                Text(isExpanded ? "Show Less" : "Show More")
                                     .font(.caption)
                                     .foregroundColor(.blue)
 
@@ -155,7 +155,7 @@ struct MostPlayedSongsCard: View {
                             }
                         }) {
                             HStack {
-                                Text(isExpanded ? "Show Less" : "Show More (\(songs.count - 3) more)")
+                                Text(isExpanded ? "Show Less" : "Show More")
                                     .font(.caption)
                                     .foregroundColor(.blue)
 
