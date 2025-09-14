@@ -152,7 +152,7 @@
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-14T12:04:59.562Z",
+    "lastAPICheck": "2025-09-14T12:14:41.134Z",
     "latestShowFromAPI": "2025-09-13",
     "pendingDurationChecks": [
       "2025-09-12",
@@ -161,14 +161,14 @@
     "individualShows": {
       "2025-09-12": {
         "exists": true,
-        "lastUpdated": "2025-09-14T12:04:59.561Z",
+        "lastUpdated": "2025-09-14T12:14:41.133Z",
         "durationsAvailable": false,
         "dataComplete": false,
         "needsUpdate": true
       },
       "2025-09-13": {
         "exists": true,
-        "lastUpdated": "2025-09-14T12:04:59.562Z",
+        "lastUpdated": "2025-09-14T12:14:41.134Z",
         "durationsAvailable": false,
         "dataComplete": false,
         "needsUpdate": true
