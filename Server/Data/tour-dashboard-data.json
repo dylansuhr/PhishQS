@@ -3,7 +3,7 @@
     "name": "2025 Late Summer Tour",
     "year": "2025",
     "totalShows": 8,
-    "playedShows": 2,
+    "playedShows": 1,
     "startDate": "2025-09-12",
     "endDate": "2025-09-21",
     "tourDates": [
@@ -21,7 +21,7 @@
         "venue": "Coca-Cola Amphitheater",
         "city": "Birmingham",
         "state": "AL",
-        "played": true,
+        "played": false,
         "showNumber": 2,
         "showFile": "tours/2025-late-summer-tour/show-2025-09-13.json"
       },
@@ -82,12 +82,12 @@
     ]
   },
   "latestShow": {
-    "date": "2025-09-13",
-    "venue": "Coca-Cola Amphitheater",
-    "city": "Birmingham",
-    "state": "AL",
+    "date": "2025-09-12",
+    "venue": "Highland Festival Grounds at Kentucky Expo Center",
+    "city": "Louisville",
+    "state": "KY",
     "tourPosition": {
-      "showNumber": 2,
+      "showNumber": 1,
       "totalShows": 8,
       "tourName": "2025 Late Summer Tour"
     }
@@ -141,34 +141,26 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-09-14T11:24:42.189Z",
+    "lastUpdated": "2025-09-13T16:07:01.448Z",
     "dataVersion": "1.0",
     "updateReason": "new_show",
     "nextShow": {
-      "date": "2025-09-14",
+      "date": "2025-09-13",
       "venue": "Coca-Cola Amphitheater",
       "city": "Birmingham",
       "state": "AL"
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-14T11:24:43.319Z",
-    "latestShowFromAPI": "2025-09-13",
+    "lastAPICheck": "2025-09-13T16:16:32.048Z",
+    "latestShowFromAPI": "2025-09-12",
     "pendingDurationChecks": [
-      "2025-09-12",
-      "2025-09-13"
+      "2025-09-12"
     ],
     "individualShows": {
       "2025-09-12": {
         "exists": true,
-        "lastUpdated": "2025-09-14T11:24:43.318Z",
-        "durationsAvailable": false,
-        "dataComplete": false,
-        "needsUpdate": true
-      },
-      "2025-09-13": {
-        "exists": true,
-        "lastUpdated": "2025-09-14T11:24:43.319Z",
+        "lastUpdated": "2025-09-13T16:16:32.048Z",
         "durationsAvailable": false,
         "dataComplete": false,
         "needsUpdate": true
