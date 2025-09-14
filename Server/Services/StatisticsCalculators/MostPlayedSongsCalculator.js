@@ -136,7 +136,14 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
                     // No venue or tour context - keep it simple per user request
                 );
             })
-            .sort((a, b) => b.playCount - a.playCount)
+            .sort((a, b) => {
+                // Primary sort: by play count (descending)
+                if (b.playCount !== a.playCount) {
+                    return b.playCount - a.playCount;
+                }
+                // Secondary sort: by song name (ascending/alphabetical) when play counts are tied
+                return a.songName.localeCompare(b.songName);
+            })
             .slice(0, this.resultLimit);
         
         // Debug logging for top results (simplified - only name and count)
