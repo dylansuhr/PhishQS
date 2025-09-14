@@ -87,9 +87,16 @@ export class LongestSongsCalculator extends BaseStatisticsCalculator {
             return [];
         }
         
-        // Sort by duration (longest first) and take top results
+        // Sort by duration (longest first), then alphabetically for ties
         const longestSongs = allTrackDurations
-            .sort((a, b) => b.durationSeconds - a.durationSeconds)
+            .sort((a, b) => {
+                // Primary sort: by duration (descending) - longest first
+                if (b.durationSeconds !== a.durationSeconds) {
+                    return b.durationSeconds - a.durationSeconds;
+                }
+                // Secondary sort: by song name (ascending/alphabetical) when durations are tied
+                return a.songName.localeCompare(b.songName);
+            })
             .slice(0, this.resultLimit);
         
         // Debug logging for top results
