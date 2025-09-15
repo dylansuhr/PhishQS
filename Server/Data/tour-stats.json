@@ -1,6 +1,365 @@
 {
-  "longestSongs": [],
+  "longestSongs": [
+    {
+      "id": "40522",
+      "songName": "Bathtub Gin",
+      "songId": null,
+      "durationSeconds": 1403,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "23:23"
+    },
+    {
+      "id": "40524",
+      "songName": "Sigma Oasis",
+      "songId": null,
+      "durationSeconds": 1231,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "20:31"
+    },
+    {
+      "id": "40526",
+      "songName": "Life Saving Gun",
+      "songId": null,
+      "durationSeconds": 1079,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "17:59"
+    },
+    {
+      "id": "40518",
+      "songName": "Cities",
+      "songId": null,
+      "durationSeconds": 970,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "16:10"
+    },
+    {
+      "id": "40523",
+      "songName": "Runaway Jim",
+      "songId": null,
+      "durationSeconds": 917,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "15:17"
+    },
+    {
+      "id": "40525",
+      "songName": "Down with Disease",
+      "songId": null,
+      "durationSeconds": 887,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "14:47"
+    },
+    {
+      "id": "40530",
+      "songName": "Ghost",
+      "songId": null,
+      "durationSeconds": 699,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "11:39"
+    },
+    {
+      "id": "40520",
+      "songName": "Theme From the Bottom",
+      "songId": null,
+      "durationSeconds": 632,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "10:32"
+    },
+    {
+      "id": "40527",
+      "songName": "Pillow Jets",
+      "songId": null,
+      "durationSeconds": 558,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "9:18"
+    },
+    {
+      "id": "40517",
+      "songName": "Back on the Train",
+      "songId": null,
+      "durationSeconds": 491,
+      "showDate": "2025-09-13",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "city": "Birmingham",
+      "state": "AL",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "8:11"
+    }
+  ],
   "rarestSongs": [
+    {
+      "id": 235,
+      "songId": 235,
+      "songName": "Good Times Bad Times",
+      "gap": 64,
+      "lastPlayed": "2025-03-06",
+      "timesPlayed": 233,
+      "tourVenue": "Coca-Cola Amphitheater",
+      "tourVenueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "tourDate": "2025-09-14",
+      "tourCity": "Birmingham",
+      "tourState": "AL",
+      "tourPosition": {
+        "showNumber": 3,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Beacon Theatre",
+      "historicalCity": "New York",
+      "historicalState": "NY",
+      "historicalLastPlayed": "2025-03-06",
+      "formattedHistoricalDate": "3/6/25"
+    },
+    {
+      "id": 246,
+      "songId": 246,
+      "songName": "Halley's Comet",
+      "gap": 23,
+      "lastPlayed": "2025-06-21",
+      "timesPlayed": 164,
+      "tourVenue": "Coca-Cola Amphitheater",
+      "tourVenueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "tourDate": "2025-09-14",
+      "tourCity": "Birmingham",
+      "tourState": "AL",
+      "tourPosition": {
+        "showNumber": 3,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "SNHU Arena",
+      "historicalCity": "Manchester",
+      "historicalState": "NH",
+      "historicalLastPlayed": "2025-06-21",
+      "formattedHistoricalDate": "6/21/25"
+    },
     {
       "id": 6,
       "songId": 6,
@@ -60,6 +419,40 @@
       "formattedHistoricalDate": "7/9/25"
     },
     {
+      "id": 2573,
+      "songId": 2573,
+      "songName": "Mercury",
+      "gap": 13,
+      "lastPlayed": "2025-07-12",
+      "timesPlayed": 51,
+      "tourVenue": "Coca-Cola Amphitheater",
+      "tourVenueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "tourDate": "2025-09-14",
+      "tourCity": "Birmingham",
+      "tourState": "AL",
+      "tourPosition": {
+        "showNumber": 3,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2025-07-12",
+      "formattedHistoricalDate": "7/12/25"
+    },
+    {
       "id": 479,
       "songId": 479,
       "songName": "Runaway Jim",
@@ -94,29 +487,97 @@
       "formattedHistoricalDate": "7/13/25"
     },
     {
-      "id": 393,
-      "songId": 393,
-      "songName": "Mountains in the Mist",
-      "gap": 7,
-      "lastPlayed": "2025-07-19",
-      "timesPlayed": 89,
+      "id": 223,
+      "songId": 223,
+      "songName": "Ginseng Sullivan",
+      "gap": 10,
+      "lastPlayed": "2025-07-16",
+      "timesPlayed": 86,
       "tourVenue": "Coca-Cola Amphitheater",
       "tourVenueRun": {
         "venue": "Coca-Cola Amphitheater",
         "city": "Birmingham",
         "state": "AL",
-        "nightNumber": 1,
+        "nightNumber": 2,
         "totalNights": 2,
         "showDates": [
           "2025-09-13",
           "2025-09-14"
         ]
       },
-      "tourDate": "2025-09-13",
+      "tourDate": "2025-09-14",
       "tourCity": "Birmingham",
       "tourState": "AL",
       "tourPosition": {
-        "showNumber": 2,
+        "showNumber": 3,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "TD Pavilion at the Mann",
+      "historicalCity": "Philadelphia",
+      "historicalState": "PA",
+      "historicalLastPlayed": "2025-07-16",
+      "formattedHistoricalDate": "7/16/25"
+    },
+    {
+      "id": 108,
+      "songId": 108,
+      "songName": "Cavern",
+      "gap": 9,
+      "lastPlayed": "2025-07-18",
+      "timesPlayed": 502,
+      "tourVenue": "Coca-Cola Amphitheater",
+      "tourVenueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "tourDate": "2025-09-14",
+      "tourCity": "Birmingham",
+      "tourState": "AL",
+      "tourPosition": {
+        "showNumber": 3,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "United Center",
+      "historicalCity": "Chicago",
+      "historicalState": "IL",
+      "historicalLastPlayed": "2025-07-18",
+      "formattedHistoricalDate": "7/18/25"
+    },
+    {
+      "id": 420,
+      "songId": 420,
+      "songName": "Ocelot",
+      "gap": 8,
+      "lastPlayed": "2025-07-19",
+      "timesPlayed": 157,
+      "tourVenue": "Coca-Cola Amphitheater",
+      "tourVenueRun": {
+        "venue": "Coca-Cola Amphitheater",
+        "city": "Birmingham",
+        "state": "AL",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-13",
+          "2025-09-14"
+        ]
+      },
+      "tourDate": "2025-09-14",
+      "tourCity": "Birmingham",
+      "tourState": "AL",
+      "tourPosition": {
+        "showNumber": 3,
         "totalShows": 8,
         "tourName": "2025 Late Summer Tour",
         "tourYear": "2025"
@@ -128,63 +589,29 @@
       "formattedHistoricalDate": "7/19/25"
     },
     {
-      "id": 3080,
-      "songId": 3080,
-      "songName": "Pillow Jets",
+      "id": 195,
+      "songId": 195,
+      "songName": "Fee",
       "gap": 7,
-      "lastPlayed": "2025-07-19",
-      "timesPlayed": 20,
-      "tourVenue": "Coca-Cola Amphitheater",
-      "tourVenueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "tourDate": "2025-09-13",
-      "tourCity": "Birmingham",
-      "tourState": "AL",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "United Center",
-      "historicalCity": "Chicago",
-      "historicalState": "IL",
-      "historicalLastPlayed": "2025-07-19",
-      "formattedHistoricalDate": "7/19/25"
-    },
-    {
-      "id": 2796,
-      "songId": 2796,
-      "songName": "Say It To Me S.A.N.T.O.S.",
-      "gap": 6,
       "lastPlayed": "2025-07-20",
-      "timesPlayed": 76,
+      "timesPlayed": 293,
       "tourVenue": "Coca-Cola Amphitheater",
       "tourVenueRun": {
         "venue": "Coca-Cola Amphitheater",
         "city": "Birmingham",
         "state": "AL",
-        "nightNumber": 1,
+        "nightNumber": 2,
         "totalNights": 2,
         "showDates": [
           "2025-09-13",
           "2025-09-14"
         ]
       },
-      "tourDate": "2025-09-13",
+      "tourDate": "2025-09-14",
       "tourCity": "Birmingham",
       "tourState": "AL",
       "tourPosition": {
-        "showNumber": 2,
+        "showNumber": 3,
         "totalShows": 8,
         "tourName": "2025 Late Summer Tour",
         "tourYear": "2025"
@@ -194,132 +621,6 @@
       "historicalState": "IL",
       "historicalLastPlayed": "2025-07-20",
       "formattedHistoricalDate": "7/20/25"
-    },
-    {
-      "id": 857,
-      "songId": 857,
-      "songName": "Shine a Light",
-      "gap": 6,
-      "lastPlayed": "2025-07-20",
-      "timesPlayed": 33,
-      "tourVenue": "Coca-Cola Amphitheater",
-      "tourVenueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "tourDate": "2025-09-13",
-      "tourCity": "Birmingham",
-      "tourState": "AL",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "United Center",
-      "historicalCity": "Chicago",
-      "historicalState": "IL",
-      "historicalLastPlayed": "2025-07-20",
-      "formattedHistoricalDate": "7/20/25"
-    },
-    {
-      "id": 686,
-      "songId": 686,
-      "songName": "Ya Mar",
-      "gap": 6,
-      "lastPlayed": "2025-07-19",
-      "timesPlayed": 258,
-      "tourVenue": "Highland Festival Grounds at Kentucky Expo Center",
-      "tourVenueRun": null,
-      "tourDate": "2025-09-12",
-      "tourCity": null,
-      "tourState": null,
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "United Center",
-      "historicalCity": "Chicago",
-      "historicalState": "IL",
-      "historicalLastPlayed": "2025-07-19",
-      "formattedHistoricalDate": "7/19/25"
-    },
-    {
-      "id": 2570,
-      "songId": 2570,
-      "songName": "Blaze On",
-      "gap": 5,
-      "lastPlayed": "2025-07-22",
-      "timesPlayed": 203,
-      "tourVenue": "Coca-Cola Amphitheater",
-      "tourVenueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "tourDate": "2025-09-13",
-      "tourCity": "Birmingham",
-      "tourState": "AL",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Forest Hills Stadium",
-      "historicalCity": "Forest Hills",
-      "historicalState": "NY",
-      "historicalLastPlayed": "2025-07-22",
-      "formattedHistoricalDate": "7/22/25"
-    },
-    {
-      "id": 2803,
-      "songId": 2803,
-      "songName": "Sigma Oasis",
-      "gap": 5,
-      "lastPlayed": "2025-07-22",
-      "timesPlayed": 60,
-      "tourVenue": "Coca-Cola Amphitheater",
-      "tourVenueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "tourDate": "2025-09-13",
-      "tourCity": "Birmingham",
-      "tourState": "AL",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Forest Hills Stadium",
-      "historicalCity": "Forest Hills",
-      "historicalState": "NY",
-      "historicalLastPlayed": "2025-07-22",
-      "formattedHistoricalDate": "7/22/25"
     }
   ],
   "mostPlayedSongs": [
@@ -333,6 +634,12 @@
       "id": 6,
       "songId": 6,
       "songName": "A Day In The Life",
+      "playCount": 1
+    },
+    {
+      "id": 2946,
+      "songId": 2946,
+      "songName": "A Wave Of Hope",
       "playCount": 1
     },
     {
@@ -366,25 +673,19 @@
       "playCount": 1
     },
     {
+      "id": 108,
+      "songId": 108,
+      "songName": "Cavern",
+      "playCount": 1
+    },
+    {
       "id": 110,
       "songId": 110,
       "songName": "Chalk Dust Torture",
       "playCount": 1
-    },
-    {
-      "id": 113,
-      "songId": 113,
-      "songName": "Character Zero",
-      "playCount": 1
-    },
-    {
-      "id": 119,
-      "songId": 119,
-      "songName": "Cities",
-      "playCount": 1
     }
   ],
   "tourName": "2025 Late Summer Tour",
-  "latestShowProcessed": "2025-09-13",
-  "generatedAt": "2025-09-14T20:53:10.837Z"
+  "latestShowProcessed": "2025-09-14",
+  "generatedAt": "2025-09-15T04:30:21.059Z"
 }

@@ -3,7 +3,7 @@
     "name": "2025 Late Summer Tour",
     "year": "2025",
     "totalShows": 8,
-    "playedShows": 2,
+    "playedShows": 3,
     "startDate": "2025-09-12",
     "endDate": "2025-09-21",
     "tourDates": [
@@ -30,7 +30,7 @@
         "venue": "Coca-Cola Amphitheater",
         "city": "Birmingham",
         "state": "AL",
-        "played": false,
+        "played": true,
         "showNumber": 3,
         "showFile": "tours/2025-late-summer-tour/show-2025-09-14.json"
       },
@@ -82,12 +82,12 @@
     ]
   },
   "latestShow": {
-    "date": "2025-09-13",
+    "date": "2025-09-14",
     "venue": "Coca-Cola Amphitheater",
     "city": "Birmingham",
     "state": "AL",
     "tourPosition": {
-      "showNumber": 2,
+      "showNumber": 3,
       "totalShows": 8,
       "tourName": "2025 Late Summer Tour"
     }
@@ -141,22 +141,22 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-09-14T12:04:56.568Z",
+    "lastUpdated": "2025-09-15T04:30:16.796Z",
     "dataVersion": "1.0",
     "updateReason": "new_show",
     "nextShow": {
-      "date": "2025-09-14",
-      "venue": "Coca-Cola Amphitheater",
-      "city": "Birmingham",
-      "state": "AL"
+      "date": "2025-09-16",
+      "venue": "Ameris Bank Amphitheatre",
+      "city": "Alpharetta",
+      "state": "GA"
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-14T21:08:15.397Z",
-    "latestShowFromAPI": "2025-09-13",
+    "lastAPICheck": "2025-09-15T04:30:18.108Z",
+    "latestShowFromAPI": "2025-09-14",
     "pendingDurationChecks": [
       "2025-09-12",
-      "2025-09-13"
+      "2025-09-14"
     ],
     "individualShows": {
       "2025-09-12": {
@@ -168,7 +168,14 @@
       },
       "2025-09-13": {
         "exists": true,
-        "lastUpdated": "2025-09-14T19:35:59.023Z",
+        "lastUpdated": "2025-09-15T04:30:18.107Z",
+        "durationsAvailable": true,
+        "dataComplete": true,
+        "needsUpdate": false
+      },
+      "2025-09-14": {
+        "exists": true,
+        "lastUpdated": "2025-09-15T04:30:18.108Z",
         "durationsAvailable": false,
         "dataComplete": false,
         "needsUpdate": true
