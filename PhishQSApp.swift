@@ -12,10 +12,8 @@ import SwiftUI
 struct PhishQSApp: App {
     var body: some Scene {
         WindowGroup {
-            // embed the entire app in a NavigationStack for easy push-style navigation
-            NavigationStack {
-                TourDashboardView() // start at the tour dashboard home screen
-            }
+            // Start with welcome view for smooth launch transition
+            WelcomeView()
         }
     }
 }

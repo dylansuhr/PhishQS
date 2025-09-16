@@ -4,17 +4,32 @@ import SwiftUI
 struct TourDashboardView: View {
     @StateObject private var latestSetlistViewModel = LatestSetlistViewModel()
     @State private var showingDateSearch = false
+    @State private var animateCards = false
 
     var body: some View {
         DashboardGrid {
             // Latest Show Hero Card
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
+                    .opacity(animateCards ? 1 : 0)
+                    .offset(y: animateCards ? 0 : 20)
+                    .animation(
+                        .spring(response: 0.6, dampingFraction: 0.8)
+                        .delay(0.1),
+                        value: animateCards
+                    )
             }
 
             // Tour Calendar (Component D)
             DashboardSection {
                 TourCalendarCard()
+                    .opacity(animateCards ? 1 : 0)
+                    .offset(y: animateCards ? 0 : 20)
+                    .animation(
+                        .spring(response: 0.6, dampingFraction: 0.8)
+                        .delay(0.2),
+                        value: animateCards
+                    )
             }
 
             // Tour Statistics Cards
@@ -24,7 +39,22 @@ struct TourDashboardView: View {
                         tourName: statistics.tourName,
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
+                    .opacity(animateCards ? 1 : 0)
+                    .offset(y: animateCards ? 0 : 20)
+                    .animation(
+                        .spring(response: 0.6, dampingFraction: 0.8)
+                        .delay(0.3),
+                        value: animateCards
+                    )
+
                     TourStatisticsCards(statistics: statistics)
+                        .opacity(animateCards ? 1 : 0)
+                        .offset(y: animateCards ? 0 : 20)
+                        .animation(
+                            .spring(response: 0.6, dampingFraction: 0.8)
+                            .delay(0.4),
+                            value: animateCards
+                        )
                 }
             } else if latestSetlistViewModel.isTourStatisticsLoading && latestSetlistViewModel.latestShow != nil {
                 // Show loading state for tour statistics while main content is already loaded
@@ -32,12 +62,26 @@ struct TourDashboardView: View {
                     TourStatisticsLoadingView(
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
+                    .opacity(animateCards ? 1 : 0)
+                    .offset(y: animateCards ? 0 : 20)
+                    .animation(
+                        .spring(response: 0.6, dampingFraction: 0.8)
+                        .delay(0.3),
+                        value: animateCards
+                    )
                 }
             }
 
             // Search Action Card
             DashboardSection {
                 SearchActionCard(showingDateSearch: $showingDateSearch)
+                    .opacity(animateCards ? 1 : 0)
+                    .offset(y: animateCards ? 0 : 20)
+                    .animation(
+                        .spring(response: 0.6, dampingFraction: 0.8)
+                        .delay(0.5),
+                        value: animateCards
+                    )
             }
         }
         .background(
@@ -49,9 +93,23 @@ struct TourDashboardView: View {
         .toolbarBackground(Color.appHeaderBlue, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar) // Only affects navigation/status bar, not content
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Image("white_phish_td_transparent")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 40)
+            }
+        }
         .sheet(isPresented: $showingDateSearch) {
             NavigationStack {
                 YearListView()
+            }
+        }
+        .onAppear {
+            // Trigger staggered animations after a brief delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                animateCards = true
             }
         }
     }
@@ -103,33 +161,33 @@ struct SearchActionCard: View {
                 VStack(alignment: .center, spacing: 8) {
                     Image(systemName: "calendar.badge.plus")
                         .font(.title2)
-                        .foregroundColor(.blue)
-                    
+                        .foregroundColor(.phishBlue)
+
                     Text("Find Any Show")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
-                    
+
                     Text("Search setlists by date")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 }
-                
+
                 Button(action: {
                     showingDateSearch = true
                 }) {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .font(.system(size: 14, weight: .medium))
-                        
+
                         Text("Search by Date")
                             .font(.system(size: 16, weight: .medium))
                     }
                     .foregroundColor(.white)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 24)
-                    .background(Color.blue)
+                    .background(Color.phishBlue)
                     .cornerRadius(25)
                 }
             }
