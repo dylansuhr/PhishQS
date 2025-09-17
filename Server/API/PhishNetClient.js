@@ -221,7 +221,10 @@ export class PhishNetClient {
      * Port of iOS PhishNetAPIClient.fetchSongGap() lines 298-336
      */
     async fetchSongGap(songName, showDate) {
-        const performances = await this.fetchSongPerformanceHistory(songName);
+        const allPerformances = await this.fetchSongPerformanceHistory(songName);
+
+        // CRITICAL FIX: Filter to Phish-only performances for accurate gap calculations
+        const performances = this.filterPhishShows(allPerformances);
 
         // Find the performance matching the show date
         const currentPerformanceIndex = performances.findIndex(p => p.showdate === showDate);

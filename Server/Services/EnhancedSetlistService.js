@@ -103,20 +103,63 @@ export class EnhancedSetlistService {
         // Step 4: Extract gap data from setlist (gap data is already in setlist response)
         console.log(`   📊 Extracting gap data from setlist items...`);
         
-        songGaps = setlistItems.map(item => ({
-            songId: item.songid,
-            songName: item.song,
-            gap: item.gap,
-            lastPlayed: null, // Historical data will be added in post-processing for top N results only
-            timesPlayed: null,
-            tourVenue: null,
-            tourVenueRun: null,
-            tourDate: showDate,
-            historicalVenue: null,
-            historicalCity: null,
-            historicalState: null,
-            historicalLastPlayed: null
-        }));
+        // STEP 4.1: Get complete Phish-only historical data for all songs during generation
+        console.log(`   📡 Fetching complete Phish-only historical data for ${setlistItems.length} songs...`);
+        songGaps = [];
+
+        for (let i = 0; i < setlistItems.length; i++) {
+            const item = setlistItems[i];
+            console.log(`     📡 [${i + 1}/${setlistItems.length}] Getting historical data for "${item.song}"...`);
+
+            try {
+                // Use the fixed fetchSongGap method to get complete Phish-only historical data
+                const historicalData = await this.phishNetClient.fetchSongGap(item.song, showDate);
+
+                if (historicalData) {
+                    songGaps.push(historicalData);
+                    console.log(`     ✅ Complete data for "${item.song}": gap ${historicalData.gap}, last played ${historicalData.historicalLastPlayed || 'N/A'}`);
+                } else {
+                    // Fallback to basic data if historical lookup fails
+                    songGaps.push({
+                        songId: item.songid,
+                        songName: item.song,
+                        gap: item.gap,
+                        lastPlayed: item.lastplayed || null,
+                        timesPlayed: null,
+                        tourVenue: null,
+                        tourVenueRun: null,
+                        tourDate: showDate,
+                        historicalVenue: null,
+                        historicalCity: null,
+                        historicalState: null,
+                        historicalLastPlayed: null
+                    });
+                    console.log(`     ⚠️  No historical data found for "${item.song}"`);
+                }
+            } catch (error) {
+                // Fallback to basic data if API call fails
+                songGaps.push({
+                    songId: item.songid,
+                    songName: item.song,
+                    gap: item.gap,
+                    lastPlayed: item.lastplayed || null,
+                    timesPlayed: null,
+                    tourVenue: null,
+                    tourVenueRun: null,
+                    tourDate: showDate,
+                    historicalVenue: null,
+                    historicalCity: null,
+                    historicalState: null,
+                    historicalLastPlayed: null
+                });
+                console.log(`     ❌ Failed to get historical data for "${item.song}": ${error.message}`);
+            }
+
+            // Rate limiting delay between API calls
+            if (i < setlistItems.length - 1) {
+                await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay
+            }
+        }
         
         console.log(`   📊 Extracted gap data for ${songGaps.length} songs from setlist`);
 

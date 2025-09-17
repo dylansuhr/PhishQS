@@ -2,19 +2,22 @@ import SwiftUI
 
 // Modern dashboard-style home screen
 struct TourDashboardView: View {
-    @StateObject private var latestSetlistViewModel = LatestSetlistViewModel()
+    @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
     @State private var showingDateSearch = false
+    @State private var animateCards = false
 
     var body: some View {
         DashboardGrid {
             // Latest Show Hero Card
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.1))
             }
 
             // Tour Calendar (Component D)
             DashboardSection {
                 TourCalendarCard()
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.2))
             }
 
             // Tour Statistics Cards
@@ -24,7 +27,10 @@ struct TourDashboardView: View {
                         tourName: statistics.tourName,
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.3))
+
                     TourStatisticsCards(statistics: statistics)
+                        .modifier(CardAnimationModifier(animate: animateCards, delay: 0.4))
                 }
             } else if latestSetlistViewModel.isTourStatisticsLoading && latestSetlistViewModel.latestShow != nil {
                 // Show loading state for tour statistics while main content is already loaded
@@ -32,12 +38,14 @@ struct TourDashboardView: View {
                     TourStatisticsLoadingView(
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.3))
                 }
             }
 
             // Search Action Card
             DashboardSection {
                 SearchActionCard(showingDateSearch: $showingDateSearch)
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.5))
             }
         }
         .background(
@@ -49,10 +57,22 @@ struct TourDashboardView: View {
         .toolbarBackground(Color.appHeaderBlue, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar) // Only affects navigation/status bar, not content
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Image("white_phish_td_transparent")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 40)
+            }
+        }
         .sheet(isPresented: $showingDateSearch) {
             NavigationStack {
                 YearListView()
             }
+        }
+        .onAppear {
+            // Trigger staggered animations immediately
+            animateCards = true
         }
     }
 }
@@ -63,41 +83,33 @@ struct TourStatisticsHeaderView: View {
     let tourPosition: TourShowPosition?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Tour Statistics")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-            }
-            
+        VStack(alignment: .leading, spacing: 12) {
             if let tourName = tourName {
                 HStack {
+                    Spacer()
                     Text(tourName)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
-                    if let tourPosition = tourPosition {
-                        Spacer()
-                        
-                        Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .foregroundColor(.blue)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 2)
-                            .background(Color.blue.opacity(0.1))
-                            .cornerRadius(4)
-                    }
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    Spacer()
                 }
+                .padding(.vertical, 16)
+                .background(Color.appHeaderBlue)
+                .cornerRadius(12)
+
+                // TODO: Show count moved elsewhere - keeping for future use
+                // if let tourPosition = tourPosition {
+                //     Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                //         .font(.subheadline)
+                //         .fontWeight(.medium)
+                //         .foregroundColor(.blue)
+                //         .padding(.horizontal, 8)
+                //         .padding(.vertical, 2)
+                //         .background(Color.blue.opacity(0.1))
+                //         .cornerRadius(4)
+                // }
             }
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
     }
 }
 
@@ -111,33 +123,33 @@ struct SearchActionCard: View {
                 VStack(alignment: .center, spacing: 8) {
                     Image(systemName: "calendar.badge.plus")
                         .font(.title2)
-                        .foregroundColor(.blue)
-                    
+                        .foregroundColor(.phishBlue)
+
                     Text("Find Any Show")
                         .font(.headline)
                         .fontWeight(.semibold)
                         .foregroundColor(.primary)
-                    
+
                     Text("Search setlists by date")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .multilineTextAlignment(.center)
                 }
-                
+
                 Button(action: {
                     showingDateSearch = true
                 }) {
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .font(.system(size: 14, weight: .medium))
-                        
+
                         Text("Search by Date")
                             .font(.system(size: 16, weight: .medium))
                     }
                     .foregroundColor(.white)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 24)
-                    .background(Color.blue)
+                    .background(Color.phishBlue)
                     .cornerRadius(25)
                 }
             }
@@ -152,36 +164,31 @@ struct TourStatisticsLoadingView: View {
     let tourPosition: TourShowPosition?
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Tour Statistics")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
-                
-                Spacer()
-            }
-            
+        VStack(alignment: .leading, spacing: 12) {
             if let tourPosition = tourPosition {
                 HStack {
-                    Text(tourPosition.tourName)
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.secondary)
-                    
                     Spacer()
-                    
-                    Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                        .font(.subheadline)
-                        .fontWeight(.medium)
-                        .foregroundColor(.blue)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 2)
-                        .background(Color.blue.opacity(0.1))
-                        .cornerRadius(4)
+                    Text(tourPosition.tourName)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.white)
+                    Spacer()
                 }
+                .padding(.vertical, 16)
+                .background(Color.appHeaderBlue)
+                .cornerRadius(12)
+
+                // TODO: Show count moved elsewhere - keeping for future use
+                // Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                //     .font(.subheadline)
+                //     .fontWeight(.medium)
+                //     .foregroundColor(.blue)
+                //     .padding(.horizontal, 8)
+                //     .padding(.vertical, 2)
+                //     .background(Color.blue.opacity(0.1))
+                //     .cornerRadius(4)
             }
-            
+
             // Loading indicator
             HStack {
                 ProgressView()
@@ -192,14 +199,31 @@ struct TourStatisticsLoadingView: View {
             }
             .padding(.top, 8)
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
-        .padding(.bottom, 4)
+    }
+}
+
+// MARK: - Animation Modifier
+
+/// Reusable modifier for card entrance animations
+struct CardAnimationModifier: ViewModifier {
+    let animate: Bool
+    let delay: Double
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(animate ? 1 : 0)
+            .offset(y: animate ? 0 : 20)
+            .animation(
+                .spring(response: 0.6, dampingFraction: 0.8)
+                .delay(delay),
+                value: animate
+            )
     }
 }
 
 #Preview {
     NavigationStack {
         TourDashboardView()
+            .environmentObject(LatestSetlistViewModel())
     }
 }

@@ -10,12 +10,15 @@ import SwiftUI
 // entry point for the app
 @main
 struct PhishQSApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some Scene {
         WindowGroup {
-            // embed the entire app in a NavigationStack for easy push-style navigation
-            NavigationStack {
-                TourDashboardView() // start at the tour dashboard home screen
-            }
+            // Use smart launch view for state-aware loading
+            SmartLaunchView()
+                .onChange(of: scenePhase) { oldPhase, newPhase in
+                    LaunchStateManager.shared.handleScenePhaseChange(from: oldPhase, to: newPhase)
+                }
         }
     }
 }

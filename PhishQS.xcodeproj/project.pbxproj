@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F47400AE2E7823C20090D553 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F47400AD2E7823C20090D553 /* LaunchScreen.storyboard */; };
 		F4A55E8C2E313C8800C4AB42 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */; };
 		F4A55E8D2E313C8800C4AB42 /* CLAUDE.md in Resources */ = {isa = PBXBuildFile; fileRef = F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */; };
 		F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F4A5DD112E1199DE00B5D172 /* Assets.xcassets */; };
@@ -37,6 +38,7 @@
 		F418FFB82DE7ED0A00240D34 /* PhishQS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhishQS.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFC52DE7ED0B00240D34 /* PhishQSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F418FFCF2DE7ED0B00240D34 /* PhishQSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhishQSUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F47400AD2E7823C20090D553 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F4A55E8B2E313C8800C4AB42 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		F4A5DD112E1199DE00B5D172 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F4D557BF2DEE7CBF002A5961 /* PhishQSApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhishQSApp.swift; sourceTree = "<group>"; };
@@ -185,6 +187,7 @@
 				F4D8B98C2E1EB7EC00EB140A /* README.md */,
 				F4D8B98D2E1EB81E00EB140A /* .gitignore */,
 				F4A5DD112E1199DE00B5D172 /* Assets.xcassets */,
+				F47400AD2E7823C20090D553 /* LaunchScreen.storyboard */,
 				F418FFB92DE7ED0A00240D34 /* Products */,
 				F42264E82E1E781600891DED /* Resources */,
 				F42264D92E1E77A300891DED /* Tests */,
@@ -340,6 +343,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4A5DD132E1199DE00B5D172 /* Assets.xcassets in Resources */,
+				F47400AE2E7823C20090D553 /* LaunchScreen.storyboard in Resources */,
 				F4F1DDC22E675399006B6D75 /* vercel.json in Resources */,
 				F4F1DDC32E675399006B6D75 /* package-lock.json in Resources */,
 				F4F1DDC42E675399006B6D75 /* package.json in Resources */,
@@ -512,6 +516,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				"INFOPLIST_KEY_CFBundleDisplayName[sdk=*]" = PhishTD;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.4;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
@@ -536,6 +541,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -567,6 +573,7 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

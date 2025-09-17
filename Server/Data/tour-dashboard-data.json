@@ -3,7 +3,7 @@
     "name": "2025 Late Summer Tour",
     "year": "2025",
     "totalShows": 8,
-    "playedShows": 4,
+    "playedShows": 2,
     "startDate": "2025-09-12",
     "endDate": "2025-09-21",
     "tourDates": [
@@ -30,7 +30,7 @@
         "venue": "Coca-Cola Amphitheater",
         "city": "Birmingham",
         "state": "AL",
-        "played": true,
+        "played": false,
         "showNumber": 3,
         "showFile": "tours/2025-late-summer-tour/show-2025-09-14.json"
       },
@@ -39,7 +39,7 @@
         "venue": "Ameris Bank Amphitheatre",
         "city": "Alpharetta",
         "state": "GA",
-        "played": true,
+        "played": false,
         "showNumber": 4,
         "showFile": "tours/2025-late-summer-tour/show-2025-09-16.json"
       },
@@ -82,63 +82,17 @@
     ]
   },
   "latestShow": {
-    "date": "2025-09-16",
-    "venue": "Ameris Bank Amphitheatre",
-    "city": "Alpharetta",
-    "state": "GA",
+    "date": "2025-09-13",
+    "venue": "Coca-Cola Amphitheater",
+    "city": "Birmingham",
+    "state": "AL",
     "tourPosition": {
-      "showNumber": 4,
+      "showNumber": 2,
       "totalShows": 8,
       "tourName": "2025 Late Summer Tour"
     }
   },
   "futureTours": [
-    {
-      "name": "2025 NYE Run",
-      "year": "2025",
-      "totalShows": 4,
-      "playedShows": 0,
-      "startDate": "2025-12-28",
-      "endDate": "2025-12-31",
-      "tourDates": [
-        {
-          "date": "2025-12-28",
-          "venue": "Madison Square Garden",
-          "city": "New York",
-          "state": "NY",
-          "played": false,
-          "showNumber": 1,
-          "showFile": "tours/2025-nye-run/show-2025-12-28.json"
-        },
-        {
-          "date": "2025-12-29",
-          "venue": "Madison Square Garden",
-          "city": "New York",
-          "state": "NY",
-          "played": false,
-          "showNumber": 2,
-          "showFile": "tours/2025-nye-run/show-2025-12-29.json"
-        },
-        {
-          "date": "2025-12-30",
-          "venue": "Madison Square Garden",
-          "city": "New York",
-          "state": "NY",
-          "played": false,
-          "showNumber": 3,
-          "showFile": "tours/2025-nye-run/show-2025-12-30.json"
-        },
-        {
-          "date": "2025-12-31",
-          "venue": "Madison Square Garden",
-          "city": "New York",
-          "state": "NY",
-          "played": false,
-          "showNumber": 4,
-          "showFile": "tours/2025-nye-run/show-2025-12-31.json"
-        }
-      ]
-    },
     {
       "name": "2026 Mexico",
       "year": "2026",
@@ -187,22 +141,21 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-09-17T04:29:09.934Z",
+    "lastUpdated": "2025-09-14T12:04:56.568Z",
     "dataVersion": "1.0",
     "updateReason": "new_show",
     "nextShow": {
-      "date": "2025-09-17",
-      "venue": "Ameris Bank Amphitheatre",
-      "city": "Alpharetta",
-      "state": "GA"
+      "date": "2025-09-14",
+      "venue": "Coca-Cola Amphitheater",
+      "city": "Birmingham",
+      "state": "AL"
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-17T08:30:35.590Z",
-    "latestShowFromAPI": "2025-09-16",
+    "lastAPICheck": "2025-09-16T18:40:13.617Z",
+    "latestShowFromAPI": "2025-09-13",
     "pendingDurationChecks": [
-      "2025-09-12",
-      "2025-09-16"
+      "2025-09-12"
     ],
     "individualShows": {
       "2025-09-12": {
@@ -214,24 +167,10 @@
       },
       "2025-09-13": {
         "exists": true,
-        "lastUpdated": "2025-09-15T04:30:18.106Z",
+        "lastUpdated": "2025-09-16T18:40:13.617Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
-      },
-      "2025-09-14": {
-        "exists": true,
-        "lastUpdated": "2025-09-16T20:14:14.129Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
-      },
-      "2025-09-16": {
-        "exists": true,
-        "lastUpdated": "2025-09-17T04:29:11.530Z",
-        "durationsAvailable": false,
-        "dataComplete": false,
-        "needsUpdate": true
       }
     }
   }
