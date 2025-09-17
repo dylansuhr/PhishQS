@@ -250,6 +250,7 @@ struct MostPlayedSongRow: View {
 struct MostCommonSongsNotPlayedCard: View {
     let songs: [MostCommonSongNotPlayed]
     @State private var isExpanded: Bool = false
+    @State private var shouldScrollToTop: Bool = false
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -272,24 +273,14 @@ struct MostCommonSongsNotPlayedCard: View {
                         // Show More/Less button when there are more than 5 songs
                         if songs.count > 5 {
                             Button(action: {
+                                let wasExpanded = isExpanded
+
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     isExpanded.toggle()
 
-                                    // Auto-scroll to card when collapsing to prevent blank screen
-                                    if !isExpanded {
-                                        // Calculate adaptive timing based on number of items being collapsed
-                                        let itemsToCollapse = max(0, min(songs.count, 20) - 5)
-                                        let baseDelay: Double = 0.2
-                                        let itemDelay: Double = 0.005 // 5ms per item
-                                        let adaptiveDelay = baseDelay + (Double(itemsToCollapse) * itemDelay)
-                                        let maxDelay: Double = 0.6 // Cap at 600ms for very large lists
-                                        let finalDelay = min(adaptiveDelay, maxDelay)
-
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + finalDelay) {
-                                            withAnimation(.easeInOut(duration: 0.3)) {
-                                                proxy.scrollTo("mostCommonNotPlayedCard", anchor: .top)
-                                            }
-                                        }
+                                    // Trigger scroll when collapsing
+                                    if wasExpanded {
+                                        shouldScrollToTop = true
                                     }
                                 }
                             }) {
@@ -309,6 +300,17 @@ struct MostCommonSongsNotPlayedCard: View {
                 }
             }
             .id("mostCommonNotPlayedCard")
+            .onChange(of: shouldScrollToTop) { _, newValue in
+                if newValue && !isExpanded {
+                    // Wait a moment for collapse animation to complete, then scroll
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+                        withAnimation(.easeInOut(duration: 0.25)) {
+                            proxy.scrollTo("mostCommonNotPlayedCard", anchor: .top)
+                        }
+                        shouldScrollToTop = false
+                    }
+                }
+            }
         }
     }
 }
