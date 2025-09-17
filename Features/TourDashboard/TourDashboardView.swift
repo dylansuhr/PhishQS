@@ -5,19 +5,24 @@ struct TourDashboardView: View {
     @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
     @State private var showingDateSearch = false
     @State private var animateCards = false
+    @State private var animateCard1 = false
+    @State private var animateCard2 = false
+    @State private var animateCard3 = false
+    @State private var animateCard4 = false
+    @State private var animateCard5 = false
 
     var body: some View {
         DashboardGrid {
             // Latest Show Hero Card
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
-                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.1))
+                    .modifier(StateCardAnimationModifier(animate: $animateCard1))
             }
 
             // Tour Calendar (Component D)
             DashboardSection {
                 TourCalendarCard()
-                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.2))
+                    .modifier(StateCardAnimationModifier(animate: $animateCard2))
             }
 
             // Tour Statistics Cards
@@ -27,10 +32,10 @@ struct TourDashboardView: View {
                         tourName: statistics.tourName,
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
-                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.3))
+                    .modifier(StateCardAnimationModifier(animate: $animateCard3))
 
                     TourStatisticsCards(statistics: statistics)
-                        .modifier(CardAnimationModifier(animate: animateCards, delay: 0.4))
+                        .modifier(StateCardAnimationModifier(animate: $animateCard4))
                 }
             } else if latestSetlistViewModel.isTourStatisticsLoading && latestSetlistViewModel.latestShow != nil {
                 // Show loading state for tour statistics while main content is already loaded
@@ -38,14 +43,14 @@ struct TourDashboardView: View {
                     TourStatisticsLoadingView(
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
-                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.3))
+                    .modifier(StateCardAnimationModifier(animate: $animateCard3))
                 }
             }
 
             // Search Action Card
             DashboardSection {
                 SearchActionCard(showingDateSearch: $showingDateSearch)
-                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.5))
+                    .modifier(StateCardAnimationModifier(animate: $animateCard5))
             }
         }
         .background(
@@ -71,9 +76,46 @@ struct TourDashboardView: View {
             }
         }
         .onAppear {
-            // Trigger staggered animations immediately
-            animateCards = true
+            // State-driven animation chain - start immediately
+            startAnimationSequence()
         }
+        .onChange(of: animateCard1) { _, isAnimated in
+            if isAnimated {
+                // Card 1 completed, trigger card 2
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    animateCard2 = true
+                }
+            }
+        }
+        .onChange(of: animateCard2) { _, isAnimated in
+            if isAnimated {
+                // Card 2 completed, trigger card 3
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    animateCard3 = true
+                }
+            }
+        }
+        .onChange(of: animateCard3) { _, isAnimated in
+            if isAnimated {
+                // Card 3 completed, trigger card 4
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    animateCard4 = true
+                }
+            }
+        }
+        .onChange(of: animateCard4) { _, isAnimated in
+            if isAnimated {
+                // Card 4 completed, trigger card 5
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    animateCard5 = true
+                }
+            }
+        }
+    }
+
+    private func startAnimationSequence() {
+        // Begin state-driven animation chain
+        animateCard1 = true
     }
 }
 
@@ -202,9 +244,9 @@ struct TourStatisticsLoadingView: View {
     }
 }
 
-// MARK: - Animation Modifier
+// MARK: - Animation Modifiers
 
-/// Reusable modifier for card entrance animations
+/// Legacy modifier for card entrance animations (deprecated)
 struct CardAnimationModifier: ViewModifier {
     let animate: Bool
     let delay: Double
@@ -218,6 +260,29 @@ struct CardAnimationModifier: ViewModifier {
                 .delay(delay),
                 value: animate
             )
+    }
+}
+
+/// State-driven modifier for card entrance animations (professional approach)
+struct StateCardAnimationModifier: ViewModifier {
+    @Binding var animate: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(animate ? 1 : 0)
+            .offset(y: animate ? 0 : 20)
+            .animation(
+                .spring(response: 0.6, dampingFraction: 0.8),
+                value: animate
+            )
+            .onAppear {
+                // Card becomes visible immediately when state changes
+                if !animate {
+                    withAnimation {
+                        animate = true
+                    }
+                }
+            }
     }
 }
 

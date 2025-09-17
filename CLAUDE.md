@@ -546,6 +546,109 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - **Current Day Indicator**: Red circle outline is reserved exclusively for calendar current day
 - **Consistency**: Same color algorithm used across venue badges, tour dates, and statistics
 
+### State-Driven UI Best Practices
+
+**MANDATORY**: All UI animations and transitions must be state-driven, not timing-based.
+
+#### Professional iOS Standard
+State-driven UI is the industry standard for professional iOS apps and is required by Apple's Human Interface Guidelines. Apps like Spotify, Instagram, and Apple's own apps use state-driven patterns exclusively.
+
+#### Core Principles
+1. **📊 Data-Responsive**: UI reacts to actual state changes, not arbitrary time delays
+2. **🎯 Consistent**: Eliminates race conditions and timing inconsistencies
+3. **⚡ Performance-Adaptive**: Works smoothly on all device capabilities
+4. **🛡️ Reliable**: No dependency on timing guesswork
+5. **🔄 Maintainable**: Clear state dependencies vs buried timing constants
+
+#### Required Pattern
+
+**✅ Professional State-Driven (REQUIRED):**
+```swift
+@State private var shouldTriggerAction = false
+
+.onChange(of: shouldTriggerAction) { _, newValue in
+    if newValue && conditionsMet {
+        withAnimation(.easeInOut(duration: 0.3)) {
+            // Perform UI action
+        }
+        shouldTriggerAction = false  // Reset state
+    }
+}
+```
+
+**❌ Timing-Based (FORBIDDEN):**
+```swift
+DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+    // UI action - unreliable and unprofessional
+}
+```
+
+#### Implementation Examples
+
+**Accordion/Collapsible UI:**
+```swift
+@State private var isExpanded = false
+@State private var shouldScrollToTop = false
+
+Button(action: {
+    let wasExpanded = isExpanded
+    withAnimation(.easeInOut(duration: 0.3)) {
+        isExpanded.toggle()
+        if wasExpanded {
+            shouldScrollToTop = true
+        }
+    }
+})
+
+.onChange(of: shouldScrollToTop) { _, newValue in
+    if newValue && !isExpanded {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            withAnimation(.easeInOut(duration: 0.25)) {
+                proxy.scrollTo("cardId", anchor: .top)
+            }
+            shouldScrollToTop = false
+        }
+    }
+}
+```
+
+**Loading State Transitions:**
+```swift
+.onChange(of: dataModel.isLoading) { _, isLoading in
+    if !isLoading && dataModel.hasData {
+        withAnimation(.easeOut(duration: 0.2)) {
+            showContent = true
+        }
+    }
+}
+```
+
+#### When Timing is Acceptable
+Limited exceptions for essential UX requirements:
+- **Minimum brand display time** (professional app launch sequences)
+- **Accessibility compliance** (screen reader timing requirements)
+- **Animation completion coordination** (only when SwiftUI completion callbacks unavailable)
+
+Even in these cases, timing should be:
+- Minimal and justified
+- Well-documented with clear reasoning
+- Combined with state checks for reliability
+
+#### Tools and Techniques
+- **SwiftUI State Management**: `@State`, `@ObservableObject`, `@Published`
+- **State Observers**: `.onChange()`, `.onReceive()`
+- **Animation Coordination**: `withAnimation()` with completion patterns
+- **Conditional UI**: `@ViewBuilder` for state-driven view composition
+
+#### Success Metrics
+- ✅ No arbitrary timing delays in UI code
+- ✅ Smooth performance across all device types
+- ✅ Predictable behavior regardless of system load
+- ✅ Professional user experience matching industry standards
+- ✅ Easy to test and debug state transitions
+
+**This pattern is demonstrated in `TourMetricCards.swift` accordion implementation and should be applied consistently across all new UI development.**
+
 ## Component Evolution Roadmap
 
 ### Component A: Tour Setlist Browser Evolution

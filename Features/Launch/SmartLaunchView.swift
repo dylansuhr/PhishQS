@@ -15,6 +15,7 @@ struct SmartLaunchView: View {
     @State private var minimumLoadTimeElapsed = false
     @State private var hasInitialized = false
     @State private var hideStatusBar = true
+    @State private var shouldTransitionToDashboard = false
 
     private var shouldShowBrandedLoading: Bool {
         // Don't show if we've already transitioned
@@ -64,6 +65,18 @@ struct SmartLaunchView: View {
         .onChange(of: minimumLoadTimeElapsed) { _, _ in
             checkTransitionConditions()
         }
+        .onChange(of: shouldTransitionToDashboard) { _, shouldTransition in
+            if shouldTransition {
+                // State-driven transition - instant response to readiness
+                showBrandedLoading = false
+                // Animate status bar back smoothly
+                withAnimation(.easeOut(duration: 0.2)) {
+                    hideStatusBar = false
+                }
+                launchState.markInitialLoadComplete()
+                shouldTransitionToDashboard = false // Reset state
+            }
+        }
     }
 
     private func startLaunchSequence() {
@@ -96,31 +109,26 @@ struct SmartLaunchView: View {
     }
 
     private func checkTransitionConditions() {
-        // Determine if we should hide branded loading
-        let shouldHide: Bool = {
+        // State-driven transition logic - determine readiness for dashboard
+        let shouldTransition: Bool = {
             switch launchState.launchType {
             case .coldStart:
-                // Hide when minimum time passed AND data loaded
+                // Transition when minimum time passed AND data loaded
                 return minimumLoadTimeElapsed && !dashboardData.isLoading
 
             case .warmStart:
-                // Hide when data loaded or cached data available
+                // Transition when data loaded or cached data available
                 return !dashboardData.isLoading || dashboardData.hasCachedData()
 
             case .backgroundReturn:
-                // Always hide immediately
+                // Always transition immediately
                 return true
             }
         }()
 
-        if shouldHide && showBrandedLoading {
-            // Instant transition to eliminate flash
-            showBrandedLoading = false
-            // Animate status bar back smoothly
-            withAnimation(.easeOut(duration: 0.2)) {
-                hideStatusBar = false
-            }
-            launchState.markInitialLoadComplete()
+        if shouldTransition && showBrandedLoading {
+            // Trigger state-driven transition
+            shouldTransitionToDashboard = true
         }
     }
 }
