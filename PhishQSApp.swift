@@ -10,10 +10,15 @@ import SwiftUI
 // entry point for the app
 @main
 struct PhishQSApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some Scene {
         WindowGroup {
-            // Start with welcome view for smooth launch transition
-            WelcomeView()
+            // Use smart launch view for state-aware loading
+            SmartLaunchView()
+                .onChange(of: scenePhase) { oldPhase, newPhase in
+                    LaunchStateManager.shared.handleScenePhaseChange(from: oldPhase, to: newPhase)
+                }
         }
     }
 }

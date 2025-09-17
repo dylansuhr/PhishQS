@@ -10,11 +10,36 @@ class LatestSetlistViewModel: BaseViewModel {
     @Published var isTourStatisticsLoading: Bool = false
     
     private let tourDashboardClient: TourDashboardDataClient
-    
+
     // MARK: - Initialization
-    
+
     init(tourDashboardClient: TourDashboardDataClient = TourDashboardDataClient.shared) {
         self.tourDashboardClient = tourDashboardClient
+    }
+
+    // MARK: - State Tracking for Launch System
+
+    func hasCachedData() -> Bool {
+        // Check if we have cached tour statistics
+        if CacheManager.shared.get(TourSongStatistics.self, forKey: CacheManager.CacheKeys.currentTourStats) != nil {
+            return true
+        }
+        // Check if we have a cached enhanced setlist (would be cached with show date as key)
+        if let showDate = latestShow?.showdate,
+           CacheManager.shared.get(EnhancedSetlist.self, forKey: CacheManager.CacheKeys.enhancedSetlist + showDate) != nil {
+            return true
+        }
+        return false
+    }
+
+    var isLoadingSetlist: Bool {
+        return isLoading && enhancedSetlist == nil
+    }
+
+    func loadInitialData() {
+        Task {
+            await fetchLatestSetlist()
+        }
     }
     
     // Fetch the latest show and its setlist from single source

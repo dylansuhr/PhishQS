@@ -2,7 +2,7 @@ import SwiftUI
 
 // Modern dashboard-style home screen
 struct TourDashboardView: View {
-    @StateObject private var latestSetlistViewModel = LatestSetlistViewModel()
+    @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
     @State private var showingDateSearch = false
     @State private var animateCards = false
 
@@ -11,25 +11,13 @@ struct TourDashboardView: View {
             // Latest Show Hero Card
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
-                    .opacity(animateCards ? 1 : 0)
-                    .offset(y: animateCards ? 0 : 20)
-                    .animation(
-                        .spring(response: 0.6, dampingFraction: 0.8)
-                        .delay(0.1),
-                        value: animateCards
-                    )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.1))
             }
 
             // Tour Calendar (Component D)
             DashboardSection {
                 TourCalendarCard()
-                    .opacity(animateCards ? 1 : 0)
-                    .offset(y: animateCards ? 0 : 20)
-                    .animation(
-                        .spring(response: 0.6, dampingFraction: 0.8)
-                        .delay(0.2),
-                        value: animateCards
-                    )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.2))
             }
 
             // Tour Statistics Cards
@@ -39,22 +27,10 @@ struct TourDashboardView: View {
                         tourName: statistics.tourName,
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
-                    .opacity(animateCards ? 1 : 0)
-                    .offset(y: animateCards ? 0 : 20)
-                    .animation(
-                        .spring(response: 0.6, dampingFraction: 0.8)
-                        .delay(0.3),
-                        value: animateCards
-                    )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.3))
 
                     TourStatisticsCards(statistics: statistics)
-                        .opacity(animateCards ? 1 : 0)
-                        .offset(y: animateCards ? 0 : 20)
-                        .animation(
-                            .spring(response: 0.6, dampingFraction: 0.8)
-                            .delay(0.4),
-                            value: animateCards
-                        )
+                        .modifier(CardAnimationModifier(animate: animateCards, delay: 0.4))
                 }
             } else if latestSetlistViewModel.isTourStatisticsLoading && latestSetlistViewModel.latestShow != nil {
                 // Show loading state for tour statistics while main content is already loaded
@@ -62,26 +38,14 @@ struct TourDashboardView: View {
                     TourStatisticsLoadingView(
                         tourPosition: latestSetlistViewModel.tourPositionInfo
                     )
-                    .opacity(animateCards ? 1 : 0)
-                    .offset(y: animateCards ? 0 : 20)
-                    .animation(
-                        .spring(response: 0.6, dampingFraction: 0.8)
-                        .delay(0.3),
-                        value: animateCards
-                    )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.3))
                 }
             }
 
             // Search Action Card
             DashboardSection {
                 SearchActionCard(showingDateSearch: $showingDateSearch)
-                    .opacity(animateCards ? 1 : 0)
-                    .offset(y: animateCards ? 0 : 20)
-                    .animation(
-                        .spring(response: 0.6, dampingFraction: 0.8)
-                        .delay(0.5),
-                        value: animateCards
-                    )
+                    .modifier(CardAnimationModifier(animate: animateCards, delay: 0.5))
             }
         }
         .background(
@@ -107,10 +71,8 @@ struct TourDashboardView: View {
             }
         }
         .onAppear {
-            // Trigger staggered animations after a brief delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                animateCards = true
-            }
+            // Trigger staggered animations immediately
+            animateCards = true
         }
     }
 }
@@ -240,8 +202,28 @@ struct TourStatisticsLoadingView: View {
     }
 }
 
+// MARK: - Animation Modifier
+
+/// Reusable modifier for card entrance animations
+struct CardAnimationModifier: ViewModifier {
+    let animate: Bool
+    let delay: Double
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(animate ? 1 : 0)
+            .offset(y: animate ? 0 : 20)
+            .animation(
+                .spring(response: 0.6, dampingFraction: 0.8)
+                .delay(delay),
+                value: animate
+            )
+    }
+}
+
 #Preview {
     NavigationStack {
         TourDashboardView()
+            .environmentObject(LatestSetlistViewModel())
     }
 }
