@@ -103,6 +103,10 @@ npm run update-tour-dashboard      # Update tour dashboard data
 npm run initialize-tour-shows      # Initialize all tour shows data
 npm run initialize-remaining-shows # Quick initialize remaining shows
 npm run deploy                     # Deploy to Vercel production
+
+# Development workflow
+vercel dev                         # Alternative way to start dev server
+node Server/Scripts/generate-stats.js  # Direct script execution
 ```
 
 ### iOS Development
@@ -115,11 +119,17 @@ open PhishQS.xcodeproj             # Open project in Xcode
 # Build from command line (optional)
 xcodebuild -scheme PhishQS -configuration Debug -sdk iphonesimulator build
 xcodebuild -scheme PhishQS test
+
+# Common development tasks
+xcodebuild -list                   # List available schemes and targets
+xcodebuild clean                   # Clean build artifacts
 ```
 
+**Requirements:**
 - iOS target requires iOS 16.0+ and Xcode 15+
 - UI tests are located in `Tests/PhishQSUITests/`
 - Test files: `PhishQSTests` and `PhishQSUITests` targets
+- Node.js 18+ required for server components
 
 ## App Components
 

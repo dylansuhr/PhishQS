@@ -1,5 +1,5 @@
 {
-  "name": "phishqs-server",
+  "name": "phish-qs",
   "version": "1.0.0",
   "description": "Vercel serverless functions for PhishQS tour statistics",
   "type": "module",
