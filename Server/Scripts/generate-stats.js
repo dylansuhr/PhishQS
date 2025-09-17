@@ -309,17 +309,24 @@ async function generateTourStatisticsFromControlFile() {
             throw new Error('No show data loaded. Please run initialization script to create show files.');
         }
         
-        // Step 3: Calculate statistics using existing modular architecture
-        console.log('📊 Calculating tour statistics using modular calculator system...');
-        const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, tourName);
-        
-        // Step 4: Enhance statistics with historical data (same as optimized version)
-        console.log('🔍 Enhancing statistics with historical data...');
+        // Step 3: Fetch comprehensive song database for statistics that need it
+        console.log('🎵 Fetching comprehensive song database for MostCommonSongsNotPlayed calculator...');
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
+        const comprehensiveSongs = await fetchComprehensiveSongDatabase(enhancedService.phishNetClient);
+
+        // Step 4: Calculate statistics using existing modular architecture with context
+        console.log('📊 Calculating tour statistics using modular calculator system...');
+        const context = {
+            comprehensiveSongs: comprehensiveSongs
+        };
+        const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, tourName, context);
+
+        // Step 5: Enhance statistics with historical data
+        console.log('🔍 Enhancing statistics with historical data...');
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 5: Save result to Server/Data directory (single source of truth)
+        // Step 6: Save result to Server/Data directory (single source of truth)
         const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
 
         // Add tracking information for future optimization checks
@@ -338,8 +345,9 @@ async function generateTourStatisticsFromControlFile() {
         console.log(`📁 Data saved to: ${outputPath}`);
         console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
         console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
-        console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
+        console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
         console.log(`   📊 Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
+        console.log(`   📊 Common not played: ${enhancedTourStats.mostCommonSongsNotPlayed?.length || 0} (from ${comprehensiveSongs.length} total Phish songs)`);
         console.log(`🚀 Data Source: Control file + individual show files (0 API calls for tour data)`);
         console.log(`📖 Shows processed: ${allTourShows.length} enhanced setlists from control file`);
         
@@ -402,6 +410,50 @@ async function checkIfStatisticsUpdateNeeded(controlFileData) {
         // If we can't read existing statistics, regenerate them
         console.warn(`⚠️ Error reading existing statistics: ${error.message}`);
         return { shouldUpdate: true, reason: 'error_reading_existing_statistics' };
+    }
+}
+
+/**
+ * Fetch comprehensive song database from Phish.net for "Most Common Songs Not Played" calculator
+ *
+ * Uses the same filtering logic as documented in CLAUDE.md to get all songs
+ * performed by Phish (originals + covers), excluding side projects.
+ *
+ * @param {Object} phishNetClient - Phish.net API client instance
+ * @returns {Promise<Array>} Filtered array of Phish-performed songs
+ */
+async function fetchComprehensiveSongDatabase(phishNetClient) {
+    try {
+        console.log('🔍 Fetching comprehensive song database from Phish.net...');
+        const allSongs = await phishNetClient.fetchSongs();
+        console.log(`📊 Retrieved ${allSongs.length} total songs from Phish.net`);
+
+        // Filter to Phish-performed songs using side project exclusion
+        const sideProjectArtists = [
+            'Trey Anastasio', 'Mike Gordon', 'Page McConnell', 'Jon Fishman',
+            'Oysterhead', 'Vida Blue', 'TAB', 'Surrender to the Air',
+            'Phil Lesh and Friends', 'Bernie Worrell Orchestra'
+        ];
+
+        const phishPerformedSongs = allSongs.filter(song =>
+            song.times_played > 0 &&
+            !sideProjectArtists.includes(song.artist)
+        );
+
+        console.log(`✅ Filtered to ${phishPerformedSongs.length} Phish-performed songs (originals + covers)`);
+        console.log(`🎯 Excluded ${allSongs.length - phishPerformedSongs.length} side project songs`);
+
+        // Debug: Show breakdown
+        const originals = phishPerformedSongs.filter(song => song.artist === 'Phish').length;
+        const covers = phishPerformedSongs.length - originals;
+        console.log(`   📈 ${originals} Phish originals + ${covers} covers by Phish`);
+
+        return phishPerformedSongs;
+
+    } catch (error) {
+        console.error('❌ Error fetching comprehensive song database:', error);
+        console.warn('⚠️  Returning empty song database - MostCommonSongsNotPlayed will return no results');
+        return [];
     }
 }
 

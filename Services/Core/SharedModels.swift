@@ -304,8 +304,8 @@ struct MostPlayedSong: Codable, Identifiable {
     let songId: Int           // Phish.net songid
     let songName: String      // Song name
     let playCount: Int        // Number of times played in tour
-    
-    /// Initialize with songId as id  
+
+    /// Initialize with songId as id
     init(songId: Int, songName: String, playCount: Int) {
         self.id = songId
         self.songId = songId
@@ -314,19 +314,47 @@ struct MostPlayedSong: Codable, Identifiable {
     }
 }
 
+/// Most common song not played information for tour statistics
+/// Represents popular songs from Phish history that haven't been played on current tour
+struct MostCommonSongNotPlayed: Codable, Identifiable {
+    let id: Int                    // Use songId as unique identifier
+    let songId: Int                // Phish.net songid
+    let songName: String           // Song name
+    let historicalPlayCount: Int   // Total times played in Phish history
+    let originalArtist: String?    // Original artist (for covers)
+
+    /// Get display text showing if this is a cover song
+    var songTypeDisplay: String {
+        if let artist = originalArtist, artist != "Phish" {
+            return "Cover (\(artist))"
+        }
+        return "Original"
+    }
+
+    /// Initialize with songId as id
+    init(songId: Int, songName: String, historicalPlayCount: Int, originalArtist: String? = nil) {
+        self.id = songId
+        self.songId = songId
+        self.songName = songName
+        self.historicalPlayCount = historicalPlayCount
+        self.originalArtist = originalArtist
+    }
+}
+
 // MARK: - MostPlayedSong does not conform to TourContextProvider
 // MostPlayedSong is kept simple with only song name and play count
 
 /// Combined tour statistics for display
 struct TourSongStatistics: Codable {
-    let longestSongs: [TrackDuration]   // Top 3 longest songs by duration
-    let rarestSongs: [SongGapInfo]      // Top 3 rarest songs by gap
-    let mostPlayedSongs: [MostPlayedSong] // Top 3 most played songs by frequency
-    let tourName: String?               // Current tour name for context
-    
+    let longestSongs: [TrackDuration]        // Top 3 longest songs by duration
+    let rarestSongs: [SongGapInfo]           // Top 3 rarest songs by gap
+    let mostPlayedSongs: [MostPlayedSong]    // Top 3 most played songs by frequency
+    let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed] // Top 20 common songs not played
+    let tourName: String?                    // Current tour name for context
+
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !mostCommonSongsNotPlayed.isEmpty
     }
 }
 

@@ -21,6 +21,7 @@ import StatisticsConfig from '../Config/StatisticsConfig.js';
 import { LongestSongsCalculator } from './StatisticsCalculators/LongestSongsCalculator.js';
 import { RarestSongsCalculator } from './StatisticsCalculators/RarestSongsCalculator.js';
 import { MostPlayedSongsCalculator } from './StatisticsCalculators/MostPlayedSongsCalculator.js';
+import { MostCommonSongsNotPlayedCalculator } from './StatisticsCalculators/MostCommonSongsNotPlayedCalculator.js';
 
 /**
  * Registry for managing statistics calculators
@@ -81,6 +82,17 @@ export class StatisticsRegistry {
             resultType: 'MostPlayedSong',
             enabled: true,
             priority: 3
+        });
+
+        // Most Common Songs Not Played Calculator
+        this.registerCalculator('mostCommonSongsNotPlayed', {
+            name: 'Most Common Songs Not Played',
+            description: 'Identifies popular songs from Phish history absent from current tour',
+            dataSource: 'Comprehensive song database with historical play counts',
+            calculatorClass: MostCommonSongsNotPlayedCalculator,
+            resultType: 'MostCommonSongNotPlayed',
+            enabled: true,
+            priority: 4
         });
     }
     
@@ -195,12 +207,14 @@ export class StatisticsRegistry {
     
     /**
      * Execute all enabled calculators and return combined results
-     * 
+     *
      * @param {Array} tourShows - All enhanced setlists for the tour
      * @param {string} tourName - Name of the tour
+     * @param {Object} context - Additional context data for calculators (optional)
+     * @param {Array} context.comprehensiveSongs - Complete song database for calculators that need it
      * @returns {Object} Combined results from all calculators
      */
-    calculateAllStatistics(tourShows, tourName) {
+    calculateAllStatistics(tourShows, tourName, context = {}) {
         if (StatisticsConfig.isFeatureEnabled('enablePerformanceTiming')) {
             console.time('🚀 Total Statistics Calculation');
         }
@@ -222,7 +236,7 @@ export class StatisticsRegistry {
                 }
                 
                 const calculator = this.createCalculator(type);
-                const calculationResults = calculator.calculate(tourShows, tourName);
+                const calculationResults = calculator.calculate(tourShows, tourName, context);
                 
                 // Store results using calculator type as key
                 results[type] = calculationResults;

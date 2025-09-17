@@ -77,7 +77,7 @@ export class LongestSongsCalculator extends BaseStatisticsCalculator {
      * @param {string} tourName - Tour name for context
      * @returns {Array<TrackDuration>} Top longest songs with performance details
      */
-    generateResults(dataContainer, tourName) {
+    generateResults(dataContainer, tourName, context = {}) {
         const { allTrackDurations } = dataContainer;
         
         this.log(`📊 Analyzing ${allTrackDurations.length} total track durations for longest songs`);

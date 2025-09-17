@@ -266,21 +266,43 @@ export class PhishNetClient {
     }
 
     /**
+     * Fetch comprehensive song database from Phish.net
+     *
+     * Returns all songs in the Phish.net database with historical play counts.
+     * Used for "Most Common Songs Not Played" calculations.
+     *
+     * @returns {Promise<Array>} Array of song objects with play counts and metadata
+     * @throws {Error} If API request fails
+     */
+    async fetchSongs() {
+        const url = `${this.baseURL}/songs.json?apikey=${this.apiKey}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const songsResponse = await response.json();
+        return songsResponse.data || [];
+    }
+
+    /**
      * Filter to Phish shows only
-     * 
+     *
      * Excludes side projects, guest appearances, and other non-Phish performances.
      * Validates that show has proper date format and artist name.
-     * 
+     *
      * @param {Array} shows - Array of show objects from API
      * @returns {Array} Filtered array containing only Phish shows
-     * 
+     *
      * Port of iOS APIUtilities.filterPhishShows() logic
      */
     filterPhishShows(shows) {
-        return shows.filter(show => 
-            show.artist_name && 
+        return shows.filter(show =>
+            show.artist_name &&
             show.artist_name.toLowerCase().includes('phish') &&
-            show.showdate && 
+            show.showdate &&
             show.showdate.length >= 10 // Valid date format
         );
     }

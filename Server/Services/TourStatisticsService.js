@@ -37,22 +37,23 @@ export class TourStatisticsService {
     
     /**
      * Calculate tour statistics using modular calculator architecture (RECOMMENDED)
-     * 
+     *
      * Uses the StatisticsRegistry to coordinate multiple specialized calculators.
      * Each calculator focuses on one type of statistic, improving maintainability
      * and extensibility for future statistics types.
-     * 
+     *
      * Architecture Benefits:
      * - Modular: Separate calculators for each statistic type
      * - Configurable: Uses StatisticsConfig for all settings
      * - Extensible: New statistics can be added without core changes
      * - Testable: Individual calculators can be tested in isolation
-     * 
+     *
      * @param {Array} tourShows - All enhanced setlists for the tour
      * @param {string} tourName - Name of the tour for display
+     * @param {Object} context - Additional context data for calculators
      * @returns {TourSongStatistics} Complete tour statistics
      */
-    static calculateTourStatistics(tourShows, tourName) {
+    static calculateTourStatistics(tourShows, tourName, context = {}) {
         console.log(`🎯 TourStatisticsService: Using modular calculator architecture`);
         
         // Log configuration
@@ -61,25 +62,27 @@ export class TourStatisticsService {
         // Validate input
         if (!tourShows || tourShows.length === 0) {
             console.log('⚠️  No tour shows provided, returning empty statistics');
-            return new TourSongStatistics([], [], [], tourName);
+            return new TourSongStatistics([], [], [], tourName, []);
         }
         
         // Execute all calculators through registry
-        const calculatorResults = statisticsRegistry.calculateAllStatistics(tourShows, tourName);
+        const calculatorResults = statisticsRegistry.calculateAllStatistics(tourShows, tourName, context);
         
         // Extract results in expected format for TourSongStatistics model
         const longestSongs = calculatorResults.longestSongs || [];
         const rarestSongs = calculatorResults.rarestSongs || [];
         const mostPlayedSongs = calculatorResults.mostPlayedSongs || [];
-        
+        const mostCommonSongsNotPlayed = calculatorResults.mostCommonSongsNotPlayed || [];
+
         // Log summary
-        console.log(`✅ Modular statistics completed: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
-        
+        console.log(`✅ Modular statistics completed: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played, ${mostCommonSongsNotPlayed.length} common not played`);
+
         return new TourSongStatistics(
             longestSongs,
             rarestSongs,
             mostPlayedSongs,
-            tourName
+            tourName,
+            mostCommonSongsNotPlayed
         );
     }
     
@@ -109,10 +112,10 @@ export class TourStatisticsService {
      */
     static calculateAllTourStatistics(tourShows, tourName) {
         console.log(`🚀 calculateAllTourStatistics: Processing ${tourShows.length} shows in single pass`);
-        
+
         if (!tourShows || tourShows.length === 0) {
             console.log('⚠️  No tour shows provided, returning empty statistics');
-            return new TourSongStatistics([], [], [], tourName);
+            return new TourSongStatistics([], [], [], tourName, []);
         }
         
         // Data collection containers for all three statistics
@@ -253,7 +256,8 @@ export class TourStatisticsService {
             longestSongs,
             rarestSongs,
             mostPlayedSongs,
-            tourName
+            tourName,
+            [] // Legacy method doesn't calculate mostCommonSongsNotPlayed
         );
     }
     

@@ -134,7 +134,7 @@ export class RarestSongsCalculator extends BaseStatisticsCalculator {
      * @param {string} tourName - Tour name for context
      * @returns {Array<SongGapInfo>} Top rarest songs with gap details
      */
-    generateResults(dataContainer, tourName) {
+    generateResults(dataContainer, tourName, context = {}) {
         const { tourSongGaps } = dataContainer;
         
         const allGapSongs = Array.from(tourSongGaps.values());

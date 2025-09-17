@@ -239,10 +239,123 @@ struct MostPlayedSongsCard: View {
 struct MostPlayedSongRow: View {
     let position: Int
     let song: MostPlayedSong
-    
+
     var body: some View {
         // Use new modular component
         MostPlayedSongRowModular(position: position, song: song)
+    }
+}
+
+/// Card displaying most common songs not played on current tour with accordion expansion
+struct MostCommonSongsNotPlayedCard: View {
+    let songs: [MostCommonSongNotPlayed]
+    @State private var isExpanded: Bool = false
+
+    var body: some View {
+        ScrollViewReader { proxy in
+            MetricCard("Popular Songs Missing from Tour") {
+                if songs.isEmpty {
+                    Text("All popular songs have been played")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .italic()
+                } else {
+                    VStack(alignment: .leading, spacing: 8) {
+                        ForEach(Array(songs.prefix(isExpanded ? min(songs.count, 20) : 5).enumerated()), id: \.offset) { index, song in
+                            MostCommonSongNotPlayedRow(position: index + 1, song: song)
+
+                            if index < min(songs.count, isExpanded ? min(songs.count, 20) : 5) - 1 {
+                                Divider()
+                            }
+                        }
+
+                        // Show More/Less button when there are more than 5 songs
+                        if songs.count > 5 {
+                            Button(action: {
+                                withAnimation(.easeInOut(duration: 0.3)) {
+                                    isExpanded.toggle()
+
+                                    // Auto-scroll to card when collapsing to prevent blank screen
+                                    if !isExpanded {
+                                        // Calculate adaptive timing based on number of items being collapsed
+                                        let itemsToCollapse = max(0, min(songs.count, 20) - 5)
+                                        let baseDelay: Double = 0.2
+                                        let itemDelay: Double = 0.005 // 5ms per item
+                                        let adaptiveDelay = baseDelay + (Double(itemsToCollapse) * itemDelay)
+                                        let maxDelay: Double = 0.6 // Cap at 600ms for very large lists
+                                        let finalDelay = min(adaptiveDelay, maxDelay)
+
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + finalDelay) {
+                                            withAnimation(.easeInOut(duration: 0.3)) {
+                                                proxy.scrollTo("mostCommonNotPlayedCard", anchor: .top)
+                                            }
+                                        }
+                                    }
+                                }
+                            }) {
+                                HStack {
+                                    Text(isExpanded ? "Show Less" : "Show More")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+
+                                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                        .font(.caption)
+                                        .foregroundColor(.blue)
+                                }
+                            }
+                            .padding(.top, 8)
+                        }
+                    }
+                }
+            }
+            .id("mostCommonNotPlayedCard")
+        }
+    }
+}
+
+/// Individual row for most common song not played display
+struct MostCommonSongNotPlayedRow: View {
+    let position: Int
+    let song: MostCommonSongNotPlayed
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            // Position badge
+            Text("\(position)")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .frame(width: 20, height: 20)
+                .background(Color.orange)
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 4) {
+                // Song name
+                Text(song.songName)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+
+                HStack {
+                    // Historical play count
+                    Text("\(song.historicalPlayCount) times")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    if song.originalArtist != nil && song.originalArtist != "Phish" {
+                        Text("•")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Text(song.songTypeDisplay)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
+
+            Spacer()
+        }
     }
 }
 
@@ -256,6 +369,7 @@ struct TourStatisticsCards: View {
                 LongestSongsCard(songs: stats.longestSongs)
                 RarestSongsCard(songs: stats.rarestSongs)
                 MostPlayedSongsCard(songs: stats.mostPlayedSongs)
+                MostCommonSongsNotPlayedCard(songs: stats.mostCommonSongsNotPlayed)
             }
         }
     }
@@ -386,12 +500,22 @@ struct TourOverviewCard: View {
             MostPlayedSong(songId: 627, songName: "Tweezer", playCount: 7),
             MostPlayedSong(songId: 294, songName: "Ghost", playCount: 6)
         ]
-        
+
+        // Sample most common songs not played
+        let sampleMostCommonSongsNotPlayed = [
+            MostCommonSongNotPlayed(songId: 101, songName: "Harry Hood", historicalPlayCount: 1250, originalArtist: "Phish"),
+            MostCommonSongNotPlayed(songId: 214, songName: "Bathtub Gin", historicalPlayCount: 1189, originalArtist: "Phish"),
+            MostCommonSongNotPlayed(songId: 367, songName: "Also Sprach Zarathustra", historicalPlayCount: 987, originalArtist: "Strauss"),
+            MostCommonSongNotPlayed(songId: 445, songName: "Possum", historicalPlayCount: 923, originalArtist: "Phish"),
+            MostCommonSongNotPlayed(songId: 512, songName: "Golgi Apparatus", historicalPlayCount: 856, originalArtist: "Phish")
+        ]
+
         TourStatisticsCards(
             statistics: TourSongStatistics(
                 longestSongs: sampleLongestSongs,
                 rarestSongs: sampleRarestSongs,
                 mostPlayedSongs: sampleMostPlayedSongs,
+                mostCommonSongsNotPlayed: sampleMostCommonSongsNotPlayed,
                 tourName: TourConfig.currentTourName
             )
         )
