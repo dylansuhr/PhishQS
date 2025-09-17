@@ -546,6 +546,116 @@ Core tour statistics are calculated using specific algorithms and update rules:
 - **Current Day Indicator**: Red circle outline is reserved exclusively for calendar current day
 - **Consistency**: Same color algorithm used across venue badges, tour dates, and statistics
 
+### Phish Song Filtering Best Practices
+
+**CRITICAL**: Always filter for songs performed by Phish using exclusion method, not inclusion.
+
+#### Why This Matters
+The Phish.net database contains songs performed by various artists:
+- **Phish originals**: `artist: "Phish"`
+- **Covers performed by Phish**: `artist: "Led Zeppelin"`, `artist: "Strauss, as interpreted by Deodato"`
+- **Side project songs**: `artist: "Trey Anastasio"`, `artist: "Mike Gordon"`
+
+#### Correct Filtering Approach
+```javascript
+const sideProjectArtists = [
+    'Trey Anastasio', 'Mike Gordon', 'Page Mcconnell', 'Page McConnell',
+    'Leo Kotke/Mike Gordon', 'Mike Gordon and Leo Kottke',
+    'Trey, Mike, and The Benevento/Russo Duo', 'Trey Anastasio & Don Hart'
+];
+
+// Include all songs EXCEPT side projects
+const phishPerformedSongs = allSongs.filter(song =>
+    song.times_played > 0 && !sideProjectArtists.includes(song.artist)
+);
+```
+
+#### Results
+- ✅ **Includes**: Phish originals + covers performed by Phish
+- ✅ **Excludes**: Side project songs by individual band members
+- ✅ **Total**: 902 songs performed by Phish vs 333 with incorrect inclusion filter
+
+**Examples**:
+- ✅ Included: "Also Sprach Zarathustra" (272 plays, artist: "Strauss, as interpreted by Deodato")
+- ✅ Included: "Good Times Bad Times" (231 plays, artist: "Led Zeppelin")
+- ❌ Excluded: "A Wave of Hope" (36 plays, artist: "Trey Anastasio")
+
+### Data Pipeline Architecture for Future Features
+
+**CRITICAL**: All new data-driven features must follow the established single source architecture to maintain performance and reliability.
+
+#### Core Principles
+1. **Single Source of Truth**: All data pre-computed and stored in `Server/Data/`
+2. **GitHub Actions Integration**: Automated updates via existing 3x daily workflow
+3. **Vercel Deployment**: Zero-config deployment via existing `vercel.json`
+4. **Performance First**: ~140ms API responses maintained through pre-computation
+
+#### Required Data Flow Pattern
+
+**✅ Correct Pattern (MANDATORY)**:
+```
+1. Data Collection    → generate-stats.js (GitHub Actions)
+2. Pre-computation    → Calculator classes via StatisticsRegistry
+3. Storage           → Server/Data/*.json (single source)
+4. API Serving       → /api/* endpoints (Vercel)
+5. iOS Consumption   → Remote fetch from pre-computed data
+```
+
+**❌ Prohibited Pattern**:
+```
+1. Runtime API Calls → External APIs during app usage
+2. Client Computation → Statistics calculated on iOS device
+3. Multiple Sources  → Data from different endpoints/files
+```
+
+#### Implementation Checklist for New Features
+
+**Data Collection Enhancement**:
+- [ ] Add data fetching to existing `generate-stats.js` script
+- [ ] Integrate with existing `npm run generate-stats` command
+- [ ] Store results in `Server/Data/` directory
+- [ ] No new scripts or GitHub Actions modifications
+
+**Calculator Implementation**:
+- [ ] Extend `BaseStatisticsCalculator` class
+- [ ] Register in existing `StatisticsRegistry.js`
+- [ ] Use only provided tour data (no external API calls)
+- [ ] Add configuration to `StatisticsConfig.js`
+
+**API Integration**:
+- [ ] Enhance existing endpoint response (no new endpoints)
+- [ ] Maintain existing `vercel.json` configuration
+- [ ] Preserve cache headers (`s-maxage=3600`)
+- [ ] Keep ~140ms response time performance
+
+**iOS Integration**:
+- [ ] Update existing data models in `SharedModels.swift`
+- [ ] Use existing API client services
+- [ ] Follow state-driven UI patterns
+- [ ] Integrate with existing dashboard components
+
+#### Infrastructure Compliance
+
+**✅ Zero Infrastructure Changes Required**:
+- **GitHub Actions**: Uses existing workflow, no new steps
+- **Vercel Config**: Uses existing `includeFiles: "Server/Data/**"`
+- **NPM Scripts**: Uses existing `npm run generate-stats`
+- **API Endpoints**: Enhances existing `/api/tour-statistics`
+
+**✅ Automatic Deployment**:
+- Code changes trigger existing GitHub Actions
+- Data updates stored in `Server/Data/`
+- Vercel auto-deploys enhanced JSON files
+- iOS app automatically receives new data
+
+#### Performance Requirements
+- **API Response**: Maintain ~140ms server response time
+- **Data Storage**: Minimal additions to existing JSON files
+- **Client Performance**: No impact on iOS app launch or navigation
+- **Caching**: Utilize existing 1-hour cache strategy
+
+This architecture ensures all future features integrate seamlessly with the established automated pipeline while maintaining performance and reliability standards.
+
 ### State-Driven UI Best Practices
 
 **MANDATORY**: All UI animations and transitions must be state-driven, not timing-based.
