@@ -297,8 +297,8 @@
       "songId": 235,
       "songName": "Good Times Bad Times",
       "gap": 64,
-      "lastPlayed": "2025-03-06",
-      "timesPlayed": 233,
+      "lastPlayed": "2024-07-26",
+      "timesPlayed": 231,
       "tourVenue": "Coca-Cola Amphitheater",
       "tourVenueRun": {
         "venue": "Coca-Cola Amphitheater",
@@ -320,19 +320,19 @@
         "tourName": "2025 Late Summer Tour",
         "tourYear": "2025"
       },
-      "historicalVenue": "Beacon Theatre",
-      "historicalCity": "New York",
-      "historicalState": "NY",
-      "historicalLastPlayed": "2025-03-06",
-      "formattedHistoricalDate": "3/6/25"
+      "historicalVenue": "Alpine Valley Music Theatre",
+      "historicalCity": "East Troy",
+      "historicalState": "WI",
+      "historicalLastPlayed": "2024-07-26",
+      "formattedHistoricalDate": "7/26/24"
     },
     {
       "id": 431,
       "songId": 431,
       "songName": "Peaches en Regalia",
       "gap": 51,
-      "lastPlayed": "2025-02-15",
-      "timesPlayed": 93,
+      "lastPlayed": "2024-08-16",
+      "timesPlayed": 89,
       "tourVenue": "Ameris Bank Amphitheatre",
       "tourVenueRun": {
         "venue": "Ameris Bank Amphitheatre",
@@ -354,11 +354,11 @@
         "tourName": "2025 Late Summer Tour",
         "tourYear": "2025"
       },
-      "historicalVenue": "Nectar's",
-      "historicalCity": "Burlington",
-      "historicalState": "VT",
-      "historicalLastPlayed": "2025-02-15",
-      "formattedHistoricalDate": "2/15/25"
+      "historicalVenue": "The Woodlands",
+      "historicalCity": "Dover",
+      "historicalState": "DE",
+      "historicalLastPlayed": "2024-08-16",
+      "formattedHistoricalDate": "8/16/24"
     },
     {
       "id": 246,
@@ -366,7 +366,7 @@
       "songName": "Halley's Comet",
       "gap": 23,
       "lastPlayed": "2025-06-21",
-      "timesPlayed": 164,
+      "timesPlayed": 159,
       "tourVenue": "Coca-Cola Amphitheater",
       "tourVenueRun": {
         "venue": "Coca-Cola Amphitheater",
@@ -492,7 +492,7 @@
       "songName": "Drift While You're Sleeping",
       "gap": 14,
       "lastPlayed": "2025-07-13",
-      "timesPlayed": 48,
+      "timesPlayed": 32,
       "tourVenue": "Ameris Bank Amphitheatre",
       "tourVenueRun": {
         "venue": "Ameris Bank Amphitheatre",
@@ -526,7 +526,7 @@
       "songName": "Sample in a Jar",
       "gap": 14,
       "lastPlayed": "2025-07-09",
-      "timesPlayed": 377,
+      "timesPlayed": 315,
       "tourVenue": "Coca-Cola Amphitheater",
       "tourVenueRun": {
         "venue": "Coca-Cola Amphitheater",
@@ -560,7 +560,7 @@
       "songName": "555",
       "gap": 13,
       "lastPlayed": "2025-07-13",
-      "timesPlayed": 101,
+      "timesPlayed": 70,
       "tourVenue": "Ameris Bank Amphitheatre",
       "tourVenueRun": {
         "venue": "Ameris Bank Amphitheatre",
@@ -594,7 +594,7 @@
       "songName": "Mercury",
       "gap": 13,
       "lastPlayed": "2025-07-12",
-      "timesPlayed": 51,
+      "timesPlayed": 44,
       "tourVenue": "Coca-Cola Amphitheater",
       "tourVenueRun": {
         "venue": "Coca-Cola Amphitheater",
@@ -683,9 +683,387 @@
       "songId": 2570,
       "songName": "Blaze On",
       "playCount": 1
+    },
+    {
+      "id": 96,
+      "songId": 96,
+      "songName": "Buried Alive",
+      "playCount": 1
+    },
+    {
+      "id": 104,
+      "songId": 104,
+      "songName": "Carini",
+      "playCount": 1
+    },
+    {
+      "id": 108,
+      "songId": 108,
+      "songName": "Cavern",
+      "playCount": 1
+    },
+    {
+      "id": 110,
+      "songId": 110,
+      "songName": "Chalk Dust Torture",
+      "playCount": 1
+    },
+    {
+      "id": 113,
+      "songId": 113,
+      "songName": "Character Zero",
+      "playCount": 1
+    },
+    {
+      "id": 119,
+      "songId": 119,
+      "songName": "Cities",
+      "playCount": 1
+    },
+    {
+      "id": 148,
+      "songId": 148,
+      "songName": "David Bowie",
+      "playCount": 1
+    },
+    {
+      "id": 174,
+      "songId": 174,
+      "songName": "Down With Disease",
+      "playCount": 1
+    },
+    {
+      "id": 2829,
+      "songId": 2829,
+      "songName": "Drift While You're Sleeping",
+      "playCount": 1
+    },
+    {
+      "id": 2656,
+      "songId": 2656,
+      "songName": "Everything's Right",
+      "playCount": 1
+    },
+    {
+      "id": 2944,
+      "songId": 2944,
+      "songName": "Evolve",
+      "playCount": 1
+    },
+    {
+      "id": 195,
+      "songId": 195,
+      "songName": "Fee",
+      "playCount": 1
+    },
+    {
+      "id": 202,
+      "songId": 202,
+      "songName": "First Tube",
+      "playCount": 1
+    },
+    {
+      "id": 215,
+      "songId": 215,
+      "songName": "Free",
+      "playCount": 1
+    },
+    {
+      "id": 2418,
+      "songId": 2418,
+      "songName": "Fuego",
+      "playCount": 1
+    },
+    {
+      "id": 222,
+      "songId": 222,
+      "songName": "Ghost",
+      "playCount": 1
+    },
+    {
+      "id": 223,
+      "songId": 223,
+      "songName": "Ginseng Sullivan",
+      "playCount": 1
+    },
+    {
+      "id": 867,
+      "songId": 867,
+      "songName": "Golden Age",
+      "playCount": 1
+    },
+    {
+      "id": 235,
+      "songId": 235,
+      "songName": "Good Times Bad Times",
+      "playCount": 1
+    },
+    {
+      "id": 246,
+      "songId": 246,
+      "songName": "Halley's Comet",
+      "playCount": 1
+    },
+    {
+      "id": 250,
+      "songId": 250,
+      "songName": "Harry Hood",
+      "playCount": 1
+    },
+    {
+      "id": 269,
+      "songId": 269,
+      "songName": "Horn",
+      "playCount": 1
+    },
+    {
+      "id": 323,
+      "songId": 323,
+      "songName": "Kill Devil Falls",
+      "playCount": 1
+    },
+    {
+      "id": 2697,
+      "songId": 2697,
+      "songName": "Leaves",
+      "playCount": 1
+    },
+    {
+      "id": 3100,
+      "songId": 3100,
+      "songName": "Life Saving Gun",
+      "playCount": 1
+    },
+    {
+      "id": 339,
+      "songId": 339,
+      "songName": "Light",
+      "playCount": 1
+    },
+    {
+      "id": 364,
+      "songId": 364,
+      "songName": "Maze",
+      "playCount": 1
+    },
+    {
+      "id": 2573,
+      "songId": 2573,
+      "songName": "Mercury",
+      "playCount": 1
+    },
+    {
+      "id": 381,
+      "songId": 381,
+      "songName": "Mike's Song",
+      "playCount": 1
+    },
+    {
+      "id": 3075,
+      "songId": 3075,
+      "songName": "Monsters",
+      "playCount": 1
+    },
+    {
+      "id": 2639,
+      "songId": 2639,
+      "songName": "More",
+      "playCount": 1
+    },
+    {
+      "id": 393,
+      "songId": 393,
+      "songName": "Mountains In The Mist",
+      "playCount": 1
+    },
+    {
+      "id": 402,
+      "songId": 402,
+      "songName": "My Soul",
+      "playCount": 1
+    },
+    {
+      "id": 3076,
+      "songId": 3076,
+      "songName": "Oblivion",
+      "playCount": 1
+    },
+    {
+      "id": 420,
+      "songId": 420,
+      "songName": "Ocelot",
+      "playCount": 1
+    },
+    {
+      "id": 431,
+      "songId": 431,
+      "songName": "Peaches En Regalia",
+      "playCount": 1
+    },
+    {
+      "id": 3080,
+      "songId": 3080,
+      "songName": "Pillow Jets",
+      "playCount": 1
+    },
+    {
+      "id": 440,
+      "songId": 440,
+      "songName": "Possum",
+      "playCount": 1
+    },
+    {
+      "id": 447,
+      "songId": 447,
+      "songName": "Punch You In The Eye",
+      "playCount": 1
+    },
+    {
+      "id": 455,
+      "songId": 455,
+      "songName": "Reba",
+      "playCount": 1
+    },
+    {
+      "id": 478,
+      "songId": 478,
+      "songName": "Run Like An Antelope",
+      "playCount": 1
+    },
+    {
+      "id": 479,
+      "songId": 479,
+      "songName": "Runaway Jim",
+      "playCount": 1
+    },
+    {
+      "id": 483,
+      "songId": 483,
+      "songName": "Sample In A Jar",
+      "playCount": 1
+    },
+    {
+      "id": 485,
+      "songId": 485,
+      "songName": "Sand",
+      "playCount": 1
+    },
+    {
+      "id": 2796,
+      "songId": 2796,
+      "songName": "Say It To Me S.a.n.t.o.s.",
+      "playCount": 1
+    },
+    {
+      "id": 857,
+      "songId": 857,
+      "songName": "Shine A Light",
+      "playCount": 1
+    },
+    {
+      "id": 2803,
+      "songId": 2803,
+      "songName": "Sigma Oasis",
+      "playCount": 1
+    },
+    {
+      "id": 512,
+      "songId": 512,
+      "songName": "Slave To The Traffic Light",
+      "playCount": 1
+    },
+    {
+      "id": 518,
+      "songId": 518,
+      "songName": "Sneakin' Sally Through The Alley",
+      "playCount": 1
+    },
+    {
+      "id": 538,
+      "songId": 538,
+      "songName": "Stash",
+      "playCount": 1
+    },
+    {
+      "id": 2984,
+      "songId": 2984,
+      "songName": "The Howling",
+      "playCount": 1
+    },
+    {
+      "id": 591,
+      "songId": 591,
+      "songName": "The Moma Dance",
+      "playCount": 1
+    },
+    {
+      "id": 593,
+      "songId": 593,
+      "songName": "The Old Home Place",
+      "playCount": 1
+    },
+    {
+      "id": 603,
+      "songId": 603,
+      "songName": "The Squirming Coil",
+      "playCount": 1
+    },
+    {
+      "id": 609,
+      "songId": 609,
+      "songName": "Theme From The Bottom",
+      "playCount": 1
+    },
+    {
+      "id": 613,
+      "songId": 613,
+      "songName": "Timber (Jerry The Mule)",
+      "playCount": 1
+    },
+    {
+      "id": 622,
+      "songId": 622,
+      "songName": "Tube",
+      "playCount": 1
+    },
+    {
+      "id": 630,
+      "songId": 630,
+      "songName": "Twist",
+      "playCount": 1
+    },
+    {
+      "id": 653,
+      "songId": 653,
+      "songName": "Weekapaug Groove",
+      "playCount": 1
+    },
+    {
+      "id": 3139,
+      "songId": 3139,
+      "songName": "What's Going Through Your Mind",
+      "playCount": 1
+    },
+    {
+      "id": 657,
+      "songId": 657,
+      "songName": "What's The Use?",
+      "playCount": 1
+    },
+    {
+      "id": 683,
+      "songId": 683,
+      "songName": "Wolfman's Brother",
+      "playCount": 1
+    },
+    {
+      "id": 686,
+      "songId": 686,
+      "songName": "Ya Mar",
+      "playCount": 1
     }
   ],
   "tourName": "2025 Late Summer Tour",
   "latestShowProcessed": "2025-09-16",
-  "generatedAt": "2025-09-17T04:29:14.301Z"
+  "generatedAt": "2025-09-17T17:49:45.032Z"
 }

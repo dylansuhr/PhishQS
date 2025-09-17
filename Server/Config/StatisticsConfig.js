@@ -41,7 +41,7 @@ const baseConfig = {
     resultLimits: {
         longestSongs: 10,
         rarestSongs: 10,
-        mostPlayedSongs: 10
+        mostPlayedSongs: 999
     },
     
     // ===== HISTORICAL DATA ENHANCEMENT =====
