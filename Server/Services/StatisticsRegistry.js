@@ -251,7 +251,7 @@ export class StatisticsRegistry {
                 }
                 
             } catch (error) {
-                console.error(`❌ Error calculating ${name}:`, error.message);
+                LoggingService.error(`Error calculating ${name}:`, error.message);
                 
                 // Store empty results for failed calculations to maintain structure
                 results[type] = [];

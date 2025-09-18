@@ -12,6 +12,7 @@
  */
 
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from './LoggingService.js';
 
 /**
  * Service for enhancing tour statistics with historical data
@@ -32,10 +33,10 @@ export class HistoricalDataEnhancer {
      * @returns {Object} Enhanced tour statistics with historical data
      */
     async enhanceStatistics(tourStatistics) {
-        console.log('🔍 Enhancing tour statistics with historical data...');
+        LoggingService.start('Enhancing tour statistics with historical data...');
 
         if (!StatisticsConfig.isHistoricalEnhancementEnabled()) {
-            console.log('   ⚠️  Historical data enhancement is disabled in configuration');
+            LoggingService.warn('Historical data enhancement is disabled in configuration');
             return tourStatistics;
         }
 
@@ -55,7 +56,7 @@ export class HistoricalDataEnhancer {
             enhancedStats.mostPlayedSongs = await this.enhanceMostPlayedSongs(enhancedStats.mostPlayedSongs);
         }
 
-        console.log('✅ Historical data enhancement complete');
+        LoggingService.success('Historical data enhancement complete');
         return enhancedStats;
     }
 
@@ -69,11 +70,11 @@ export class HistoricalDataEnhancer {
         const config = StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs');
         
         if (!config.enabled || !rarestSongs.length) {
-            console.log('   📊 Rarest songs: Enhancement disabled or no songs to enhance');
+            LoggingService.info('Rarest songs: Enhancement disabled or no songs to enhance');
             return rarestSongs;
         }
 
-        console.log(`   📊 Enhancing top ${config.enhanceTopN} rarest songs with historical data...`);
+        LoggingService.info(`Enhancing top ${config.enhanceTopN} rarest songs with historical data...`);
 
         // Only enhance the top N that will be displayed
         const topSongs = rarestSongs.slice(0, config.enhanceTopN);
@@ -99,12 +100,12 @@ export class HistoricalDataEnhancer {
         const config = StatisticsConfig.getHistoricalEnhancementConfig('longestSongs');
         
         if (!config.enabled) {
-            console.log('   📊 Longest songs: Historical enhancement disabled');
+            LoggingService.info('Longest songs: Historical enhancement disabled');
             return longestSongs;
         }
 
         // Historical enhancement for longest songs not yet implemented
-        console.log('   📊 Longest songs: Historical enhancement not yet implemented');
+        LoggingService.info('Longest songs: Historical enhancement not yet implemented');
         return longestSongs;
     }
 
@@ -118,12 +119,12 @@ export class HistoricalDataEnhancer {
         const config = StatisticsConfig.getHistoricalEnhancementConfig('mostPlayedSongs');
         
         if (!config.enabled) {
-            console.log('   📊 Most played songs: Historical enhancement disabled');
+            LoggingService.info('Most played songs: Historical enhancement disabled');
             return mostPlayedSongs;
         }
 
         // Historical enhancement for most played songs not yet implemented
-        console.log('   📊 Most played songs: Historical enhancement not yet implemented');
+        LoggingService.info('Most played songs: Historical enhancement not yet implemented');
         return mostPlayedSongs;
     }
 
@@ -142,7 +143,7 @@ export class HistoricalDataEnhancer {
             const song = songs[i];
             
             try {
-                console.log(`     📡 [${i + 1}/${songs.length}] Fetching historical data for "${song.songName}" (gap: ${song.gap})...`);
+                LoggingService.debug(`[${i + 1}/${songs.length}] Fetching historical data for "${song.songName}" (gap: ${song.gap})...`);
 
                 // Use the fetchSongGap method to get real historical data
                 const historicalData = await this.phishNetClient.fetchSongGap(song.songName, song.tourDate);
@@ -162,17 +163,17 @@ export class HistoricalDataEnhancer {
                     };
 
                     enhancedSongs.push(enhancedSong);
-                    console.log(`     ✅ Enhanced "${song.songName}": last played ${historicalData.historicalLastPlayed} at ${historicalData.historicalVenue || 'Unknown Venue'}`);
+                    LoggingService.success(`Enhanced "${song.songName}": last played ${historicalData.historicalLastPlayed} at ${historicalData.historicalVenue || 'Unknown Venue'}`);
                 } else {
                     // Keep original song if no historical data found
                     enhancedSongs.push(song);
-                    console.log(`     ⚠️  No historical data found for "${song.songName}"`);
+                    LoggingService.warn(`No historical data found for "${song.songName}"`);
                 }
 
             } catch (error) {
                 // Keep original song if API call fails
                 enhancedSongs.push(song);
-                console.log(`     ❌ Failed to fetch historical data for "${song.songName}": ${error.message}`);
+                LoggingService.error(`Failed to fetch historical data for "${song.songName}": ${error.message}`);
             }
 
             // Rate limiting delay between API calls
@@ -181,7 +182,7 @@ export class HistoricalDataEnhancer {
             }
         }
 
-        console.log(`     📊 Enhanced ${enhancedSongs.length} ${categoryName} with historical data`);
+        LoggingService.info(`Enhanced ${enhancedSongs.length} ${categoryName} with historical data`);
         return enhancedSongs;
     }
     
