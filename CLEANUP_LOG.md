@@ -45,9 +45,10 @@ This document tracks all code cleanup sessions, outstanding action items, and te
   - Path: `Services/Core/Archived/` - Removed
   - Contained 600-line unused `LegacyTourStatisticsCalculator.swift`
 
-- [ ] **Implement proper logging service**
-  - 29 files with console.log statements
-  - Need toggleable production/debug logging
+- [x] **Implement proper logging service** ✅ **COMPLETED**
+  - ✅ Server: LoggingService.js (environment-aware, structured logging)
+  - ✅ iOS: SwiftLogger.swift (os.log integration, debug-only)
+  - 🔄 **IN PROGRESS**: Replacing 267 console.log + 102 print statements
 
 ### Medium Priority
 - [ ] **Split large files (500+ lines)** 🔄 **IN PROGRESS**
@@ -55,9 +56,10 @@ This document tracks all code cleanup sessions, outstanding action items, and te
   - `TourMetricCards.swift` (499 lines) - Pending
   - [x] `SharedModels.swift` (494 lines) - ✅ **COMPLETED** (Split into 4 focused files)
 
-- [ ] **Clean print statements in Swift**
-  - ~20 instances of print() in production code
-  - Should use debug-only printing
+- [ ] **Clean print statements in Swift** 🔄 **IN PROGRESS**
+  - 102 instances of print() across 10 files (8 cleaned in TourStatisticsService.swift)
+  - ✅ SwiftLogger.swift created with os.log integration
+  - Remaining: 94 print statements across 9 files
 
 - [ ] **Standardize error handling**
   - Inconsistent error messaging between components
