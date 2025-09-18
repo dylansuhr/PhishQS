@@ -26,6 +26,7 @@ import { HistoricalDataEnhancer } from '../Services/HistoricalDataEnhancer.js';
 import { PhishNetTourService } from '../Services/PhishNetTourService.js';
 import { DataCollectionService } from '../Services/DataCollectionService.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from '../Services/LoggingService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -44,20 +45,20 @@ const CONFIG = {
  */
 async function generateTourStatistics() {
     try {
-        console.log('🎯 Starting real tour statistics generation...');
+        LoggingService.start('Real tour statistics generation');
         
         // Initialize services with real API key
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
         const tourService = new PhishNetTourService(CONFIG.PHISH_NET_API_KEY);
         
         // Step 1: Get latest Summer Tour show (not just latest show)
-        console.log('📡 Fetching 2025 shows from Phish.net...');
+        LoggingService.info('Fetching 2025 shows from Phish.net...');
         const year2025Shows = await enhancedService.phishNetClient.fetchShows('2025');
-        console.log(`📊 Found ${year2025Shows.length} total 2025 shows`);
+        LoggingService.info(`Found ${year2025Shows.length} total 2025 shows`);
         
         // Debug: Show unique tour names and sample data
         const tourNames = [...new Set(year2025Shows.map(show => show.tourname))];
-        console.log(`🎯 Available tour names: ${tourNames.join(', ')}`);
+        LoggingService.debug(`Available tour names: ${tourNames.join(', ')}`);
         
         // Debug: Show sample show data to understand structure
         if (year2025Shows.length > 0) {

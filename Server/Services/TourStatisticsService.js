@@ -24,6 +24,7 @@
 import { TourSongStatistics, MostPlayedSong, TrackDuration, SongGapInfo } from '../Models/TourStatistics.js';
 import statisticsRegistry from './StatisticsRegistry.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from './LoggingService.js';
 
 /**
  * Service for orchestrating tour statistics calculations
@@ -54,20 +55,20 @@ export class TourStatisticsService {
      * @returns {TourSongStatistics} Complete tour statistics
      */
     static calculateTourStatistics(tourShows, tourName, context = {}) {
-        console.log(`🎯 TourStatisticsService: Using modular calculator architecture`);
-        
+        LoggingService.start('TourStatisticsService: Using modular calculator architecture');
+
         // Log configuration
         StatisticsConfig.logConfig();
-        
+
         // Validate input
         if (!tourShows || tourShows.length === 0) {
-            console.log('⚠️  No tour shows provided, returning empty statistics');
+            LoggingService.warn('No tour shows provided, returning empty statistics');
             return new TourSongStatistics([], [], [], tourName, []);
         }
-        
+
         // Execute all calculators through registry
         const calculatorResults = statisticsRegistry.calculateAllStatistics(tourShows, tourName, context);
-        
+
         // Extract results in expected format for TourSongStatistics model
         const longestSongs = calculatorResults.longestSongs || [];
         const rarestSongs = calculatorResults.rarestSongs || [];
@@ -75,7 +76,12 @@ export class TourStatisticsService {
         const mostCommonSongsNotPlayed = calculatorResults.mostCommonSongsNotPlayed || [];
 
         // Log summary
-        console.log(`✅ Modular statistics completed: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played, ${mostCommonSongsNotPlayed.length} common not played`);
+        LoggingService.stats.results({
+            longestSongs,
+            rarestSongs,
+            mostPlayedSongs,
+            mostCommonSongsNotPlayed
+        });
 
         return new TourSongStatistics(
             longestSongs,
@@ -111,10 +117,10 @@ export class TourStatisticsService {
      * Ports Swift calculateAllTourStatistics method
      */
     static calculateAllTourStatistics(tourShows, tourName) {
-        console.log(`🚀 calculateAllTourStatistics: Processing ${tourShows.length} shows in single pass`);
+        LoggingService.start(`calculateAllTourStatistics: Processing ${tourShows.length} shows in single pass`);
 
         if (!tourShows || tourShows.length === 0) {
-            console.log('⚠️  No tour shows provided, returning empty statistics');
+            LoggingService.warn('No tour shows provided, returning empty statistics');
             return new TourSongStatistics([], [], [], tourName, []);
         }
         
@@ -191,14 +197,14 @@ export class TourStatisticsService {
                         const existingGap = tourSongGaps.get(songKey);
                         // Only replace if this occurrence has a higher gap
                         if (gapInfo.gap > existingGap.gap) {
-                            console.log(`      🔄 Updating ${gapInfo.songName}: ${existingGap.gap} → ${gapInfo.gap}`);
+                            LoggingService.debug(`Updating ${gapInfo.songName}: ${existingGap.gap} → ${gapInfo.gap}`);
                             tourSongGaps.set(songKey, enhancedGapInfo);
                         } else {
-                            console.log(`      ✓ Keeping ${gapInfo.songName}: ${existingGap.gap} > ${gapInfo.gap}`);
+                            LoggingService.debug(`Keeping ${gapInfo.songName}: ${existingGap.gap} > ${gapInfo.gap}`);
                         }
                     } else {
                         // First time seeing this song in tour - add it
-                        console.log(`      ➕ Adding ${gapInfo.songName}: Gap ${gapInfo.gap}`);
+                        LoggingService.debug(`Adding ${gapInfo.songName}: Gap ${gapInfo.gap}`);
                         tourSongGaps.set(songKey, enhancedGapInfo);
                     }
                 });
@@ -242,7 +248,7 @@ export class TourStatisticsService {
             .slice(0, 3);
         
         // Summary output
-        console.log(`✅ Statistics calculated: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
+        LoggingService.success(`Statistics calculated: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
         
         return new TourSongStatistics(
             longestSongs,
@@ -265,7 +271,7 @@ export class TourStatisticsService {
         
         if (!matchingShow) {
             // Return track as-is if we can't find matching show
-            console.log(`⚠️ Could not find matching show for track ${track.songName} on ${track.showDate}`);
+            LoggingService.warn(`Could not find matching show for track ${track.songName} on ${track.showDate}`);
             return track;
         }
         
