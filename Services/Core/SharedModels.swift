@@ -3,9 +3,14 @@
 //  PhishQS
 //
 //  Created by Dylan Suhr on 7/24/25.
+//  NOTE: This file is being gradually split into focused model files for better organization
 //
 
 import Foundation
+
+// Import focused model files for better organization
+// These files contain extracted models from this file for maintainability
+// TODO: Remove models from this file once all imports are updated across the codebase
 
 // MARK: - Audio/Recording Models
 

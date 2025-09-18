@@ -50,10 +50,10 @@ This document tracks all code cleanup sessions, outstanding action items, and te
   - Need toggleable production/debug logging
 
 ### Medium Priority
-- [ ] **Split large files (500+ lines)**
-  - `TourCalendarView.swift` (512 lines)
-  - `TourMetricCards.swift` (499 lines)
-  - `SharedModels.swift` (494 lines)
+- [ ] **Split large files (500+ lines)** 🔄 **IN PROGRESS**
+  - `TourCalendarView.swift` (512 lines) - Pending
+  - `TourMetricCards.swift` (499 lines) - Pending
+  - [x] `SharedModels.swift` (494 lines) - ✅ **COMPLETED** (Split into 4 focused files)
 
 - [ ] **Clean print statements in Swift**
   - ~20 instances of print() in production code
