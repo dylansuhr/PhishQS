@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import SwiftLogger
 
 @MainActor
 class TourCalendarViewModel: ObservableObject {
@@ -109,7 +110,7 @@ class TourCalendarViewModel: ObservableObject {
         } catch {
             errorMessage = "Failed to load tour calendar"
             isLoading = false
-            print("Calendar loading error: \(error)")
+            SwiftLogger.error("Calendar loading error: \(error)", category: .ui)
         }
     }
     

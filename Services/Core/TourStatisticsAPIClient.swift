@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftLogger
 
 // MARK: - Tour Statistics API Protocol
 
@@ -42,7 +43,7 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
     /// - Returns: True if server is responding to health checks
     func checkServerHealth() async -> Bool {
         guard let url = URL(string: "\(baseURL)/api/health") else {
-            print("❌ TourStatisticsAPIClient: Invalid health check URL")
+            SwiftLogger.error("TourStatisticsAPIClient: Invalid health check URL", category: .api)
             return false
         }
         
@@ -55,14 +56,14 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
             
             if let httpResponse = response as? HTTPURLResponse {
                 let isHealthy = httpResponse.statusCode == 200
-                print("🌐 TourStatisticsAPIClient: Server health check - \(isHealthy ? "✅ Healthy" : "❌ Unhealthy")")
+                SwiftLogger.info("TourStatisticsAPIClient: Server health check - \(isHealthy ? "Healthy" : "Unhealthy")", category: .api)
                 return isHealthy
             }
             
             return false
             
         } catch {
-            print("❌ TourStatisticsAPIClient: Health check failed - \(error.localizedDescription)")
+            SwiftLogger.error("TourStatisticsAPIClient: Health check failed - \(error.localizedDescription)", category: .api)
             return false
         }
     }
@@ -82,12 +83,12 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
         let timestamp = Int(Date().timeIntervalSince1970)
         guard let url = URL(string: "\(baseURL)/api/tour-statistics?t=\(timestamp)") else {
             let errorMessage = "Failed to create URL from baseURL: \(baseURL)"
-            print("❌ TourStatisticsAPIClient: \(errorMessage)")
+            SwiftLogger.error("TourStatisticsAPIClient: \(errorMessage)", category: .api)
             throw APIError.invalidURL
         }
         
-        print("🌐 TourStatisticsAPIClient: Fetching tour statistics from: \(url)")
-        print("🔍 TourStatisticsAPIClient: Environment - \(baseURL.contains("localhost") ? "Development" : "Production")")
+        SwiftLogger.info("TourStatisticsAPIClient: Fetching tour statistics from: \(url)", category: .api)
+        SwiftLogger.info("TourStatisticsAPIClient: Environment - \(baseURL.contains("localhost") ? "Development" : "Production")", category: .api)
         
         // Create request with cache headers and user agent
         var request = URLRequest(url: url)
@@ -108,11 +109,11 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
             let requestDuration = CFAbsoluteTimeGetCurrent() - startTime
             
             guard let httpResponse = response as? HTTPURLResponse else {
-                print("❌ TourStatisticsAPIClient: Invalid response type - expected HTTPURLResponse")
+                SwiftLogger.error("TourStatisticsAPIClient: Invalid response type - expected HTTPURLResponse", category: .api)
                 throw APIError.invalidResponse
             }
             
-            print("📡 TourStatisticsAPIClient: Server response status: \(httpResponse.statusCode) (\(String(format: "%.2f", requestDuration * 1000))ms)")
+            SwiftLogger.info("TourStatisticsAPIClient: Server response status: \(httpResponse.statusCode) (\(String(format: "%.2f", requestDuration * 1000))ms)", category: .api)
             
             // Enhanced status code handling with specific error guidance
             switch httpResponse.statusCode {
@@ -121,52 +122,52 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
                 break
                 
             case 404:
-                print("❌ TourStatisticsAPIClient: Statistics endpoint not found (404)")
-                print("💡 TourStatisticsAPIClient: Possible causes:")
-                print("   • Server not deployed or endpoint missing")
-                print("   • Incorrect baseURL configuration")
-                print("   • API route not properly configured in Vercel")
+                SwiftLogger.error("TourStatisticsAPIClient: Statistics endpoint not found (404)", category: .api)
+                SwiftLogger.info("TourStatisticsAPIClient: Possible causes:", category: .api)
+                SwiftLogger.info("   • Server not deployed or endpoint missing", category: .api)
+                SwiftLogger.info("   • Incorrect baseURL configuration", category: .api)
+                SwiftLogger.info("   • API route not properly configured in Vercel", category: .api)
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("📜 TourStatisticsAPIClient: Server response: \(responseString)")
+                    SwiftLogger.info("TourStatisticsAPIClient: Server response: \(responseString)", category: .api)
                 }
                 throw APIError.httpError(404)
                 
             case 500:
-                print("❌ TourStatisticsAPIClient: Server internal error (500)")
-                print("💡 TourStatisticsAPIClient: Server-side processing failed:")
-                print("   • Check server logs for statistics generation errors")
-                print("   • Verify tour statistics data exists and is valid")
-                print("   • May need to regenerate statistics data")
+                SwiftLogger.error("TourStatisticsAPIClient: Server internal error (500)", category: .api)
+                SwiftLogger.info("TourStatisticsAPIClient: Server-side processing failed:", category: .api)
+                SwiftLogger.info("   • Check server logs for statistics generation errors", category: .api)
+                SwiftLogger.info("   • Verify tour statistics data exists and is valid", category: .api)
+                SwiftLogger.info("   • May need to regenerate statistics data", category: .api)
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("📜 TourStatisticsAPIClient: Server error details: \(responseString)")
+                    SwiftLogger.info("TourStatisticsAPIClient: Server error details: \(responseString)", category: .api)
                 }
                 throw APIError.httpError(500)
                 
             case 502, 503, 504:
-                print("❌ TourStatisticsAPIClient: Server unavailable (\(httpResponse.statusCode))")
-                print("💡 TourStatisticsAPIClient: Server deployment or infrastructure issue:")
-                print("   • Vercel deployment may be down or restarting")
-                print("   • Cold start timeout (serverless functions)")
-                print("   • Try again in a few moments")
+                SwiftLogger.error("TourStatisticsAPIClient: Server unavailable (\(httpResponse.statusCode))", category: .api)
+                SwiftLogger.info("TourStatisticsAPIClient: Server deployment or infrastructure issue:", category: .api)
+                SwiftLogger.info("   • Vercel deployment may be down or restarting", category: .api)
+                SwiftLogger.info("   • Cold start timeout (serverless functions)", category: .api)
+                SwiftLogger.info("   • Try again in a few moments", category: .api)
                 throw APIError.httpError(httpResponse.statusCode)
                 
             default:
-                print("❌ TourStatisticsAPIClient: Unexpected HTTP status: \(httpResponse.statusCode)")
+                SwiftLogger.error("TourStatisticsAPIClient: Unexpected HTTP status: \(httpResponse.statusCode)", category: .api)
                 if let responseString = String(data: data, encoding: .utf8) {
-                    print("📜 TourStatisticsAPIClient: Response body: \(responseString)")
+                    SwiftLogger.info("TourStatisticsAPIClient: Response body: \(responseString)", category: .api)
                 }
                 throw APIError.httpError(httpResponse.statusCode)
             }
             
             // Validate response has data
             guard !data.isEmpty else {
-                print("❌ TourStatisticsAPIClient: Server returned empty response")
-                print("💡 TourStatisticsAPIClient: This suggests statistics data is missing or corrupt")
+                SwiftLogger.error("TourStatisticsAPIClient: Server returned empty response", category: .api)
+                SwiftLogger.info("TourStatisticsAPIClient: This suggests statistics data is missing or corrupt", category: .api)
                 throw APIError.invalidResponse
             }
             
             // Log response size for monitoring
-            print("📊 TourStatisticsAPIClient: Response size: \(data.count) bytes")
+            SwiftLogger.info("TourStatisticsAPIClient: Response size: \(data.count) bytes", category: .api)
             
             // Parse the JSON response with detailed error handling
             do {
@@ -175,85 +176,85 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
                 // Validate the decoded data quality
                 let validationResult = validateTourStatistics(tourStatistics)
                 if !validationResult.isValid {
-                    print("⚠️ TourStatisticsAPIClient: Data validation warnings:")
+                    SwiftLogger.warn("TourStatisticsAPIClient: Data validation warnings:", category: .api)
                     for warning in validationResult.warnings {
-                        print("   • \(warning)")
+                        SwiftLogger.warn("   • \(warning)", category: .api)
                     }
                 }
                 
-                print("✅ TourStatisticsAPIClient: Successfully fetched and parsed tour statistics:")
-                print("   📊 Longest songs: \(tourStatistics.longestSongs.count)")
-                print("   📊 Rarest songs: \(tourStatistics.rarestSongs.count)")
-                print("   📊 Most played songs: \(tourStatistics.mostPlayedSongs.count)")
-                print("   📊 Tour: \(tourStatistics.tourName ?? "Unknown")")
+                SwiftLogger.info("TourStatisticsAPIClient: Successfully fetched and parsed tour statistics:", category: .api)
+                SwiftLogger.info("   Longest songs: \(tourStatistics.longestSongs.count)", category: .api)
+                SwiftLogger.info("   Rarest songs: \(tourStatistics.rarestSongs.count)", category: .api)
+                SwiftLogger.info("   Most played songs: \(tourStatistics.mostPlayedSongs.count)", category: .api)
+                SwiftLogger.info("   Tour: \(tourStatistics.tourName ?? "Unknown")", category: .api)
                 
                 return tourStatistics
                 
             } catch let decodingError as DecodingError {
-                print("❌ TourStatisticsAPIClient: Failed to decode tour statistics")
-                print("💡 TourStatisticsAPIClient: JSON parsing failed - data format issues:")
+                SwiftLogger.error("TourStatisticsAPIClient: Failed to decode tour statistics", category: .api)
+                SwiftLogger.info("TourStatisticsAPIClient: JSON parsing failed - data format issues:", category: .api)
                 
                 switch decodingError {
                 case .typeMismatch(let type, let context):
-                    print("   • Type mismatch: expected \(type) at \(context.codingPath)")
-                    print("   • Description: \(context.debugDescription)")
+                    SwiftLogger.error("   • Type mismatch: expected \(type) at \(context.codingPath)", category: .api)
+                    SwiftLogger.error("   • Description: \(context.debugDescription)", category: .api)
                     
                 case .valueNotFound(let type, let context):
-                    print("   • Missing value: \(type) at \(context.codingPath)")
-                    print("   • Description: \(context.debugDescription)")
+                    SwiftLogger.error("   • Missing value: \(type) at \(context.codingPath)", category: .api)
+                    SwiftLogger.error("   • Description: \(context.debugDescription)", category: .api)
                     
                 case .keyNotFound(let key, let context):
-                    print("   • Missing key: \(key) at \(context.codingPath)")
-                    print("   • Description: \(context.debugDescription)")
+                    SwiftLogger.error("   • Missing key: \(key) at \(context.codingPath)", category: .api)
+                    SwiftLogger.error("   • Description: \(context.debugDescription)", category: .api)
                     
                 case .dataCorrupted(let context):
-                    print("   • Data corrupted at \(context.codingPath)")
-                    print("   • Description: \(context.debugDescription)")
+                    SwiftLogger.error("   • Data corrupted at \(context.codingPath)", category: .api)
+                    SwiftLogger.error("   • Description: \(context.debugDescription)", category: .api)
                     
                 @unknown default:
-                    print("   • Unknown decoding error: \(decodingError)")
+                    SwiftLogger.error("   • Unknown decoding error: \(decodingError)", category: .api)
                 }
                 
                 // Log sample of response data for debugging
                 if let responseString = String(data: data, encoding: .utf8) {
                     let preview = String(responseString.prefix(500))
-                    print("📜 TourStatisticsAPIClient: Response preview: \(preview)...")
+                    SwiftLogger.info("TourStatisticsAPIClient: Response preview: \(preview)...", category: .api)
                 }
                 
                 throw APIError.decodingError(decodingError)
             }
             
         } catch let urlError as URLError {
-            print("❌ TourStatisticsAPIClient: Network error fetching tour statistics")
-            print("💡 TourStatisticsAPIClient: Network issue details:")
+            SwiftLogger.error("TourStatisticsAPIClient: Network error fetching tour statistics", category: .api)
+            SwiftLogger.info("TourStatisticsAPIClient: Network issue details:", category: .api)
             
             switch urlError.code {
             case .notConnectedToInternet:
-                print("   • No internet connection - check device connectivity")
+                SwiftLogger.error("   • No internet connection - check device connectivity", category: .api)
                 
             case .timedOut:
-                print("   • Request timed out - server may be slow or unresponsive")
-                print("   • Consider checking server status or trying again")
+                SwiftLogger.error("   • Request timed out - server may be slow or unresponsive", category: .api)
+                SwiftLogger.error("   • Consider checking server status or trying again", category: .api)
                 
             case .cannotFindHost:
-                print("   • Cannot find host: \(baseURL)")
-                print("   • Check if server domain is correct and accessible")
+                SwiftLogger.error("   • Cannot find host: \(baseURL)", category: .api)
+                SwiftLogger.error("   • Check if server domain is correct and accessible", category: .api)
                 
             case .cannotConnectToHost:
-                print("   • Cannot connect to host - server may be down")
-                print("   • Verify server deployment and accessibility")
+                SwiftLogger.error("   • Cannot connect to host - server may be down", category: .api)
+                SwiftLogger.error("   • Verify server deployment and accessibility", category: .api)
                 
             case .networkConnectionLost:
-                print("   • Network connection lost during request")
-                print("   • Check network stability and retry")
+                SwiftLogger.error("   • Network connection lost during request", category: .api)
+                SwiftLogger.error("   • Check network stability and retry", category: .api)
                 
             case .dnsLookupFailed:
-                print("   • DNS lookup failed for \(baseURL)")
-                print("   • Domain may not exist or DNS issues")
+                SwiftLogger.error("   • DNS lookup failed for \(baseURL)", category: .api)
+                SwiftLogger.error("   • Domain may not exist or DNS issues", category: .api)
                 
             default:
-                print("   • Network error: \(urlError.localizedDescription)")
-                print("   • Code: \(urlError.code.rawValue)")
+                SwiftLogger.error("   • Network error: \(urlError.localizedDescription)", category: .api)
+                SwiftLogger.error("   • Code: \(urlError.code.rawValue)", category: .api)
             }
             
             throw APIError.networkError(urlError)
@@ -263,9 +264,9 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
             throw apiError
             
         } catch {
-            print("❌ TourStatisticsAPIClient: Unexpected error fetching tour statistics")
-            print("💡 TourStatisticsAPIClient: Unhandled error type: \(type(of: error))")
-            print("   • Error: \(error.localizedDescription)")
+            SwiftLogger.error("TourStatisticsAPIClient: Unexpected error fetching tour statistics", category: .api)
+            SwiftLogger.info("TourStatisticsAPIClient: Unhandled error type: \(type(of: error))", category: .api)
+            SwiftLogger.error("   • Error: \(error.localizedDescription)", category: .api)
             throw APIError.networkError(error)
         }
     }

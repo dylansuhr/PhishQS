@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftLogger
 
 /// Service for calculating historical gaps between song performances
 /// Used to determine what the gap was when a song was played during a specific tour
@@ -94,7 +95,7 @@ class HistoricalGapCalculator {
                 try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
                 
             } catch {
-                print("Failed to calculate gap for \(songName): \(error)")
+                SwiftLogger.warn("Failed to calculate gap for \(songName): \(error)", category: .api)
                 continue
             }
         }

@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import SwiftLogger
 
 // ViewModel for fetching and managing the latest Phish setlist with navigation support
 class LatestSetlistViewModel: BaseViewModel {
@@ -48,7 +49,7 @@ class LatestSetlistViewModel: BaseViewModel {
         setLoading(true)
         
         do {
-            print("📋 [Component A] Fetching latest show from single source...")
+            SwiftLogger.info("[Component A] Fetching latest show from single source...", category: .ui)
             
             // Get tour dashboard data to identify latest show
             let tourData = try await tourDashboardClient.fetchCurrentTourData()
@@ -68,8 +69,8 @@ class LatestSetlistViewModel: BaseViewModel {
             enhancedSetlist = enhanced
             setlistItems = enhanced.setlistItems
             
-            print("✅ [Component A] Latest show loaded from single source: \(tourData.latestShow.date)")
-            print("🎵 [Component A] Setlist items: \(setlistItems.count), Durations: \(enhanced.trackDurations.count)")
+            SwiftLogger.success("[Component A] Latest show loaded from single source: \(tourData.latestShow.date)", category: .ui)
+            SwiftLogger.info("[Component A] Setlist items: \(setlistItems.count), Durations: \(enhanced.trackDurations.count)", category: .ui)
             
             // Set loading false first to show main content
             setLoading(false)
@@ -80,7 +81,7 @@ class LatestSetlistViewModel: BaseViewModel {
             }
             
         } catch {
-            print("❌ [Component A] Failed to load from single source: \(error)")
+            SwiftLogger.error("[Component A] Failed to load from single source: \(error)", category: .ui)
             handleError(error)
             setLoading(false)
             return
@@ -183,7 +184,7 @@ class LatestSetlistViewModel: BaseViewModel {
         
         // Check for current tour stats cache first (Dashboard optimization)
         if let cachedStats = CacheManager.shared.get(TourSongStatistics.self, forKey: CacheManager.CacheKeys.currentTourStats) {
-            print("⚡ Using cached current tour statistics (dashboard optimization)")
+            SwiftLogger.info("Using cached current tour statistics (dashboard optimization)", category: .cache)
             await MainActor.run {
                 tourStatistics = cachedStats
                 isTourStatisticsLoading = false
@@ -193,19 +194,19 @@ class LatestSetlistViewModel: BaseViewModel {
         
         do {
             // Fetch tour statistics from Vercel server (replaces local calculations)
-            print("🌐 Fetching tour statistics from server...")
+            SwiftLogger.info("Fetching tour statistics from server...", category: .api)
             let statistics = try await TourStatisticsAPIClient.shared.fetchTourStatistics()
             
             // Cache current tour statistics for dashboard optimization (1 hour TTL)
             CacheManager.shared.set(statistics, forKey: CacheManager.CacheKeys.currentTourStats, ttl: CacheManager.TTL.currentTourStats)
-            print("💾 Cached current tour statistics for fast dashboard loading")
+            SwiftLogger.info("Cached current tour statistics for fast dashboard loading", category: .cache)
             
             // Update published property on main actor
             tourStatistics = statistics
             
         } catch {
             // Log error but don't block main functionality
-            print("Failed to fetch tour statistics: \(error)")
+            SwiftLogger.error("Failed to fetch tour statistics: \(error)", category: .api)
             tourStatistics = nil
         }
         

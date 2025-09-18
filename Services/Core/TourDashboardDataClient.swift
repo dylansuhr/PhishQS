@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftLogger
 
 /// Client for fetching tour dashboard data from remote API endpoints
 /// Provides Component A with access to pre-generated tour data via Vercel endpoints
@@ -205,13 +206,13 @@ class TourDashboardDataClient: ObservableObject {
                 }
                 
                 let tourData = try JSONDecoder().decode(TourDashboardData.self, from: data)
-                print("✅ [Remote] Successfully fetched tour dashboard data")
+                SwiftLogger.success("[Remote] Successfully fetched tour dashboard data", category: .api)
                 return tourData
             } catch let error as TourDashboardError {
-                print("❌ [Remote] Failed to load tour dashboard data: \(error)")
+                SwiftLogger.error("[Remote] Failed to load tour dashboard data: \(error)", category: .api)
                 throw error
             } catch {
-                print("❌ [Remote] Network error loading tour dashboard: \(error)")
+                SwiftLogger.error("[Remote] Network error loading tour dashboard: \(error)", category: .api)
                 throw TourDashboardError.networkError(error)
             }
         }
@@ -248,13 +249,13 @@ class TourDashboardDataClient: ObservableObject {
             }
             
             let showData = try JSONDecoder().decode(ShowFileData.self, from: data)
-            print("✅ [Remote] Successfully fetched show data for \(date)")
+            SwiftLogger.success("[Remote] Successfully fetched show data for \(date)", category: .api)
             return showData
         } catch let error as TourDashboardError {
-            print("❌ [Remote] Failed to load show data for \(date): \(error)")
+            SwiftLogger.error("[Remote] Failed to load show data for \(date): \(error)", category: .api)
             throw error
         } catch {
-            print("❌ [Remote] Network error loading show \(date): \(error)")
+            SwiftLogger.error("[Remote] Network error loading show \(date): \(error)", category: .api)
             throw TourDashboardError.networkError(error)
         }
     }

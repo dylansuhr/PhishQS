@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLogger
 
 // MARK: - Venue Model
 
@@ -349,7 +350,7 @@ extension PhishAPIClient: GapDataProviderProtocol {
                 try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
                 
             } catch {
-                print("Failed to fetch gap for \(songName): \(error)")
+                SwiftLogger.warn("Failed to fetch gap for \(songName): \(error)", category: .api)
                 continue
             }
         }
