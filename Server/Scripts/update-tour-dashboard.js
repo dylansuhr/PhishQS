@@ -19,6 +19,7 @@ dotenv.config();
 
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from '../Services/LoggingService.js';
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -39,38 +40,38 @@ const CONFIG = {
  */
 async function updateTourDashboard() {
     try {
-        console.log('🎯 Starting tour dashboard update...');
+        LoggingService.start('Starting tour dashboard update...');
         
         // Initialize API client
         const apiClient = new PhishNetClient(CONFIG.PHISH_NET_API_KEY);
         
         // Fetch current year shows
         const currentYear = new Date().getFullYear().toString();
-        console.log(`📡 Fetching ${currentYear} shows from Phish.net...`);
+        LoggingService.info(`Fetching ${currentYear} shows from Phish.net...`);
         const currentYearShows = await apiClient.fetchShows(currentYear);
         
         // Filter to Phish shows only
         const phishShows = filterPhishShows(currentYearShows);
-        console.log(`📊 Found ${phishShows.length} Phish shows in ${currentYear}`);
+        LoggingService.info(`Found ${phishShows.length} Phish shows in ${currentYear}`);
         
         // Determine current tour and latest show
         let { currentTourName, latestShow } = determineCurrentTour(phishShows);
         
         // If no current tour found in current year, search historical years
         if (!currentTourName) {
-            console.log('🔍 No current year tour found, searching history...');
+            LoggingService.info('No current year tour found, searching history...');
             const historicalResult = await findLatestTourFromHistory(currentYear - 1);
             currentTourName = historicalResult.currentTourName;
             latestShow = historicalResult.latestShow;
         }
         
         if (!currentTourName) {
-            console.log('⚠️ No tour found in current year or 3-year history');
+            LoggingService.warn('No tour found in current year or 3-year history');
             return;
         }
         
-        console.log(`🎪 Current tour: ${currentTourName}`);
-        console.log(`🎵 Latest show: ${latestShow ? latestShow.date : 'None yet'}`);
+        LoggingService.info(`Current tour: ${currentTourName}`);
+        LoggingService.info(`Latest show: ${latestShow ? latestShow.date : 'None yet'}`);
         
         // Build current tour object (may need historical data)
         let currentTour;
@@ -80,7 +81,7 @@ async function updateTourDashboard() {
         } else {
             // Need to fetch historical year for complete tour data
             const tourYear = latestShow ? new Date(latestShow.date).getFullYear() : currentYear - 1;
-            console.log(`🔍 Fetching ${tourYear} data for complete tour info...`);
+            LoggingService.info(`Fetching ${tourYear} data for complete tour info...`);
             const tourYearShows = await apiClient.fetchShows(tourYear.toString());
             const tourPhishShows = filterPhishShows(tourYearShows);
             currentTour = buildCurrentTour(tourPhishShows, currentTourName);
@@ -96,7 +97,7 @@ async function updateTourDashboard() {
         }
         
         // Fetch multiple years of data for finding future tours
-        console.log('🔮 Fetching future years for comprehensive tour search...');
+        LoggingService.info('Fetching future years for comprehensive tour search...');
         const futureYearShows = await fetchFutureYears(apiClient, currentYear, 3);
         
         // Combine current year and future year shows for finding all future tours
@@ -111,7 +112,7 @@ async function updateTourDashboard() {
         
         // Find future tours from combined dataset
         const futureTours = findFutureTours(uniqueShows, currentTourName);
-        console.log(`🔮 Found ${futureTours.length} future tours across multiple years`);
+        LoggingService.info(`Found ${futureTours.length} future tours across multiple years`);
         
         // Build the complete data structure
         const tourDashboardData = {
@@ -127,13 +128,13 @@ async function updateTourDashboard() {
         if (updateInfo.shouldUpdate) {
             // Write the file
             writeTourDashboard(tourDashboardData, updateInfo.reason);
-            console.log(`✅ Tour dashboard updated: ${updateInfo.reason}`);
+            LoggingService.success(`Tour dashboard updated: ${updateInfo.reason}`);
         } else {
-            console.log('ℹ️ No update needed - data unchanged');
+            LoggingService.info('No update needed - data unchanged');
         }
         
     } catch (error) {
-        console.error('❌ Error updating tour dashboard:', error);
+        LoggingService.error('Error updating tour dashboard:', error);
         process.exit(1);
     }
 }
@@ -157,7 +158,7 @@ async function findLatestTourFromHistory(startYear) {
     const maxYearsBack = 3;
     
     for (let year = startYear; year >= startYear - maxYearsBack; year--) {
-        console.log(`🔍 Searching ${year} for completed tours...`);
+        LoggingService.info(`Searching ${year} for completed tours...`);
         
         try {
             const yearShows = await apiClient.fetchShows(year.toString());
@@ -184,7 +185,7 @@ async function findLatestTourFromHistory(startYear) {
                 playedShows.sort((a, b) => b.showdate.localeCompare(a.showdate));
                 const latestShow = playedShows[0];
                 
-                console.log(`✅ Found latest tour: ${latestShow.tourname} (${latestShow.showdate})`);
+                LoggingService.success(`Found latest tour: ${latestShow.tourname} (${latestShow.showdate})`);
                 return {
                     currentTourName: latestShow.tourname,
                     latestShow: {
@@ -196,7 +197,7 @@ async function findLatestTourFromHistory(startYear) {
                 };
             }
         } catch (error) {
-            console.warn(`⚠️ Failed to fetch ${year} shows:`, error.message);
+            LoggingService.warn(`Failed to fetch ${year} shows:`, error.message);
             continue; // Try next year
         }
     }
@@ -216,21 +217,21 @@ async function fetchFutureYears(apiClient, startYear, yearsAhead = 3) {
         const year = (parseInt(startYear) + yearOffset).toString();
         
         try {
-            console.log(`🔮 Fetching ${year} shows for future tours...`);
+            LoggingService.info(`Fetching ${year} shows for future tours...`);
             const yearShows = await apiClient.fetchShows(year);
             const phishShows = filterPhishShows(yearShows);
             
             if (phishShows.length > 0) {
-                console.log(`   📅 Found ${phishShows.length} shows in ${year}`);
+                LoggingService.info(`   Found ${phishShows.length} shows in ${year}`);
                 allShows.push(...phishShows);
             }
         } catch (error) {
-            console.warn(`⚠️ Failed to fetch ${year} shows:`, error.message);
+            LoggingService.warn(`Failed to fetch ${year} shows:`, error.message);
             // Continue with other years even if one fails
         }
     }
     
-    console.log(`📊 Total shows found across ${yearsAhead + 1} years: ${allShows.length}`);
+    LoggingService.info(`Total shows found across ${yearsAhead + 1} years: ${allShows.length}`);
     return allShows;
 }
 
@@ -400,7 +401,7 @@ function loadExistingData() {
             const data = readFileSync(CONFIG.OUTPUT_PATH, 'utf8');
             return JSON.parse(data);
         } catch (error) {
-            console.error('⚠️ Error reading existing data:', error.message);
+            LoggingService.error('Error reading existing data:', error.message);
             return null;
         }
     }
@@ -458,13 +459,13 @@ function writeTourDashboard(data, updateReason) {
     // Ensure directory exists
     const dir = dirname(CONFIG.OUTPUT_PATH);
     if (!existsSync(dir)) {
-        console.log(`📁 Creating directory: ${dir}`);
+        LoggingService.info(`Creating directory: ${dir}`);
         mkdirSync(dir, { recursive: true });
     }
     
     // Write the file
     writeFileSync(CONFIG.OUTPUT_PATH, JSON.stringify(output, null, 2));
-    console.log(`💾 Tour dashboard written to: ${CONFIG.OUTPUT_PATH}`);
+    LoggingService.success(`Tour dashboard written to: ${CONFIG.OUTPUT_PATH}`);
 }
 
 /**
