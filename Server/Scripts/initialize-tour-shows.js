@@ -26,6 +26,7 @@ import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
 import { HistoricalDataEnhancer } from '../Services/HistoricalDataEnhancer.js';
 import { PhishNetTourService } from '../Services/PhishNetTourService.js';
 import { DataCollectionService } from '../Services/DataCollectionService.js';
+import { LoggingService } from '../Services/LoggingService.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -96,7 +97,7 @@ function checkShowFileNeedsUpdate(filePath, newShowData) {
 
     } catch (error) {
         // If we can't read existing file, recreate it
-        console.warn(`⚠️ Error reading existing show file ${filePath}: ${error.message}`);
+        LoggingService.warn(`Error reading existing show file ${filePath}: ${error.message}`);
         return { shouldUpdate: true, reason: 'Show file recreated (error reading existing)' };
     }
 }
@@ -106,7 +107,7 @@ function checkShowFileNeedsUpdate(filePath, newShowData) {
  */
 async function initializeTourShows() {
     try {
-        console.log('🚀 Starting tour show files initialization...');
+        LoggingService.start('Starting tour show files initialization...');
         console.time('🚀 Total Initialization Time');
         
         // Step 1: Read control file
@@ -116,27 +117,27 @@ async function initializeTourShows() {
             throw new Error(`Control file not found: ${controlFilePath}. Please run 'npm run update-tour-dashboard' first.`);
         }
         
-        console.log('📖 Reading tour control file...');
+        LoggingService.info('Reading tour control file...');
         const controlFileData = JSON.parse(readFileSync(controlFilePath, 'utf8'));
         const tourName = controlFileData.currentTour.name;
         
-        console.log(`📍 Initializing show files for: ${tourName}`);
-        console.log(`🎪 Shows to process: ${controlFileData.currentTour.playedShows} played shows`);
+        LoggingService.info(`Initializing show files for: ${tourName}`);
+        LoggingService.info(`Shows to process: ${controlFileData.currentTour.playedShows} played shows`);
         
         // Step 2: Create tour-specific shows directory
         const tourSlug = tourName.toLowerCase().replace(/\s+/g, '-'); // "2025-early-summer-tour"
         const tourShowsDir = join(__dirname, '..', 'Data', 'tours', tourSlug);
         if (!existsSync(tourShowsDir)) {
             mkdirSync(tourShowsDir, { recursive: true });
-            console.log(`📁 Created tour shows directory: ${tourShowsDir}`);
+            LoggingService.info(`Created tour shows directory: ${tourShowsDir}`);
         }
         
         // Step 3: Use optimized data collection for all tour shows
-        console.log('📊 Collecting enhanced data for entire tour (optimized API approach)...');
+        LoggingService.info('Collecting enhanced data for entire tour (optimized API approach)...');
         const dataCollectionService = new DataCollectionService(CONFIG.PHISH_NET_API_KEY);
         const dataContext = await dataCollectionService.collectAllTourData('2025', tourName);
         
-        console.log(`📈 Performance: Made ${dataContext.apiCalls.total} API calls for complete tour data`);
+        LoggingService.info(`Performance: Made ${dataContext.apiCalls.total} API calls for complete tour data`);
         
         // Step 4: Create enhanced setlist service for processing
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
@@ -151,7 +152,7 @@ async function initializeTourShows() {
         
         for (const tourDate of controlFileData.currentTour.tourDates) {
             if (tourDate.played) {
-                console.log(`\\n🔄 Processing show: ${tourDate.date} at ${tourDate.venue}`);
+                LoggingService.start(`Processing show: ${tourDate.date} at ${tourDate.venue}`);
                 
                 try {
                     // Create enhanced setlist using pre-collected data context
@@ -161,7 +162,7 @@ async function initializeTourShows() {
                     );
                     
                     if (!enhancedSetlist) {
-                        console.warn(`⚠️  Could not create enhanced setlist for ${tourDate.date}`);
+                        LoggingService.warn(`Could not create enhanced setlist for ${tourDate.date}`);
                         showsSkipped++;
                         updatedTourDates.push(tourDate); // Keep original without showFile
                         continue;
@@ -176,7 +177,7 @@ async function initializeTourShows() {
                     const durationsAvailable = hasDurationData;
                     
                     if (!hasSetlistData) {
-                        console.warn(`⚠️  No setlist data for ${tourDate.date} - skipping`);
+                        LoggingService.warn(`No setlist data for ${tourDate.date} - skipping`);
                         showsSkipped++;
                         updatedTourDates.push(tourDate); // Keep original without showFile
                         continue;
@@ -213,7 +214,7 @@ async function initializeTourShows() {
                     if (updateCheck.shouldUpdate) {
                         // Write show file only if it needs updating
                         writeFileSync(showFilePath, JSON.stringify(showFileData, null, 2));
-                        console.log(`   📝 ${updateCheck.reason}`);
+                        LoggingService.info(`   ${updateCheck.reason}`);
 
                         if (updateCheck.reason.includes('created (new)')) {
                             showsCreated++;
@@ -221,7 +222,7 @@ async function initializeTourShows() {
                             showsUpdated++;
                         }
                     } else {
-                        console.log(`   ⏭️  ${updateCheck.reason}`);
+                        LoggingService.info(`   ${updateCheck.reason}`);
                         // File exists and no update needed - count as processed but not created/updated
                     }
 
@@ -243,13 +244,13 @@ async function initializeTourShows() {
 
                     if (!dataComplete) {
                         showsWithPartialData++;
-                        console.log(`   ⏳ Show file has partial data (setlist: ${hasSetlistData}, durations: ${hasDurationData}, gaps: ${hasGapData})`);
+                        LoggingService.info(`   Show file has partial data (setlist: ${hasSetlistData}, durations: ${hasDurationData}, gaps: ${hasGapData})`);
                     } else {
-                        console.log(`   ✅ Complete show file (${enhancedSetlist.setlistItems.length} songs, ${enhancedSetlist.trackDurations.length} durations, ${enhancedSetlist.songGaps.length} gaps)`);
+                        LoggingService.success(`   Complete show file (${enhancedSetlist.setlistItems.length} songs, ${enhancedSetlist.trackDurations.length} durations, ${enhancedSetlist.songGaps.length} gaps)`);
                     }
                     
                 } catch (error) {
-                    console.error(`❌ Error processing show ${tourDate.date}: ${error.message}`);
+                    LoggingService.error(`Error processing show ${tourDate.date}: ${error.message}`);
                     showsSkipped++;
                     updatedTourDates.push(tourDate); // Keep original without showFile
                 }
@@ -279,30 +280,30 @@ async function initializeTourShows() {
         writeFileSync(controlFilePath, JSON.stringify(updatedControlFile, null, 2));
         
         console.timeEnd('🚀 Total Initialization Time');
-        console.log('\\n✅ Tour show files initialization completed!');
-        console.log(`📊 Results:`);
-        console.log(`   🆕 Shows created: ${showsCreated}`);
-        console.log(`   📝 Shows updated: ${showsUpdated}`);
-        console.log(`   ⏭️  Shows skipped (no changes): ${controlFileData.currentTour.playedShows - showsCreated - showsUpdated - showsSkipped}`);
-        console.log(`   ⏳ Shows with partial data: ${showsWithPartialData}`);
-        console.log(`   ❌ Shows failed: ${showsSkipped}`);
-        console.log(`📁 Show files location: ${tourShowsDir}`);
-        console.log(`🔄 Control file updated with show file references and smart tracking flags`);
-        console.log(`🚀 API Performance: ${dataContext.apiCalls.total} total calls for entire tour`);
-        console.log(`✨ Optimization: Only ${showsCreated + showsUpdated} of ${controlFileData.currentTour.playedShows} shows required file writes`);
+        LoggingService.success('Tour show files initialization completed!');
+        LoggingService.info(`Results:`);
+        LoggingService.info(`   Shows created: ${showsCreated}`);
+        LoggingService.info(`   Shows updated: ${showsUpdated}`);
+        LoggingService.info(`   Shows skipped (no changes): ${controlFileData.currentTour.playedShows - showsCreated - showsUpdated - showsSkipped}`);
+        LoggingService.info(`   Shows with partial data: ${showsWithPartialData}`);
+        LoggingService.info(`   Shows failed: ${showsSkipped}`);
+        LoggingService.info(`Show files location: ${tourShowsDir}`);
+        LoggingService.info(`Control file updated with show file references and smart tracking flags`);
+        LoggingService.info(`API Performance: ${dataContext.apiCalls.total} total calls for entire tour`);
+        LoggingService.info(`Optimization: Only ${showsCreated + showsUpdated} of ${controlFileData.currentTour.playedShows} shows required file writes`);
         
         if (showsWithPartialData > 0) {
-            console.log(`\\n🔍 Next steps:`);
-            console.log(`   - ${showsWithPartialData} shows have partial data and are marked for future updates`);
-            console.log(`   - Smart update detection will check for duration data availability`);
-            console.log(`   - Run the smart update script periodically to complete partial data`);
+            LoggingService.info(`Next steps:`);
+            LoggingService.info(`   - ${showsWithPartialData} shows have partial data and are marked for future updates`);
+            LoggingService.info(`   - Smart update detection will check for duration data availability`);
+            LoggingService.info(`   - Run the smart update script periodically to complete partial data`);
         }
         
-        console.log(`\\n🎯 Ready to run: npm run generate-stats (will use show files, 0 API calls)`);
+        LoggingService.success(`Ready to run: npm run generate-stats (will use show files, 0 API calls)`);
         
     } catch (error) {
-        console.error('❌ Error initializing tour shows:', error);
-        console.error('Stack trace:', error.stack);
+        LoggingService.error('Error initializing tour shows:', error);
+        LoggingService.error('Stack trace:', error.stack);
         process.exit(1);
     }
 }
