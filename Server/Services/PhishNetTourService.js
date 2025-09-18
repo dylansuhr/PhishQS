@@ -9,6 +9,7 @@
 
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import { TourScheduleService } from './TourScheduleService.js';
+import LoggingService from './LoggingService.js';
 
 export class PhishNetTourService {
     
@@ -34,7 +35,7 @@ export class PhishNetTourService {
             // Filter shows by tour name (exact match) - use 'tourname' field from Phish.net
             const tourShows = allYearShows.filter(show => show.tourname === tourName);
             
-            console.log(`   📋 Found ${tourShows.length} shows for ${tourName}`);
+            LoggingService.info(`Found ${tourShows.length} shows for ${tourName}`);
             
             // Sort by date to ensure proper order (though API should already be ordered)
             return tourShows.sort((a, b) => a.showdate.localeCompare(b.showdate));

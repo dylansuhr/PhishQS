@@ -18,6 +18,7 @@
  */
 
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from './LoggingService.js';
 import { LongestSongsCalculator } from './StatisticsCalculators/LongestSongsCalculator.js';
 import { RarestSongsCalculator } from './StatisticsCalculators/RarestSongsCalculator.js';
 import { MostPlayedSongsCalculator } from './StatisticsCalculators/MostPlayedSongsCalculator.js';
@@ -138,7 +139,7 @@ export class StatisticsRegistry {
         this.calculatorClasses.set(type, metadata.calculatorClass);
         
         if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
-            console.log(`📋 Registered calculator: ${metadata.name} (${type})`);
+            LoggingService.debug(`Registered calculator: ${metadata.name} (${type})`);
         }
     }
     
@@ -223,7 +224,7 @@ export class StatisticsRegistry {
         const enabledCalculators = this.getEnabledCalculators();
         
         if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
-            console.log(`🧮 Executing ${enabledCalculators.length} statistics calculators for ${tourShows?.length || 0} shows`);
+            LoggingService.info(`Executing ${enabledCalculators.length} statistics calculators for ${tourShows?.length || 0} shows`);
         }
         
         // Execute each enabled calculator
@@ -246,7 +247,7 @@ export class StatisticsRegistry {
                 }
                 
                 if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
-                    console.log(`✅ ${name}: Generated ${calculationResults.length} results`);
+                    LoggingService.debug(`${name}: Generated ${calculationResults.length} results`);
                 }
                 
             } catch (error) {
@@ -276,7 +277,7 @@ export class StatisticsRegistry {
             
             if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
                 const status = enabled ? 'enabled' : 'disabled';
-                console.log(`🔧 Calculator '${calculator.name}' ${status}`);
+                LoggingService.debug(`Calculator '${calculator.name}' ${status}`);
             }
         }
     }
