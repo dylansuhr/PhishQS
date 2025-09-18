@@ -1,15 +1,17 @@
 /**
  * BaseStatisticsCalculator.js
- * 
+ *
  * Abstract base class for all tour statistics calculators.
  * Provides shared functionality and enforces consistent interface
  * across different statistics calculation types.
- * 
+ *
  * Design Pattern: Template Method + Strategy Pattern
  * - Template method defines calculation workflow
  * - Strategy pattern allows different calculation algorithms
  * - Extensible for future statistics types
  */
+
+import LoggingService from '../LoggingService.js';
 
 /**
  * Abstract base class for statistics calculators
@@ -95,7 +97,7 @@ export class BaseStatisticsCalculator {
      */
     log(message) {
         if (this.debugMode) {
-            console.log(`   ${message}`);
+            LoggingService.debug(message);
         }
     }
     

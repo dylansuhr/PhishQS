@@ -10,6 +10,7 @@
  */
 
 import fetch from 'node-fetch';
+import LoggingService from '../Services/LoggingService.js';
 
 export class PhishInClient {
     constructor() {
@@ -79,7 +80,7 @@ export class PhishInClient {
             }));
 
         } catch (error) {
-            console.log(`Warning: Could not fetch track durations for ${showDate}: ${error.message}`);
+            LoggingService.debug(`Could not fetch track durations for ${showDate}: ${error.message}`);
             return [];
         }
     }
