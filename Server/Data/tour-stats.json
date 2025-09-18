@@ -146,6 +146,64 @@
       "formattedDuration": "17:22"
     },
     {
+      "id": "40581",
+      "songName": "Oblivion",
+      "songId": null,
+      "durationSeconds": 1028,
+      "showDate": "2025-09-16",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": {
+        "venue": "Ameris Bank Amphitheatre",
+        "city": "Alpharetta",
+        "state": "GA",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-16",
+          "2025-09-17"
+        ]
+      },
+      "city": "Alpharetta",
+      "state": "GA",
+      "tourPosition": {
+        "showNumber": 4,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "17:08"
+    },
+    {
+      "id": "40583",
+      "songName": "Fuego",
+      "songId": null,
+      "durationSeconds": 1016,
+      "showDate": "2025-09-16",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": {
+        "venue": "Ameris Bank Amphitheatre",
+        "city": "Alpharetta",
+        "state": "GA",
+        "nightNumber": 1,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-16",
+          "2025-09-17"
+        ]
+      },
+      "city": "Alpharetta",
+      "state": "GA",
+      "tourPosition": {
+        "showNumber": 4,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "16:56"
+    },
+    {
       "id": "40518",
       "songName": "Cities",
       "songId": null,
@@ -231,64 +289,6 @@
         "tourYear": "2025"
       },
       "formattedDuration": "15:24"
-    },
-    {
-      "id": "40523",
-      "songName": "Runaway Jim",
-      "songId": null,
-      "durationSeconds": 917,
-      "showDate": "2025-09-13",
-      "setNumber": "Set 1",
-      "venue": "Coca-Cola Amphitheater",
-      "venueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "city": "Birmingham",
-      "state": "AL",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "15:17"
-    },
-    {
-      "id": "40564",
-      "songName": "Golden Age",
-      "songId": null,
-      "durationSeconds": 891,
-      "showDate": "2025-09-14",
-      "setNumber": "Set 2",
-      "venue": "Coca-Cola Amphitheater",
-      "venueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 2,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "city": "Birmingham",
-      "state": "AL",
-      "tourPosition": {
-        "showNumber": 3,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "14:51"
     }
   ],
   "rarestSongs": [
@@ -463,6 +463,74 @@
       "formattedHistoricalDate": "6/28/25"
     },
     {
+      "id": 38,
+      "songId": 38,
+      "songName": "Axilla (Part II)",
+      "gap": 17,
+      "lastPlayed": null,
+      "timesPlayed": null,
+      "tourVenue": "Ameris Bank Amphitheatre",
+      "tourVenueRun": {
+        "venue": "Ameris Bank Amphitheatre",
+        "city": "Alpharetta",
+        "state": "GA",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-16",
+          "2025-09-17"
+        ]
+      },
+      "tourDate": "2025-09-17",
+      "tourCity": "Alpharetta",
+      "tourState": "GA",
+      "tourPosition": {
+        "showNumber": 5,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": null,
+      "historicalCity": null,
+      "historicalState": null,
+      "historicalLastPlayed": null,
+      "formattedHistoricalDate": null
+    },
+    {
+      "id": 345,
+      "songId": 345,
+      "songName": "Llama",
+      "gap": 16,
+      "lastPlayed": "2025-07-11",
+      "timesPlayed": 327,
+      "tourVenue": "Ameris Bank Amphitheatre",
+      "tourVenueRun": {
+        "venue": "Ameris Bank Amphitheatre",
+        "city": "Alpharetta",
+        "state": "GA",
+        "nightNumber": 2,
+        "totalNights": 2,
+        "showDates": [
+          "2025-09-16",
+          "2025-09-17"
+        ]
+      },
+      "tourDate": "2025-09-17",
+      "tourCity": "Alpharetta",
+      "tourState": "GA",
+      "tourPosition": {
+        "showNumber": 5,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2025-07-11",
+      "formattedHistoricalDate": "7/11/25"
+    },
+    {
       "id": 6,
       "songId": 6,
       "songName": "A Day in the Life",
@@ -521,63 +589,29 @@
       "formattedHistoricalDate": "7/13/25"
     },
     {
-      "id": 483,
-      "songId": 483,
-      "songName": "Sample in a Jar",
+      "id": 369,
+      "songId": 369,
+      "songName": "Meatstick",
       "gap": 14,
-      "lastPlayed": "2025-07-09",
-      "timesPlayed": 315,
-      "tourVenue": "Coca-Cola Amphitheater",
-      "tourVenueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "tourDate": "2025-09-13",
-      "tourCity": "Birmingham",
-      "tourState": "AL",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Jerome Schottenstein Center",
-      "historicalCity": "Columbus",
-      "historicalState": "OH",
-      "historicalLastPlayed": "2025-07-09",
-      "formattedHistoricalDate": "7/9/25"
-    },
-    {
-      "id": 2424,
-      "songId": 2424,
-      "songName": "555",
-      "gap": 13,
       "lastPlayed": "2025-07-13",
-      "timesPlayed": 70,
+      "timesPlayed": 78,
       "tourVenue": "Ameris Bank Amphitheatre",
       "tourVenueRun": {
         "venue": "Ameris Bank Amphitheatre",
         "city": "Alpharetta",
         "state": "GA",
-        "nightNumber": 1,
+        "nightNumber": 2,
         "totalNights": 2,
         "showDates": [
           "2025-09-16",
           "2025-09-17"
         ]
       },
-      "tourDate": "2025-09-16",
+      "tourDate": "2025-09-17",
       "tourCity": "Alpharetta",
       "tourState": "GA",
       "tourPosition": {
-        "showNumber": 4,
+        "showNumber": 5,
         "totalShows": 8,
         "tourName": "2025 Late Summer Tour",
         "tourYear": "2025"
@@ -587,43 +621,33 @@
       "historicalState": "SC",
       "historicalLastPlayed": "2025-07-13",
       "formattedHistoricalDate": "7/13/25"
-    },
-    {
-      "id": 2573,
-      "songId": 2573,
-      "songName": "Mercury",
-      "gap": 13,
-      "lastPlayed": "2025-07-12",
-      "timesPlayed": 44,
-      "tourVenue": "Coca-Cola Amphitheater",
-      "tourVenueRun": {
-        "venue": "Coca-Cola Amphitheater",
-        "city": "Birmingham",
-        "state": "AL",
-        "nightNumber": 2,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-13",
-          "2025-09-14"
-        ]
-      },
-      "tourDate": "2025-09-14",
-      "tourCity": "Birmingham",
-      "tourState": "AL",
-      "tourPosition": {
-        "showNumber": 3,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "North Charleston Coliseum",
-      "historicalCity": "North Charleston",
-      "historicalState": "SC",
-      "historicalLastPlayed": "2025-07-12",
-      "formattedHistoricalDate": "7/12/25"
     }
   ],
   "mostPlayedSongs": [
+    {
+      "id": 104,
+      "songId": 104,
+      "songName": "Carini",
+      "playCount": 3
+    },
+    {
+      "id": 339,
+      "songId": 339,
+      "songName": "Light",
+      "playCount": 2
+    },
+    {
+      "id": 485,
+      "songId": 485,
+      "songName": "Sand",
+      "playCount": 2
+    },
+    {
+      "id": 683,
+      "songId": 683,
+      "songName": "Wolfman's Brother",
+      "playCount": 2
+    },
     {
       "id": 2,
       "songId": 2,
@@ -661,6 +685,12 @@
       "playCount": 1
     },
     {
+      "id": 38,
+      "songId": 38,
+      "songName": "Axilla (Part Ii)",
+      "playCount": 1
+    },
+    {
       "id": 45,
       "songId": 45,
       "songName": "Back On The Train",
@@ -691,12 +721,6 @@
       "playCount": 1
     },
     {
-      "id": 104,
-      "songId": 104,
-      "songName": "Carini",
-      "playCount": 1
-    },
-    {
       "id": 108,
       "songId": 108,
       "songName": "Cavern",
@@ -724,6 +748,18 @@
       "id": 148,
       "songId": 148,
       "songName": "David Bowie",
+      "playCount": 1
+    },
+    {
+      "id": 2423,
+      "songId": 2423,
+      "songName": "Devotion To A Dream",
+      "playCount": 1
+    },
+    {
+      "id": 161,
+      "songId": 161,
+      "songName": "Divided Sky",
       "playCount": 1
     },
     {
@@ -811,6 +847,12 @@
       "playCount": 1
     },
     {
+      "id": 3004,
+      "songId": 3004,
+      "songName": "Hey Stranger",
+      "playCount": 1
+    },
+    {
       "id": 269,
       "songId": 269,
       "songName": "Horn",
@@ -835,15 +877,27 @@
       "playCount": 1
     },
     {
-      "id": 339,
-      "songId": 339,
-      "songName": "Light",
+      "id": 345,
+      "songId": 345,
+      "songName": "Llama",
+      "playCount": 1
+    },
+    {
+      "id": 2506,
+      "songId": 2506,
+      "songName": "Martian Monster",
       "playCount": 1
     },
     {
       "id": 364,
       "songId": 364,
       "songName": "Maze",
+      "playCount": 1
+    },
+    {
+      "id": 369,
+      "songId": 369,
+      "songName": "Meatstick",
       "playCount": 1
     },
     {
@@ -907,6 +961,12 @@
       "playCount": 1
     },
     {
+      "id": 437,
+      "songId": 437,
+      "songName": "Piper",
+      "playCount": 1
+    },
+    {
       "id": 440,
       "songId": 440,
       "songName": "Possum",
@@ -940,12 +1000,6 @@
       "id": 483,
       "songId": 483,
       "songName": "Sample In A Jar",
-      "playCount": 1
-    },
-    {
-      "id": 485,
-      "songId": 485,
-      "songName": "Sand",
       "playCount": 1
     },
     {
@@ -985,9 +1039,27 @@
       "playCount": 1
     },
     {
+      "id": 1355,
+      "songId": 1355,
+      "songName": "Steam",
+      "playCount": 1
+    },
+    {
+      "id": 558,
+      "songId": 558,
+      "songName": "Taste",
+      "playCount": 1
+    },
+    {
       "id": 2984,
       "songId": 2984,
       "songName": "The Howling",
+      "playCount": 1
+    },
+    {
+      "id": 586,
+      "songId": 586,
+      "songName": "The Lizards",
       "playCount": 1
     },
     {
@@ -1051,9 +1123,9 @@
       "playCount": 1
     },
     {
-      "id": 683,
-      "songId": 683,
-      "songName": "Wolfman's Brother",
+      "id": 679,
+      "songId": 679,
+      "songName": "Wilson",
       "playCount": 1
     },
     {
@@ -1061,9 +1133,15 @@
       "songId": 686,
       "songName": "Ya Mar",
       "playCount": 1
+    },
+    {
+      "id": 690,
+      "songId": 690,
+      "songName": "You Enjoy Myself",
+      "playCount": 1
     }
   ],
   "tourName": "2025 Late Summer Tour",
-  "latestShowProcessed": "2025-09-16",
-  "generatedAt": "2025-09-17T17:49:45.032Z"
+  "latestShowProcessed": "2025-09-17",
+  "generatedAt": "2025-09-18T04:29:37.653Z"
 }
