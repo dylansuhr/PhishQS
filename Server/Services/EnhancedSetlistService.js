@@ -25,7 +25,7 @@ export class EnhancedSetlistService {
      * Port of iOS APIManager.fetchEnhancedSetlist() lines 64-148
      */
     async createEnhancedSetlist(showDate) {
-        console.log(`🔗 Creating enhanced setlist for ${showDate}...`);
+        LoggingService.start(`Creating enhanced setlist for ${showDate}`);
 
         // Step 1: Get base setlist from Phish.net (same as iOS line 72)
         const setlistItems = await this.phishNetClient.fetchSetlist(showDate);
