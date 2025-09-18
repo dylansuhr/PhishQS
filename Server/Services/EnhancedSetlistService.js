@@ -11,6 +11,7 @@ import { PhishNetClient } from '../API/PhishNetClient.js';
 import { PhishInClient } from '../API/PhishInClient.js';
 import { PhishNetTourService } from './PhishNetTourService.js';
 import { DataCollectionService } from './DataCollectionService.js';
+import LoggingService from './LoggingService.js';
 
 export class EnhancedSetlistService {
     constructor(phishNetApiKey) {
