@@ -15,6 +15,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import LoggingService from '../Services/LoggingService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -50,7 +51,7 @@ function cleanShowFile(filePath) {
 
         return false;
     } catch (error) {
-        console.error(`   ❌ Error processing ${filePath}: ${error.message}`);
+        LoggingService.error(`Error processing ${filePath}: ${error.message}`);
         return false;
     }
 }
@@ -75,7 +76,7 @@ function findShowFiles(dir) {
             }
         }
     } catch (error) {
-        console.error(`Error reading directory ${dir}: ${error.message}`);
+        LoggingService.error(`Error reading directory ${dir}: ${error.message}`);
     }
 
     return files;
@@ -85,17 +86,17 @@ function findShowFiles(dir) {
  * Main cleanup function
  */
 function cleanupVenueRuns() {
-    console.log('🧹 Starting venue run cleanup from track durations...\n');
+    LoggingService.start('Starting venue run cleanup from track durations...');
 
     // Check if data directory exists
     if (!fs.existsSync(DATA_DIR)) {
-        console.error('❌ Data directory not found:', DATA_DIR);
+        LoggingService.error('Data directory not found:', DATA_DIR);
         process.exit(1);
     }
 
     // Find all show files
     const showFiles = findShowFiles(DATA_DIR);
-    console.log(`📁 Found ${showFiles.length} show files to check\n`);
+    LoggingService.info(`Found ${showFiles.length} show files to check`);
 
     let cleanedCount = 0;
     let skippedCount = 0;
@@ -114,16 +115,16 @@ function cleanupVenueRuns() {
         }
     });
 
-    console.log('\n📊 Cleanup Summary:');
-    console.log(`   ✅ Cleaned: ${cleanedCount} files`);
-    console.log(`   ⏭️  Skipped: ${skippedCount} files`);
-    console.log(`   📁 Total: ${showFiles.length} files`);
+    LoggingService.info('Cleanup Summary:');
+    LoggingService.info(`   ✅ Cleaned: ${cleanedCount} files`);
+    LoggingService.info(`   ⏭️  Skipped: ${skippedCount} files`);
+    LoggingService.info(`   📁 Total: ${showFiles.length} files`);
 
     if (cleanedCount > 0) {
-        console.log('\n✨ Venue run data has been removed from track durations!');
-        console.log('   Venue runs should only come from Phish.net, not Phish.in.');
+        LoggingService.success('Venue run data has been removed from track durations!');
+        LoggingService.info('Venue runs should only come from Phish.net, not Phish.in.');
     } else {
-        console.log('\n✨ No venue run data found in track durations - already clean!');
+        LoggingService.success('No venue run data found in track durations - already clean!');
     }
 }
 
