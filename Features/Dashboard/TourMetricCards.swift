@@ -23,7 +23,7 @@ struct LongestSongsCard: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(Array(songs.prefix(isExpanded ? 10 : 3).enumerated()), id: \.offset) { index, song in
-                            LongestSongRow(position: index + 1, song: song)
+                            LongestSongRowModular(position: index + 1, song: song)
 
                             if index < min(songs.count, isExpanded ? 10 : 3) - 1 {
                                 Divider()
@@ -74,17 +74,6 @@ struct LongestSongsCard: View {
     }
 }
 
-/// Individual row for longest song display (Legacy - will be deprecated)
-/// Use LongestSongRowModular from SharedUIComponents for new implementations
-struct LongestSongRow: View {
-    let position: Int
-    let song: TrackDuration
-    
-    var body: some View {
-        // Use new modular component
-        LongestSongRowModular(position: position, song: song)
-    }
-}
 
 /// Card displaying rarest songs (highest gap) from the current tour with accordion expansion
 struct RarestSongsCard: View {
@@ -102,7 +91,7 @@ struct RarestSongsCard: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(Array(songs.prefix(isExpanded ? 10 : 3).enumerated()), id: \.offset) { index, song in
-                            RarestSongRow(position: index + 1, song: song)
+                            RarestSongRowModular(position: index + 1, song: song)
 
                             if index < min(songs.count, isExpanded ? 10 : 3) - 1 {
                                 Divider()
@@ -153,17 +142,6 @@ struct RarestSongsCard: View {
     }
 }
 
-/// Individual row for rarest song display (Legacy - will be deprecated)
-/// Use RarestSongRowModular from SharedUIComponents for new implementations
-struct RarestSongRow: View {
-    let position: Int
-    let song: SongGapInfo
-    
-    var body: some View {
-        // Use new modular component
-        RarestSongRowModular(position: position, song: song)
-    }
-}
 
 /// Card displaying most played songs from the current tour with accordion expansion
 struct MostPlayedSongsCard: View {
@@ -182,7 +160,7 @@ struct MostPlayedSongsCard: View {
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(Array(songs.prefix(isExpanded ? songs.count : 5).enumerated()), id: \.offset) { index, song in
-                            MostPlayedSongRow(position: index + 1, song: song)
+                            MostPlayedSongRowModular(position: index + 1, song: song)
 
                             if index < min(songs.count, isExpanded ? songs.count : 5) - 1 {
                                 Divider()
@@ -234,17 +212,6 @@ struct MostPlayedSongsCard: View {
     }
 }
 
-/// Individual row for most played song display (Legacy - will be deprecated)
-/// Use MostPlayedSongRowModular from SharedUIComponents for new implementations
-struct MostPlayedSongRow: View {
-    let position: Int
-    let song: MostPlayedSong
-
-    var body: some View {
-        // Use new modular component
-        MostPlayedSongRowModular(position: position, song: song)
-    }
-}
 
 /// Card displaying most common songs not played on current tour with accordion expansion
 struct MostCommonSongsNotPlayedCard: View {
@@ -254,7 +221,7 @@ struct MostCommonSongsNotPlayedCard: View {
 
     var body: some View {
         ScrollViewReader { proxy in
-            MetricCard("Popular Songs Missing from Tour") {
+            MetricCard("Most Common Songs Not Played") {
                 if songs.isEmpty {
                     Text("All popular songs have been played")
                         .font(.caption)
@@ -321,15 +288,13 @@ struct MostCommonSongNotPlayedRow: View {
     let song: MostCommonSongNotPlayed
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            // Position badge
+        HStack(spacing: 12) {
+            // Position number
             Text("\(position)")
                 .font(.caption)
                 .fontWeight(.semibold)
-                .foregroundColor(.white)
-                .frame(width: 20, height: 20)
-                .background(Color.orange)
-                .clipShape(Circle())
+                .foregroundColor(.purple)
+                .frame(width: 20, alignment: .center)
 
             VStack(alignment: .leading, spacing: 4) {
                 // Song name

@@ -1,17 +1,21 @@
 /**
  * update-tour-dashboard.js
- * 
+ *
  * Generates the tour dashboard control file that serves as the single source of truth
  * for both Component A (Latest Setlist) and Component B (Tour Statistics).
- * 
+ *
  * This control file determines:
  * - What tour we're currently in
  * - What the latest show is
  * - Which shows have been played
  * - What future tours are scheduled
- * 
+ *
  * Components read this file to know what data to generate/display.
  */
+
+// Load environment variables from .env file (development only)
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';

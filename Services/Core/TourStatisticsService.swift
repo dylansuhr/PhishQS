@@ -13,7 +13,7 @@ import Foundation
 /// - Primary approach: `TourStatisticsAPIClient.shared.fetchTourStatistics()` for instant server-side statistics  
 /// - Performance: Server responses are ~140ms vs 60+ seconds for local calculations
 /// - Fallback: No iOS calculations - comprehensive error handling guides user to resolve server issues
-/// - Legacy: iOS calculation methods preserved in `LegacyTourStatisticsCalculator.swift`
+/// - Legacy: iOS calculation methods archived in git history (September 2025)
 ///
 class TourStatisticsService {
     

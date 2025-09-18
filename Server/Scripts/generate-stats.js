@@ -1,17 +1,21 @@
 /**
  * generate-stats.js
- * 
+ *
  * Script to generate tour statistics JSON from real API data using
  * the new modular calculator architecture with configuration-driven settings.
- * 
+ *
  * Architecture Features:
  * - Uses StatisticsConfig for all configuration (no hardcoding)
  * - Leverages StatisticsRegistry for modular calculator system
  * - Maintains exact iOS data flow pattern for compatibility
  * - Generates identical output format for seamless API integration
- * 
+ *
  * Follows iOS project architecture patterns with server-side optimizations
  */
+
+// Load environment variables from .env file (development only)
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { writeFileSync, readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';

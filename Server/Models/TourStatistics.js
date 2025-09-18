@@ -102,8 +102,8 @@ export class SongGapInfo {
         this.songId = songId;
         this.songName = songName;
         this.gap = gap;
-        this.lastPlayed = lastPlayed;
-        this.timesPlayed = timesPlayed;
+        this.lastPlayed = lastPlayed || "";
+        this.timesPlayed = timesPlayed || 0;
         this.tourVenue = options.tourVenue || null;
         this.tourVenueRun = options.tourVenueRun || null;
         this.tourDate = options.tourDate || null;

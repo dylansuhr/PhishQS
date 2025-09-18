@@ -139,17 +139,6 @@ struct TourStatisticsHeaderView: View {
                 .background(Color.appHeaderBlue)
                 .cornerRadius(12)
 
-                // TODO: Show count moved elsewhere - keeping for future use
-                // if let tourPosition = tourPosition {
-                //     Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                //         .font(.subheadline)
-                //         .fontWeight(.medium)
-                //         .foregroundColor(.blue)
-                //         .padding(.horizontal, 8)
-                //         .padding(.vertical, 2)
-                //         .background(Color.blue.opacity(0.1))
-                //         .cornerRadius(4)
-                // }
             }
         }
     }
@@ -219,16 +208,6 @@ struct TourStatisticsLoadingView: View {
                 .padding(.vertical, 16)
                 .background(Color.appHeaderBlue)
                 .cornerRadius(12)
-
-                // TODO: Show count moved elsewhere - keeping for future use
-                // Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                //     .font(.subheadline)
-                //     .fontWeight(.medium)
-                //     .foregroundColor(.blue)
-                //     .padding(.horizontal, 8)
-                //     .padding(.vertical, 2)
-                //     .background(Color.blue.opacity(0.1))
-                //     .cornerRadius(4)
             }
 
             // Loading indicator

@@ -833,7 +833,200 @@ The system automatically detects and updates tour data 3 times daily:
 
 ### Manual Deployment (Fallback)
 - **Server**: Deployed to Vercel via `npm run deploy`
-- **iOS**: Standard Xcode build and distribution process  
+- **iOS**: Standard Xcode build and distribution process
 - **Component B Dependency**: Statistics data regenerated via `npm run generate-stats` and deployment
 - **Component A & C**: No deployment dependencies (use real-time APIs)
 - **Component D**: Uses tour dashboard data, requires `npm run update-tour-dashboard` for data updates
+
+---
+
+## 🧹 Code Cleanup Process
+
+**IMPORTANT**: Run this comprehensive cleanup process after major features or periodically to maintain professional code quality standards.
+
+### When to Run Code Cleanup
+- After implementing a new feature
+- Before major releases
+- When technical debt accumulates
+- During slower development periods
+- After multiple quick fixes or hotfixes
+
+### Cleanup Philosophy
+- **Professional Standards**: Match quality of apps like Spotify, Airbnb, Zillow
+- **Clean Code**: Prioritize readability, maintainability, and simplicity
+- **DRY Principle**: Don't Repeat Yourself - eliminate duplication
+- **SOLID Principles**: Single responsibility, open/closed, Liskov substitution
+- **Swift Best Practices**: Follow Apple's Swift API Design Guidelines
+- **Performance First**: Optimize for speed and memory efficiency
+
+---
+
+### 📋 Comprehensive Code Cleanup Checklist
+
+#### Phase 1: Recent Changes Audit
+- [ ] Review last 5-10 commits for rushed/temporary code
+- [ ] Check for TODO/FIXME comments that need addressing
+- [ ] Identify any hardcoded values that should be constants
+- [ ] Look for console.log/print statements to remove
+- [ ] Verify all debugging code is removed
+- [ ] Check for commented-out code blocks to delete
+
+#### Phase 2: Dead Code Elimination
+- [ ] **Unused Imports**: Remove all unused import statements
+- [ ] **Unused Variables**: Delete variables that are never referenced
+- [ ] **Unused Functions**: Remove functions with no callers
+- [ ] **Unused Components**: Delete UI components not in use
+- [ ] **Unused Files**: Remove obsolete files and test files
+- [ ] **Legacy Code**: Remove old implementations replaced by new ones
+- [ ] **Conditional Dead Code**: Remove if(false) blocks and unreachable code
+
+#### Phase 3: Code Duplication Analysis
+- [ ] **Identical Code Blocks**: Extract to shared functions
+- [ ] **Similar Logic Patterns**: Create generic/template functions
+- [ ] **Repeated Constants**: Move to centralized configuration
+- [ ] **Copy-Paste UI**: Create reusable components
+- [ ] **Similar API Calls**: Consolidate into service methods
+- [ ] **Repeated Error Handling**: Create error handling utilities
+
+#### Phase 4: Modularization & Organization
+- [ ] **Large Files (>300 lines)**: Split into logical extensions/modules
+- [ ] **God Classes**: Break down classes with too many responsibilities
+- [ ] **Long Functions (>30 lines)**: Decompose into smaller functions
+- [ ] **Deep Nesting (>3 levels)**: Refactor with early returns/guard clauses
+- [ ] **File Organization**: Ensure files are in correct directories
+- [ ] **Naming Consistency**: Verify consistent naming conventions
+
+#### Phase 5: Swift/iOS Best Practices
+- [ ] **Protocol Conformance**: Use extensions for protocol implementations
+- [ ] **Value Types**: Prefer structs over classes where appropriate
+- [ ] **Optionals**: Use guard let/if let instead of force unwrapping
+- [ ] **Closures**: Use trailing closure syntax consistently
+- [ ] **Access Control**: Apply proper private/internal/public modifiers
+- [ ] **SwiftUI vs UIKit**: Ensure consistent framework usage
+- [ ] **Async/Await**: Convert completion handlers where beneficial
+- [ ] **Memory Management**: Check for retain cycles and weak references
+
+#### Phase 6: Server/Node.js Best Practices
+- [ ] **ES6+ Features**: Use modern JavaScript features consistently
+- [ ] **Promise Chains**: Convert to async/await where cleaner
+- [ ] **Error Handling**: Ensure try-catch blocks in async functions
+- [ ] **Module Exports**: Use consistent export patterns
+- [ ] **Dependencies**: Remove unused npm packages
+- [ ] **Environment Variables**: No hardcoded secrets or keys
+
+#### Phase 7: Performance Optimization
+- [ ] **Image Assets**: Optimize image sizes and use correct formats
+- [ ] **Network Calls**: Batch requests where possible
+- [ ] **Caching Strategy**: Verify cache invalidation logic
+- [ ] **Lazy Loading**: Implement for heavy components
+- [ ] **Memory Leaks**: Profile and fix any memory issues
+- [ ] **Algorithm Complexity**: Optimize O(n²) or worse algorithms
+
+#### Phase 8: Data Flow Validation
+- [ ] **API → Server**: Verify data collection from external APIs
+- [ ] **Server → Storage**: Check data transformation and storage
+- [ ] **Storage → API**: Validate data serving endpoints
+- [ ] **API → iOS**: Ensure proper data decoding
+- [ ] **Error States**: Handle all failure scenarios gracefully
+- [ ] **Loading States**: Provide appropriate loading indicators
+
+#### Phase 9: UI/UX Consistency
+- [ ] **Color Usage**: Verify consistent color system usage
+- [ ] **Typography**: Check font sizes and weights consistency
+- [ ] **Spacing**: Ensure consistent padding and margins
+- [ ] **Animations**: Verify state-driven (not timing-based)
+- [ ] **Empty States**: Provide meaningful empty state messages
+- [ ] **Error Messages**: User-friendly and actionable
+- [ ] **Accessibility**: VoiceOver support and Dynamic Type
+
+#### Phase 10: Documentation & Comments
+- [ ] **File Headers**: Add/update file purpose comments
+- [ ] **Complex Logic**: Add explanatory comments for non-obvious code
+- [ ] **API Documentation**: Document all public methods
+- [ ] **Type Definitions**: Ensure all types have clear purposes
+- [ ] **README Updates**: Keep documentation current
+- [ ] **CLAUDE.md Updates**: Document any new patterns or decisions
+
+#### Phase 11: Testing & Validation
+- [ ] **Build Warnings**: Resolve all compiler warnings
+- [ ] **Lint Issues**: Fix all linting errors and warnings
+- [ ] **Type Safety**: Ensure proper typing throughout
+- [ ] **Test Coverage**: Add tests for new functionality
+- [ ] **Manual Testing**: Test all user paths
+- [ ] **Edge Cases**: Test boundary conditions and error states
+
+#### Phase 12: Final Review
+- [ ] **Code Review**: Self-review all changes
+- [ ] **Consistency Check**: Verify adherence to project patterns
+- [ ] **Performance Check**: Profile app performance
+- [ ] **Memory Check**: Verify no memory leaks introduced
+- [ ] **Regression Check**: Ensure existing features still work
+- [ ] **Deployment Ready**: All debug code removed
+
+#### Phase 13: Document Cleanup Results
+- [ ] **Update CLEANUP_LOG.md**: Record session summary
+- [ ] **Document Metrics**: Files modified, lines removed, improvements made
+- [ ] **Update Action Items**: Add new items discovered during cleanup
+- [ ] **Track Technical Debt**: Update debt tracker with resolved/new items
+- [ ] **Note Patterns**: Document any new anti-patterns or best practices found
+- [ ] **Plan Next Session**: Set focus areas for next cleanup
+
+**IMPORTANT**: Always complete Phase 13 to maintain visibility into code quality trends and ensure action items are tracked.
+
+---
+
+### 🎯 Areas to Focus (Current Project Specific)
+
+Based on recent development, prioritize these areas:
+
+1. **Tour Statistics Cards**
+   - Consolidate duplicate row components
+   - Ensure consistent styling across all cards
+   - Verify proper data flow from server
+
+2. **Data Pipeline**
+   - Server data collection scripts
+   - Statistics calculators modularity
+   - API response optimization
+   - iOS data models alignment
+
+3. **UI Components**
+   - SharedUIComponents usage consistency
+   - Color system application
+   - State-driven animations
+   - Accordion behavior patterns
+
+4. **Service Layer**
+   - API client consolidation
+   - Cache management efficiency
+   - Error handling consistency
+   - Network request optimization
+
+5. **Recent Features**
+   - MostCommonSongsNotPlayed implementation
+   - Tour calendar efficiency
+   - Single source architecture adherence
+
+---
+
+### 📝 Cleanup Output Documentation
+
+After cleanup, document:
+1. **Lines of code removed**: Track reduction metrics
+2. **Files deleted**: List obsolete files removed
+3. **Performance improvements**: Measure load time changes
+4. **Duplicates eliminated**: Count consolidated code blocks
+5. **Warnings resolved**: Number of issues fixed
+6. **Technical debt paid**: Major improvements made
+
+---
+
+### 🔄 Continuous Improvement
+
+- Run lightweight cleanup after each feature
+- Schedule comprehensive cleanup monthly
+- Track metrics to measure code quality trends
+- Update this checklist based on lessons learned
+- Share cleanup results with team for visibility
+- **Maintain CLEANUP_LOG.md** with all session results and action items
+- Review action items from previous cleanups before starting new ones

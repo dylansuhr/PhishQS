@@ -1,19 +1,23 @@
 /**
  * initialize-tour-shows.js
- * 
+ *
  * Script to initialize all individual show files for the current tour.
  * Creates complete setlist and duration data files for each show in the tour.
- * 
+ *
  * Architecture Features:
  * - Reads control file to determine which shows need initialization
  * - Creates individual show files in Server/Data/tours/ directory
  * - Uses existing enhanced setlist services for data collection
  * - Updates control file with show file references and smart flags
  * - Handles partial data scenarios (setlist available, durations pending)
- * 
+ *
  * This script should be run once to initialize the hybrid file system,
  * then individual show files can be updated as needed.
  */
+
+// Load environment variables from .env file (development only)
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';

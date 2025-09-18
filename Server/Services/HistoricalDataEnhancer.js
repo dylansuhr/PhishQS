@@ -103,7 +103,7 @@ export class HistoricalDataEnhancer {
             return longestSongs;
         }
 
-        // TODO: Could add venue history, first performance dates, etc.
+        // Historical enhancement for longest songs not yet implemented
         console.log('   📊 Longest songs: Historical enhancement not yet implemented');
         return longestSongs;
     }
@@ -122,7 +122,7 @@ export class HistoricalDataEnhancer {
             return mostPlayedSongs;
         }
 
-        // TODO: Could add debut dates, evolution history, etc.
+        // Historical enhancement for most played songs not yet implemented
         console.log('   📊 Most played songs: Historical enhancement not yet implemented');
         return mostPlayedSongs;
     }

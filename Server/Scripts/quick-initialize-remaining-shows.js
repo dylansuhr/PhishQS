@@ -1,8 +1,12 @@
 /**
  * quick-initialize-remaining-shows.js
- * 
+ *
  * Quick script to initialize just the missing show files needed for single source architecture
  */
+
+// Load environment variables from .env file (development only)
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';

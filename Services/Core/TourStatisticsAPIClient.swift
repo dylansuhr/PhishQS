@@ -78,7 +78,9 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
     /// - Returns: Complete tour statistics with longest, rarest, and most played songs
     /// - Throws: APIError with detailed logging for network, server, or parsing failures
     func fetchTourStatistics() async throws -> TourSongStatistics {
-        guard let url = URL(string: "\(baseURL)/api/tour-statistics") else {
+        // Add cache-busting timestamp parameter
+        let timestamp = Int(Date().timeIntervalSince1970)
+        guard let url = URL(string: "\(baseURL)/api/tour-statistics?t=\(timestamp)") else {
             let errorMessage = "Failed to create URL from baseURL: \(baseURL)"
             print("❌ TourStatisticsAPIClient: \(errorMessage)")
             throw APIError.invalidURL
@@ -92,9 +94,14 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
         request.httpMethod = "GET"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("PhishQS-iOS/1.0", forHTTPHeaderField: "User-Agent")
+        request.setValue("no-cache", forHTTPHeaderField: "Cache-Control")
+        request.setValue("no-cache", forHTTPHeaderField: "Pragma")
         request.timeoutInterval = 15.0 // Increased timeout for server requests
         
         do {
+            // Clear URL cache to ensure fresh response (temporary for debugging)
+            URLCache.shared.removeAllCachedResponses()
+
             // Add request timing for performance monitoring
             let startTime = CFAbsoluteTimeGetCurrent()
             let (data, response) = try await session.data(for: request)
