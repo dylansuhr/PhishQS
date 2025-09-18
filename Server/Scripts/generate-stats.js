@@ -62,13 +62,13 @@ async function generateTourStatistics() {
         
         // Debug: Show sample show data to understand structure
         if (year2025Shows.length > 0) {
-            console.log(`🔍 Sample show data:`, JSON.stringify(year2025Shows[0], null, 2));
+            LoggingService.debug(`Sample show data:`, JSON.stringify(year2025Shows[0], null, 2));
         }
         
         // Find the latest Summer Tour show specifically  
         const summerTourShows = year2025Shows.filter(show => show.tourname === '2025 Summer Tour');
-        console.log(`🎪 Found ${summerTourShows.length} Summer Tour 2025 shows`);
-        console.log(`📊 This includes ${summerTourShows.length} played shows. Full tour should have 31 total shows per phish.net`);
+        LoggingService.info(`Found ${summerTourShows.length} Summer Tour 2025 shows`);
+        LoggingService.info(`This includes ${summerTourShows.length} played shows. Full tour should have 31 total shows per phish.net`);
         
         if (summerTourShows.length === 0) {
             throw new Error('No Summer Tour 2025 shows found - cannot generate statistics');
@@ -76,28 +76,28 @@ async function generateTourStatistics() {
         
         // Get the latest Summer Tour show (last chronologically)
         const latestShow = summerTourShows.sort((a, b) => a.showdate.localeCompare(b.showdate)).pop();
-        console.log(`🎪 Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
+        LoggingService.info(`Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
         
         // Step 2: Determine current tour (we know it's Summer Tour 2025)
-        console.log('🔍 Using Summer Tour 2025 as current tour...');
+        LoggingService.info('Using Summer Tour 2025 as current tour...');
         const tourName = '2025 Summer Tour';
-        console.log(`📍 Current tour identified: ${tourName}`);
+        LoggingService.info(`Current tour identified: ${tourName}`);
         
         // Step 3: Get enhanced setlist with multi-API data
-        console.log('🔗 Creating enhanced setlist with multi-API data...');
+        LoggingService.info('Creating enhanced setlist with multi-API data...');
         const latestEnhanced = await enhancedService.createEnhancedSetlist(latestShow.showdate);
         
         // Step 4: Collect all tour shows using Phish.net (includes future shows)
-        console.log('📋 Collecting enhanced data for entire tour...');
+        LoggingService.info('Collecting enhanced data for entire tour...');
         const allTourShows = await enhancedService.collectTourData(tourName, latestShow.showdate);
-        console.log(`🎪 Tour data collected: ${allTourShows.length} shows processed (includes future scheduled shows)`);
+        LoggingService.info(`Tour data collected: ${allTourShows.length} shows processed (includes future scheduled shows)`);
         
         // Step 5: Calculate statistics using new modular architecture
-        console.log('📊 Calculating tour statistics using modular calculator system...');
+        LoggingService.info('Calculating tour statistics using modular calculator system...');
         const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, tourName);
         
         // Step 6: Enhance statistics with historical data (only for top N results)
-        console.log('🔍 Enhancing statistics with historical data...');
+        LoggingService.info('Enhancing statistics with historical data...');
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
@@ -107,16 +107,16 @@ async function generateTourStatistics() {
         const jsonData = JSON.stringify(enhancedTourStats, null, 2);
         writeFileSync(outputPath, jsonData);
 
-        console.log('✅ Real tour statistics generated successfully!');
-        console.log(`📁 Data saved to: ${outputPath}`);
-        console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
-        console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
-        console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
-        console.log(`   📊 Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
+        LoggingService.success('Real tour statistics generated successfully!');
+        LoggingService.info(`Data saved to: ${outputPath}`);
+        LoggingService.info(`Generated statistics for: ${enhancedTourStats.tourName}`);
+        LoggingService.info(`   Longest songs: ${enhancedTourStats.longestSongs.length}`);
+        LoggingService.info(`   Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
+        LoggingService.info(`   Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
         
     } catch (error) {
-        console.error('❌ Error generating tour statistics:', error);
-        console.error('Stack trace:', error.stack);
+        LoggingService.error('Error generating tour statistics:', error);
+        LoggingService.error('Stack trace:', error.stack);
         process.exit(1);
     }
 }
@@ -135,16 +135,16 @@ async function generateTourStatistics() {
  */
 async function generateTourStatisticsOptimized() {
     try {
-        console.log('🚀 Starting OPTIMIZED tour statistics generation...');
+        LoggingService.start('Starting OPTIMIZED tour statistics generation...');
         console.time('🚀 Total Generation Time');
         
         // Step 1: Collect ALL required data with minimal API calls
-        console.log('📊 Using DataCollectionService for optimal data collection...');
+        LoggingService.info('Using DataCollectionService for optimal data collection...');
         const dataCollectionService = new DataCollectionService(CONFIG.PHISH_NET_API_KEY);
         const dataContext = await dataCollectionService.collectAllTourData('2025', '2025 Early Summer Tour');
         
         // Show performance comparison
-        console.log(`📈 Performance: Made ${dataContext.apiCalls.total} API calls (vs ~116 in original approach)`);
+        LoggingService.info(`Performance: Made ${dataContext.apiCalls.total} API calls (vs ~116 in original approach)`);
         
         // Step 2: Find the latest Summer Tour show from pre-collected data
         const latestShow = dataContext.tourShows
@@ -155,11 +155,11 @@ async function generateTourStatisticsOptimized() {
             throw new Error('No Summer Tour 2025 shows found - cannot generate statistics');
         }
         
-        console.log(`🎪 Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
-        console.log(`📍 Current tour identified: ${dataContext.tourName}`);
+        LoggingService.info(`Latest Summer Tour show found: ${latestShow.showdate} at ${latestShow.venue || 'Unknown Venue'}`);
+        LoggingService.info(`Current tour identified: ${dataContext.tourName}`);
         
         // Step 3: Create enhanced setlist for latest show using pre-collected data
-        console.log('🔗 Creating enhanced setlist with pre-collected data...');
+        LoggingService.info('Creating enhanced setlist with pre-collected data...');
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
         const latestEnhanced = enhancedService.createEnhancedSetlistFromContext(
             latestShow.showdate, 
@@ -167,16 +167,16 @@ async function generateTourStatisticsOptimized() {
         );
         
         // Step 4: Collect all tour enhanced setlists using pre-collected data
-        console.log('📋 Creating enhanced setlists for entire tour...');
+        LoggingService.info('Creating enhanced setlists for entire tour...');
         const allTourShows = enhancedService.collectTourDataFromContext(dataContext);
-        console.log(`🎪 Tour data processed: ${allTourShows.length} shows enhanced (includes complete tour data)`);
+        LoggingService.info(`Tour data processed: ${allTourShows.length} shows enhanced (includes complete tour data)`);
         
         // Step 5: Calculate statistics using new modular architecture (same as original)
-        console.log('📊 Calculating tour statistics using modular calculator system...');
+        LoggingService.info('Calculating tour statistics using modular calculator system...');
         const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, dataContext.tourName);
         
         // Step 6: Enhance statistics with historical data (same as original)
-        console.log('🔍 Enhancing statistics with historical data...');
+        LoggingService.info('Enhancing statistics with historical data...');
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
@@ -187,17 +187,17 @@ async function generateTourStatisticsOptimized() {
         writeFileSync(outputPath, jsonData);
 
         console.timeEnd('🚀 Total Generation Time');
-        console.log('✅ OPTIMIZED tour statistics generated successfully!');
-        console.log(`📁 Data saved to: ${outputPath}`);
-        console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
-        console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
-        console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`); 
-        console.log(`   📊 Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
-        console.log(`🚀 API Call Optimization: ${dataContext.apiCalls.total} calls (reduced from ~116 calls)`);
+        LoggingService.success('OPTIMIZED tour statistics generated successfully!');
+        LoggingService.info(`Data saved to: ${outputPath}`);
+        LoggingService.info(`Generated statistics for: ${enhancedTourStats.tourName}`);
+        LoggingService.info(`   Longest songs: ${enhancedTourStats.longestSongs.length}`);
+        LoggingService.info(`   Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
+        LoggingService.info(`   Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
+        LoggingService.info(`API Call Optimization: ${dataContext.apiCalls.total} calls (reduced from ~116 calls)`);
         
     } catch (error) {
-        console.error('❌ Error generating optimized tour statistics:', error);
-        console.error('Stack trace:', error.stack);
+        LoggingService.error('Error generating optimized tour statistics:', error);
+        LoggingService.error('Stack trace:', error.stack);
         process.exit(1);
     }
 }
@@ -222,7 +222,7 @@ async function generateTourStatisticsOptimized() {
  */
 async function generateTourStatisticsFromControlFile() {
     try {
-        console.log('🎯 Starting SINGLE SOURCE tour statistics generation...');
+        LoggingService.start('Starting SINGLE SOURCE tour statistics generation...');
         console.time('🎯 Total Generation Time');
 
         // Step 1: Read control file for tour orchestration
@@ -232,27 +232,27 @@ async function generateTourStatisticsFromControlFile() {
             throw new Error(`Control file not found: ${controlFilePath}. Please run 'npm run update-tour-dashboard' first.`);
         }
 
-        console.log('📖 Reading tour control file...');
+        LoggingService.info('Reading tour control file...');
         const controlFileData = JSON.parse(readFileSync(controlFilePath, 'utf8'));
         const tourName = controlFileData.currentTour.name;
 
         // OPTIMIZATION: Early exit if statistics don't need updating
-        console.log('🔍 Checking if statistics update is needed...');
+        LoggingService.info('Checking if statistics update is needed...');
         const updateCheck = await checkIfStatisticsUpdateNeeded(controlFileData);
         if (!updateCheck.shouldUpdate) {
             console.timeEnd('🎯 Total Generation Time');
-            console.log(`ℹ️ Statistics update not needed: ${updateCheck.reason}`);
-            console.log('✅ Early exit - no processing required');
+            LoggingService.info(`Statistics update not needed: ${updateCheck.reason}`);
+            LoggingService.success('Early exit - no processing required');
             return;
         }
 
-        console.log(`🎯 Statistics update needed: ${updateCheck.reason}`);
+        LoggingService.info(`Statistics update needed: ${updateCheck.reason}`);
         
-        console.log(`📍 Tour identified from control file: ${tourName}`);
-        console.log(`🎪 Tour shows: ${controlFileData.currentTour.playedShows} played of ${controlFileData.currentTour.totalShows} total`);
+        LoggingService.info(`Tour identified from control file: ${tourName}`);
+        LoggingService.info(`Tour shows: ${controlFileData.currentTour.playedShows} played of ${controlFileData.currentTour.totalShows} total`);
         
         // Step 2: Load individual show files for statistical analysis
-        console.log('📋 Loading individual show files for tour data...');
+        LoggingService.info('Loading individual show files for tour data...');
         const allTourShows = [];
         let showsLoaded = 0;
         let showsSkipped = 0;
@@ -280,34 +280,34 @@ async function generateTourStatisticsFromControlFile() {
                         showsLoaded++;
                         
                     } catch (error) {
-                        console.warn(`⚠️  Failed to load show file ${tourDate.showFile}: ${error.message}`);
+                        LoggingService.warn(`Failed to load show file ${tourDate.showFile}: ${error.message}`);
                         showsSkipped++;
                     }
                 } else {
-                    console.warn(`⚠️  Show file not found: ${tourDate.showFile}`);
+                    LoggingService.warn(`Show file not found: ${tourDate.showFile}`);
                     showsSkipped++;
                 }
             }
         }
         
-        console.log(`📊 Show files loaded: ${showsLoaded} successful, ${showsSkipped} skipped`);
+        LoggingService.info(`Show files loaded: ${showsLoaded} successful, ${showsSkipped} skipped`);
         
         // Check for shows that are played, have show files, but couldn't be loaded
         // This is more lenient - we only fail if a show file exists but can't be loaded
         const showsWithFiles = controlFileData.currentTour.tourDates.filter(td => td.played && td.showFile);
         if (showsLoaded < showsWithFiles.length) {
             const failedToLoad = showsWithFiles.length - showsLoaded;
-            console.error(`❌ SINGLE SOURCE ERROR: Could not load ${failedToLoad} show files that should exist.`);
-            console.error(`❌ Please check the show files or run: npm run initialize-tour-shows`);
+            LoggingService.error(`SINGLE SOURCE ERROR: Could not load ${failedToLoad} show files that should exist.`);
+            LoggingService.error(`Please check the show files or run: npm run initialize-tour-shows`);
             throw new Error(`Single source of truth violation: Failed to load ${failedToLoad} existing show files.`);
         }
         
         // Info message about shows without setlists yet (not an error)
         const showsWithoutSetlists = controlFileData.currentTour.tourDates.filter(td => td.played && !td.showFile);
         if (showsWithoutSetlists.length > 0) {
-            console.log(`ℹ️  ${showsWithoutSetlists.length} played show(s) don't have setlists yet (likely just finished):`);
-            showsWithoutSetlists.forEach(td => console.log(`   • ${td.date} at ${td.venue}`));
-            console.log(`   These will be processed in the next update once setlist data is available.`);
+            LoggingService.info(`${showsWithoutSetlists.length} played show(s) don't have setlists yet (likely just finished):`);
+            showsWithoutSetlists.forEach(td => LoggingService.info(`   • ${td.date} at ${td.venue}`));
+            LoggingService.info(`   These will be processed in the next update once setlist data is available.`);
         }
         
         if (allTourShows.length === 0) {
@@ -315,19 +315,19 @@ async function generateTourStatisticsFromControlFile() {
         }
         
         // Step 3: Fetch comprehensive song database for statistics that need it
-        console.log('🎵 Fetching comprehensive song database for MostCommonSongsNotPlayed calculator...');
+        LoggingService.info('Fetching comprehensive song database for MostCommonSongsNotPlayed calculator...');
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
         const comprehensiveSongs = await fetchComprehensiveSongDatabase(enhancedService.phishNetClient);
 
         // Step 4: Calculate statistics using existing modular architecture with context
-        console.log('📊 Calculating tour statistics using modular calculator system...');
+        LoggingService.info('Calculating tour statistics using modular calculator system...');
         const context = {
             comprehensiveSongs: comprehensiveSongs
         };
         const tourStats = TourStatisticsService.calculateTourStatistics(allTourShows, tourName, context);
 
         // Step 5: Enhance statistics with historical data
-        console.log('🔍 Enhancing statistics with historical data...');
+        LoggingService.info('Enhancing statistics with historical data...');
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
@@ -346,19 +346,19 @@ async function generateTourStatisticsFromControlFile() {
         writeFileSync(outputPath, jsonData);
 
         console.timeEnd('🎯 Total Generation Time');
-        console.log('✅ SINGLE SOURCE tour statistics generated successfully!');
-        console.log(`📁 Data saved to: ${outputPath}`);
-        console.log(`🎵 Generated statistics for: ${enhancedTourStats.tourName}`);
-        console.log(`   📊 Longest songs: ${enhancedTourStats.longestSongs.length}`);
-        console.log(`   📊 Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
-        console.log(`   📊 Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
-        console.log(`   📊 Common not played: ${enhancedTourStats.mostCommonSongsNotPlayed?.length || 0} (from ${comprehensiveSongs.length} total Phish songs)`);
-        console.log(`🚀 Data Source: Control file + individual show files (0 API calls for tour data)`);
-        console.log(`📖 Shows processed: ${allTourShows.length} enhanced setlists from control file`);
+        LoggingService.success('SINGLE SOURCE tour statistics generated successfully!');
+        LoggingService.info(`Data saved to: ${outputPath}`);
+        LoggingService.info(`Generated statistics for: ${enhancedTourStats.tourName}`);
+        LoggingService.info(`   Longest songs: ${enhancedTourStats.longestSongs.length}`);
+        LoggingService.info(`   Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
+        LoggingService.info(`   Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
+        LoggingService.info(`   Common not played: ${enhancedTourStats.mostCommonSongsNotPlayed?.length || 0} (from ${comprehensiveSongs.length} total Phish songs)`);
+        LoggingService.info(`Data Source: Control file + individual show files (0 API calls for tour data)`);
+        LoggingService.info(`Shows processed: ${allTourShows.length} enhanced setlists from control file`);
         
     } catch (error) {
-        console.error('❌ Error generating single source tour statistics:', error);
-        console.error('Stack trace:', error.stack);
+        LoggingService.error('Error generating single source tour statistics:', error);
+        LoggingService.error('Stack trace:', error.stack);
         process.exit(1);
     }
 }
@@ -413,7 +413,7 @@ async function checkIfStatisticsUpdateNeeded(controlFileData) {
 
     } catch (error) {
         // If we can't read existing statistics, regenerate them
-        console.warn(`⚠️ Error reading existing statistics: ${error.message}`);
+        LoggingService.warn(`Error reading existing statistics: ${error.message}`);
         return { shouldUpdate: true, reason: 'error_reading_existing_statistics' };
     }
 }
@@ -429,9 +429,9 @@ async function checkIfStatisticsUpdateNeeded(controlFileData) {
  */
 async function fetchComprehensiveSongDatabase(phishNetClient) {
     try {
-        console.log('🔍 Fetching comprehensive song database from Phish.net...');
+        LoggingService.info('Fetching comprehensive song database from Phish.net...');
         const allSongs = await phishNetClient.fetchSongs();
-        console.log(`📊 Retrieved ${allSongs.length} total songs from Phish.net`);
+        LoggingService.info(`Retrieved ${allSongs.length} total songs from Phish.net`);
 
         // Filter to Phish-performed songs using side project exclusion
         const sideProjectArtists = [
@@ -445,19 +445,19 @@ async function fetchComprehensiveSongDatabase(phishNetClient) {
             !sideProjectArtists.includes(song.artist)
         );
 
-        console.log(`✅ Filtered to ${phishPerformedSongs.length} Phish-performed songs (originals + covers)`);
-        console.log(`🎯 Excluded ${allSongs.length - phishPerformedSongs.length} side project songs`);
+        LoggingService.success(`Filtered to ${phishPerformedSongs.length} Phish-performed songs (originals + covers)`);
+        LoggingService.info(`Excluded ${allSongs.length - phishPerformedSongs.length} side project songs`);
 
         // Debug: Show breakdown
         const originals = phishPerformedSongs.filter(song => song.artist === 'Phish').length;
         const covers = phishPerformedSongs.length - originals;
-        console.log(`   📈 ${originals} Phish originals + ${covers} covers by Phish`);
+        LoggingService.info(`   ${originals} Phish originals + ${covers} covers by Phish`);
 
         return phishPerformedSongs;
 
     } catch (error) {
-        console.error('❌ Error fetching comprehensive song database:', error);
-        console.warn('⚠️  Returning empty song database - MostCommonSongsNotPlayed will return no results');
+        LoggingService.error('Error fetching comprehensive song database:', error);
+        LoggingService.warn('Returning empty song database - MostCommonSongsNotPlayed will return no results');
         return [];
     }
 }
@@ -465,12 +465,12 @@ async function fetchComprehensiveSongDatabase(phishNetClient) {
 // Run comparison test: optimized vs single source
 if (import.meta.url === `file://${process.argv[1]}`) {
     if (process.argv.includes('--compare')) {
-        console.log('🔍 Running comparison test between optimized API and single source approaches...\n');
+        LoggingService.info('Running comparison test between optimized API and single source approaches...\n');
         
-        console.log('=== OPTIMIZED API APPROACH ===');
+        LoggingService.info('=== OPTIMIZED API APPROACH ===');
         await generateTourStatisticsOptimized();
         
-        console.log('\n=== SINGLE SOURCE APPROACH ===');
+        LoggingService.info('\n=== SINGLE SOURCE APPROACH ===');
         await generateTourStatisticsFromControlFile();
         
     } else if (process.argv.includes('--optimized')) {
