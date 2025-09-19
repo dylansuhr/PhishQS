@@ -145,21 +145,8 @@ struct TourCalendarView: View {
 // MARK: - Venue Color Generation
 
 /// Generate a consistent color for a venue based on its name
-func venueColor(for venue: String) -> Color {
-    return generateConsistentColor(for: venue)
-}
+// venueColor function moved to TourCalendarUtilities.swift
 
 // MARK: - Preview
 
-#if DEBUG
-struct TourCalendarView_Previews: PreviewProvider {
-    static var previews: some View {
-        TourCalendarView(
-            month: CalendarMonth.sampleMonth(),
-            venueRunSpans: VenueRunSpan.sampleVenueRuns(),
-            showBadges: true
-        )
-        .previewLayout(.sizeThatFits)
-    }
-}
-#endif
+// Preview removed - sample data methods not available

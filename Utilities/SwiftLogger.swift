@@ -20,6 +20,7 @@ struct SwiftLogger {
         case statistics = "Statistics"
         case calendar = "Calendar"
         case setlist = "Setlist"
+        case ui = "UI"
         case general = "General"
     }
 
@@ -27,6 +28,7 @@ struct SwiftLogger {
     enum Level {
         case debug
         case info
+        case warn
         case error
         case fault
     }
@@ -47,10 +49,22 @@ struct SwiftLogger {
         logger.info("ℹ️ \(message)")
     }
 
+    /// Log a warning message
+    static func warn(_ message: String, category: Category = .general) {
+        let logger = Logger(subsystem: subsystem, category: category.rawValue)
+        logger.warning("⚠️ \(message)")
+    }
+
     /// Log an error message
     static func error(_ message: String, category: Category = .general) {
         let logger = Logger(subsystem: subsystem, category: category.rawValue)
         logger.error("❌ \(message)")
+    }
+
+    /// Log a success message
+    static func success(_ message: String, category: Category = .general) {
+        let logger = Logger(subsystem: subsystem, category: category.rawValue)
+        logger.info("✅ \(message)")
     }
 
     /// Log a fault (critical error)

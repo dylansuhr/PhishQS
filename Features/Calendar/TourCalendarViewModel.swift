@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftUI
-import SwiftLogger
 
 @MainActor
 class TourCalendarViewModel: ObservableObject {

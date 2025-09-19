@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftLogger
 
 /// Client for fetching tour dashboard data from remote API endpoints
 /// Provides Component A with access to pre-generated tour data via Vercel endpoints

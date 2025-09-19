@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftLogger
 
 // MARK: - Tour Statistics API Protocol
 
@@ -186,6 +185,7 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
                 SwiftLogger.info("   Longest songs: \(tourStatistics.longestSongs.count)", category: .api)
                 SwiftLogger.info("   Rarest songs: \(tourStatistics.rarestSongs.count)", category: .api)
                 SwiftLogger.info("   Most played songs: \(tourStatistics.mostPlayedSongs.count)", category: .api)
+                SwiftLogger.info("   Most common not played: \(tourStatistics.mostCommonSongsNotPlayed?.count ?? 0)", category: .api)
                 SwiftLogger.info("   Tour: \(tourStatistics.tourName ?? "Unknown")", category: .api)
                 
                 return tourStatistics

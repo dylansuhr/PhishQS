@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftLogger
 
 /// Service for calculating historical gaps between song performances
 /// Used to determine what the gap was when a song was played during a specific tour

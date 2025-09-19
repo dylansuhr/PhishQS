@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SwiftLogger
 
 /// Reusable component for displaying loading and error states consistently across the app
 struct LoadingErrorStateView<Content: View>: View {

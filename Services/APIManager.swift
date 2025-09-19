@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftLogger
 
 // MARK: - Central API Coordinator
 

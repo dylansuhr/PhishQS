@@ -50,8 +50,8 @@ struct SongGapInfo: Codable, Identifiable {
     let songId: Int           // Phish.net songid
     let songName: String      // Song name
     let gap: Int             // Shows since last performance (0 = most recent)
-    let lastPlayed: String   // Date last performed BEFORE current tour ("2024-07-12")
-    let timesPlayed: Int     // Total times performed
+    let lastPlayed: String?  // Date last performed BEFORE current tour ("2024-07-12")
+    let timesPlayed: Int?    // Total times performed
     let tourVenue: String?   // Venue where played in current tour (if applicable)
     let tourVenueRun: VenueRun? // Venue run info for current tour performance (if applicable)
     let tourDate: String?    // Date when played in current tour (if applicable)
@@ -79,7 +79,8 @@ struct SongGapInfo: Codable, Identifiable {
     }
 
     /// Formatted last played date
-    var lastPlayedFormatted: String {
+    var lastPlayedFormatted: String? {
+        guard let lastPlayed = lastPlayed else { return nil }
         return DateUtilities.formatDateForDisplay(lastPlayed)
     }
 
@@ -106,6 +107,7 @@ struct SongGapInfo: Codable, Identifiable {
     var historicalLastPlayedFormatted: String? {
         guard let historicalLastPlayed = historicalLastPlayed else {
             // Fallback to original lastPlayed if historical data not available
+            guard let lastPlayed = lastPlayed else { return nil }
             return DateUtilities.formatDateForDisplay(lastPlayed)
         }
         return DateUtilities.formatDateForDisplay(historicalLastPlayed)
@@ -126,7 +128,7 @@ struct SongGapInfo: Codable, Identifiable {
     }
 
     /// Initialize with songId as id
-    init(songId: Int, songName: String, gap: Int, lastPlayed: String, timesPlayed: Int, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil, tourCity: String? = nil, tourState: String? = nil, tourPosition: TourShowPosition? = nil, historicalVenue: String? = nil, historicalCity: String? = nil, historicalState: String? = nil, historicalLastPlayed: String? = nil) {
+    init(songId: Int, songName: String, gap: Int, lastPlayed: String?, timesPlayed: Int?, tourVenue: String? = nil, tourVenueRun: VenueRun? = nil, tourDate: String? = nil, tourCity: String? = nil, tourState: String? = nil, tourPosition: TourShowPosition? = nil, historicalVenue: String? = nil, historicalCity: String? = nil, historicalState: String? = nil, historicalLastPlayed: String? = nil) {
         self.id = songId
         self.songId = songId
         self.songName = songName
@@ -151,7 +153,7 @@ struct SongGapInfo: Codable, Identifiable {
 extension SongGapInfo: TourContextProvider {
     var city: String? { tourCity }
     var state: String? { tourState }
-    var showDate: String { tourDate ?? lastPlayed }
+    var showDate: String { tourDate ?? lastPlayed ?? "" }
     var venue: String? { tourVenue }
 }
 
@@ -203,11 +205,37 @@ struct TourSongStatistics: Codable {
     let longestSongs: [TrackDuration]        // Top 3 longest songs by duration
     let rarestSongs: [SongGapInfo]           // Top 3 rarest songs by gap
     let mostPlayedSongs: [MostPlayedSong]    // Top 3 most played songs by frequency
-    let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed] // Top 20 common songs not played
+    let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed]? // Top 20 common songs not played
     let tourName: String?                    // Current tour name for context
 
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !mostCommonSongsNotPlayed.isEmpty
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true)
     }
+}
+
+// MARK: - Song Performance Models
+
+/// Song performance from Phish.net setlists API
+struct SongPerformance: Codable {
+    let showid: Int
+    let showdate: String
+    let showyear: String
+    let venue: String
+    let city: String
+    let state: String?
+    let country: String
+    let permalink: String
+
+    // Gap information
+    let gap: Int                        // Number of shows since last performance
+    let songid: Int                     // Song ID for reliable matching
+    let song: String                    // Song name
+    let slug: String                    // URL-friendly song name
+
+    // Additional performance details
+    let set: String?                    // Set number where song was played
+    let position: Int?                  // Position within the set
+    let trans_mark: String?            // Transition mark (>, ->, etc.)
+    let footnote: String?              // Any special notes about this performance
 }

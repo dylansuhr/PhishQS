@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import SwiftLogger
 
 /// Thread-safe cache manager for API data with TTL (Time To Live) support
 class CacheManager {

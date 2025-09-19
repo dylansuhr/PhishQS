@@ -11,18 +11,23 @@ import SwiftUI
 // Re-export all the individual card components for backward compatibility
 // This ensures existing imports continue to work while providing better organization
 
-// Individual cards
-typealias LongestSongsCard = LongestSongsCard
-typealias RarestSongsCard = RarestSongsCard
-typealias MostPlayedSongsCard = MostPlayedSongsCard
-typealias MostCommonSongsNotPlayedCard = MostCommonSongsNotPlayedCard
-typealias TourOverviewCard = TourOverviewCard
+// Import and re-export the individual components
+// (The actual implementations are in their respective files in the same folder)
 
-// Row components
-typealias MostCommonSongNotPlayedRow = MostCommonSongNotPlayedRow
+// Note: Swift automatically makes all public types from the same module available,
+// so these components are already accessible. This file serves as documentation
+// of the modular structure and maintains backward compatibility.
 
-// Main container
-typealias TourStatisticsCards = TourStatisticsCards
+// Individual card components available:
+// - LongestSongsCard
+// - RarestSongsCard
+// - MostPlayedSongsCard
+// - MostCommonSongsNotPlayedCard
+// - TourOverviewCard
+// - TourStatisticsCards
+// - MostCommonSongNotPlayedRow
 
-// Note: The row components LongestSongRowModular, RarestSongRowModular, and MostPlayedSongRowModular
-// are defined in SharedUIComponents.swift and are already available throughout the app.
+// Row components from SharedUIComponents.swift:
+// - LongestSongRowModular
+// - RarestSongRowModular
+// - MostPlayedSongRowModular

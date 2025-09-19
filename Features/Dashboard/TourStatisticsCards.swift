@@ -17,7 +17,9 @@ struct TourStatisticsCards: View {
                 LongestSongsCard(songs: stats.longestSongs)
                 RarestSongsCard(songs: stats.rarestSongs)
                 MostPlayedSongsCard(songs: stats.mostPlayedSongs)
-                MostCommonSongsNotPlayedCard(songs: stats.mostCommonSongsNotPlayed)
+                if let mostCommonSongs = stats.mostCommonSongsNotPlayed, !mostCommonSongs.isEmpty {
+                    MostCommonSongsNotPlayedCard(songs: mostCommonSongs)
+                }
             }
         }
     }

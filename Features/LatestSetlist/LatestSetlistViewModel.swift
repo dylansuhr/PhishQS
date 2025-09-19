@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import SwiftLogger
 
 // ViewModel for fetching and managing the latest Phish setlist with navigation support
 class LatestSetlistViewModel: BaseViewModel {
