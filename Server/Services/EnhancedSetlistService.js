@@ -11,6 +11,7 @@ import { PhishNetClient } from '../API/PhishNetClient.js';
 import { PhishInClient } from '../API/PhishInClient.js';
 import { PhishNetTourService } from './PhishNetTourService.js';
 import { DataCollectionService } from './DataCollectionService.js';
+import LoggingService from './LoggingService.js';
 
 export class EnhancedSetlistService {
     constructor(phishNetApiKey) {
@@ -24,11 +25,11 @@ export class EnhancedSetlistService {
      * Port of iOS APIManager.fetchEnhancedSetlist() lines 64-148
      */
     async createEnhancedSetlist(showDate) {
-        console.log(`🔗 Creating enhanced setlist for ${showDate}...`);
+        LoggingService.start(`Creating enhanced setlist for ${showDate}`);
 
         // Step 1: Get base setlist from Phish.net (same as iOS line 72)
         const setlistItems = await this.phishNetClient.fetchSetlist(showDate);
-        console.log(`   📋 Found ${setlistItems.length} setlist items from Phish.net`);
+        LoggingService.info(`Found ${setlistItems.length} setlist items from Phish.net`);
         
         // Step 1.5: Get show data from Phish.net to extract venue/city/state information
         let showVenueInfo = null;
@@ -42,10 +43,10 @@ export class EnhancedSetlistService {
                     city: matchingShow.city,
                     state: matchingShow.state
                 };
-                console.log(`   🏟️  Found venue info from Phish.net: ${showVenueInfo.venue}, ${showVenueInfo.city}, ${showVenueInfo.state}`);
+                LoggingService.info(`Found venue info from Phish.net: ${showVenueInfo.venue}, ${showVenueInfo.city}, ${showVenueInfo.state}`);
             }
         } catch (error) {
-            console.log(`   ⚠️  Could not fetch show venue info: ${error.message}`);
+            LoggingService.warn(`Could not fetch show venue info: ${error.message}`);
         }
 
         // Step 2: Initialize enhancement data containers (same as iOS lines 74-79)
@@ -56,7 +57,7 @@ export class EnhancedSetlistService {
         let songGaps = [];
 
         // Step 3: Execute all API calls in parallel for better performance (same as iOS lines 98-129)
-        console.log('   🔄 Fetching enhancement data in parallel...');
+        LoggingService.start('Fetching enhancement data in parallel...');
         
         // Parallel API calls - Phish.in for AUDIO DATA ONLY (durations/recordings), Phish.net for tour position
         const phishInResults = await Promise.allSettled([
@@ -72,44 +73,44 @@ export class EnhancedSetlistService {
         // Extract results with individual error handling (AUDIO DATA ONLY)
         if (phishInResults[0].status === 'fulfilled') {
             trackDurations = phishInResults[0].value;
-            console.log(`   🎵 Found ${trackDurations.length} track durations from Phish.in`);
+            LoggingService.info(`Found ${trackDurations.length} track durations from Phish.in`);
         } else {
-            console.log(`   ⚠️  Could not fetch track durations: ${phishInResults[0].reason?.message}`);
+            LoggingService.warn(`Could not fetch track durations: ${phishInResults[0].reason?.message}`);
         }
 
         if (phishInResults[1].status === 'fulfilled') {
             recordings = phishInResults[1].value;
-            console.log(`   🎧 Found ${recordings.length} recordings from Phish.in`);
+            LoggingService.info(`Found ${recordings.length} recordings from Phish.in`);
         } else {
-            console.log(`   ⚠️  Could not fetch recordings: ${phishInResults[1].reason?.message}`);
+            LoggingService.warn(`Could not fetch recordings: ${phishInResults[1].reason?.message}`);
         }
 
         if (tourPositionResult[0].status === 'fulfilled') {
             const tourContext = tourPositionResult[0].value;
             tourPosition = tourContext.tourPosition;
             if (tourPosition) {
-                console.log(`   🎪 Found tour position: Show ${tourPosition.showNumber}/${tourPosition.totalShows} of ${tourPosition.tourName}`);
+                LoggingService.info(`Found tour position: Show ${tourPosition.showNumber}/${tourPosition.totalShows} of ${tourPosition.tourName}`);
             }
             
             // Get venue run from Phish.net (NOT Phish.in) - if tour context is available
             if (tourContext.venueRun) {
                 venueRun = tourContext.venueRun;
-                console.log(`   🏟️  Found venue run from Phish.net: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
+                LoggingService.info(`Found venue run from Phish.net: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
             }
         } else {
-            console.log(`   ⚠️  Could not fetch tour position: ${tourPositionResult[0].reason?.message}`);
+            LoggingService.warn(`Could not fetch tour position: ${tourPositionResult[0].reason?.message}`);
         }
 
         // Step 4: Extract gap data from setlist (gap data is already in setlist response)
-        console.log(`   📊 Extracting gap data from setlist items...`);
+        LoggingService.info(`Extracting gap data from setlist items...`);
         
         // STEP 4.1: Get complete Phish-only historical data for all songs during generation
-        console.log(`   📡 Fetching complete Phish-only historical data for ${setlistItems.length} songs...`);
+        LoggingService.start(`Fetching complete Phish-only historical data for ${setlistItems.length} songs...`);
         songGaps = [];
 
         for (let i = 0; i < setlistItems.length; i++) {
             const item = setlistItems[i];
-            console.log(`     📡 [${i + 1}/${setlistItems.length}] Getting historical data for "${item.song}"...`);
+            LoggingService.debug(`[${i + 1}/${setlistItems.length}] Getting historical data for "${item.song}"...`);
 
             try {
                 // Use the fixed fetchSongGap method to get complete Phish-only historical data
@@ -117,7 +118,7 @@ export class EnhancedSetlistService {
 
                 if (historicalData) {
                     songGaps.push(historicalData);
-                    console.log(`     ✅ Complete data for "${item.song}": gap ${historicalData.gap}, last played ${historicalData.historicalLastPlayed || 'N/A'}`);
+                    LoggingService.success(`Complete data for "${item.song}": gap ${historicalData.gap}, last played ${historicalData.historicalLastPlayed || 'N/A'}`);
                 } else {
                     // Fallback to basic data if historical lookup fails
                     songGaps.push({
@@ -134,7 +135,7 @@ export class EnhancedSetlistService {
                         historicalState: null,
                         historicalLastPlayed: null
                     });
-                    console.log(`     ⚠️  No historical data found for "${item.song}"`);
+                    LoggingService.warn(`No historical data found for "${item.song}"`);
                 }
             } catch (error) {
                 // Fallback to basic data if API call fails
@@ -152,7 +153,7 @@ export class EnhancedSetlistService {
                     historicalState: null,
                     historicalLastPlayed: null
                 });
-                console.log(`     ❌ Failed to get historical data for "${item.song}": ${error.message}`);
+                LoggingService.error(`Failed to get historical data for "${item.song}": ${error.message}`);
             }
 
             // Rate limiting delay between API calls
@@ -161,7 +162,7 @@ export class EnhancedSetlistService {
             }
         }
         
-        console.log(`   📊 Extracted gap data for ${songGaps.length} songs from setlist`);
+        LoggingService.info(`Extracted gap data for ${songGaps.length} songs from setlist`);
 
         // Step 5: Create enhanced setlist object (same as iOS lines 134-142)
         const enhancedSetlist = {
@@ -175,7 +176,7 @@ export class EnhancedSetlistService {
             showVenueInfo: showVenueInfo // Include Phish.net venue info for city/state extraction
         };
 
-        console.log(`   ✅ Enhanced setlist created with ${Object.keys(enhancedSetlist).length} data components`);
+        LoggingService.success(`Enhanced setlist created with ${Object.keys(enhancedSetlist).length} data components`);
         return enhancedSetlist;
     }
 
@@ -184,38 +185,38 @@ export class EnhancedSetlistService {
      * Port of iOS fetchTourEnhancedSetlistsOptimized logic
      */
     async collectTourData(tourName, currentShowDate) {
-        console.log(`🎪 Collecting enhanced data for tour: ${tourName}`);
+        LoggingService.start(`Collecting enhanced data for tour: ${tourName}`);
         
         try {
             // Get all shows for the tour using Phish.net (migrated from Phish.in)
             const year = currentShowDate.split('-')[0]; // Extract year from show date
             const tourShows = await this.phishNetTourService.fetchTourShows(year, tourName);
-            console.log(`   📋 Found ${tourShows.length} shows in ${tourName}`);
+            LoggingService.info(`Found ${tourShows.length} shows in ${tourName}`);
 
             if (tourShows.length === 0) {
-                console.log('   ⚠️  No tour shows found, returning current show only');
+                LoggingService.warn('No tour shows found, returning current show only');
                 // Return just current show if no tour data found
                 const currentEnhanced = await this.createEnhancedSetlist(currentShowDate);
                 return [currentEnhanced];
             }
 
             // Create enhanced setlists for each show (only for played shows with setlist data)
-            console.log('   🔄 Creating enhanced setlists for played tour shows...');
+            LoggingService.start('Creating enhanced setlists for played tour shows...');
             const enhancedSetlists = [];
             
             // Filter to only shows that are in the past or present (have actually been played)
             const today = new Date().toISOString().split('T')[0];
             const playedShows = tourShows.filter(show => show.showdate <= today);
-            console.log(`   📊 Processing ${playedShows.length}/${tourShows.length} played shows (excluding ${tourShows.length - playedShows.length} future shows)`);
+            LoggingService.info(`Processing ${playedShows.length}/${tourShows.length} played shows (excluding ${tourShows.length - playedShows.length} future shows)`);
             
             for (let i = 0; i < playedShows.length; i++) {
                 const show = playedShows[i];
                 try {
-                    console.log(`   📅 Processing show ${i + 1}/${playedShows.length}: ${show.showdate}`);
+                    LoggingService.debug(`Processing show ${i + 1}/${playedShows.length}: ${show.showdate}`);
                     const enhanced = await this.createEnhancedSetlist(show.showdate);
                     enhancedSetlists.push(enhanced);
                 } catch (error) {
-                    console.log(`   ⚠️  Skipping show ${show.showdate}: ${error.message}`);
+                    LoggingService.warn(`Skipping show ${show.showdate}: ${error.message}`);
                     // Continue processing other shows even if one fails
                 }
             }
@@ -223,12 +224,12 @@ export class EnhancedSetlistService {
             // Sort chronologically (same as iOS)
             enhancedSetlists.sort((a, b) => a.showDate.localeCompare(b.showDate));
             
-            console.log(`   ✅ Successfully created ${enhancedSetlists.length} enhanced setlists for ${tourName}`);
+            LoggingService.success(`Successfully created ${enhancedSetlists.length} enhanced setlists for ${tourName}`);
             return enhancedSetlists;
 
         } catch (error) {
-            console.log(`   ❌ Error collecting tour data: ${error.message}`);
-            console.log('   📅 Falling back to current show only');
+            LoggingService.error(`Error collecting tour data: ${error.message}`);
+            LoggingService.info('Falling back to current show only');
             
             // Fallback to current show only if tour collection fails
             const currentEnhanced = await this.createEnhancedSetlist(currentShowDate);
@@ -246,8 +247,8 @@ export class EnhancedSetlistService {
      * @returns {Array} Array of enhanced setlists (same format as original)
      */
     collectTourDataFromContext(dataContext) {
-        console.log(`🎪 Creating enhanced setlists from pre-collected data for ${dataContext.tourName}`);
-        console.log(`   📊 Processing ${dataContext.playedShowCount}/${dataContext.totalShows} played shows`);
+        LoggingService.start(`Creating enhanced setlists from pre-collected data for ${dataContext.tourName}`);
+        LoggingService.info(`Processing ${dataContext.playedShowCount}/${dataContext.totalShows} played shows`);
         
         const enhancedSetlists = [];
         
@@ -262,10 +263,10 @@ export class EnhancedSetlistService {
                 
                 const setlistCount = enhanced.setlistItems.length;
                 const durationCount = enhanced.trackDurations.length;
-                console.log(`   📅 ${show.showdate}: ${setlistCount} songs, ${durationCount} durations`);
+                LoggingService.debug(`${show.showdate}: ${setlistCount} songs, ${durationCount} durations`);
                 
             } catch (error) {
-                console.log(`   ⚠️  Error processing ${show.showdate}: ${error.message}`);
+                LoggingService.warn(`Error processing ${show.showdate}: ${error.message}`);
                 // Continue processing other shows even if one fails
             }
         }
@@ -273,7 +274,7 @@ export class EnhancedSetlistService {
         // Sort chronologically (same as iOS)
         enhancedSetlists.sort((a, b) => a.showDate.localeCompare(b.showDate));
         
-        console.log(`   ✅ Created ${enhancedSetlists.length} enhanced setlists using optimized data context`);
+        LoggingService.success(`Created ${enhancedSetlists.length} enhanced setlists using optimized data context`);
         return enhancedSetlists;
     }
     
@@ -288,25 +289,25 @@ export class EnhancedSetlistService {
      * @returns {Object} Enhanced setlist object (same format as original)
      */
     createEnhancedSetlistFromContext(showDate, dataContext) {
-        console.log(`🔗 Creating enhanced setlist for ${showDate} from pre-collected data...`);
+        LoggingService.start(`Creating enhanced setlist for ${showDate} from pre-collected data...`);
         
         const enhanced = DataCollectionService.createEnhancedSetlistFromContext(showDate, dataContext);
         
         // Log the same information as the original method for consistency
-        console.log(`   📋 Found ${enhanced.setlistItems.length} setlist items from context`);
+        LoggingService.info(`Found ${enhanced.setlistItems.length} setlist items from context`);
         if (enhanced.showVenueInfo) {
-            console.log(`   🏟️  Found venue info: ${enhanced.showVenueInfo.venue}, ${enhanced.showVenueInfo.city}, ${enhanced.showVenueInfo.state}`);
+            LoggingService.info(`Found venue info: ${enhanced.showVenueInfo.venue}, ${enhanced.showVenueInfo.city}, ${enhanced.showVenueInfo.state}`);
         }
-        console.log(`   🎵 Found ${enhanced.trackDurations.length} track durations from context`);
+        LoggingService.info(`Found ${enhanced.trackDurations.length} track durations from context`);
         if (enhanced.venueRun) {
-            console.log(`   🏟️  Found venue run: N${enhanced.venueRun.nightNumber}/${enhanced.venueRun.totalNights} at ${enhanced.venueRun.venue}`);
+            LoggingService.info(`Found venue run: N${enhanced.venueRun.nightNumber}/${enhanced.venueRun.totalNights} at ${enhanced.venueRun.venue}`);
         }
         if (enhanced.tourPosition) {
-            console.log(`   🎪 Found tour position: Show ${enhanced.tourPosition.showNumber}/${enhanced.tourPosition.totalShows} of ${enhanced.tourPosition.tourName}`);
+            LoggingService.info(`Found tour position: Show ${enhanced.tourPosition.showNumber}/${enhanced.tourPosition.totalShows} of ${enhanced.tourPosition.tourName}`);
         }
-        console.log(`   🎧 Found ${enhanced.recordings.length} recordings from context`);
-        console.log(`   📊 Extracted gap data for ${enhanced.songGaps.length} songs from setlist`);
-        console.log(`   ✅ Enhanced setlist created with ${Object.keys(enhanced).length} data components`);
+        LoggingService.info(`Found ${enhanced.recordings.length} recordings from context`);
+        LoggingService.info(`Extracted gap data for ${enhanced.songGaps.length} songs from setlist`);
+        LoggingService.success(`Enhanced setlist created with ${Object.keys(enhanced).length} data components`);
         
         return enhanced;
     }

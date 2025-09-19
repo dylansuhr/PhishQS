@@ -105,7 +105,7 @@ class APIManager: ObservableObject {
                 do {
                     return try await gapProvider.fetchSongGaps(songNames: songNames, showDate: date)
                 } catch {
-                    print("Warning: Could not fetch gap data from Phish.net for \(date): \(error)")
+                    SwiftLogger.warn("Could not fetch gap data from Phish.net for \(date): \(error)", category: .api)
                     return []
                 }
             }
@@ -123,13 +123,13 @@ class APIManager: ObservableObject {
             do {
                 trackDurations = try await trackDurationsTask
             } catch {
-                print("Warning: Could not fetch track durations from Phish.in for \(date): \(error)")
+                SwiftLogger.warn("Could not fetch track durations from Phish.in for \(date): \(error)", category: .api)
             }
             
             do {
                 recordings = try await recordingsTask
             } catch {
-                print("Warning: Could not fetch recording info from Phish.in: \(error)")
+                SwiftLogger.warn("Could not fetch recording info from Phish.in: \(error)", category: .api)
             }
         }
         
@@ -139,7 +139,7 @@ class APIManager: ObservableObject {
             tourPosition = tourContext.tourPosition
             venueRun = tourContext.venueRun
         } catch {
-            print("Warning: Could not fetch tour context from Phish.net: \(error)")
+            SwiftLogger.warn("Could not fetch tour context from Phish.net: \(error)", category: .api)
         }
         
         // Await gap data task
@@ -220,7 +220,7 @@ class APIManager: ObservableObject {
                 let trackDurations = try await phishInClient.fetchTrackDurations(for: show.showdate)
                 allTourTracks.append(contentsOf: trackDurations)
             } catch {
-                print("Warning: Could not fetch durations for \(show.showdate): \(error)")
+                SwiftLogger.warn("Could not fetch durations for \(show.showdate): \(error)", category: .api)
             }
         }
         
@@ -237,7 +237,7 @@ class APIManager: ObservableObject {
         do {
             return try await phishNetTourService.getTourNameForShow(date: showDate)
         } catch {
-            print("Could not fetch tour name for \(showDate): \(error)")
+            SwiftLogger.warn("Could not fetch tour name for \(showDate): \(error)", category: .api)
             return nil
         }
     }

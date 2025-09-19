@@ -1,10 +1,10 @@
 /**
  * StatisticsConfig.js
- * 
+ *
  * Centralized configuration for tour statistics calculations.
  * Eliminates hardcoded values and provides environment-specific settings
  * for different deployment scenarios (development, production, testing).
- * 
+ *
  * Configuration Categories:
  * - Result limits (top N calculations)
  * - Debug and logging settings
@@ -12,6 +12,8 @@
  * - Performance thresholds
  * - Feature flags
  */
+
+import { LoggingService } from '../Services/LoggingService.js';
 
 /**
  * Environment detection for configuration
@@ -41,7 +43,8 @@ const baseConfig = {
     resultLimits: {
         longestSongs: 10,
         rarestSongs: 10,
-        mostPlayedSongs: 999
+        mostPlayedSongs: 999,
+        mostCommonSongsNotPlayed: 20
     },
     
     // ===== HISTORICAL DATA ENHANCEMENT =====
@@ -330,11 +333,11 @@ export class StatisticsConfig {
      */
     static logConfig() {
         if (config.features.enableDebugLogging) {
-            console.log('📋 Statistics Configuration:');
-            console.log(`   Environment: ${config.environment}`);
-            console.log(`   Debug logging: ${config.features.enableDebugLogging}`);
-            console.log(`   Result limits: ${JSON.stringify(config.resultLimits)}`);
-            console.log(`   Cache TTLs: Default ${config.cache.defaultTtl}s, Stats ${config.cache.statisticsTtl}s`);
+            LoggingService.info('Statistics Configuration:');
+            LoggingService.info(`   Environment: ${config.environment}`);
+            LoggingService.info(`   Debug logging: ${config.features.enableDebugLogging}`);
+            LoggingService.info(`   Result limits: ${JSON.stringify(config.resultLimits)}`);
+            LoggingService.info(`   Cache TTLs: Default ${config.cache.defaultTtl}s, Stats ${config.cache.statisticsTtl}s`);
         }
     }
 }

@@ -18,9 +18,11 @@
  */
 
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from './LoggingService.js';
 import { LongestSongsCalculator } from './StatisticsCalculators/LongestSongsCalculator.js';
 import { RarestSongsCalculator } from './StatisticsCalculators/RarestSongsCalculator.js';
 import { MostPlayedSongsCalculator } from './StatisticsCalculators/MostPlayedSongsCalculator.js';
+import { MostCommonSongsNotPlayedCalculator } from './StatisticsCalculators/MostCommonSongsNotPlayedCalculator.js';
 
 /**
  * Registry for managing statistics calculators
@@ -82,6 +84,17 @@ export class StatisticsRegistry {
             enabled: true,
             priority: 3
         });
+
+        // Most Common Songs Not Played Calculator
+        this.registerCalculator('mostCommonSongsNotPlayed', {
+            name: 'Most Common Songs Not Played',
+            description: 'Identifies popular songs from Phish history absent from current tour',
+            dataSource: 'Comprehensive song database with historical play counts',
+            calculatorClass: MostCommonSongsNotPlayedCalculator,
+            resultType: 'MostCommonSongNotPlayed',
+            enabled: true,
+            priority: 4
+        });
     }
     
     /**
@@ -126,7 +139,7 @@ export class StatisticsRegistry {
         this.calculatorClasses.set(type, metadata.calculatorClass);
         
         if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
-            console.log(`📋 Registered calculator: ${metadata.name} (${type})`);
+            LoggingService.debug(`Registered calculator: ${metadata.name} (${type})`);
         }
     }
     
@@ -195,12 +208,14 @@ export class StatisticsRegistry {
     
     /**
      * Execute all enabled calculators and return combined results
-     * 
+     *
      * @param {Array} tourShows - All enhanced setlists for the tour
      * @param {string} tourName - Name of the tour
+     * @param {Object} context - Additional context data for calculators (optional)
+     * @param {Array} context.comprehensiveSongs - Complete song database for calculators that need it
      * @returns {Object} Combined results from all calculators
      */
-    calculateAllStatistics(tourShows, tourName) {
+    calculateAllStatistics(tourShows, tourName, context = {}) {
         if (StatisticsConfig.isFeatureEnabled('enablePerformanceTiming')) {
             console.time('🚀 Total Statistics Calculation');
         }
@@ -209,7 +224,7 @@ export class StatisticsRegistry {
         const enabledCalculators = this.getEnabledCalculators();
         
         if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
-            console.log(`🧮 Executing ${enabledCalculators.length} statistics calculators for ${tourShows?.length || 0} shows`);
+            LoggingService.info(`Executing ${enabledCalculators.length} statistics calculators for ${tourShows?.length || 0} shows`);
         }
         
         // Execute each enabled calculator
@@ -222,7 +237,7 @@ export class StatisticsRegistry {
                 }
                 
                 const calculator = this.createCalculator(type);
-                const calculationResults = calculator.calculate(tourShows, tourName);
+                const calculationResults = calculator.calculate(tourShows, tourName, context);
                 
                 // Store results using calculator type as key
                 results[type] = calculationResults;
@@ -232,11 +247,11 @@ export class StatisticsRegistry {
                 }
                 
                 if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
-                    console.log(`✅ ${name}: Generated ${calculationResults.length} results`);
+                    LoggingService.debug(`${name}: Generated ${calculationResults.length} results`);
                 }
                 
             } catch (error) {
-                console.error(`❌ Error calculating ${name}:`, error.message);
+                LoggingService.error(`Error calculating ${name}:`, error.message);
                 
                 // Store empty results for failed calculations to maintain structure
                 results[type] = [];
@@ -262,7 +277,7 @@ export class StatisticsRegistry {
             
             if (StatisticsConfig.isFeatureEnabled('enableDebugLogging')) {
                 const status = enabled ? 'enabled' : 'disabled';
-                console.log(`🔧 Calculator '${calculator.name}' ${status}`);
+                LoggingService.debug(`Calculator '${calculator.name}' ${status}`);
             }
         }
     }

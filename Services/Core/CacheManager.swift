@@ -92,7 +92,7 @@ class CacheManager {
             if let cachedTourName = (self.cache[currentTourKey] as? CacheItem<String>)?.value,
                cachedTourName != newTourName {
                 // Tour has changed - clear current tour data
-                print("🔄 Tour changed from \(cachedTourName) to \(newTourName) - clearing cache")
+                SwiftLogger.info("🔄 Tour changed from \(cachedTourName) to \(newTourName) - clearing cache", category: .cache)
                 self.cache.removeValue(forKey: CacheKeys.currentTourStats)
             }
             

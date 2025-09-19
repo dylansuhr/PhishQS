@@ -18,6 +18,7 @@
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import { PhishInClient } from '../API/PhishInClient.js';
 import { PhishNetTourService } from './PhishNetTourService.js';
+import LoggingService from './LoggingService.js';
 
 /**
  * Service for centralized tour data collection
@@ -44,20 +45,20 @@ export class DataCollectionService {
      * @returns {Promise<Object>} Complete tour data context
      */
     async collectAllTourData(year, tourName) {
-        console.log(`📊 DataCollectionService: Collecting all data for ${tourName} in ${year}...`);
+        LoggingService.start(`DataCollectionService: Collecting all data for ${tourName} in ${year}`);
         console.time('📊 Total Data Collection');
         
         // Step 1: Collect base show data (1 API call)
-        console.log('   🎯 Step 1: Fetching all year shows...');
+        LoggingService.debug('Step 1: Fetching all year shows...');
         const allYearShows = await this.phishNetClient.fetchShows(year);
-        console.log(`   📋 Fetched ${allYearShows.length} total ${year} shows`);
+        LoggingService.info(`Fetched ${allYearShows.length} total ${year} shows`);
         
         // Step 2: Filter to tour shows and analyze tour structure
         const tourShows = allYearShows.filter(show => show.tourname === tourName);
-        console.log(`   🎪 Filtered to ${tourShows.length} ${tourName} shows`);
+        LoggingService.info(`Filtered to ${tourShows.length} ${tourName} shows`);
         
         // Step 3: Collect setlists for ALL tour shows to determine which are actually played
-        console.log('   🎯 Step 2: Fetching setlists to determine played status...');
+        LoggingService.debug('Step 2: Fetching setlists to determine played status...');
         const setlistsMap = new Map();
         const playedShows = [];
         const futureShows = [];
@@ -70,10 +71,10 @@ export class DataCollectionService {
                 // Determine played status based on setlist data
                 if (setlist.length > 0) {
                     playedShows.push(show);
-                    console.log(`     📋 ${show.showdate}: ${setlist.length} songs (PLAYED)`);
+                    LoggingService.debug(`${show.showdate}: ${setlist.length} songs (PLAYED)`);
                 } else {
                     futureShows.push(show);
-                    console.log(`     📋 ${show.showdate}: 0 songs (NOT PLAYED)`);
+                    LoggingService.debug(`${show.showdate}: 0 songs (NOT PLAYED)`);
                 }
                 
                 return { date: show.showdate, setlist };
@@ -81,18 +82,18 @@ export class DataCollectionService {
                 // No setlist available - treat as not played
                 futureShows.push(show);
                 setlistsMap.set(show.showdate, []);
-                console.log(`     ⚠️  ${show.showdate}: No setlist available (NOT PLAYED) - ${error.message}`);
+                LoggingService.debug(`${show.showdate}: No setlist available (NOT PLAYED) - ${error.message}`);
                 return { date: show.showdate, setlist: [] };
             }
         });
         
         // Wait for all setlist fetches to complete
         await Promise.allSettled(setlistPromises);
-        console.log(`   ✅ Collected setlists for ${setlistsMap.size} shows`);
-        console.log(`   📊 ${playedShows.length} played shows, ${futureShows.length} future shows (determined from setlist data)`);
+        LoggingService.info(`Collected setlists for ${setlistsMap.size} shows`);
+        LoggingService.info(`${playedShows.length} played shows, ${futureShows.length} future shows (determined from setlist data)`);
         
         // Step 4: Collect Phish.in enhancement data for all played shows (AUDIO DATA ONLY)
-        console.log('   🎯 Step 3: Fetching Phish.in audio enhancement data (durations + recordings only)...');
+        LoggingService.debug('Step 3: Fetching Phish.in audio enhancement data (durations + recordings only)...');
         const durationsMap = new Map();
         const recordingsMap = new Map();
         
@@ -109,27 +110,27 @@ export class DataCollectionService {
             // Store results with error handling (AUDIO DATA ONLY)
             if (durationsResult.status === 'fulfilled') {
                 durationsMap.set(showDate, durationsResult.value);
-                console.log(`     🎵 ${showDate}: ${durationsResult.value.length} durations`);
+                LoggingService.debug(`${showDate}: ${durationsResult.value.length} durations`);
             } else {
                 durationsMap.set(showDate, []);
-                console.log(`     ⚠️  ${showDate}: No durations - ${durationsResult.reason?.message}`);
+                LoggingService.debug(`${showDate}: No durations - ${durationsResult.reason?.message}`);
             }
             
             if (recordingsResult.status === 'fulfilled') {
                 recordingsMap.set(showDate, recordingsResult.value);
-                console.log(`     🎧 ${showDate}: ${recordingsResult.value.length} recordings`);
+                LoggingService.debug(`${showDate}: ${recordingsResult.value.length} recordings`);
             } else {
                 recordingsMap.set(showDate, []);
-                console.log(`     ⚠️  ${showDate}: No recordings - ${recordingsResult.reason?.message}`);
+                LoggingService.debug(`${showDate}: No recordings - ${recordingsResult.reason?.message}`);
             }
         });
         
         // Wait for all enhancement data to be collected
         await Promise.allSettled(enhancementPromises);
-        console.log(`   ✅ Collected Phish.in audio enhancement data for ${playedShows.length} shows`);
+        LoggingService.info(`Collected Phish.in audio enhancement data for ${playedShows.length} shows`);
         
         // Step 4: Calculate venue runs using Phish.net (NOT Phish.in)
-        console.log('   🎯 Step 4: Calculating venue runs using Phish.net tour service...');
+        LoggingService.debug('Step 4: Calculating venue runs using Phish.net tour service...');
         const venueRunsMap = new Map();
         
         // Use PhishNetTourService to calculate venue runs from tour shows
@@ -139,13 +140,13 @@ export class DataCollectionService {
         Object.entries(allVenueRuns).forEach(([showDate, venueRun]) => {
             venueRunsMap.set(showDate, venueRun);
             if (venueRun) {
-                console.log(`     🏟️  ${showDate}: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
+                LoggingService.debug(`${showDate}: N${venueRun.nightNumber}/${venueRun.totalNights} at ${venueRun.venue}`);
             }
         });
-        console.log(`   ✅ Calculated venue runs for ${Object.keys(allVenueRuns).length} shows using Phish.net`);
+        LoggingService.info(`Calculated venue runs for ${Object.keys(allVenueRuns).length} shows using Phish.net`);
         
         // Step 5: Calculate tour positions for all shows (using existing tour service logic)
-        console.log('   🎯 Step 5: Calculating tour positions...');
+        LoggingService.debug('Step 5: Calculating tour positions...');
         const tourPositionsMap = new Map();
         
         // Use the existing tour service logic to calculate positions
@@ -157,10 +158,10 @@ export class DataCollectionService {
                 tourYear: year // Add required tourYear field for iOS compatibility
             };
             tourPositionsMap.set(show.showdate, tourPosition);
-            console.log(`     🎪 ${show.showdate}: Show ${tourPosition.showNumber}/${tourPosition.totalShows}`);
+            LoggingService.debug(`${show.showdate}: Show ${tourPosition.showNumber}/${tourPosition.totalShows}`);
         });
         
-        console.log(`   ✅ Calculated positions for ${tourPositionsMap.size} shows`);
+        LoggingService.info(`Calculated positions for ${tourPositionsMap.size} shows`);
         
         console.timeEnd('📊 Total Data Collection');
         
@@ -196,9 +197,7 @@ export class DataCollectionService {
             }
         };
         
-        console.log(`📊 DataCollectionService complete: ${dataContext.apiCalls.total} total API calls for ${dataContext.totalShows} tour shows`);
-        console.log(`   Previous system would have made ~${dataContext.playedShowCount * 5 + 1} API calls to Phish.net alone`);
-        console.log(`   Reduction: ~${Math.round((1 - dataContext.apiCalls.total / (dataContext.playedShowCount * 5 + 1)) * 100)}% fewer API calls`);
+        LoggingService.success(`DataCollectionService complete: ${dataContext.apiCalls.total} total API calls for ${dataContext.totalShows} tour shows. Previous system: ~${dataContext.playedShowCount * 5 + 1} calls. Reduction: ~${Math.round((1 - dataContext.apiCalls.total / (dataContext.playedShowCount * 5 + 1)) * 100)}%`);
         
         return dataContext;
     }
@@ -234,8 +233,8 @@ export class DataCollectionService {
             songId: item.songid,
             songName: item.song,
             gap: item.gap,
-            lastPlayed: null,
-            timesPlayed: null,
+            lastPlayed: item.lastplayed || "",
+            timesPlayed: item.times_played || 0,
             tourVenue: null,
             tourVenueRun: null,
             tourDate: showDate,

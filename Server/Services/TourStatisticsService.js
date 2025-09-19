@@ -24,6 +24,7 @@
 import { TourSongStatistics, MostPlayedSong, TrackDuration, SongGapInfo } from '../Models/TourStatistics.js';
 import statisticsRegistry from './StatisticsRegistry.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from './LoggingService.js';
 
 /**
  * Service for orchestrating tour statistics calculations
@@ -37,49 +38,57 @@ export class TourStatisticsService {
     
     /**
      * Calculate tour statistics using modular calculator architecture (RECOMMENDED)
-     * 
+     *
      * Uses the StatisticsRegistry to coordinate multiple specialized calculators.
      * Each calculator focuses on one type of statistic, improving maintainability
      * and extensibility for future statistics types.
-     * 
+     *
      * Architecture Benefits:
      * - Modular: Separate calculators for each statistic type
      * - Configurable: Uses StatisticsConfig for all settings
      * - Extensible: New statistics can be added without core changes
      * - Testable: Individual calculators can be tested in isolation
-     * 
+     *
      * @param {Array} tourShows - All enhanced setlists for the tour
      * @param {string} tourName - Name of the tour for display
+     * @param {Object} context - Additional context data for calculators
      * @returns {TourSongStatistics} Complete tour statistics
      */
-    static calculateTourStatistics(tourShows, tourName) {
-        console.log(`🎯 TourStatisticsService: Using modular calculator architecture`);
-        
+    static calculateTourStatistics(tourShows, tourName, context = {}) {
+        LoggingService.start('TourStatisticsService: Using modular calculator architecture');
+
         // Log configuration
         StatisticsConfig.logConfig();
-        
+
         // Validate input
         if (!tourShows || tourShows.length === 0) {
-            console.log('⚠️  No tour shows provided, returning empty statistics');
-            return new TourSongStatistics([], [], [], tourName);
+            LoggingService.warn('No tour shows provided, returning empty statistics');
+            return new TourSongStatistics([], [], [], tourName, []);
         }
-        
+
         // Execute all calculators through registry
-        const calculatorResults = statisticsRegistry.calculateAllStatistics(tourShows, tourName);
-        
+        const calculatorResults = statisticsRegistry.calculateAllStatistics(tourShows, tourName, context);
+
         // Extract results in expected format for TourSongStatistics model
         const longestSongs = calculatorResults.longestSongs || [];
         const rarestSongs = calculatorResults.rarestSongs || [];
         const mostPlayedSongs = calculatorResults.mostPlayedSongs || [];
-        
+        const mostCommonSongsNotPlayed = calculatorResults.mostCommonSongsNotPlayed || [];
+
         // Log summary
-        console.log(`✅ Modular statistics completed: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
-        
+        LoggingService.stats.results({
+            longestSongs,
+            rarestSongs,
+            mostPlayedSongs,
+            mostCommonSongsNotPlayed
+        });
+
         return new TourSongStatistics(
             longestSongs,
             rarestSongs,
             mostPlayedSongs,
-            tourName
+            tourName,
+            mostCommonSongsNotPlayed
         );
     }
     
@@ -108,11 +117,11 @@ export class TourStatisticsService {
      * Ports Swift calculateAllTourStatistics method
      */
     static calculateAllTourStatistics(tourShows, tourName) {
-        console.log(`🚀 calculateAllTourStatistics: Processing ${tourShows.length} shows in single pass`);
-        
+        LoggingService.start(`calculateAllTourStatistics: Processing ${tourShows.length} shows in single pass`);
+
         if (!tourShows || tourShows.length === 0) {
-            console.log('⚠️  No tour shows provided, returning empty statistics');
-            return new TourSongStatistics([], [], [], tourName);
+            LoggingService.warn('No tour shows provided, returning empty statistics');
+            return new TourSongStatistics([], [], [], tourName, []);
         }
         
         // Data collection containers for all three statistics
@@ -188,14 +197,14 @@ export class TourStatisticsService {
                         const existingGap = tourSongGaps.get(songKey);
                         // Only replace if this occurrence has a higher gap
                         if (gapInfo.gap > existingGap.gap) {
-                            console.log(`      🔄 Updating ${gapInfo.songName}: ${existingGap.gap} → ${gapInfo.gap}`);
+                            LoggingService.debug(`Updating ${gapInfo.songName}: ${existingGap.gap} → ${gapInfo.gap}`);
                             tourSongGaps.set(songKey, enhancedGapInfo);
                         } else {
-                            console.log(`      ✓ Keeping ${gapInfo.songName}: ${existingGap.gap} > ${gapInfo.gap}`);
+                            LoggingService.debug(`Keeping ${gapInfo.songName}: ${existingGap.gap} > ${gapInfo.gap}`);
                         }
                     } else {
                         // First time seeing this song in tour - add it
-                        console.log(`      ➕ Adding ${gapInfo.songName}: Gap ${gapInfo.gap}`);
+                        LoggingService.debug(`Adding ${gapInfo.songName}: Gap ${gapInfo.gap}`);
                         tourSongGaps.set(songKey, enhancedGapInfo);
                     }
                 });
@@ -233,27 +242,20 @@ export class TourStatisticsService {
         
         // 3. Rarest songs - sort gaps by highest gap value
         const allGapSongs = Array.from(tourSongGaps.values());
-        console.log(`🔍 DEBUG: Total unique songs with gaps: ${allGapSongs.length}`);
-        
-        // Log top 10 gaps for debugging
-        const top10Gaps = allGapSongs
+
+        const rarestSongs = allGapSongs
             .sort((a, b) => b.gap - a.gap)
-            .slice(0, 10);
-        console.log(`🔍 DEBUG: Top 10 gaps across entire tour:`);
-        top10Gaps.forEach((song, index) => {
-            console.log(`   ${index + 1}. ${song.songName}: Gap ${song.gap}`);
-        });
-        
-        const rarestSongs = top10Gaps.slice(0, 3);
+            .slice(0, 3);
         
         // Summary output
-        console.log(`✅ Statistics calculated: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
+        LoggingService.success(`Statistics calculated: ${longestSongs.length} longest, ${rarestSongs.length} rarest, ${mostPlayedSongs.length} most played`);
         
         return new TourSongStatistics(
             longestSongs,
             rarestSongs,
             mostPlayedSongs,
-            tourName
+            tourName,
+            [] // Legacy method doesn't calculate mostCommonSongsNotPlayed
         );
     }
     
@@ -269,7 +271,7 @@ export class TourStatisticsService {
         
         if (!matchingShow) {
             // Return track as-is if we can't find matching show
-            console.log(`⚠️ Could not find matching show for track ${track.songName} on ${track.showDate}`);
+            LoggingService.warn(`Could not find matching show for track ${track.songName} on ${track.showDate}`);
             return track;
         }
         

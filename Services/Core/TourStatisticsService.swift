@@ -13,7 +13,7 @@ import Foundation
 /// - Primary approach: `TourStatisticsAPIClient.shared.fetchTourStatistics()` for instant server-side statistics  
 /// - Performance: Server responses are ~140ms vs 60+ seconds for local calculations
 /// - Fallback: No iOS calculations - comprehensive error handling guides user to resolve server issues
-/// - Legacy: iOS calculation methods preserved in `LegacyTourStatisticsCalculator.swift`
+/// - Legacy: iOS calculation methods archived in git history (September 2025)
 ///
 class TourStatisticsService {
     
@@ -22,23 +22,17 @@ class TourStatisticsService {
     /// - Throws: APIError with detailed logging for debugging server issues
     static func fetchTourStatistics() async throws -> TourSongStatistics {
         do {
-            print("🌐 TourStatisticsService: Fetching tour statistics from server...")
+            SwiftLogger.info("Fetching tour statistics from server", category: .statistics)
             let statistics = try await TourStatisticsAPIClient.shared.fetchTourStatistics()
-            print("✅ TourStatisticsService: Successfully received server statistics")
+            SwiftLogger.info("Successfully received server statistics", category: .statistics)
             return statistics
             
         } catch let apiError as APIError {
-            print("❌ TourStatisticsService: Server API error - \(apiError)")
-            print("💡 TourStatisticsService: To resolve server issues:")
-            print("   1. Check network connection")
-            print("   2. Verify server is deployed and accessible")
-            print("   3. Check server logs for statistics generation errors")
-            print("   4. Regenerate statistics data if needed")
+            SwiftLogger.error("Server API error - \(apiError). Check: 1) Network connection 2) Server accessibility 3) Server logs 4) Data regeneration", category: .statistics)
             throw apiError
             
         } catch {
-            print("❌ TourStatisticsService: Unexpected error - \(error)")
-            print("💡 TourStatisticsService: This may indicate a network or system issue")
+            SwiftLogger.error("Unexpected error - \(error). This may indicate a network or system issue", category: .statistics)
             throw APIError.networkError(error)
         }
     }

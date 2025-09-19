@@ -9,6 +9,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from '../Services/LoggingService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +21,7 @@ const CONFIG = {
 
 async function createSampleShows() {
     try {
-        console.log('🎯 Creating sample show files for testing...');
+        LoggingService.start('Creating sample show files for testing...');
         
         const tourSlug = '2025-early-summer-tour';
         const tourShowsDir = join(__dirname, '..', '..', 'api', 'Data', 'tours', tourSlug);
@@ -30,20 +31,20 @@ async function createSampleShows() {
         const enhancedService = new EnhancedSetlistService(CONFIG.PHISH_NET_API_KEY);
         
         for (const testDate of sampleDates) {
-            console.log(`\n🎯 Creating enhanced setlist for ${testDate}...`);
+            LoggingService.info(`Creating enhanced setlist for ${testDate}...`);
             
             try {
                 const enhancedSetlist = await enhancedService.createEnhancedSetlist(testDate);
                 
                 if (!enhancedSetlist) {
-                    console.warn(`⚠️  Could not create enhanced setlist for ${testDate}`);
+                    LoggingService.warn(`Could not create enhanced setlist for ${testDate}`);
                     continue;
                 }
                 
-                console.log(`✅ Enhanced setlist created:`);
-                console.log(`   📋 Setlist items: ${enhancedSetlist.setlistItems.length}`);
-                console.log(`   🎵 Track durations: ${enhancedSetlist.trackDurations.length}`);
-                console.log(`   📊 Song gaps: ${enhancedSetlist.songGaps.length}`);
+                LoggingService.success('Enhanced setlist created:');
+                LoggingService.info(`   📋 Setlist items: ${enhancedSetlist.setlistItems.length}`);
+                LoggingService.info(`   🎵 Track durations: ${enhancedSetlist.trackDurations.length}`);
+                LoggingService.info(`   📊 Song gaps: ${enhancedSetlist.songGaps.length}`);
                 
                 const showFileName = `show-${testDate}.json`;
                 const showFilePath = join(tourShowsDir, showFileName);
@@ -68,17 +69,17 @@ async function createSampleShows() {
                 };
                 
                 writeFileSync(showFilePath, JSON.stringify(showFileData, null, 2));
-                console.log(`💾 Show file created: ${showFileName}`);
+                LoggingService.success(`Show file created: ${showFileName}`);
                 
             } catch (error) {
-                console.error(`❌ Error creating show ${testDate}: ${error.message}`);
+                LoggingService.error(`Error creating show ${testDate}: ${error.message}`);
             }
         }
         
-        console.log('\\n🎯 Sample show creation completed!');
+        LoggingService.success('Sample show creation completed!');
         
     } catch (error) {
-        console.error('❌ Error creating sample shows:', error);
+        LoggingService.error('Error creating sample shows:', error);
         process.exit(1);
     }
 }

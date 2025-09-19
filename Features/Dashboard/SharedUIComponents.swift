@@ -266,8 +266,12 @@ struct RarestSongRowModular: View {
                         Text(historicalDate)
                             .font(.caption2)
                             .foregroundColor(.secondary)
+                    } else if let lastPlayed = song.lastPlayed {
+                        Text(lastPlayed)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
                     } else {
-                        Text(song.lastPlayed)
+                        Text("Never played")
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }

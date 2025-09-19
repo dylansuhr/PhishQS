@@ -18,6 +18,32 @@ export class MostPlayedSong {
 }
 
 /**
+ * Most common song not played information for tour statistics
+ * Represents popular songs from Phish history that haven't been played on current tour
+ * Mirrors Swift MostCommonSongNotPlayed struct
+ */
+export class MostCommonSongNotPlayed {
+    constructor(songId, songName, historicalPlayCount, originalArtist = null) {
+        this.id = songId;
+        this.songId = songId;
+        this.songName = songName;
+        this.historicalPlayCount = historicalPlayCount;
+        this.originalArtist = originalArtist;
+    }
+
+    /**
+     * Get display text showing if this is a cover song
+     * @returns {string} Display text for song type
+     */
+    get songTypeDisplay() {
+        if (this.originalArtist && this.originalArtist !== 'Phish') {
+            return `Cover (${this.originalArtist})`;
+        }
+        return 'Original';
+    }
+}
+
+/**
  * Track duration information with venue context
  * Mirrors Swift TrackDuration struct
  */
@@ -76,8 +102,8 @@ export class SongGapInfo {
         this.songId = songId;
         this.songName = songName;
         this.gap = gap;
-        this.lastPlayed = lastPlayed;
-        this.timesPlayed = timesPlayed;
+        this.lastPlayed = lastPlayed || "";
+        this.timesPlayed = timesPlayed || 0;
         this.tourVenue = options.tourVenue || null;
         this.tourVenueRun = options.tourVenueRun || null;
         this.tourDate = options.tourDate || null;
@@ -173,16 +199,18 @@ export class VenueRun {
  * Mirrors Swift TourSongStatistics struct
  */
 export class TourSongStatistics {
-    constructor(longestSongs, rarestSongs, mostPlayedSongs, tourName) {
+    constructor(longestSongs, rarestSongs, mostPlayedSongs, tourName, mostCommonSongsNotPlayed = []) {
         this.longestSongs = longestSongs;
         this.rarestSongs = rarestSongs;
         this.mostPlayedSongs = mostPlayedSongs;
+        this.mostCommonSongsNotPlayed = mostCommonSongsNotPlayed;
         this.tourName = tourName;
     }
-    
+
     get hasData() {
-        return this.longestSongs.length > 0 || 
-               this.rarestSongs.length > 0 || 
-               this.mostPlayedSongs.length > 0;
+        return this.longestSongs.length > 0 ||
+               this.rarestSongs.length > 0 ||
+               this.mostPlayedSongs.length > 0 ||
+               this.mostCommonSongsNotPlayed.length > 0;
     }
 }

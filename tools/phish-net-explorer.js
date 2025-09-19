@@ -10,7 +10,11 @@
  * - Custom exploration: Edit the exploreFunctions object below
  */
 
-const API_KEY = '4771B8589CD3E53848E7';
+// Load environment variables from .env file (development only)
+import dotenv from 'dotenv';
+dotenv.config();
+
+const API_KEY = process.env.PHISH_NET_API_KEY || '4771B8589CD3E53848E7'; // Fallback for development
 const BASE_URL = 'https://api.phish.net/v5';
 
 /**

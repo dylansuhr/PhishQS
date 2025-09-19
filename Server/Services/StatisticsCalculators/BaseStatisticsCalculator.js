@@ -1,15 +1,17 @@
 /**
  * BaseStatisticsCalculator.js
- * 
+ *
  * Abstract base class for all tour statistics calculators.
  * Provides shared functionality and enforces consistent interface
  * across different statistics calculation types.
- * 
+ *
  * Design Pattern: Template Method + Strategy Pattern
  * - Template method defines calculation workflow
  * - Strategy pattern allows different calculation algorithms
  * - Extensible for future statistics types
  */
+
+import LoggingService from '../LoggingService.js';
 
 /**
  * Abstract base class for statistics calculators
@@ -36,19 +38,20 @@ export class BaseStatisticsCalculator {
     
     /**
      * Main calculation method - Template Method Pattern
-     * 
+     *
      * Defines the standard workflow for all statistics calculations:
      * 1. Validate input data
      * 2. Initialize data containers
      * 3. Process each tour show
      * 4. Generate final results
      * 5. Apply result limiting
-     * 
+     *
      * @param {Array} tourShows - All enhanced setlists for the tour
      * @param {string} tourName - Name of the tour
+     * @param {Object} context - Additional context data for specialized calculators
      * @returns {Array} Calculated statistics results
      */
-    calculate(tourShows, tourName) {
+    calculate(tourShows, tourName, context = {}) {
         this.log(`🧮 ${this.calculatorType}: Starting calculation for ${tourShows?.length || 0} shows`);
         
         // Step 1: Validate input
@@ -67,7 +70,7 @@ export class BaseStatisticsCalculator {
         });
         
         // Step 4: Generate results from collected data
-        const results = this.generateResults(dataContainer, tourName);
+        const results = this.generateResults(dataContainer, tourName, context);
         
         // Step 5: Apply result limiting and return
         const limitedResults = results.slice(0, this.resultLimit);
@@ -94,7 +97,7 @@ export class BaseStatisticsCalculator {
      */
     log(message) {
         if (this.debugMode) {
-            console.log(`   ${message}`);
+            LoggingService.debug(message);
         }
     }
     
@@ -126,11 +129,12 @@ export class BaseStatisticsCalculator {
      * @abstract
      * @param {Object} dataContainer - Data collection container with processed data
      * @param {string} tourName - Tour name for context
+     * @param {Object} context - Additional context data for specialized calculators
      * @returns {Array} Final calculated results
      * @throws {Error} If not implemented by subclass
      */
-    generateResults(dataContainer, tourName) {
-        throw new Error(`${this.calculatorType} must implement generateResults(dataContainer, tourName)`);
+    generateResults(dataContainer, tourName, context = {}) {
+        throw new Error(`${this.calculatorType} must implement generateResults(dataContainer, tourName, context)`);
     }
     
     /**

@@ -94,7 +94,7 @@ class HistoricalGapCalculator {
                 try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
                 
             } catch {
-                print("Failed to calculate gap for \(songName): \(error)")
+                SwiftLogger.warn("Failed to calculate gap for \(songName): \(error)", category: .api)
                 continue
             }
         }

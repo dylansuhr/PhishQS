@@ -19,6 +19,7 @@
  */
 
 import fetch from 'node-fetch';
+import LoggingService from '../Services/LoggingService.js';
 
 /**
  * Client for interacting with Phish.net API v5
@@ -96,12 +97,12 @@ export class PhishNetClient {
         
         for (const url of possibleUrls) {
             try {
-                console.log(`   🔍 Trying endpoint: ${url.replace(/apikey=[^&]*/, 'apikey=***')}`);
+                LoggingService.debug(`Trying endpoint: ${url.replace(/apikey=[^&]*/, 'apikey=***')}`);
                 const response = await fetch(url);
                 
                 if (response.ok) {
                     const showResponse = await response.json();
-                    console.log(`   ✅ Success with: ${url.split('?')[0]}`);
+                    LoggingService.debug(`Success with: ${url.split('?')[0]}`);
                     const allShows = showResponse.data || [];
                     
                     // Filter to Phish shows only and normalize field names for compatibility
@@ -112,7 +113,7 @@ export class PhishNetClient {
                             tourname: show.tour_name || show.tourname // Normalize field name
                         }));
                     
-                    console.log(`   🎸 Filtered to ${phishShows.length} Phish shows from ${allShows.length} total shows`);
+                    LoggingService.debug(`Filtered to ${phishShows.length} Phish shows from ${allShows.length} total shows`);
                     return phishShows;
                 }
                 
@@ -124,7 +125,7 @@ export class PhishNetClient {
         }
         
         // If all endpoints fail, fall back to original setlists endpoint
-        console.log(`   ⚠️  All shows endpoints failed, falling back to setlists endpoint`);
+        LoggingService.debug('All shows endpoints failed, falling back to setlists endpoint');
         const fallbackUrl = `${this.baseURL}/setlists/showyear/${year}.json?apikey=${this.apiKey}&artist=phish`;
         const response = await fetch(fallbackUrl);
         
@@ -266,21 +267,43 @@ export class PhishNetClient {
     }
 
     /**
+     * Fetch comprehensive song database from Phish.net
+     *
+     * Returns all songs in the Phish.net database with historical play counts.
+     * Used for "Most Common Songs Not Played" calculations.
+     *
+     * @returns {Promise<Array>} Array of song objects with play counts and metadata
+     * @throws {Error} If API request fails
+     */
+    async fetchSongs() {
+        const url = `${this.baseURL}/songs.json?apikey=${this.apiKey}`;
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+        }
+
+        const songsResponse = await response.json();
+        return songsResponse.data || [];
+    }
+
+    /**
      * Filter to Phish shows only
-     * 
+     *
      * Excludes side projects, guest appearances, and other non-Phish performances.
      * Validates that show has proper date format and artist name.
-     * 
+     *
      * @param {Array} shows - Array of show objects from API
      * @returns {Array} Filtered array containing only Phish shows
-     * 
+     *
      * Port of iOS APIUtilities.filterPhishShows() logic
      */
     filterPhishShows(shows) {
-        return shows.filter(show => 
-            show.artist_name && 
+        return shows.filter(show =>
+            show.artist_name &&
             show.artist_name.toLowerCase().includes('phish') &&
-            show.showdate && 
+            show.showdate &&
             show.showdate.length >= 10 // Valid date format
         );
     }

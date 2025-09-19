@@ -65,7 +65,7 @@ struct LoadingErrorStateView<Content: View>: View {
         errorMessage: "Failed to load data",
         loadingText: "Loading...",
         errorTitle: "Error occurred",
-        retryAction: { print("Retry tapped") }
+        retryAction: { SwiftLogger.debug("Retry tapped", category: .ui) }
     ) {
         Text("Content loaded successfully")
     }

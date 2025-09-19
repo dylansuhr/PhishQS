@@ -1,14 +1,19 @@
 /**
  * quick-initialize-remaining-shows.js
- * 
+ *
  * Quick script to initialize just the missing show files needed for single source architecture
  */
+
+// Load environment variables from .env file (development only)
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
+import LoggingService from '../Services/LoggingService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -20,7 +25,7 @@ const CONFIG = {
 
 async function initializeRemainingShows() {
     try {
-        console.log('🎯 Initializing remaining show files for single source architecture...');
+        LoggingService.start('Initializing remaining show files for single source architecture...');
         
         // Read control file to see what's missing
         const controlFilePath = join(__dirname, '..', 'Data', 'tour-dashboard-data.json');
@@ -37,11 +42,11 @@ async function initializeRemainingShows() {
             }
         }
         
-        console.log(`📊 Found ${missingDates.length} shows needing initialization:`);
-        missingDates.forEach(date => console.log(`   • ${date.date} at ${date.venue}`));
+        LoggingService.info(`Found ${missingDates.length} shows needing initialization:`);
+        missingDates.forEach(date => LoggingService.info(`   • ${date.date} at ${date.venue}`));
         
         if (missingDates.length === 0) {
-            console.log('✅ All show files already exist!');
+            LoggingService.success('All show files already exist!');
             return;
         }
         
@@ -50,13 +55,13 @@ async function initializeRemainingShows() {
         let processedCount = 0;
         
         for (const tourDate of missingDates) {
-            console.log(`\\n🔄 [${processedCount + 1}/${missingDates.length}] Processing ${tourDate.date}...`);
+            LoggingService.info(`[${processedCount + 1}/${missingDates.length}] Processing ${tourDate.date}...`);
             
             try {
                 const enhancedSetlist = await enhancedService.createEnhancedSetlist(tourDate.date);
                 
                 if (!enhancedSetlist) {
-                    console.warn(`⚠️  Could not create enhanced setlist for ${tourDate.date}`);
+                    LoggingService.warn(`Could not create enhanced setlist for ${tourDate.date}`);
                     continue;
                 }
                 
@@ -93,11 +98,11 @@ async function initializeRemainingShows() {
                     };
                 }
                 
-                console.log(`   ✅ Created: ${showFileName} (${enhancedSetlist.setlistItems.length} songs, ${enhancedSetlist.trackDurations.length} durations)`);
+                LoggingService.success(`Created: ${showFileName} (${enhancedSetlist.setlistItems.length} songs, ${enhancedSetlist.trackDurations.length} durations)`);
                 processedCount++;
                 
             } catch (error) {
-                console.error(`   ❌ Error processing ${tourDate.date}: ${error.message}`);
+                LoggingService.error(`Error processing ${tourDate.date}: ${error.message}`);
             }
         }
         
@@ -112,13 +117,13 @@ async function initializeRemainingShows() {
         
         writeFileSync(controlFilePath, JSON.stringify(updatedControlFile, null, 2));
         
-        console.log(`\\n✅ Initialization complete!`);
-        console.log(`📊 Shows processed: ${processedCount}/${missingDates.length}`);
-        console.log(`🔄 Control file updated with show file references`);
-        console.log(`🎯 Ready for: npm run generate-stats`);
+        LoggingService.success('Initialization complete!');
+        LoggingService.info(`Shows processed: ${processedCount}/${missingDates.length}`);
+        LoggingService.info('Control file updated with show file references');
+        LoggingService.info('Ready for: npm run generate-stats');
         
     } catch (error) {
-        console.error('❌ Error initializing remaining shows:', error);
+        LoggingService.error('Error initializing remaining shows:', error);
         process.exit(1);
     }
 }

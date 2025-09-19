@@ -9,6 +9,7 @@
 
 import { PhishNetClient } from '../API/PhishNetClient.js';
 import { TourScheduleService } from './TourScheduleService.js';
+import LoggingService from './LoggingService.js';
 
 export class PhishNetTourService {
     
@@ -34,12 +35,12 @@ export class PhishNetTourService {
             // Filter shows by tour name (exact match) - use 'tourname' field from Phish.net
             const tourShows = allYearShows.filter(show => show.tourname === tourName);
             
-            console.log(`   📋 Found ${tourShows.length} shows for ${tourName}`);
+            LoggingService.info(`Found ${tourShows.length} shows for ${tourName}`);
             
             // Sort by date to ensure proper order (though API should already be ordered)
             return tourShows.sort((a, b) => a.showdate.localeCompare(b.showdate));
         } catch (error) {
-            console.error(`Error fetching tour shows for ${tourName} in ${year}:`, error);
+            LoggingService.error(`Error fetching tour shows for ${tourName} in ${year}:`, error);
             return [];
         }
     }
@@ -91,7 +92,7 @@ export class PhishNetTourService {
                 tourYear: year
             };
         } catch (error) {
-            console.error(`Error calculating tour position for ${showDate}:`, error);
+            LoggingService.error(`Error calculating tour position for ${showDate}:`, error);
             return null;
         }
     }
@@ -127,7 +128,7 @@ export class PhishNetTourService {
             
             return this.extractTourFromShow(show);
         } catch (error) {
-            console.error(`Error getting tour name for ${showDate}:`, error);
+            LoggingService.error(`Error getting tour name for ${showDate}:`, error);
             return null;
         }
     }
@@ -217,7 +218,7 @@ export class PhishNetTourService {
             
             return { tourPosition, venueRun };
         } catch (error) {
-            console.error(`Error getting tour context for ${showDate}:`, error);
+            LoggingService.error(`Error getting tour context for ${showDate}:`, error);
             return { tourPosition: null, venueRun: null };
         }
     }
@@ -256,7 +257,7 @@ export class PhishNetTourService {
             
             return this.extractTourFromShow(latestShow);
         } catch (error) {
-            console.error('Error getting current tour:', error);
+            LoggingService.error('Error getting current tour:', error);
             return null;
         }
     }

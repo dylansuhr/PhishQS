@@ -115,7 +115,7 @@ export class MostPlayedSongsCalculator extends BaseStatisticsCalculator {
      * @param {string} tourName - Tour name for context
      * @returns {Array<MostPlayedSong>} Top most played songs with play counts
      */
-    generateResults(dataContainer, tourName) {
+    generateResults(dataContainer, tourName, context = {}) {
         const { songPlayCounts } = dataContainer;
         
         const allSongCounts = Array.from(songPlayCounts.values());

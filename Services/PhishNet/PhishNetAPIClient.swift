@@ -281,8 +281,8 @@ struct SongData: Codable {
     let slug: String
     let artist: String
     let debut: String
-    let last_played: String
-    let times_played: Int
+    let last_played: String?
+    let times_played: Int?
     let gap: Int
 }
 
@@ -349,7 +349,7 @@ extension PhishAPIClient: GapDataProviderProtocol {
                 try await Task.sleep(nanoseconds: 100_000_000) // 0.1 seconds
                 
             } catch {
-                print("Failed to fetch gap for \(songName): \(error)")
+                SwiftLogger.warn("Failed to fetch gap for \(songName): \(error)", category: .api)
                 continue
             }
         }
