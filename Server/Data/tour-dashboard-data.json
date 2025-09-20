@@ -3,7 +3,7 @@
     "name": "2025 Late Summer Tour",
     "year": "2025",
     "totalShows": 8,
-    "playedShows": 5,
+    "playedShows": 6,
     "startDate": "2025-09-12",
     "endDate": "2025-09-21",
     "tourDates": [
@@ -57,7 +57,7 @@
         "venue": "Hampton Coliseum",
         "city": "Hampton",
         "state": "VA",
-        "played": false,
+        "played": true,
         "showNumber": 6,
         "showFile": "tours/2025-late-summer-tour/show-2025-09-19.json"
       },
@@ -82,12 +82,12 @@
     ]
   },
   "latestShow": {
-    "date": "2025-09-17",
-    "venue": "Ameris Bank Amphitheatre",
-    "city": "Alpharetta",
-    "state": "GA",
+    "date": "2025-09-19",
+    "venue": "Hampton Coliseum",
+    "city": "Hampton",
+    "state": "VA",
     "tourPosition": {
-      "showNumber": 5,
+      "showNumber": 6,
       "totalShows": 8,
       "tourName": "2025 Late Summer Tour"
     }
@@ -187,21 +187,22 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-09-18T04:29:33.701Z",
+    "lastUpdated": "2025-09-20T04:28:04.909Z",
     "dataVersion": "1.0",
     "updateReason": "new_show",
     "nextShow": {
-      "date": "2025-09-19",
+      "date": "2025-09-20",
       "venue": "Hampton Coliseum",
       "city": "Hampton",
       "state": "VA"
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-19T20:13:52.906Z",
-    "latestShowFromAPI": "2025-09-17",
+    "lastAPICheck": "2025-09-20T04:28:07.134Z",
+    "latestShowFromAPI": "2025-09-19",
     "pendingDurationChecks": [
-      "2025-09-12"
+      "2025-09-12",
+      "2025-09-19"
     ],
     "individualShows": {
       "2025-09-12": {
@@ -238,6 +239,13 @@
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
+      },
+      "2025-09-19": {
+        "exists": true,
+        "lastUpdated": "2025-09-20T04:28:07.134Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       }
     }
   }
