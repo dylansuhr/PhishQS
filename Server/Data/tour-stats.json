@@ -1,6 +1,36 @@
 {
   "longestSongs": [
     {
+      "id": "40620",
+      "songName": "Tweezer",
+      "songId": null,
+      "durationSeconds": 1679,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": {
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "nightNumber": 1,
+        "totalNights": 3,
+        "showDates": [
+          "2025-09-19",
+          "2025-09-20",
+          "2025-09-21"
+        ]
+      },
+      "city": "Hampton",
+      "state": "VA",
+      "tourPosition": {
+        "showNumber": 6,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "27:59"
+    },
+    {
       "id": "40601",
       "songName": "Carini",
       "songId": null,
@@ -260,35 +290,6 @@
         "tourYear": "2025"
       },
       "formattedDuration": "17:08"
-    },
-    {
-      "id": "40604",
-      "songName": "Sand",
-      "songId": null,
-      "durationSeconds": 1021,
-      "showDate": "2025-09-17",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": {
-        "venue": "Ameris Bank Amphitheatre",
-        "city": "Alpharetta",
-        "state": "GA",
-        "nightNumber": 2,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-16",
-          "2025-09-17"
-        ]
-      },
-      "city": "Alpharetta",
-      "state": "GA",
-      "tourPosition": {
-        "showNumber": 5,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "17:01"
     }
   ],
   "rarestSongs": [
@@ -296,7 +297,7 @@
       "id": 34,
       "songId": 34,
       "songName": "Army of One",
-      "gap": 107,
+      "gap": 106,
       "lastPlayed": "2023-07-26",
       "timesPlayed": 28,
       "tourVenue": "Hampton Coliseum",
@@ -331,7 +332,7 @@
       "id": 2414,
       "songId": 2414,
       "songName": "Energy",
-      "gap": 102,
+      "gap": 101,
       "lastPlayed": "2023-08-02",
       "timesPlayed": 11,
       "tourVenue": "Hampton Coliseum",
@@ -361,6 +362,41 @@
       "historicalState": "NY",
       "historicalLastPlayed": "2023-08-02",
       "formattedHistoricalDate": "8/2/23"
+    },
+    {
+      "id": 187,
+      "songId": 187,
+      "songName": "Esther",
+      "gap": 67,
+      "lastPlayed": "2024-07-27",
+      "timesPlayed": 137,
+      "tourVenue": "Hampton Coliseum",
+      "tourVenueRun": {
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "nightNumber": 2,
+        "totalNights": 3,
+        "showDates": [
+          "2025-09-19",
+          "2025-09-20",
+          "2025-09-21"
+        ]
+      },
+      "tourDate": "2025-09-20",
+      "tourCity": "Hampton",
+      "tourState": "VA",
+      "tourPosition": {
+        "showNumber": 7,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Alpine Valley Music Theatre",
+      "historicalCity": "East Troy",
+      "historicalState": "WI",
+      "historicalLastPlayed": "2024-07-27",
+      "formattedHistoricalDate": "7/27/24"
     },
     {
       "id": 235,
@@ -434,7 +470,7 @@
       "id": 607,
       "songId": 607,
       "songName": "The Wedge",
-      "gap": 26,
+      "gap": 25,
       "lastPlayed": "2025-06-22",
       "timesPlayed": 133,
       "tourVenue": "Hampton Coliseum",
@@ -500,6 +536,76 @@
       "formattedHistoricalDate": "6/21/25"
     },
     {
+      "id": 2643,
+      "songId": 2643,
+      "songName": "Moonage Daydream",
+      "gap": 23,
+      "lastPlayed": "2025-06-28",
+      "timesPlayed": 11,
+      "tourVenue": "Hampton Coliseum",
+      "tourVenueRun": {
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "nightNumber": 2,
+        "totalNights": 3,
+        "showDates": [
+          "2025-09-19",
+          "2025-09-20",
+          "2025-09-21"
+        ]
+      },
+      "tourDate": "2025-09-20",
+      "tourCity": "Hampton",
+      "tourState": "VA",
+      "tourPosition": {
+        "showNumber": 7,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Moody Center",
+      "historicalCity": "Austin",
+      "historicalState": "TX",
+      "historicalLastPlayed": "2025-06-28",
+      "formattedHistoricalDate": "6/28/25"
+    },
+    {
+      "id": 84,
+      "songId": 84,
+      "songName": "Bouncing Around the Room",
+      "gap": 22,
+      "lastPlayed": "2025-07-03",
+      "timesPlayed": 494,
+      "tourVenue": "Hampton Coliseum",
+      "tourVenueRun": {
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "nightNumber": 2,
+        "totalNights": 3,
+        "showDates": [
+          "2025-09-19",
+          "2025-09-20",
+          "2025-09-21"
+        ]
+      },
+      "tourDate": "2025-09-20",
+      "tourCity": "Hampton",
+      "tourState": "VA",
+      "tourPosition": {
+        "showNumber": 7,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Folsom Field",
+      "historicalCity": "Boulder",
+      "historicalState": "CO",
+      "historicalLastPlayed": "2025-07-03",
+      "formattedHistoricalDate": "7/3/25"
+    },
+    {
       "id": 2984,
       "songId": 2984,
       "songName": "The Howling",
@@ -532,109 +638,6 @@
       "historicalState": "PA",
       "historicalLastPlayed": "2025-06-24",
       "formattedHistoricalDate": "6/24/25"
-    },
-    {
-      "id": 402,
-      "songId": 402,
-      "songName": "My Soul",
-      "gap": 20,
-      "lastPlayed": "2025-06-28",
-      "timesPlayed": 99,
-      "tourVenue": "Ameris Bank Amphitheatre",
-      "tourVenueRun": {
-        "venue": "Ameris Bank Amphitheatre",
-        "city": "Alpharetta",
-        "state": "GA",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-16",
-          "2025-09-17"
-        ]
-      },
-      "tourDate": "2025-09-16",
-      "tourCity": "Alpharetta",
-      "tourState": "GA",
-      "tourPosition": {
-        "showNumber": 4,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Moody Center",
-      "historicalCity": "Austin",
-      "historicalState": "TX",
-      "historicalLastPlayed": "2025-06-28",
-      "formattedHistoricalDate": "6/28/25"
-    },
-    {
-      "id": 94,
-      "songId": 94,
-      "songName": "Bug",
-      "gap": 19,
-      "lastPlayed": "2025-07-09",
-      "timesPlayed": 101,
-      "tourVenue": "Hampton Coliseum",
-      "tourVenueRun": {
-        "venue": "Hampton Coliseum",
-        "city": "Hampton",
-        "state": "VA",
-        "nightNumber": 1,
-        "totalNights": 3,
-        "showDates": [
-          "2025-09-19",
-          "2025-09-20",
-          "2025-09-21"
-        ]
-      },
-      "tourDate": "2025-09-19",
-      "tourCity": "Hampton",
-      "tourState": "VA",
-      "tourPosition": {
-        "showNumber": 6,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Jerome Schottenstein Center",
-      "historicalCity": "Columbus",
-      "historicalState": "OH",
-      "historicalLastPlayed": "2025-07-09",
-      "formattedHistoricalDate": "7/9/25"
-    },
-    {
-      "id": 38,
-      "songId": 38,
-      "songName": "Axilla (Part II)",
-      "gap": 17,
-      "lastPlayed": "",
-      "timesPlayed": 0,
-      "tourVenue": "Ameris Bank Amphitheatre",
-      "tourVenueRun": {
-        "venue": "Ameris Bank Amphitheatre",
-        "city": "Alpharetta",
-        "state": "GA",
-        "nightNumber": 2,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-16",
-          "2025-09-17"
-        ]
-      },
-      "tourDate": "2025-09-17",
-      "tourCity": "Alpharetta",
-      "tourState": "GA",
-      "tourPosition": {
-        "showNumber": 5,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": null,
-      "historicalCity": null,
-      "historicalState": null,
-      "historicalLastPlayed": null,
-      "formattedHistoricalDate": null
     }
   ],
   "mostPlayedSongs": [
@@ -651,15 +654,39 @@
       "playCount": 2
     },
     {
+      "id": 2946,
+      "songId": 2946,
+      "songName": "A Wave Of Hope",
+      "playCount": 2
+    },
+    {
+      "id": 2656,
+      "songId": 2656,
+      "songName": "Everything's Right",
+      "playCount": 2
+    },
+    {
       "id": 339,
       "songId": 339,
       "songName": "Light",
       "playCount": 2
     },
     {
+      "id": 440,
+      "songId": 440,
+      "songName": "Possum",
+      "playCount": 2
+    },
+    {
       "id": 485,
       "songId": 485,
       "songName": "Sand",
+      "playCount": 2
+    },
+    {
+      "id": 508,
+      "songId": 508,
+      "songName": "Simple",
       "playCount": 2
     },
     {
@@ -690,12 +717,6 @@
       "id": 6,
       "songId": 6,
       "songName": "A Day In The Life",
-      "playCount": 1
-    },
-    {
-      "id": 2946,
-      "songId": 2946,
-      "songName": "A Wave Of Hope",
       "playCount": 1
     },
     {
@@ -741,9 +762,33 @@
       "playCount": 1
     },
     {
+      "id": 2860,
+      "songId": 2860,
+      "songName": "Beneath A Sea Of Stars Part 1",
+      "playCount": 1
+    },
+    {
+      "id": 65,
+      "songId": 65,
+      "songName": "Birds Of A Feather",
+      "playCount": 1
+    },
+    {
       "id": 2570,
       "songId": 2570,
       "songName": "Blaze On",
+      "playCount": 1
+    },
+    {
+      "id": 80,
+      "songId": 80,
+      "songName": "Boogie On Reggae Woman",
+      "playCount": 1
+    },
+    {
+      "id": 84,
+      "songId": 84,
+      "songName": "Bouncing Around The Room",
       "playCount": 1
     },
     {
@@ -819,9 +864,15 @@
       "playCount": 1
     },
     {
-      "id": 2656,
-      "songId": 2656,
-      "songName": "Everything's Right",
+      "id": 187,
+      "songId": 187,
+      "songName": "Esther",
+      "playCount": 1
+    },
+    {
+      "id": 3078,
+      "songId": 3078,
+      "songName": "Ether Edge",
       "playCount": 1
     },
     {
@@ -861,6 +912,12 @@
       "playCount": 1
     },
     {
+      "id": 220,
+      "songId": 220,
+      "songName": "Funky Bitch",
+      "playCount": 1
+    },
+    {
       "id": 222,
       "songId": 222,
       "songName": "Ghost",
@@ -882,6 +939,12 @@
       "id": 235,
       "songId": 235,
       "songName": "Good Times Bad Times",
+      "playCount": 1
+    },
+    {
+      "id": 237,
+      "songId": 237,
+      "songName": "Gotta Jibboo",
       "playCount": 1
     },
     {
@@ -912,6 +975,24 @@
       "id": 269,
       "songId": 269,
       "songName": "Horn",
+      "playCount": 1
+    },
+    {
+      "id": 307,
+      "songId": 307,
+      "songName": "It's Ice",
+      "playCount": 1
+    },
+    {
+      "id": 309,
+      "songId": 309,
+      "songName": "Izabella",
+      "playCount": 1
+    },
+    {
+      "id": 318,
+      "songId": 318,
+      "songName": "Julius",
       "playCount": 1
     },
     {
@@ -972,6 +1053,12 @@
       "id": 3075,
       "songId": 3075,
       "songName": "Monsters",
+      "playCount": 1
+    },
+    {
+      "id": 2643,
+      "songId": 2643,
+      "songName": "Moonage Daydream",
       "playCount": 1
     },
     {
@@ -1038,12 +1125,6 @@
       "id": 437,
       "songId": 437,
       "songName": "Piper",
-      "playCount": 1
-    },
-    {
-      "id": 440,
-      "songId": 440,
-      "songName": "Possum",
       "playCount": 1
     },
     {
@@ -1143,6 +1224,12 @@
       "playCount": 1
     },
     {
+      "id": 545,
+      "songId": 545,
+      "songName": "Suzy Greenberg",
+      "playCount": 1
+    },
+    {
       "id": 558,
       "songId": 558,
       "songName": "Taste",
@@ -1215,6 +1302,12 @@
       "playCount": 1
     },
     {
+      "id": 634,
+      "songId": 634,
+      "songName": "Undermind",
+      "playCount": 1
+    },
+    {
       "id": 648,
       "songId": 648,
       "songName": "Walls Of The Cave",
@@ -1259,24 +1352,10 @@
   ],
   "mostCommonSongsNotPlayed": [
     {
-      "id": 84,
-      "songId": 84,
-      "songName": "Bouncing Around The Room",
-      "historicalPlayCount": 493,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 234,
       "songId": 234,
       "songName": "Golgi Apparatus",
       "historicalPlayCount": 482,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 545,
-      "songId": 545,
-      "songName": "Suzy Greenberg",
-      "historicalPlayCount": 452,
       "originalArtist": "Phish"
     },
     {
@@ -1336,27 +1415,6 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 307,
-      "songId": 307,
-      "songName": "It's Ice",
-      "historicalPlayCount": 250,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 318,
-      "songId": 318,
-      "songName": "Julius",
-      "historicalPlayCount": 238,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 220,
-      "songId": 220,
-      "songName": "Funky Bitch",
-      "historicalPlayCount": 235,
-      "originalArtist": "Son Seals"
-    },
-    {
       "id": 329,
       "songId": 329,
       "songName": "Lawn Boy",
@@ -1397,9 +1455,44 @@
       "songName": "Rocky Top",
       "historicalPlayCount": 207,
       "originalArtist": "Osborne Brothers"
+    },
+    {
+      "id": 507,
+      "songId": 507,
+      "songName": "Silent In The Morning",
+      "historicalPlayCount": 187,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 602,
+      "songId": 602,
+      "songName": "The Sloth",
+      "historicalPlayCount": 176,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 546,
+      "songId": 546,
+      "songName": "Sweet Adeline",
+      "historicalPlayCount": 174,
+      "originalArtist": "Artie Shaw"
+    },
+    {
+      "id": 130,
+      "songId": 130,
+      "songName": "Contact",
+      "historicalPlayCount": 173,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 582,
+      "songId": 582,
+      "songName": "The Horse",
+      "historicalPlayCount": 172,
+      "originalArtist": "Phish"
     }
   ],
   "tourName": "2025 Late Summer Tour",
-  "latestShowProcessed": "2025-09-19",
-  "generatedAt": "2025-09-20T04:28:10.054Z"
+  "latestShowProcessed": "2025-09-20",
+  "generatedAt": "2025-09-21T04:28:39.512Z"
 }
