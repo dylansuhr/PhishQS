@@ -30,6 +30,7 @@ struct MostPlayedSongsCard: View {
                             }
                         }
                         .padding(.vertical, 4)
+                        .padding(.trailing, 20)
                     }
                     .frame(height: 400)
                 }

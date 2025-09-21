@@ -293,7 +293,7 @@ struct MostPlayedSongRowModular: View {
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.green)
-                .frame(width: 20, alignment: .center)
+                .frame(width: 30, alignment: .center)
             
             // Song name only
             Text(song.songName)
@@ -310,6 +310,7 @@ struct MostPlayedSongRowModular: View {
                 .font(.callout)
                 .fontWeight(.semibold)
                 .foregroundColor(.green)
+                .frame(width: 25, alignment: .trailing)
                 .layoutPriority(2)
         }
     }
