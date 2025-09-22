@@ -3,7 +3,7 @@
     "name": "2025 Late Summer Tour",
     "year": "2025",
     "totalShows": 8,
-    "playedShows": 7,
+    "playedShows": 8,
     "startDate": "2025-09-12",
     "endDate": "2025-09-21",
     "tourDates": [
@@ -75,19 +75,19 @@
         "venue": "Hampton Coliseum",
         "city": "Hampton",
         "state": "VA",
-        "played": false,
+        "played": true,
         "showNumber": 8,
         "showFile": "tours/2025-late-summer-tour/show-2025-09-21.json"
       }
     ]
   },
   "latestShow": {
-    "date": "2025-09-20",
+    "date": "2025-09-21",
     "venue": "Hampton Coliseum",
     "city": "Hampton",
     "state": "VA",
     "tourPosition": {
-      "showNumber": 7,
+      "showNumber": 8,
       "totalShows": 8,
       "tourName": "2025 Late Summer Tour"
     }
@@ -187,21 +187,17 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-09-21T04:28:30.701Z",
+    "lastUpdated": "2025-09-22T04:29:48.244Z",
     "dataVersion": "1.0",
     "updateReason": "new_show",
-    "nextShow": {
-      "date": "2025-09-21",
-      "venue": "Hampton Coliseum",
-      "city": "Hampton",
-      "state": "VA"
-    }
+    "nextShow": null
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-21T20:13:34.099Z",
-    "latestShowFromAPI": "2025-09-20",
+    "lastAPICheck": "2025-09-22T04:29:50.885Z",
+    "latestShowFromAPI": "2025-09-21",
     "pendingDurationChecks": [
-      "2025-09-12"
+      "2025-09-12",
+      "2025-09-21"
     ],
     "individualShows": {
       "2025-09-12": {
@@ -248,10 +244,17 @@
       },
       "2025-09-20": {
         "exists": true,
-        "lastUpdated": "2025-09-21T20:13:34.099Z",
+        "lastUpdated": "2025-09-21T20:13:34.097Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
+      },
+      "2025-09-21": {
+        "exists": true,
+        "lastUpdated": "2025-09-22T04:29:50.885Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       }
     }
   }

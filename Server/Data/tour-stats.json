@@ -176,6 +176,36 @@
       "formattedDuration": "18:26"
     },
     {
+      "id": "40639",
+      "songName": "Simple",
+      "songId": null,
+      "durationSeconds": 1098,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": {
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "nightNumber": 2,
+        "totalNights": 3,
+        "showDates": [
+          "2025-09-19",
+          "2025-09-20",
+          "2025-09-21"
+        ]
+      },
+      "city": "Hampton",
+      "state": "VA",
+      "tourPosition": {
+        "showNumber": 7,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "18:18"
+    },
+    {
       "id": "40526",
       "songName": "Life Saving Gun",
       "songId": null,
@@ -261,35 +291,6 @@
         "tourYear": "2025"
       },
       "formattedDuration": "17:22"
-    },
-    {
-      "id": "40581",
-      "songName": "Oblivion",
-      "songId": null,
-      "durationSeconds": 1028,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": {
-        "venue": "Ameris Bank Amphitheatre",
-        "city": "Alpharetta",
-        "state": "GA",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-16",
-          "2025-09-17"
-        ]
-      },
-      "city": "Alpharetta",
-      "state": "GA",
-      "tourPosition": {
-        "showNumber": 4,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "17:08"
     }
   ],
   "rarestSongs": [
@@ -467,6 +468,41 @@
       "formattedHistoricalDate": "8/16/24"
     },
     {
+      "id": 367,
+      "songId": 367,
+      "songName": "Meat",
+      "gap": 29,
+      "lastPlayed": "2025-06-21",
+      "timesPlayed": 52,
+      "tourVenue": "Hampton Coliseum",
+      "tourVenueRun": {
+        "venue": "Hampton Coliseum",
+        "city": "Hampton",
+        "state": "VA",
+        "nightNumber": 3,
+        "totalNights": 3,
+        "showDates": [
+          "2025-09-19",
+          "2025-09-20",
+          "2025-09-21"
+        ]
+      },
+      "tourDate": "2025-09-21",
+      "tourCity": "Hampton",
+      "tourState": "VA",
+      "tourPosition": {
+        "showNumber": 8,
+        "totalShows": 8,
+        "tourName": "2025 Late Summer Tour",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "SNHU Arena",
+      "historicalCity": "Manchester",
+      "historicalState": "NH",
+      "historicalLastPlayed": "2025-06-21",
+      "formattedHistoricalDate": "6/21/25"
+    },
+    {
       "id": 607,
       "songId": 607,
       "songName": "The Wedge",
@@ -604,40 +640,6 @@
       "historicalState": "CO",
       "historicalLastPlayed": "2025-07-03",
       "formattedHistoricalDate": "7/3/25"
-    },
-    {
-      "id": 2984,
-      "songId": 2984,
-      "songName": "The Howling",
-      "gap": 22,
-      "lastPlayed": "2025-06-24",
-      "timesPlayed": 22,
-      "tourVenue": "Ameris Bank Amphitheatre",
-      "tourVenueRun": {
-        "venue": "Ameris Bank Amphitheatre",
-        "city": "Alpharetta",
-        "state": "GA",
-        "nightNumber": 1,
-        "totalNights": 2,
-        "showDates": [
-          "2025-09-16",
-          "2025-09-17"
-        ]
-      },
-      "tourDate": "2025-09-16",
-      "tourCity": "Alpharetta",
-      "tourState": "GA",
-      "tourPosition": {
-        "showNumber": 4,
-        "totalShows": 8,
-        "tourName": "2025 Late Summer Tour",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Petersen Events Center",
-      "historicalCity": "Pittsburgh",
-      "historicalState": "PA",
-      "historicalLastPlayed": "2025-06-24",
-      "formattedHistoricalDate": "6/24/25"
     }
   ],
   "mostPlayedSongs": [
@@ -660,15 +662,63 @@
       "playCount": 2
     },
     {
+      "id": 8,
+      "songId": 8,
+      "songName": "Ac/dc Bag",
+      "playCount": 2
+    },
+    {
+      "id": 21,
+      "songId": 21,
+      "songName": "Also Sprach Zarathustra",
+      "playCount": 2
+    },
+    {
+      "id": 110,
+      "songId": 110,
+      "songName": "Chalk Dust Torture",
+      "playCount": 2
+    },
+    {
       "id": 2656,
       "songId": 2656,
       "songName": "Everything's Right",
       "playCount": 2
     },
     {
+      "id": 202,
+      "songId": 202,
+      "songName": "First Tube",
+      "playCount": 2
+    },
+    {
+      "id": 222,
+      "songId": 222,
+      "songName": "Ghost",
+      "playCount": 2
+    },
+    {
+      "id": 250,
+      "songId": 250,
+      "songName": "Harry Hood",
+      "playCount": 2
+    },
+    {
+      "id": 3100,
+      "songId": 3100,
+      "songName": "Life Saving Gun",
+      "playCount": 2
+    },
+    {
       "id": 339,
       "songId": 339,
       "songName": "Light",
+      "playCount": 2
+    },
+    {
+      "id": 381,
+      "songId": 381,
+      "songName": "Mike's Song",
       "playCount": 2
     },
     {
@@ -696,6 +746,18 @@
       "playCount": 2
     },
     {
+      "id": 653,
+      "songId": 653,
+      "songName": "Weekapaug Groove",
+      "playCount": 2
+    },
+    {
+      "id": 3139,
+      "songId": 3139,
+      "songName": "What's Going Through Your Mind",
+      "playCount": 2
+    },
+    {
       "id": 683,
       "songId": 683,
       "songName": "Wolfman's Brother",
@@ -720,15 +782,9 @@
       "playCount": 1
     },
     {
-      "id": 8,
-      "songId": 8,
-      "songName": "Ac/dc Bag",
-      "playCount": 1
-    },
-    {
-      "id": 21,
-      "songId": 21,
-      "songName": "Also Sprach Zarathustra",
+      "id": 2845,
+      "songId": 2845,
+      "songName": "A Life Beyond The Dream",
       "playCount": 1
     },
     {
@@ -810,12 +866,6 @@
       "playCount": 1
     },
     {
-      "id": 110,
-      "songId": 110,
-      "songName": "Chalk Dust Torture",
-      "playCount": 1
-    },
-    {
       "id": 113,
       "songId": 113,
       "songName": "Character Zero",
@@ -888,15 +938,15 @@
       "playCount": 1
     },
     {
-      "id": 202,
-      "songId": 202,
-      "songName": "First Tube",
-      "playCount": 1
-    },
-    {
       "id": 208,
       "songId": 208,
       "songName": "Fluffhead",
+      "playCount": 1
+    },
+    {
+      "id": 209,
+      "songId": 209,
+      "songName": "Foam",
       "playCount": 1
     },
     {
@@ -918,12 +968,6 @@
       "playCount": 1
     },
     {
-      "id": 222,
-      "songId": 222,
-      "songName": "Ghost",
-      "playCount": 1
-    },
-    {
       "id": 223,
       "songId": 223,
       "songName": "Ginseng Sullivan",
@@ -933,6 +977,12 @@
       "id": 867,
       "songId": 867,
       "songName": "Golden Age",
+      "playCount": 1
+    },
+    {
+      "id": 234,
+      "songId": 234,
+      "songName": "Golgi Apparatus",
       "playCount": 1
     },
     {
@@ -960,12 +1010,6 @@
       "playCount": 1
     },
     {
-      "id": 250,
-      "songId": 250,
-      "songName": "Harry Hood",
-      "playCount": 1
-    },
-    {
       "id": 3004,
       "songId": 3004,
       "songName": "Hey Stranger",
@@ -975,6 +1019,12 @@
       "id": 269,
       "songId": 269,
       "songName": "Horn",
+      "playCount": 1
+    },
+    {
+      "id": 273,
+      "songId": 273,
+      "songName": "I Am Hydrogen",
       "playCount": 1
     },
     {
@@ -1008,15 +1058,15 @@
       "playCount": 1
     },
     {
-      "id": 3100,
-      "songId": 3100,
-      "songName": "Life Saving Gun",
-      "playCount": 1
-    },
-    {
       "id": 345,
       "songId": 345,
       "songName": "Llama",
+      "playCount": 1
+    },
+    {
+      "id": 2932,
+      "songId": 2932,
+      "songName": "Lonely Trip",
       "playCount": 1
     },
     {
@@ -1032,6 +1082,12 @@
       "playCount": 1
     },
     {
+      "id": 367,
+      "songId": 367,
+      "songName": "Meat",
+      "playCount": 1
+    },
+    {
       "id": 369,
       "songId": 369,
       "songName": "Meatstick",
@@ -1041,12 +1097,6 @@
       "id": 2573,
       "songId": 2573,
       "songName": "Mercury",
-      "playCount": 1
-    },
-    {
-      "id": 381,
-      "songId": 381,
-      "songName": "Mike's Song",
       "playCount": 1
     },
     {
@@ -1065,6 +1115,12 @@
       "id": 2639,
       "songId": 2639,
       "songName": "More",
+      "playCount": 1
+    },
+    {
+      "id": 1303,
+      "songId": 1303,
+      "songName": "Most Events Aren't Planned",
       "playCount": 1
     },
     {
@@ -1158,6 +1214,12 @@
       "playCount": 1
     },
     {
+      "id": 473,
+      "songId": 473,
+      "songName": "Roggae",
+      "playCount": 1
+    },
+    {
       "id": 1102,
       "songId": 1102,
       "songName": "Ruby Waves",
@@ -1188,6 +1250,12 @@
       "playCount": 1
     },
     {
+      "id": 491,
+      "songId": 491,
+      "songName": "Scents And Subtle Sounds",
+      "playCount": 1
+    },
+    {
       "id": 857,
       "songId": 857,
       "songName": "Shine A Light",
@@ -1209,6 +1277,12 @@
       "id": 518,
       "songId": 518,
       "songName": "Sneakin' Sally Through The Alley",
+      "playCount": 1
+    },
+    {
+      "id": 529,
+      "songId": 529,
+      "songName": "Split Open And Melt",
       "playCount": 1
     },
     {
@@ -1296,6 +1370,12 @@
       "playCount": 1
     },
     {
+      "id": 629,
+      "songId": 629,
+      "songName": "Twenty Years Later",
+      "playCount": 1
+    },
+    {
       "id": 630,
       "songId": 630,
       "songName": "Twist",
@@ -1320,18 +1400,6 @@
       "playCount": 1
     },
     {
-      "id": 653,
-      "songId": 653,
-      "songName": "Weekapaug Groove",
-      "playCount": 1
-    },
-    {
-      "id": 3139,
-      "songId": 3139,
-      "songName": "What's Going Through Your Mind",
-      "playCount": 1
-    },
-    {
       "id": 657,
       "songId": 657,
       "songName": "What's The Use?",
@@ -1351,34 +1419,6 @@
     }
   ],
   "mostCommonSongsNotPlayed": [
-    {
-      "id": 234,
-      "songId": 234,
-      "songName": "Golgi Apparatus",
-      "historicalPlayCount": 482,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 209,
-      "songId": 209,
-      "songName": "Foam",
-      "historicalPlayCount": 354,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 273,
-      "songId": 273,
-      "songName": "I Am Hydrogen",
-      "historicalPlayCount": 351,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 529,
-      "songId": 529,
-      "songName": "Split Open And Melt",
-      "historicalPlayCount": 350,
-      "originalArtist": "Phish"
-    },
     {
       "id": 525,
       "songId": 525,
@@ -1490,9 +1530,37 @@
       "songName": "The Horse",
       "historicalPlayCount": 172,
       "originalArtist": "Phish"
+    },
+    {
+      "id": 341,
+      "songId": 341,
+      "songName": "Limb By Limb",
+      "historicalPlayCount": 159,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 404,
+      "songId": 404,
+      "songName": "Nicu",
+      "historicalPlayCount": 157,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 354,
+      "songId": 354,
+      "songName": "Loving Cup",
+      "historicalPlayCount": 153,
+      "originalArtist": "The Rolling Stones"
+    },
+    {
+      "id": 158,
+      "songId": 158,
+      "songName": "Dinner And A Movie",
+      "historicalPlayCount": 150,
+      "originalArtist": "Phish"
     }
   ],
   "tourName": "2025 Late Summer Tour",
-  "latestShowProcessed": "2025-09-20",
-  "generatedAt": "2025-09-21T04:28:39.512Z"
+  "latestShowProcessed": "2025-09-21",
+  "generatedAt": "2025-09-22T04:29:53.091Z"
 }
