@@ -36,6 +36,7 @@ class TourDashboardDataClient: ObservableObject {
         let latestShow: LatestShow
         let futureTours: [FutureTour]
         let metadata: Metadata
+        let updateTracking: UpdateTracking
         
         struct CurrentTour: Codable {
             let name: String
@@ -93,6 +94,21 @@ class TourDashboardDataClient: ObservableObject {
             let venue: String?
             let city: String?
             let state: String?
+        }
+
+        struct UpdateTracking: Codable {
+            let lastAPICheck: String
+            let latestShowFromAPI: String
+            let pendingDurationChecks: [String]
+            let individualShows: [String: ShowStatus]
+        }
+
+        struct ShowStatus: Codable {
+            let exists: Bool
+            let lastUpdated: String
+            let durationsAvailable: Bool
+            let dataComplete: Bool
+            let needsUpdate: Bool
         }
     }
     

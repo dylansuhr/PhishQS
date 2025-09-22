@@ -11,10 +11,40 @@ import SwiftUI
 struct LongestSongsCard: View {
     let songs: [TrackDuration]
     @State private var isExpanded: Bool = false
+    @State private var showDataPopup: Bool = false
+    @State private var tourData: TourDashboardDataClient.TourDashboardData?
 
     var body: some View {
         ScrollViewReader { proxy in
-            MetricCard("Longest Songs") {
+            VStack(alignment: .leading, spacing: 12) {
+                // Custom header with data coverage info
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("LONGEST SONGS")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.secondary)
+                        .textCase(.uppercase)
+                        .tracking(0.5)
+
+                    HStack {
+                        Text(dataCoverageText)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Button(action: {
+                            showDataPopup = true
+                        }) {
+                            Image(systemName: "info.circle")
+                                .font(.caption)
+                                .foregroundColor(.blue)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+
+                        Spacer()
+                    }
+                }
+
+                // Content
                 if songs.isEmpty {
                     Text("Still waiting...for Phish.in song length data")
                         .font(.caption)
@@ -69,7 +99,47 @@ struct LongestSongsCard: View {
                     }
                 }
             }
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
             .id("longestSongsCard")
+            .sheet(isPresented: $showDataPopup) {
+                if let tourData = tourData {
+                    ShowDataAvailabilityPopup(tourData: tourData, isPresented: $showDataPopup)
+                }
+            }
+            .task {
+                await loadTourData()
+            }
+        }
+    }
+
+    // MARK: - Helper Properties
+
+    private var dataCoverageText: String {
+        guard let tourData = tourData else {
+            return "loading..."
+        }
+
+        let playedShows = tourData.currentTour.tourDates.filter { $0.played }
+        let showsWithDurations = playedShows.filter { show in
+            tourData.updateTracking.individualShows[show.date]?.durationsAvailable ?? false
+        }
+
+        return "data from \(showsWithDurations.count)/\(playedShows.count) shows"
+    }
+
+    // MARK: - Helper Methods
+
+    private func loadTourData() async {
+        do {
+            let data = try await TourDashboardDataClient.shared.fetchCurrentTourData()
+            await MainActor.run {
+                self.tourData = data
+            }
+        } catch {
+            SwiftLogger.error("Failed to load tour data for LongestSongsCard: \(error)", category: .ui)
         }
     }
 }
