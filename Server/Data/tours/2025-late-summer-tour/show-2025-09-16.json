@@ -81,7 +81,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 8,
+      "gap": 9,
       "tourid": 214,
       "tourname": "2025 Late Summer Tour",
       "tourwhen": "2025 Summer",
@@ -841,218 +841,7 @@
       "artist_name": "Phish"
     }
   ],
-  "trackDurations": [
-    {
-      "id": "40570",
-      "songName": "Buried Alive",
-      "songId": null,
-      "durationSeconds": 245,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40571",
-      "songName": "AC/DC Bag",
-      "songId": null,
-      "durationSeconds": 385,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40572",
-      "songName": "Slave to the Traffic Light",
-      "songId": null,
-      "durationSeconds": 607,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40573",
-      "songName": "Peaches en Regalia",
-      "songId": null,
-      "durationSeconds": 217,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40574",
-      "songName": "Tube",
-      "songId": null,
-      "durationSeconds": 690,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40575",
-      "songName": "555",
-      "songId": null,
-      "durationSeconds": 303,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40576",
-      "songName": "My Soul",
-      "songId": null,
-      "durationSeconds": 363,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40577",
-      "songName": "Reba",
-      "songId": null,
-      "durationSeconds": 821,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40578",
-      "songName": "Maze",
-      "songId": null,
-      "durationSeconds": 616,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40579",
-      "songName": "Horn",
-      "songId": null,
-      "durationSeconds": 239,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40580",
-      "songName": "The Squirming Coil",
-      "songId": null,
-      "durationSeconds": 604,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 1",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40581",
-      "songName": "Oblivion",
-      "songId": null,
-      "durationSeconds": 1028,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40582",
-      "songName": "David Bowie",
-      "songId": null,
-      "durationSeconds": 691,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40583",
-      "songName": "Fuego",
-      "songId": null,
-      "durationSeconds": 1016,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40584",
-      "songName": "Leaves",
-      "songId": null,
-      "durationSeconds": 503,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40585",
-      "songName": "Sneakin' Sally Through the Alley",
-      "songId": null,
-      "durationSeconds": 360,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40586",
-      "songName": "The Howling",
-      "songId": null,
-      "durationSeconds": 766,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40587",
-      "songName": "Backwards Down the Number Line",
-      "songId": null,
-      "durationSeconds": 565,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40588",
-      "songName": "Drift While You're Sleeping",
-      "songId": null,
-      "durationSeconds": 709,
-      "showDate": "2025-09-16",
-      "setNumber": "Set 2",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40589",
-      "songName": "Monsters",
-      "songId": null,
-      "durationSeconds": 437,
-      "showDate": "2025-09-16",
-      "setNumber": "Encore",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    },
-    {
-      "id": "40590",
-      "songName": "Run Like an Antelope",
-      "songId": null,
-      "durationSeconds": 623,
-      "showDate": "2025-09-16",
-      "setNumber": "Encore",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "venueRun": null
-    }
-  ],
+  "trackDurations": [],
   "songGaps": [
     {
       "songId": 96,
@@ -1071,7 +860,7 @@
     {
       "songId": 8,
       "songName": "AC/DC Bag",
-      "gap": 8,
+      "gap": 9,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1349,23 +1138,14 @@
       "historicalLastPlayed": null
     }
   ],
-  "recordings": [
-    {
-      "id": "2519",
-      "showDate": "2025-09-16",
-      "venue": "Verizon Wireless Amphitheatre at Encore Park",
-      "recordingType": "audience",
-      "url": null,
-      "isAvailable": true
-    }
-  ],
+  "recordings": [],
   "metadata": {
     "setlistSource": "phishnet",
-    "durationsSource": "phishin",
-    "lastUpdated": "2025-09-18T17:49:51.388Z",
-    "dataComplete": true,
+    "durationsSource": null,
+    "lastUpdated": "2025-09-30T04:31:04.947Z",
+    "dataComplete": false,
     "hasSetlistData": true,
-    "hasDurationData": true,
+    "hasDurationData": false,
     "hasGapData": true
   }
 }

@@ -193,10 +193,16 @@
     "nextShow": null
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-29T20:13:47.398Z",
+    "lastAPICheck": "2025-09-30T04:31:04.953Z",
     "latestShowFromAPI": "2025-09-21",
     "pendingDurationChecks": [
-      "2025-09-12"
+      "2025-09-12",
+      "2025-09-14",
+      "2025-09-16",
+      "2025-09-17",
+      "2025-09-19",
+      "2025-09-20",
+      "2025-09-21"
     ],
     "individualShows": {
       "2025-09-12": {
@@ -215,45 +221,45 @@
       },
       "2025-09-14": {
         "exists": true,
-        "lastUpdated": "2025-09-16T20:14:14.129Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
+        "lastUpdated": "2025-09-30T04:31:04.947Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       },
       "2025-09-16": {
         "exists": true,
-        "lastUpdated": "2025-09-18T17:49:51.388Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
+        "lastUpdated": "2025-09-30T04:31:04.948Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       },
       "2025-09-17": {
         "exists": true,
-        "lastUpdated": "2025-09-19T04:28:54.260Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
+        "lastUpdated": "2025-09-30T04:31:04.949Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       },
       "2025-09-19": {
         "exists": true,
-        "lastUpdated": "2025-09-21T04:28:33.139Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
+        "lastUpdated": "2025-09-30T04:31:04.950Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       },
       "2025-09-20": {
         "exists": true,
-        "lastUpdated": "2025-09-21T20:13:34.097Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
+        "lastUpdated": "2025-09-30T04:31:04.952Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       },
       "2025-09-21": {
         "exists": true,
-        "lastUpdated": "2025-09-22T20:14:22.003Z",
-        "durationsAvailable": true,
-        "dataComplete": true,
-        "needsUpdate": false
+        "lastUpdated": "2025-09-30T04:31:04.953Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       }
     }
   }
