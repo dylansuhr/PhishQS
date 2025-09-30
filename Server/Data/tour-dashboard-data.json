@@ -193,7 +193,7 @@
     "nextShow": null
   },
   "updateTracking": {
-    "lastAPICheck": "2025-09-30T08:33:23.020Z",
+    "lastAPICheck": "2025-09-30T20:14:06.188Z",
     "latestShowFromAPI": "2025-09-21",
     "pendingDurationChecks": [
       "2025-09-12"
@@ -215,7 +215,7 @@
       },
       "2025-09-14": {
         "exists": true,
-        "lastUpdated": "2025-09-30T08:33:23.015Z",
+        "lastUpdated": "2025-09-30T08:33:23.014Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
@@ -229,28 +229,28 @@
       },
       "2025-09-17": {
         "exists": true,
-        "lastUpdated": "2025-09-30T08:33:23.017Z",
+        "lastUpdated": "2025-09-30T08:33:23.016Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
       },
       "2025-09-19": {
         "exists": true,
-        "lastUpdated": "2025-09-30T08:33:23.018Z",
+        "lastUpdated": "2025-09-30T08:33:23.017Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
       },
       "2025-09-20": {
         "exists": true,
-        "lastUpdated": "2025-09-30T08:33:23.019Z",
+        "lastUpdated": "2025-09-30T08:33:23.018Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
       },
       "2025-09-21": {
         "exists": true,
-        "lastUpdated": "2025-09-30T08:33:23.020Z",
+        "lastUpdated": "2025-09-30T08:33:23.019Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
