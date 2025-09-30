@@ -764,7 +764,198 @@
       "artist_name": "Phish"
     }
   ],
-  "trackDurations": [],
+  "trackDurations": [
+    {
+      "id": "40629",
+      "songName": "Boogie On Reggae Woman",
+      "songId": null,
+      "durationSeconds": 526,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40630",
+      "songName": "Undermind",
+      "songId": null,
+      "durationSeconds": 530,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40631",
+      "songName": "Bouncing Around the Room",
+      "songId": null,
+      "durationSeconds": 219,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40632",
+      "songName": "Birds of a Feather",
+      "songId": null,
+      "durationSeconds": 733,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40633",
+      "songName": "Esther",
+      "songId": null,
+      "durationSeconds": 576,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40634",
+      "songName": "Funky Bitch",
+      "songId": null,
+      "durationSeconds": 359,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40635",
+      "songName": "It's Ice",
+      "songId": null,
+      "durationSeconds": 448,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40636",
+      "songName": "Ether Edge",
+      "songId": null,
+      "durationSeconds": 928,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40637",
+      "songName": "Moonage Daydream",
+      "songId": null,
+      "durationSeconds": 498,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40638",
+      "songName": "Everything's Right",
+      "songId": null,
+      "durationSeconds": 688,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40639",
+      "songName": "Simple",
+      "songId": null,
+      "durationSeconds": 1098,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40640",
+      "songName": "A Wave of Hope",
+      "songId": null,
+      "durationSeconds": 692,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40641",
+      "songName": "Simple",
+      "songId": null,
+      "durationSeconds": 110,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40642",
+      "songName": "Beneath a Sea of Stars Part 1",
+      "songId": null,
+      "durationSeconds": 711,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40643",
+      "songName": "Gotta Jibboo",
+      "songId": null,
+      "durationSeconds": 549,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40644",
+      "songName": "Suzy Greenberg",
+      "songId": null,
+      "durationSeconds": 401,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40645",
+      "songName": "Julius",
+      "songId": null,
+      "durationSeconds": 535,
+      "showDate": "2025-09-20",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40646",
+      "songName": "Izabella",
+      "songId": null,
+      "durationSeconds": 310,
+      "showDate": "2025-09-20",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40647",
+      "songName": "Possum",
+      "songId": null,
+      "durationSeconds": 609,
+      "showDate": "2025-09-20",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    }
+  ],
   "songGaps": [
     {
       "songId": 80,
@@ -1033,14 +1224,23 @@
       "historicalLastPlayed": null
     }
   ],
-  "recordings": [],
+  "recordings": [
+    {
+      "id": "2522",
+      "showDate": "2025-09-20",
+      "venue": "Hampton Coliseum",
+      "recordingType": "audience",
+      "url": null,
+      "isAvailable": true
+    }
+  ],
   "metadata": {
     "setlistSource": "phishnet",
-    "durationsSource": null,
-    "lastUpdated": "2025-09-30T04:31:04.951Z",
-    "dataComplete": false,
+    "durationsSource": "phishin",
+    "lastUpdated": "2025-09-30T08:33:23.018Z",
+    "dataComplete": true,
     "hasSetlistData": true,
-    "hasDurationData": false,
+    "hasDurationData": true,
     "hasGapData": true
   }
 }

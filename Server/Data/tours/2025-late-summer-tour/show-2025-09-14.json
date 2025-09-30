@@ -724,7 +724,188 @@
       "artist_name": "Phish"
     }
   ],
-  "trackDurations": [],
+  "trackDurations": [
+    {
+      "id": "40552",
+      "songName": "Punch You in the Eye",
+      "songId": null,
+      "durationSeconds": 734,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40553",
+      "songName": "Mike's Song",
+      "songId": null,
+      "durationSeconds": 843,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40554",
+      "songName": "Ocelot",
+      "songId": null,
+      "durationSeconds": 638,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40555",
+      "songName": "Kill Devil Falls",
+      "songId": null,
+      "durationSeconds": 725,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40556",
+      "songName": "Ginseng Sullivan",
+      "songId": null,
+      "durationSeconds": 195,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40557",
+      "songName": "Halley's Comet",
+      "songId": null,
+      "durationSeconds": 349,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40558",
+      "songName": "Weekapaug Groove",
+      "songId": null,
+      "durationSeconds": 363,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40559",
+      "songName": "Stash",
+      "songId": null,
+      "durationSeconds": 924,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40560",
+      "songName": "Cavern",
+      "songId": null,
+      "durationSeconds": 301,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 1",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40561",
+      "songName": "A Wave of Hope",
+      "songId": null,
+      "durationSeconds": 1042,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40562",
+      "songName": "What's Going Through Your Mind",
+      "songId": null,
+      "durationSeconds": 1054,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40563",
+      "songName": "Mercury",
+      "songId": null,
+      "durationSeconds": 930,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40564",
+      "songName": "Golden Age",
+      "songId": null,
+      "durationSeconds": 891,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40565",
+      "songName": "What's the Use?",
+      "songId": null,
+      "durationSeconds": 476,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40566",
+      "songName": "Good Times Bad Times",
+      "songId": null,
+      "durationSeconds": 449,
+      "showDate": "2025-09-14",
+      "setNumber": "Set 2",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40567",
+      "songName": "Fee",
+      "songId": null,
+      "durationSeconds": 314,
+      "showDate": "2025-09-14",
+      "setNumber": "Encore",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40568",
+      "songName": "Twist",
+      "songId": null,
+      "durationSeconds": 524,
+      "showDate": "2025-09-14",
+      "setNumber": "Encore",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    },
+    {
+      "id": "40569",
+      "songName": "More",
+      "songId": null,
+      "durationSeconds": 338,
+      "showDate": "2025-09-14",
+      "setNumber": "Encore",
+      "venue": "Coca-Cola Amphitheater",
+      "venueRun": null
+    }
+  ],
   "songGaps": [
     {
       "songId": 447,
@@ -991,11 +1172,11 @@
   ],
   "metadata": {
     "setlistSource": "phishnet",
-    "durationsSource": null,
-    "lastUpdated": "2025-09-30T04:31:04.946Z",
-    "dataComplete": false,
+    "durationsSource": "phishin",
+    "lastUpdated": "2025-09-30T08:33:23.014Z",
+    "dataComplete": true,
     "hasSetlistData": true,
-    "hasDurationData": false,
+    "hasDurationData": true,
     "hasGapData": true
   }
 }

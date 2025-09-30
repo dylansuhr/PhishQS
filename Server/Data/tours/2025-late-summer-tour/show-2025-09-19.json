@@ -803,7 +803,208 @@
       "artist_name": "Phish"
     }
   ],
-  "trackDurations": [],
+  "trackDurations": [
+    {
+      "id": "40609",
+      "songName": "Fluffhead",
+      "songId": null,
+      "durationSeconds": 983,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40610",
+      "songName": "46 Days",
+      "songId": null,
+      "durationSeconds": 628,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40611",
+      "songName": "My Friend, My Friend",
+      "songId": null,
+      "durationSeconds": 990,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40612",
+      "songName": "Rift",
+      "songId": null,
+      "durationSeconds": 384,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40613",
+      "songName": "Gumbo",
+      "songId": null,
+      "durationSeconds": 778,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40614",
+      "songName": "Pebbles and Marbles",
+      "songId": null,
+      "durationSeconds": 567,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40615",
+      "songName": "Army of One",
+      "songId": null,
+      "durationSeconds": 265,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40616",
+      "songName": "Ya Mar",
+      "songId": null,
+      "durationSeconds": 441,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40617",
+      "songName": "The Wedge",
+      "songId": null,
+      "durationSeconds": 430,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40618",
+      "songName": "Walls of the Cave",
+      "songId": null,
+      "durationSeconds": 647,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40619",
+      "songName": "Energy",
+      "songId": null,
+      "durationSeconds": 753,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40620",
+      "songName": "Tweezer",
+      "songId": null,
+      "durationSeconds": 1679,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40621",
+      "songName": "Ruby Waves",
+      "songId": null,
+      "durationSeconds": 871,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40622",
+      "songName": "No Men in No Man's Land",
+      "songId": null,
+      "durationSeconds": 671,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40623",
+      "songName": "Tweezer",
+      "songId": null,
+      "durationSeconds": 305,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40624",
+      "songName": "Waste",
+      "songId": null,
+      "durationSeconds": 338,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40625",
+      "songName": "Rock and Roll",
+      "songId": null,
+      "durationSeconds": 477,
+      "showDate": "2025-09-19",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40626",
+      "songName": "Prince Caspian",
+      "songId": null,
+      "durationSeconds": 353,
+      "showDate": "2025-09-19",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40627",
+      "songName": "Bug",
+      "songId": null,
+      "durationSeconds": 452,
+      "showDate": "2025-09-19",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40628",
+      "songName": "Tweezer Reprise",
+      "songId": null,
+      "durationSeconds": 202,
+      "showDate": "2025-09-19",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    }
+  ],
   "songGaps": [
     {
       "songId": 208,
@@ -1086,14 +1287,23 @@
       "historicalLastPlayed": null
     }
   ],
-  "recordings": [],
+  "recordings": [
+    {
+      "id": "2521",
+      "showDate": "2025-09-19",
+      "venue": "Hampton Coliseum",
+      "recordingType": "audience",
+      "url": null,
+      "isAvailable": true
+    }
+  ],
   "metadata": {
     "setlistSource": "phishnet",
-    "durationsSource": null,
-    "lastUpdated": "2025-09-30T04:31:04.950Z",
-    "dataComplete": false,
+    "durationsSource": "phishin",
+    "lastUpdated": "2025-09-30T08:33:23.017Z",
+    "dataComplete": true,
     "hasSetlistData": true,
-    "hasDurationData": false,
+    "hasDurationData": true,
     "hasGapData": true
   }
 }

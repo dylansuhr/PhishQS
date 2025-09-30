@@ -842,7 +842,218 @@
       "artist_name": "Phish"
     }
   ],
-  "trackDurations": [],
+  "trackDurations": [
+    {
+      "id": "40648",
+      "songName": "First Tube",
+      "songId": null,
+      "durationSeconds": 458,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40649",
+      "songName": "Twenty Years Later",
+      "songId": null,
+      "durationSeconds": 514,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40650",
+      "songName": "AC/DC Bag",
+      "songId": null,
+      "durationSeconds": 373,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40651",
+      "songName": "Foam",
+      "songId": null,
+      "durationSeconds": 503,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40652",
+      "songName": "Life Saving Gun",
+      "songId": null,
+      "durationSeconds": 664,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40653",
+      "songName": "Roggae",
+      "songId": null,
+      "durationSeconds": 530,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40654",
+      "songName": "Also Sprach Zarathustra",
+      "songId": null,
+      "durationSeconds": 543,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40655",
+      "songName": "Meat",
+      "songId": null,
+      "durationSeconds": 422,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40656",
+      "songName": "Split Open and Melt",
+      "songId": null,
+      "durationSeconds": 863,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40657",
+      "songName": "Golgi Apparatus",
+      "songId": null,
+      "durationSeconds": 296,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40658",
+      "songName": "Most Events Aren't Planned",
+      "songId": null,
+      "durationSeconds": 501,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 1",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40659",
+      "songName": "Mike's Song",
+      "songId": null,
+      "durationSeconds": 615,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40660",
+      "songName": "I Am Hydrogen",
+      "songId": null,
+      "durationSeconds": 153,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40661",
+      "songName": "Weekapaug Groove",
+      "songId": null,
+      "durationSeconds": 448,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40662",
+      "songName": "What's Going Through Your Mind",
+      "songId": null,
+      "durationSeconds": 1257,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40663",
+      "songName": "Scents and Subtle Sounds",
+      "songId": null,
+      "durationSeconds": 1301,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40664",
+      "songName": "Lonely Trip",
+      "songId": null,
+      "durationSeconds": 394,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40665",
+      "songName": "Ghost",
+      "songId": null,
+      "durationSeconds": 563,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40666",
+      "songName": "Chalk Dust Torture",
+      "songId": null,
+      "durationSeconds": 522,
+      "showDate": "2025-09-21",
+      "setNumber": "Set 2",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40667",
+      "songName": "A Life Beyond the Dream",
+      "songId": null,
+      "durationSeconds": 477,
+      "showDate": "2025-09-21",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    },
+    {
+      "id": "40668",
+      "songName": "Harry Hood",
+      "songId": null,
+      "durationSeconds": 789,
+      "showDate": "2025-09-21",
+      "setNumber": "Encore",
+      "venue": "Hampton Coliseum",
+      "venueRun": null
+    }
+  ],
   "songGaps": [
     {
       "songId": 202,
@@ -1139,14 +1350,23 @@
       "historicalLastPlayed": null
     }
   ],
-  "recordings": [],
+  "recordings": [
+    {
+      "id": "2523",
+      "showDate": "2025-09-21",
+      "venue": "Hampton Coliseum",
+      "recordingType": "audience",
+      "url": null,
+      "isAvailable": true
+    }
+  ],
   "metadata": {
     "setlistSource": "phishnet",
-    "durationsSource": null,
-    "lastUpdated": "2025-09-30T04:31:04.952Z",
-    "dataComplete": false,
+    "durationsSource": "phishin",
+    "lastUpdated": "2025-09-30T08:33:23.019Z",
+    "dataComplete": true,
     "hasSetlistData": true,
-    "hasDurationData": false,
+    "hasDurationData": true,
     "hasGapData": true
   }
 }

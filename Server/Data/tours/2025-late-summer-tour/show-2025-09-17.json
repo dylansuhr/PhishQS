@@ -724,7 +724,188 @@
       "artist_name": "Phish"
     }
   ],
-  "trackDurations": [],
+  "trackDurations": [
+    {
+      "id": "40591",
+      "songName": "Wolfman's Brother",
+      "songId": null,
+      "durationSeconds": 808,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40592",
+      "songName": "Llama",
+      "songId": null,
+      "durationSeconds": 262,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40593",
+      "songName": "Martian Monster",
+      "songId": null,
+      "durationSeconds": 259,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40594",
+      "songName": "Devotion to a Dream",
+      "songId": null,
+      "durationSeconds": 419,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40595",
+      "songName": "Divided Sky",
+      "songId": null,
+      "durationSeconds": 958,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40596",
+      "songName": "Axilla (Part II)",
+      "songId": null,
+      "durationSeconds": 350,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40597",
+      "songName": "Hey Stranger",
+      "songId": null,
+      "durationSeconds": 576,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40598",
+      "songName": "Steam",
+      "songId": null,
+      "durationSeconds": 548,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40599",
+      "songName": "Wilson",
+      "songId": null,
+      "durationSeconds": 253,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40600",
+      "songName": "Taste",
+      "songId": null,
+      "durationSeconds": 451,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 1",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40601",
+      "songName": "Carini",
+      "songId": null,
+      "durationSeconds": 1596,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40602",
+      "songName": "Light",
+      "songId": null,
+      "durationSeconds": 1106,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40603",
+      "songName": "Carini",
+      "songId": null,
+      "durationSeconds": 104,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40604",
+      "songName": "Sand",
+      "songId": null,
+      "durationSeconds": 1021,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40605",
+      "songName": "Piper",
+      "songId": null,
+      "durationSeconds": 452,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40606",
+      "songName": "The Lizards",
+      "songId": null,
+      "durationSeconds": 615,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40607",
+      "songName": "You Enjoy Myself",
+      "songId": null,
+      "durationSeconds": 1410,
+      "showDate": "2025-09-17",
+      "setNumber": "Set 2",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    },
+    {
+      "id": "40608",
+      "songName": "Meatstick",
+      "songId": null,
+      "durationSeconds": 752,
+      "showDate": "2025-09-17",
+      "setNumber": "Encore",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "venueRun": null
+    }
+  ],
   "songGaps": [
     {
       "songId": 683,
@@ -979,14 +1160,23 @@
       "historicalLastPlayed": null
     }
   ],
-  "recordings": [],
+  "recordings": [
+    {
+      "id": "2520",
+      "showDate": "2025-09-17",
+      "venue": "Verizon Wireless Amphitheatre at Encore Park",
+      "recordingType": "audience",
+      "url": null,
+      "isAvailable": true
+    }
+  ],
   "metadata": {
     "setlistSource": "phishnet",
-    "durationsSource": null,
-    "lastUpdated": "2025-09-30T04:31:04.949Z",
-    "dataComplete": false,
+    "durationsSource": "phishin",
+    "lastUpdated": "2025-09-30T08:33:23.016Z",
+    "dataComplete": true,
     "hasSetlistData": true,
-    "hasDurationData": false,
+    "hasDurationData": true,
     "hasGapData": true
   }
 }
