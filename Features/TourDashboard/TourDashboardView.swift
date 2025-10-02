@@ -61,7 +61,7 @@ struct TourDashboardView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.appHeaderBlue, for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
-        .toolbarColorScheme(.dark, for: .navigationBar) // Only affects navigation/status bar, not content
+        .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .principal) {
                 Image("white_phish_td_transparent")
@@ -180,9 +180,9 @@ struct SearchActionCard: View {
                     .foregroundColor(.white)
                     .padding(.vertical, 12)
                     .padding(.horizontal, 24)
-                    .background(Color.phishBlue)
-                    .cornerRadius(25)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.phishBlue)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 8)
