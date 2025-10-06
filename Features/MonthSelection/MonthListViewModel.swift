@@ -3,23 +3,26 @@ import Foundation
 // ViewModel for listing available months in a given year
 class MonthListViewModel: BaseViewModel {
     @Published var months: [String] = []
-    
-    private let apiClient: any PhishAPIService
-    
+    @Published var shows: [Show] = [] // Store shows for passing to DayListView
+
+    private let apiManager: APIManager
+
     // MARK: - Initialization
-    
-    init(apiClient: any PhishAPIService = PhishAPIClient.shared) {
-        self.apiClient = apiClient
+
+    init(apiManager: APIManager = APIManager.shared) {
+        self.apiManager = apiManager
     }
 
-    // fetch all months where Phish played in the given year
+    // fetch all months where Phish played in the given year with caching
     @MainActor
     func fetchMonths(for year: String) async {
         setLoading(true)
-        
+
         do {
-            let shows = try await apiClient.fetchShows(forYear: year)
-            months = DateUtilities.extractMonths(from: shows, forYear: year)
+            // Use cached fetch to avoid duplicate API calls
+            let fetchedShows = try await apiManager.fetchShowsWithCache(forYear: year)
+            shows = fetchedShows
+            months = DateUtilities.extractMonths(from: fetchedShows, forYear: year)
             setLoading(false)
         } catch {
             handleError(error)

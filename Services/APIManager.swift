@@ -58,6 +58,25 @@ class APIManager: ObservableObject {
     func fetchShows(forYear year: String) async throws -> [Show] {
         return try await phishNetClient.fetchShows(forYear: year)
     }
+
+    /// Fetch shows for a given year with caching (30-min TTL)
+    /// Used by date search flow to avoid duplicate API calls
+    func fetchShowsWithCache(forYear year: String) async throws -> [Show] {
+        let cacheKey = CacheManager.CacheKeys.yearShows(year)
+
+        // Check cache first
+        if let cachedShows = CacheManager.shared.get([Show].self, forKey: cacheKey) {
+            return cachedShows
+        }
+
+        // Fetch from API
+        let shows = try await phishNetClient.fetchShows(forYear: year)
+
+        // Cache for 30 minutes
+        CacheManager.shared.set(shows, forKey: cacheKey, ttl: CacheManager.TTL.yearShows)
+
+        return shows
+    }
     
     /// Fetch the latest show
     func fetchLatestShow() async throws -> Show? {
@@ -67,6 +86,44 @@ class APIManager: ObservableObject {
     /// Fetch setlist for a specific date
     func fetchSetlist(for date: String) async throws -> [SetlistItem] {
         return try await phishNetClient.fetchSetlist(for: date)
+    }
+
+    /// Fetch basic setlist with only essential data (setlist + durations)
+    /// Optimized for SetlistView - skips gap data, tour context, and recordings
+    func fetchBasicSetlist(for date: String) async throws -> EnhancedSetlist {
+        // Check cache first
+        let cacheKey = CacheManager.CacheKeys.enhancedSetlist(date)
+        if let cachedSetlist = CacheManager.shared.get(EnhancedSetlist.self, forKey: cacheKey) {
+            return cachedSetlist
+        }
+
+        // Get base setlist from Phish.net
+        let setlistItems = try await phishNetClient.fetchSetlist(for: date)
+
+        // Get track durations from Phish.in (only if available)
+        var trackDurations: [TrackDuration] = []
+        if let phishInClient = phishInClient, phishInClient.isAvailable {
+            do {
+                trackDurations = try await phishInClient.fetchTrackDurations(for: date)
+            } catch {
+                SwiftLogger.warn("Could not fetch track durations from Phish.in for \(date): \(error)", category: .api)
+            }
+        }
+
+        let enhancedSetlist = EnhancedSetlist(
+            showDate: date,
+            setlistItems: setlistItems,
+            trackDurations: trackDurations,
+            venueRun: nil,       // Not displayed in SetlistView
+            tourPosition: nil,   // Not displayed in SetlistView
+            recordings: [],      // Not displayed in SetlistView
+            songGaps: []         // Not displayed in SetlistView
+        )
+
+        // Cache for 2 hours
+        CacheManager.shared.set(enhancedSetlist, forKey: cacheKey, ttl: CacheManager.TTL.enhancedSetlist)
+
+        return enhancedSetlist
     }
     
     /// Search shows by query

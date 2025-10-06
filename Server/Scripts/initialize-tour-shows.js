@@ -261,6 +261,9 @@ async function initializeTourShows() {
         }
         
         // Step 6: Update control file with show file references and smart tracking
+        // Only update if there were actual changes to show files
+        const hadChanges = showsCreated > 0 || showsUpdated > 0;
+
         const updatedControlFile = {
             ...controlFileData,
             currentTour: {
@@ -268,16 +271,25 @@ async function initializeTourShows() {
                 tourDates: updatedTourDates
             },
             updateTracking: {
-                lastAPICheck: new Date().toISOString(),
+                // Only update timestamp if we made changes, otherwise preserve existing
+                lastAPICheck: hadChanges
+                    ? new Date().toISOString()
+                    : controlFileData.updateTracking?.lastAPICheck || new Date().toISOString(),
                 latestShowFromAPI: controlFileData.latestShow.date,
-                pendingDurationChecks: Object.keys(individualShowsTracking).filter(date => 
+                pendingDurationChecks: Object.keys(individualShowsTracking).filter(date =>
                     individualShowsTracking[date].needsUpdate
                 ),
                 individualShows: individualShowsTracking
             }
         };
-        
-        writeFileSync(controlFilePath, JSON.stringify(updatedControlFile, null, 2));
+
+        // Only write control file if there were changes
+        if (hadChanges) {
+            writeFileSync(controlFilePath, JSON.stringify(updatedControlFile, null, 2));
+            LoggingService.success('Control file updated with show file references');
+        } else {
+            LoggingService.info('Control file unchanged - no show updates needed');
+        }
         
         console.timeEnd('🚀 Total Initialization Time');
         LoggingService.success('Tour show files initialization completed!');
@@ -288,7 +300,6 @@ async function initializeTourShows() {
         LoggingService.info(`   Shows with partial data: ${showsWithPartialData}`);
         LoggingService.info(`   Shows failed: ${showsSkipped}`);
         LoggingService.info(`Show files location: ${tourShowsDir}`);
-        LoggingService.info(`Control file updated with show file references and smart tracking flags`);
         LoggingService.info(`API Performance: ${dataContext.apiCalls.total} total calls for entire tour`);
         LoggingService.info(`Optimization: Only ${showsCreated + showsUpdated} of ${controlFileData.currentTour.playedShows} shows required file writes`);
         

@@ -31,7 +31,8 @@ struct MonthListView: View {
                 // list of tappable months
                 List(viewModel.months, id: \.self) { month in
                     // tap month to navigate to list of days in that month
-                    NavigationLink(destination: DayListView(year: year, month: month)) {
+                    // Pass cached shows to avoid duplicate API call
+                    NavigationLink(destination: DayListView(year: year, month: month, shows: viewModel.shows)) {
                         Text(month) // display raw month string like "01"
                     }
                 }
