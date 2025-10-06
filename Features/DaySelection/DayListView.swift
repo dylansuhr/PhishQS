@@ -4,9 +4,18 @@ import SwiftUI
 struct DayListView: View {
     let year: String           // selected year passed from previous view
     let month: String          // selected month passed from previous view
+    let shows: [Show]          // cached shows from MonthListView to avoid duplicate API call
 
     // view model manages and stores the list of day strings
-    @StateObject private var viewModel = DayListViewModel()
+    @StateObject private var viewModel: DayListViewModel
+
+    // Custom initializer to pass shows to ViewModel
+    init(year: String, month: String, shows: [Show]) {
+        self.year = year
+        self.month = month
+        self.shows = shows
+        _viewModel = StateObject(wrappedValue: DayListViewModel(shows: shows))
+    }
 
     var body: some View {
         VStack {
@@ -39,7 +48,7 @@ struct DayListView: View {
             }
         }
         .onAppear {
-            // fetch list of days for the given year and month
+            // extract days from cached shows (no API call)
             viewModel.fetchDays(for: year, month: month)
         }
         .navigationTitle(StringFormatters.formatMonthYearTitle(month: month, year: year))

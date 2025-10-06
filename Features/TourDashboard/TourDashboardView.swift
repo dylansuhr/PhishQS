@@ -9,7 +9,6 @@ struct TourDashboardView: View {
     @State private var animateCard2 = false
     @State private var animateCard3 = false
     @State private var animateCard4 = false
-    @State private var animateCard5 = false
 
     var body: some View {
         DashboardGrid {
@@ -46,30 +45,12 @@ struct TourDashboardView: View {
                     .modifier(StateCardAnimationModifier(animate: $animateCard3))
                 }
             }
-
-            // Search Action Card
-            DashboardSection {
-                SearchActionCard(showingDateSearch: $showingDateSearch)
-                    .modifier(StateCardAnimationModifier(animate: $animateCard5))
-            }
         }
-        .background(
-            // Blue background extending into safe area for status bar visibility
-            Color.appHeaderBlue
-                .ignoresSafeArea(.container, edges: .top)
-        )
+        .safeAreaInset(edge: .bottom) {
+            FloatingSearchButton(showingDateSearch: $showingDateSearch)
+        }
+        .navigationTitle("PhishTD")
         .navigationBarTitleDisplayMode(.inline)
-        .toolbarBackground(Color.appHeaderBlue, for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .toolbarColorScheme(.dark, for: .navigationBar)
-        .toolbar {
-            ToolbarItem(placement: .principal) {
-                Image("white_phish_td_transparent")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 40)
-            }
-        }
         .sheet(isPresented: $showingDateSearch) {
             NavigationStack {
                 YearListView()
@@ -100,14 +81,6 @@ struct TourDashboardView: View {
                 // Card 3 completed, trigger card 4
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                     animateCard4 = true
-                }
-            }
-        }
-        .onChange(of: animateCard4) { _, isAnimated in
-            if isAnimated {
-                // Card 4 completed, trigger card 5
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    animateCard5 = true
                 }
             }
         }
@@ -144,49 +117,33 @@ struct TourStatisticsHeaderView: View {
     }
 }
 
-/// Action card for search functionality
-struct SearchActionCard: View {
+/// Floating search button with iOS 26 liquid glass effect
+struct FloatingSearchButton: View {
     @Binding var showingDateSearch: Bool
-    
+
     var body: some View {
-        DashboardCard {
-            VStack(spacing: 16) {
-                VStack(alignment: .center, spacing: 8) {
+        HStack {
+            Spacer()
+            Button(action: {
+                showingDateSearch = true
+            }) {
+                VStack(spacing: 4) {
                     Image(systemName: "calendar.badge.plus")
-                        .font(.title2)
-                        .foregroundColor(.phishBlue)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(.blue)
 
-                    Text("Find Any Show")
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.primary)
-
-                    Text("Search setlists by date")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
+                    Text("Search")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundStyle(.blue)
                 }
-
-                Button(action: {
-                    showingDateSearch = true
-                }) {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                            .font(.system(size: 14, weight: .medium))
-
-                        Text("Search by Date")
-                            .font(.system(size: 16, weight: .medium))
-                    }
-                    .foregroundColor(.white)
-                    .padding(.vertical, 12)
-                    .padding(.horizontal, 24)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.phishBlue)
+                .frame(width: 70, height: 70)
+                .background(.ultraThinMaterial, in: Circle())
+                .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 4)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
+            .padding(.horizontal, 20)
+            .padding(.bottom, 8)
         }
+        .frame(maxWidth: .infinity)
     }
 }
 

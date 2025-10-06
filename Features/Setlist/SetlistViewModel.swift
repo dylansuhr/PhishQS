@@ -19,10 +19,10 @@ class SetlistViewModel: BaseViewModel {
     @MainActor
     func fetchSetlist(for date: String) async {
         setLoading(true)
-        
+
         do {
-            // Fetch enhanced setlist with song durations and venue run info
-            let enhanced = try await apiManager.fetchEnhancedSetlist(for: date)
+            // Fetch basic setlist (optimized - only setlist + durations)
+            let enhanced = try await apiManager.fetchBasicSetlist(for: date)
             enhancedSetlist = enhanced
             setlistItems = enhanced.setlistItems
             setlist = StringFormatters.formatSetlist(enhanced.setlistItems)
@@ -65,6 +65,15 @@ class SetlistViewModel: BaseViewModel {
     /// Check if enhanced data is available
     var hasEnhancedData: Bool {
         return enhancedSetlist != nil && !(enhancedSetlist?.trackDurations.isEmpty ?? true)
+    }
+
+    /// Check if valid duration data exists (excludes 0-second durations)
+    var hasValidDurations: Bool {
+        guard let trackDurations = enhancedSetlist?.trackDurations, !trackDurations.isEmpty else {
+            return false
+        }
+        // Check if any duration is > 0 (filter out bad/incomplete data)
+        return trackDurations.contains { $0.durationSeconds > 0 }
     }
     
     /// Debug: Get available track duration song names for troubleshooting

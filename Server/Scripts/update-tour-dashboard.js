@@ -124,12 +124,13 @@ async function updateTourDashboard() {
         // Check if update is needed
         const existingData = loadExistingData();
         const updateInfo = checkIfUpdateNeeded(existingData, tourDashboardData);
-        
+
         if (updateInfo.shouldUpdate) {
-            // Write the file
-            writeTourDashboard(tourDashboardData, updateInfo.reason);
+            // Write the file with updated timestamp
+            writeTourDashboard(tourDashboardData, updateInfo.reason, true);
             LoggingService.success(`Tour dashboard updated: ${updateInfo.reason}`);
         } else {
+            // No changes detected - preserve existing file to avoid unnecessary commits
             LoggingService.info('No update needed - data unchanged');
         }
         
@@ -444,25 +445,28 @@ function checkIfUpdateNeeded(existingData, newData) {
 
 /**
  * Write the tour dashboard data to file
+ * @param {Object} data - The tour dashboard data
+ * @param {string} updateReason - Reason for the update
+ * @param {boolean} updateTimestamp - Whether to update the lastUpdated timestamp (default: true)
  */
-function writeTourDashboard(data, updateReason) {
+function writeTourDashboard(data, updateReason, updateTimestamp = true) {
     const output = {
         ...data,
         metadata: {
-            lastUpdated: new Date().toISOString(),
+            lastUpdated: updateTimestamp ? new Date().toISOString() : loadExistingData()?.metadata?.lastUpdated || new Date().toISOString(),
             dataVersion: '1.0',
             updateReason: updateReason,
             nextShow: findNextShow(data.currentTour?.tourDates)
         }
     };
-    
+
     // Ensure directory exists
     const dir = dirname(CONFIG.OUTPUT_PATH);
     if (!existsSync(dir)) {
         LoggingService.info(`Creating directory: ${dir}`);
         mkdirSync(dir, { recursive: true });
     }
-    
+
     // Write the file
     writeFileSync(CONFIG.OUTPUT_PATH, JSON.stringify(output, null, 2));
     LoggingService.success(`Tour dashboard written to: ${CONFIG.OUTPUT_PATH}`);

@@ -3,27 +3,23 @@ import Foundation
 // ViewModel for listing available days for a selected year and month
 class DayListViewModel: BaseViewModel {
     @Published var days: [String] = []
-    
-    private let apiClient: any PhishAPIService
-    
+
+    private let shows: [Show]  // Cached shows from parent view
+
     // MARK: - Initialization
-    
-    init(apiClient: any PhishAPIService = PhishAPIClient.shared) {
-        self.apiClient = apiClient
+
+    init(shows: [Show]) {
+        self.shows = shows
     }
 
-    // fetch all show days for a given year and month
+    // extract all show days for a given year and month from cached data
     @MainActor
     func fetchDays(for year: String, month: String) async {
         setLoading(true)
-        
-        do {
-            let shows = try await apiClient.fetchShows(forYear: year)
-            days = DateUtilities.extractDays(from: shows, forYear: year, month: month)
-            setLoading(false)
-        } catch {
-            handleError(error)
-        }
+
+        // No API call - use cached shows
+        days = DateUtilities.extractDays(from: shows, forYear: year, month: month)
+        setLoading(false)
     }
     
     // Non-async wrapper for SwiftUI compatibility

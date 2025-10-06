@@ -114,7 +114,8 @@ extension CacheManager {
         static let venueRuns = "venue_runs_"
         static let tourStatistics = "tour_statistics_"
         static let tourEnhancedSetlists = "tour_enhanced_setlists_"
-        
+        static let yearShows = "year_shows_"
+
         // Current tour optimization keys
         static let currentTourStats = "current_tour_stats"
         static let currentTourName = "current_tour_name"
@@ -142,6 +143,10 @@ extension CacheManager {
         static func tourEnhancedSetlists(_ tourName: String) -> String {
             return tourEnhancedSetlists + tourName
         }
+
+        static func yearShows(_ year: String) -> String {
+            return yearShows + year
+        }
     }
 }
 
@@ -155,7 +160,8 @@ extension CacheManager {
         static let venueRuns: TimeInterval = 4 * 60 * 60 // 4 hours (venue run data)
         static let tourStatistics: TimeInterval = 24 * 60 * 60 // 24 hours (tour statistics, much longer for historical data)
         static let tourEnhancedSetlists: TimeInterval = 6 * 60 * 60 // 6 hours (entire tour setlist collection)
-        
+        static let yearShows: TimeInterval = 30 * 60 // 30 minutes (year shows for date search)
+
         // Current tour optimization TTLs
         static let currentTourStats: TimeInterval = 60 * 60 // 1 hour (current tour stats only)
         static let currentTourName: TimeInterval = 24 * 60 * 60 // 24 hours (track current tour name)

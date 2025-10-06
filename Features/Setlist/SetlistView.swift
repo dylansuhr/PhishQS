@@ -40,50 +40,52 @@ struct SetlistView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
                 VStack(alignment: .leading, spacing: 8) {
-                    // Show venue info if available
+                    // Show header with date and venue info
                     if let firstItem = viewModel.setlistItems.first {
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Text("\(firstItem.venue)")
-                                    .font(.headline)
-                                    .fontWeight(.semibold)
-                                
-                                // Show venue run info if available
-                                if let venueRun = viewModel.venueRunInfo {
-                                    Spacer()
-                                    Text(venueRun.runDisplayText)
-                                        .font(.subheadline)
-                                        .fontWeight(.medium)
-                                        .foregroundColor(.blue)
-                                        .padding(.horizontal, 8)
-                                        .padding(.vertical, 2)
-                                        .background(Color.blue.opacity(0.1))
-                                        .cornerRadius(4)
-                                }
-                            }
-                            
+                        VStack(alignment: .leading, spacing: 8) {
+                            // Large bold date
+                            Text(date)
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.primary)
+
+                            // Formatted readable date
+                            Text(DateUtilities.formatDateWithDayOfWeek(date))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+
+                            // Venue name
+                            Text(firstItem.venue)
+                                .font(.headline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+                                .padding(.top, 4)
+
+                            // City, State
                             let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
                             Text("\(firstItem.city)\(stateText)")
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
-                            
-                            // Show tour position info if available
-                            if let tourPosition = viewModel.tourPositionInfo {
-                                Text(tourPosition.displayText)
-                                    .font(.caption)
+
+                            // Phish.in data availability indicator
+                            HStack(spacing: 4) {
+                                Text("phish.in")
+                                    .font(.caption2)
                                     .foregroundColor(.secondary)
-                                    .padding(.top, 2)
+
+                                if viewModel.hasValidDurations {
+                                    Text("✓")
+                                        .font(.caption2)
+                                        .foregroundColor(.green)
+                                } else {
+                                    Text("✗")
+                                        .font(.caption2)
+                                        .foregroundColor(.red)
+                                }
                             }
+                            .padding(.top, 2)
                         }
-                        .padding(.bottom, 8)
-                    }
-                    
-                    // Duration availability status
-                    if !viewModel.hasEnhancedData {
-                        Text("Song durations unavailable (Phish.in API key required)")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .padding(.bottom, 12)
+                        .padding(.bottom, 16)
                     }
                     
                     // Display setlist with individual songs and durations
@@ -94,7 +96,7 @@ struct SetlistView: View {
                 .padding()
             }
         }
-        .phishBackground()
+        .background(Color(.systemGroupedBackground))
         .onAppear {
             viewModel.fetchSetlist(for: date)
         }
@@ -122,14 +124,16 @@ struct SetlistView: View {
             
             // Display the song with its transition mark preserved
             let cleanSongName = SongParser.cleanSongName(setlistItem.song)
-            // Use position-based matching for accurate durations with duplicate song names
-            let duration = viewModel.formattedDuration(at: itemIndex, expectedName: cleanSongName)
             let transitionMark = setlistItem.transMark?.isEmpty == false ? setlistItem.transMark : nil
-            let durationColor = viewModel.colorForSong(at: itemIndex, expectedName: cleanSongName)
-            
+
+            // Only include duration if valid data exists
+            let duration: String? = viewModel.hasValidDurations
+                ? viewModel.formattedDuration(at: itemIndex, expectedName: cleanSongName)
+                : nil
+
             content.append(SetlistContentItem(
                 id: "song_\(itemIndex)_\(cleanSongName)",
-                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark, durationColor: durationColor)
+                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark, durationColor: nil)
             ))
             
             itemIndex += 1
