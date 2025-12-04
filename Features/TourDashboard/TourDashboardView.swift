@@ -96,22 +96,23 @@ struct TourDashboardView: View {
 struct TourStatisticsHeaderView: View {
     let tourName: String?
     let tourPosition: TourShowPosition?
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let tourName = tourName {
-                HStack {
-                    Spacer()
-                    Text(tourName)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                    Spacer()
-                }
-                .padding(.vertical, 16)
-                .background(Color.appHeaderBlue)
-                .cornerRadius(12)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("CURRENT TOUR")
+                        .font(.caption2)
+                        .foregroundColor(.appHeaderBlue)
+                        .textCase(.uppercase)
+                        .tracking(0.5)
 
+                    Text(tourName)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.appHeaderBlue)
+                }
+                .padding(.bottom, 16)
             }
         }
     }
@@ -150,21 +151,23 @@ struct FloatingSearchButton: View {
 /// Loading view for tour statistics
 struct TourStatisticsLoadingView: View {
     let tourPosition: TourShowPosition?
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             if let tourPosition = tourPosition {
-                HStack {
-                    Spacer()
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("CURRENT TOUR")
+                        .font(.caption2)
+                        .foregroundColor(.appHeaderBlue)
+                        .textCase(.uppercase)
+                        .tracking(0.5)
+
                     Text(tourPosition.tourName)
-                        .font(.headline)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.white)
-                    Spacer()
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.appHeaderBlue)
                 }
-                .padding(.vertical, 16)
-                .background(Color.appHeaderBlue)
-                .cornerRadius(12)
+                .padding(.bottom, 16)
             }
 
             // Loading indicator
