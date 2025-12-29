@@ -22,8 +22,6 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     
     // Simple cache to avoid duplicate API calls for same tour
     private var tourShowsCache: [String: [PhishInShow]] = [:]
-    private var cacheInsertionOrder: [String] = []  // Track order for LRU eviction
-    private let maxCacheSize = 5  // Limit memory usage - 5 tours is plenty for typical usage
     private let cacheQueue = DispatchQueue(label: "phishin.cache", attributes: .concurrent)
     
     // MARK: - API Client Protocol
@@ -243,26 +241,7 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
     }
     
     // MARK: - Caching Methods
-
-    /// Add entry to cache with size bounds (call from barrier queue only)
-    private func addToCacheWithBounds(tourName: String, shows: [PhishInShow]) {
-        // If key already exists, just update the value (no change to order)
-        if tourShowsCache[tourName] != nil {
-            tourShowsCache[tourName] = shows
-            return
-        }
-
-        // Evict oldest if at capacity
-        if cacheInsertionOrder.count >= maxCacheSize, let oldest = cacheInsertionOrder.first {
-            tourShowsCache.removeValue(forKey: oldest)
-            cacheInsertionOrder.removeFirst()
-        }
-
-        // Add new entry
-        tourShowsCache[tourName] = shows
-        cacheInsertionOrder.append(tourName)
-    }
-
+    
     /// Get tour shows with caching to avoid duplicate API calls
     private func getCachedTourShows(tourName: String) async throws -> [PhishInShow] {
         // Check cache first (thread-safe)
@@ -280,24 +259,24 @@ class PhishInAPIClient: AudioProviderProtocol, TourProviderProtocol {
             // Cache and return exact matches
             await withCheckedContinuation { continuation in
                 cacheQueue.async(flags: .barrier) {
-                    self.addToCacheWithBounds(tourName: tourName, shows: exactShows)
+                    self.tourShowsCache[tourName] = exactShows
                     continuation.resume()
                 }
             }
             return exactShows
         }
-
+        
         // If no exact matches, try fuzzy matching
         let fuzzyMatches = try await tryFuzzyTourMatching(originalTourName: tourName)
-
+        
         // Cache the result (even if empty)
         await withCheckedContinuation { continuation in
             cacheQueue.async(flags: .barrier) {
-                self.addToCacheWithBounds(tourName: tourName, shows: fuzzyMatches)
+                self.tourShowsCache[tourName] = fuzzyMatches
                 continuation.resume()
             }
         }
-
+        
         return fuzzyMatches
     }
     
