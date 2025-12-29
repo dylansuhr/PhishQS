@@ -116,7 +116,7 @@
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-12-29T04:54:14.592Z",
+    "lastAPICheck": "2025-12-29T08:38:54.215Z",
     "latestShowFromAPI": "2025-12-28",
     "pendingDurationChecks": [
       "2025-12-28"
@@ -124,7 +124,7 @@
     "individualShows": {
       "2025-12-28": {
         "exists": true,
-        "lastUpdated": "2025-12-29T04:54:14.592Z",
+        "lastUpdated": "2025-12-29T08:38:54.215Z",
         "durationsAvailable": false,
         "dataComplete": false,
         "needsUpdate": true
