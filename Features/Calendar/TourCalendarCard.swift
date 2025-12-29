@@ -10,8 +10,7 @@ import UIKit
 
 struct TourCalendarCard: View {
     @StateObject private var viewModel = TourCalendarViewModel()
-    @State private var selectedDay: CalendarDay?
-    @State private var showingShowDetails = false
+    @State private var selectedShowDate: String?
     
     var body: some View {
         DashboardCard {
@@ -53,11 +52,18 @@ struct TourCalendarCard: View {
                 }
             }
         }
-        .alert("Show Details", isPresented: $showingShowDetails, presenting: selectedDay) { day in
-            Button("OK") { }
-        } message: { day in
-            if let showInfo = day.showInfo {
-                Text("\(showInfo.venue)\n\(showInfo.city), \(showInfo.state)\n\nShow #\(showInfo.showNumber)\(showInfo.venueRun != nil ? " (\(showInfo.venueRun!))" : "")")
+        .sheet(isPresented: Binding(
+            get: { selectedShowDate != nil },
+            set: { if !$0 { selectedShowDate = nil } }
+        )) {
+            if let date = selectedShowDate {
+                NavigationStack {
+                    SetlistView(
+                        year: String(date.prefix(4)),
+                        month: String(date.dropFirst(5).prefix(2)),
+                        day: String(date.suffix(2))
+                    )
+                }
             }
         }
     }
@@ -65,9 +71,11 @@ struct TourCalendarCard: View {
     // MARK: - Date Selection
     
     private func handleDateSelection(_ day: CalendarDay) {
-        selectedDay = day
-        showingShowDetails = true
-        
+        // Format date as YYYY-MM-DD for SetlistView
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        selectedShowDate = formatter.string(from: day.date)
+
         // Haptic feedback
         let impact = UIImpactFeedbackGenerator(style: .light)
         impact.impactOccurred()
