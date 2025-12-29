@@ -16,6 +16,7 @@ struct MarqueeText: View {
 
     @State private var offset: CGFloat = 0
     @State private var textWidth: CGFloat = 0
+    @State private var isVisible: Bool = false  // Track visibility for animation cleanup
 
     private var shouldMarquee: Bool {
         textWidth > width - 8 // Account for padding
@@ -42,7 +43,13 @@ struct MarqueeText: View {
                     .frame(height: geometry.size.height, alignment: .center)
                     .clipped()
                     .onAppear {
+                        isVisible = true
                         startMarquee()
+                    }
+                    .onDisappear {
+                        isVisible = false
+                        // Reset offset without animation to cancel any running animation
+                        offset = 0
                     }
             }
             .frame(width: width)
@@ -74,7 +81,9 @@ struct MarqueeText: View {
         offset = width  // Start position: right edge of container
 
         // Small delay to ensure all marquees start together after reset
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [self] in
+            // Only start animation if view is still visible
+            guard isVisible else { return }
             withAnimation(.linear(duration: scrollDuration).repeatForever(autoreverses: false)) {
                 offset = -textWidth - 20  // End position: completely off left edge
             }
