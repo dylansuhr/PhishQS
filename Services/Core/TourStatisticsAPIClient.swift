@@ -99,9 +99,6 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
         request.timeoutInterval = 15.0 // Increased timeout for server requests
         
         do {
-            // Clear URL cache to ensure fresh response (temporary for debugging)
-            URLCache.shared.removeAllCachedResponses()
-
             // Add request timing for performance monitoring
             let startTime = CFAbsoluteTimeGetCurrent()
             let (data, response) = try await session.data(for: request)
