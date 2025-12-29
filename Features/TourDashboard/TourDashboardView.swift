@@ -2,6 +2,9 @@ import SwiftUI
 
 // Modern dashboard-style home screen
 struct TourDashboardView: View {
+    // Feature flag: Set to true to enable date search (Component C)
+    private let showDateSearchFeature = false
+
     @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
     @State private var showingDateSearch = false
     @State private var animateCards = false
@@ -47,13 +50,17 @@ struct TourDashboardView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            FloatingSearchButton(showingDateSearch: $showingDateSearch)
+            if showDateSearchFeature {
+                FloatingSearchButton(showingDateSearch: $showingDateSearch)
+            }
         }
         .navigationTitle("PhishTD")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingDateSearch) {
-            NavigationStack {
-                YearListView()
+            if showDateSearchFeature {
+                NavigationStack {
+                    YearListView()
+                }
             }
         }
         .onAppear {
