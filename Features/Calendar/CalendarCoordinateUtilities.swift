@@ -24,6 +24,11 @@ class CircleCoordinateMap: ObservableObject {
     func hasCoordinatesFor(days: [Int]) -> Bool {
         return days.allSatisfy { coordinates["\($0)"] != nil }
     }
+
+    /// Clear all stored coordinates (call when month changes or view disappears)
+    func clear() {
+        coordinates.removeAll()
+    }
 }
 
 // MARK: - Preference Key for Circle Positions

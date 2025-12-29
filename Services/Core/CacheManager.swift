@@ -6,31 +6,57 @@
 //
 
 import Foundation
+import UIKit
 
 /// Thread-safe cache manager for API data with TTL (Time To Live) support
 class CacheManager {
     static let shared = CacheManager()
-    
+
     private struct CacheItem<T> {
         let value: T
         let expirationDate: Date
-        
+
         var isExpired: Bool {
             return Date() > expirationDate
         }
     }
-    
+
     private var cache: [String: Any] = [:]
     private let queue = DispatchQueue(label: "com.phishqs.cache", attributes: .concurrent)
-    
-    private init() {}
+    private let maxCacheSize = 50  // Maximum number of cache entries
+
+    private init() {
+        // Listen for memory warnings to release cache
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleMemoryWarning),
+            name: UIApplication.didReceiveMemoryWarningNotification,
+            object: nil
+        )
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func handleMemoryWarning() {
+        SwiftLogger.warn("⚠️ Memory warning received - clearing all caches", category: .cache)
+        clearAll()
+    }
     
     /// Store value in cache with TTL
     func set<T>(_ value: T, forKey key: String, ttl: TimeInterval) {
         let expirationDate = Date().addingTimeInterval(ttl)
         let item = CacheItem(value: value, expirationDate: expirationDate)
-        
+
         queue.async(flags: .barrier) {
+            // Enforce cache size limit
+            if self.cache.count >= self.maxCacheSize && self.cache[key] == nil {
+                // Remove a random entry (simple eviction - could be improved to LRU)
+                if let keyToRemove = self.cache.keys.first {
+                    self.cache.removeValue(forKey: keyToRemove)
+                }
+            }
             self.cache[key] = item
         }
     }

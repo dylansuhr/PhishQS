@@ -48,6 +48,10 @@ struct TourCalendarView: View {
             // Reset all marquee animations to start fresh with consistent timing
             badgeResetID = UUID()
         }
+        .onDisappear {
+            // Clear coordinate map to free memory when view is removed
+            coordinateMap.clear()
+        }
     }
 
     // MARK: - Month Header
