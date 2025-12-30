@@ -51,6 +51,11 @@ struct TourCalendarCard: View {
                     await viewModel.loadTourCalendar()
                 }
             }
+
+            // Pre-warm API singletons in background so first date tap is instant
+            Task.detached(priority: .utility) {
+                _ = APIManager()
+            }
         }
         .sheet(isPresented: Binding(
             get: { selectedShowDate != nil },
