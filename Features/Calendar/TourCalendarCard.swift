@@ -52,9 +52,9 @@ struct TourCalendarCard: View {
                 }
             }
 
-            // Pre-warm API singletons in background so first date tap is instant
-            Task.detached(priority: .utility) {
-                _ = APIManager()
+            // Pre-warm singletons and view model on main thread so first date tap is instant
+            Task {
+                _ = SetlistViewModel()
             }
         }
         .sheet(isPresented: Binding(
