@@ -82,14 +82,30 @@ struct SetlistView: View {
         .onAppear {
             viewModel.fetchSetlist(for: date)
         }
-        .onChange(of: viewModel.showMetadata?.date) { _, _ in
+        .onChange(of: viewModel.showMetadata?.date) { _, newValue in
             // Fade in when metadata loads
-            withAnimation(.easeIn(duration: 0.2)) {
-                contentOpacity = 1
+            if newValue != nil && contentOpacity == 0 {
+                withAnimation(.easeIn(duration: 0.2)) {
+                    contentOpacity = 1
+                }
             }
         }
-        .onChange(of: viewModel.setlistItems) { _, _ in
+        .onChange(of: viewModel.setlistItems) { _, newItems in
             cachedContent = groupedSetlistContent()
+            // Also fade in when setlist loads (in case metadata was instant from cache)
+            if !newItems.isEmpty && contentOpacity == 0 {
+                withAnimation(.easeIn(duration: 0.2)) {
+                    contentOpacity = 1
+                }
+            }
+        }
+        .onChange(of: viewModel.isLoading) { _, isLoading in
+            // Fallback: fade in when loading completes
+            if !isLoading && contentOpacity == 0 && viewModel.showMetadata != nil {
+                withAnimation(.easeIn(duration: 0.2)) {
+                    contentOpacity = 1
+                }
+            }
         }
         // set the navigation title to the current date
         .navigationTitle(date)
