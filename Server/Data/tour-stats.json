@@ -349,18 +349,18 @@
       "formattedHistoricalDate": "11/29/19"
     },
     {
-      "id": 174,
-      "songId": 174,
-      "songName": "Down with Disease",
-      "gap": 7,
-      "lastPlayed": "2025-09-13",
-      "timesPlayed": 339,
+      "id": 451,
+      "songId": 451,
+      "songName": "Quadrophonic Toppling",
+      "gap": 173,
+      "lastPlayed": "2022-05-27",
+      "timesPlayed": 3,
       "tourVenue": "Madison Square Garden",
       "tourVenueRun": {
         "venue": "Madison Square Garden",
         "city": "New York",
         "state": "NY",
-        "nightNumber": 1,
+        "nightNumber": 2,
         "totalNights": 4,
         "showDates": [
           "2025-12-28",
@@ -369,11 +369,263 @@
           "2025-12-31"
         ]
       },
-      "tourDate": "2025-12-28",
+      "tourDate": "2025-12-29",
       "tourCity": "New York",
       "tourState": "NY",
       "tourPosition": {
-        "showNumber": 1,
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "The Wharf Amphitheater",
+      "historicalCity": "Orange Beach",
+      "historicalState": "AL",
+      "historicalLastPlayed": "2022-05-27",
+      "formattedHistoricalDate": "5/27/22"
+    },
+    {
+      "id": 2797,
+      "songId": 2797,
+      "songName": "The Final Hurrah",
+      "gap": 23,
+      "lastPlayed": "2025-07-11",
+      "timesPlayed": 19,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2025-07-11",
+      "formattedHistoricalDate": "7/11/25"
+    },
+    {
+      "id": 404,
+      "songId": 404,
+      "songName": "NICU",
+      "gap": 22,
+      "lastPlayed": "2025-07-12",
+      "timesPlayed": 159,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2025-07-12",
+      "formattedHistoricalDate": "7/12/25"
+    },
+    {
+      "id": 1085,
+      "songId": 1085,
+      "songName": "Plasma",
+      "gap": 22,
+      "lastPlayed": "2025-07-12",
+      "timesPlayed": 43,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "North Charleston Coliseum",
+      "historicalCity": "North Charleston",
+      "historicalState": "SC",
+      "historicalLastPlayed": "2025-07-12",
+      "formattedHistoricalDate": "7/12/25"
+    },
+    {
+      "id": 576,
+      "songId": 576,
+      "songName": "The Curtain With",
+      "gap": 19,
+      "lastPlayed": "2025-07-16",
+      "timesPlayed": 46,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "TD Pavilion at the Mann",
+      "historicalCity": "Philadelphia",
+      "historicalState": "PA",
+      "historicalLastPlayed": "2025-07-16",
+      "formattedHistoricalDate": "7/16/25"
+    },
+    {
+      "id": 113,
+      "songId": 113,
+      "songName": "Character Zero",
+      "gap": 10,
+      "lastPlayed": "2025-09-12",
+      "timesPlayed": 263,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Highland Festival Grounds at Kentucky Expo Center",
+      "historicalCity": "Louisville",
+      "historicalState": "KY",
+      "historicalLastPlayed": "2025-09-12",
+      "formattedHistoricalDate": "9/12/25"
+    },
+    {
+      "id": 2944,
+      "songId": 2944,
+      "songName": "Evolve",
+      "gap": 10,
+      "lastPlayed": "2025-09-12",
+      "timesPlayed": 30,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Highland Festival Grounds at Kentucky Expo Center",
+      "historicalCity": "Louisville",
+      "historicalState": "KY",
+      "historicalLastPlayed": "2025-09-12",
+      "formattedHistoricalDate": "9/12/25"
+    },
+    {
+      "id": 48,
+      "songId": 48,
+      "songName": "Bathtub Gin",
+      "gap": 9,
+      "lastPlayed": "2025-09-13",
+      "timesPlayed": 322,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-29",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 2,
         "totalShows": 4,
         "tourName": "2025 NYE Run",
         "tourYear": "2025"
@@ -385,18 +637,18 @@
       "formattedHistoricalDate": "9/13/25"
     },
     {
-      "id": 2803,
-      "songId": 2803,
-      "songName": "Sigma Oasis",
-      "gap": 7,
+      "id": 393,
+      "songId": 393,
+      "songName": "Mountains in the Mist",
+      "gap": 9,
       "lastPlayed": "2025-09-13",
-      "timesPlayed": 48,
+      "timesPlayed": 47,
       "tourVenue": "Madison Square Garden",
       "tourVenueRun": {
         "venue": "Madison Square Garden",
         "city": "New York",
         "state": "NY",
-        "nightNumber": 1,
+        "nightNumber": 2,
         "totalNights": 4,
         "showDates": [
           "2025-12-28",
@@ -405,11 +657,11 @@
           "2025-12-31"
         ]
       },
-      "tourDate": "2025-12-28",
+      "tourDate": "2025-12-29",
       "tourCity": "New York",
       "tourState": "NY",
       "tourPosition": {
-        "showNumber": 1,
+        "showNumber": 2,
         "totalShows": 4,
         "tourName": "2025 NYE Run",
         "tourYear": "2025"
@@ -419,266 +671,26 @@
       "historicalState": "AL",
       "historicalLastPlayed": "2025-09-13",
       "formattedHistoricalDate": "9/13/25"
-    },
-    {
-      "id": 609,
-      "songId": 609,
-      "songName": "Theme from the Bottom",
-      "gap": 7,
-      "lastPlayed": "2025-09-13",
-      "timesPlayed": 199,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Coca-Cola Amphitheater",
-      "historicalCity": "Birmingham",
-      "historicalState": "AL",
-      "historicalLastPlayed": "2025-09-13",
-      "formattedHistoricalDate": "9/13/25"
-    },
-    {
-      "id": 447,
-      "songId": 447,
-      "songName": "Punch You in the Eye",
-      "gap": 6,
-      "lastPlayed": "2025-09-14",
-      "timesPlayed": 170,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Coca-Cola Amphitheater",
-      "historicalCity": "Birmingham",
-      "historicalState": "AL",
-      "historicalLastPlayed": "2025-09-14",
-      "formattedHistoricalDate": "9/14/25"
-    },
-    {
-      "id": 96,
-      "songId": 96,
-      "songName": "Buried Alive",
-      "gap": 5,
-      "lastPlayed": "2025-09-16",
-      "timesPlayed": 175,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Ameris Bank Amphitheatre",
-      "historicalCity": "Alpharetta",
-      "historicalState": "GA",
-      "historicalLastPlayed": "2025-09-16",
-      "formattedHistoricalDate": "9/16/25"
-    },
-    {
-      "id": 3076,
-      "songId": 3076,
-      "songName": "Oblivion",
-      "gap": 5,
-      "lastPlayed": "2025-09-16",
-      "timesPlayed": 24,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Ameris Bank Amphitheatre",
-      "historicalCity": "Alpharetta",
-      "historicalState": "GA",
-      "historicalLastPlayed": "2025-09-16",
-      "formattedHistoricalDate": "9/16/25"
-    },
-    {
-      "id": 478,
-      "songId": 478,
-      "songName": "Run Like an Antelope",
-      "gap": 5,
-      "lastPlayed": "2025-09-16",
-      "timesPlayed": 506,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Ameris Bank Amphitheatre",
-      "historicalCity": "Alpharetta",
-      "historicalState": "GA",
-      "historicalLastPlayed": "2025-09-16",
-      "formattedHistoricalDate": "9/16/25"
-    },
-    {
-      "id": 512,
-      "songId": 512,
-      "songName": "Slave to the Traffic Light",
-      "gap": 5,
-      "lastPlayed": "2025-09-16",
-      "timesPlayed": 296,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Ameris Bank Amphitheatre",
-      "historicalCity": "Alpharetta",
-      "historicalState": "GA",
-      "historicalLastPlayed": "2025-09-16",
-      "formattedHistoricalDate": "9/16/25"
-    },
-    {
-      "id": 558,
-      "songId": 558,
-      "songName": "Taste",
-      "gap": 4,
-      "lastPlayed": "2025-09-17",
-      "timesPlayed": 153,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-28",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Ameris Bank Amphitheatre",
-      "historicalCity": "Alpharetta",
-      "historicalState": "GA",
-      "historicalLastPlayed": "2025-09-17",
-      "formattedHistoricalDate": "9/17/25"
     }
   ],
   "mostPlayedSongs": [
+    {
+      "id": 104,
+      "songId": 104,
+      "songName": "Carini",
+      "playCount": 2
+    },
     {
       "id": 508,
       "songId": 508,
       "songName": "Simple",
       "playCount": 2
+    },
+    {
+      "id": 2946,
+      "songId": 2946,
+      "songName": "A Wave Of Hope",
+      "playCount": 1
     },
     {
       "id": 8,
@@ -687,9 +699,21 @@
       "playCount": 1
     },
     {
+      "id": 48,
+      "songId": 48,
+      "songName": "Bathtub Gin",
+      "playCount": 1
+    },
+    {
       "id": 96,
       "songId": 96,
       "songName": "Buried Alive",
+      "playCount": 1
+    },
+    {
+      "id": 113,
+      "songId": 113,
+      "songName": "Character Zero",
       "playCount": 1
     },
     {
@@ -705,9 +729,45 @@
       "playCount": 1
     },
     {
+      "id": 2944,
+      "songId": 2944,
+      "songName": "Evolve",
+      "playCount": 1
+    },
+    {
+      "id": 208,
+      "songId": 208,
+      "songName": "Fluffhead",
+      "playCount": 1
+    },
+    {
+      "id": 867,
+      "songId": 867,
+      "songName": "Golden Age",
+      "playCount": 1
+    },
+    {
       "id": 237,
       "songId": 237,
       "songName": "Gotta Jibboo",
+      "playCount": 1
+    },
+    {
+      "id": 381,
+      "songId": 381,
+      "songName": "Mike's Song",
+      "playCount": 1
+    },
+    {
+      "id": 393,
+      "songId": 393,
+      "songName": "Mountains In The Mist",
+      "playCount": 1
+    },
+    {
+      "id": 404,
+      "songId": 404,
+      "songName": "Nicu",
       "playCount": 1
     },
     {
@@ -717,9 +777,27 @@
       "playCount": 1
     },
     {
+      "id": 1085,
+      "songId": 1085,
+      "songName": "Plasma",
+      "playCount": 1
+    },
+    {
+      "id": 440,
+      "songId": 440,
+      "songName": "Possum",
+      "playCount": 1
+    },
+    {
       "id": 447,
       "songId": 447,
       "songName": "Punch You In The Eye",
+      "playCount": 1
+    },
+    {
+      "id": 451,
+      "songId": 451,
+      "songName": "Quadrophonic Toppling",
       "playCount": 1
     },
     {
@@ -765,9 +843,39 @@
       "playCount": 1
     },
     {
+      "id": 576,
+      "songId": 576,
+      "songName": "The Curtain With",
+      "playCount": 1
+    },
+    {
+      "id": 2797,
+      "songId": 2797,
+      "songName": "The Final Hurrah",
+      "playCount": 1
+    },
+    {
+      "id": 586,
+      "songId": 586,
+      "songName": "The Lizards",
+      "playCount": 1
+    },
+    {
       "id": 609,
       "songId": 609,
       "songName": "Theme From The Bottom",
+      "playCount": 1
+    },
+    {
+      "id": 629,
+      "songId": 629,
+      "songName": "Twenty Years Later",
+      "playCount": 1
+    },
+    {
+      "id": 653,
+      "songId": 653,
+      "songName": "Weekapaug Groove",
       "playCount": 1
     },
     {
@@ -786,31 +894,10 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 440,
-      "songId": 440,
-      "songName": "Possum",
-      "historicalPlayCount": 576,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 381,
-      "songId": 381,
-      "songName": "Mike's Song",
-      "historicalPlayCount": 542,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 110,
       "songId": 110,
       "songName": "Chalk Dust Torture",
       "historicalPlayCount": 521,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 653,
-      "songId": 653,
-      "songName": "Weekapaug Groove",
-      "historicalPlayCount": 516,
       "originalArtist": "Phish"
     },
     {
@@ -917,13 +1004,34 @@
       "songName": "Split Open And Melt",
       "historicalPlayCount": 351,
       "originalArtist": "Phish"
+    },
+    {
+      "id": 364,
+      "songId": 364,
+      "songName": "Maze",
+      "historicalPlayCount": 346,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 525,
+      "songId": 525,
+      "songName": "Sparkle",
+      "historicalPlayCount": 334,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 628,
+      "songId": 628,
+      "songName": "Tweezer Reprise",
+      "historicalPlayCount": 327,
+      "originalArtist": "Phish"
     }
   ],
   "tourName": "2025 NYE Run",
-  "latestShowProcessed": "2025-12-28",
-  "generatedAt": "2025-12-30T01:07:54.278Z",
+  "latestShowProcessed": "2025-12-29",
+  "generatedAt": "2025-12-30T14:05:53.368Z",
   "showsWithDurations": 1,
-  "totalShows": 1,
+  "totalShows": 2,
   "showDurationAvailability": [
     {
       "date": "2025-12-28",
@@ -931,6 +1039,13 @@
       "city": "New York",
       "state": "NY",
       "durationsAvailable": true
+    },
+    {
+      "date": "2025-12-29",
+      "venue": "Madison Square Garden",
+      "city": "New York",
+      "state": "NY",
+      "durationsAvailable": false
     }
   ]
 }
