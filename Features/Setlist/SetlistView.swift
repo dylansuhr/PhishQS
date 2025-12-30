@@ -45,17 +45,25 @@ struct SetlistView: View {
                             }
                         }
 
-                        // Tour position (e.g., "2025 NYE RUN 2/4")
+                        // Tour position (e.g., "2025 NYE Run" left, "2/4" right)
                         if let tourPosition = viewModel.tourPositionInfo,
-                           !tourPosition.shortDisplayText.isEmpty {
-                            Text(tourPosition.shortDisplayText)
-                                .font(.caption)
-                                .fontWeight(.medium)
-                                .foregroundColor(.blue)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.blue.opacity(0.1))
-                                .cornerRadius(4)
+                           tourPosition.totalShows > 1 {
+                            HStack {
+                                Text(tourPosition.tourName)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+
+                                Spacer()
+
+                                Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.blue)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(4)
+                            }
                         }
 
                         // City, State
