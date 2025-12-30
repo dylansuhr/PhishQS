@@ -6,13 +6,25 @@ class SetlistViewModel: BaseViewModel {
     @Published var setlist: [String] = []
     @Published var setlistItems: [SetlistItem] = []
     @Published var enhancedSetlist: EnhancedSetlist?
-    
+    @Published var showMetadata: ShowMetadata?
+
     private let apiManager: APIManager
-    
+    private let tourDashboardClient: TourDashboardDataClient
+
+    // MARK: - Show Metadata
+
+    struct ShowMetadata {
+        let date: String
+        let venue: String
+        let city: String
+        let state: String
+    }
+
     // MARK: - Initialization
-    
-    init(apiManager: APIManager = APIManager()) {
+
+    init(apiManager: APIManager = APIManager(), tourDashboardClient: TourDashboardDataClient = .shared) {
         self.apiManager = apiManager
+        self.tourDashboardClient = tourDashboardClient
     }
 
     // called when user selects a specific date (YYYY-MM-DD)
@@ -20,15 +32,62 @@ class SetlistViewModel: BaseViewModel {
     func fetchSetlist(for date: String) async {
         setLoading(true)
 
+        // Fetch show metadata from tour dashboard (always available for tour dates)
+        await fetchShowMetadata(for: date)
+
         do {
             // Fetch basic setlist (optimized - only setlist + durations)
             let enhanced = try await apiManager.fetchBasicSetlist(for: date)
             enhancedSetlist = enhanced
             setlistItems = enhanced.setlistItems
             setlist = StringFormatters.formatSetlist(enhanced.setlistItems)
+
+            // Update metadata from setlist if we got better data
+            if let firstItem = enhanced.setlistItems.first {
+                showMetadata = ShowMetadata(
+                    date: date,
+                    venue: firstItem.venue,
+                    city: firstItem.city,
+                    state: firstItem.state ?? ""
+                )
+            }
             setLoading(false)
         } catch {
-            handleError(error)
+            // Even if setlist fails, we may have metadata - don't show error
+            setLoading(false)
+        }
+    }
+
+    @MainActor
+    private func fetchShowMetadata(for date: String) async {
+        do {
+            let tourData = try await tourDashboardClient.fetchCurrentTourData()
+
+            // Search in current tour dates
+            if let tourDate = tourData.currentTour.tourDates.first(where: { $0.date == date }) {
+                showMetadata = ShowMetadata(
+                    date: date,
+                    venue: tourDate.venue,
+                    city: tourDate.city,
+                    state: tourDate.state
+                )
+                return
+            }
+
+            // Search in future tours
+            for futureTour in tourData.futureTours {
+                if let tourDate = futureTour.tourDates.first(where: { $0.date == date }) {
+                    showMetadata = ShowMetadata(
+                        date: date,
+                        venue: tourDate.venue,
+                        city: tourDate.city,
+                        state: tourDate.state
+                    )
+                    return
+                }
+            }
+        } catch {
+            // Silently fail - we'll try to get metadata from setlist
         }
     }
     

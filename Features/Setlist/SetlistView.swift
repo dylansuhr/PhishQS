@@ -17,88 +17,69 @@ struct SetlistView: View {
 
         ScrollView {
             Color.clear
-            if let errorMessage = viewModel.errorMessage {
-                VStack(spacing: 16) {
-                    Text("Error loading setlist")
-                        .font(.headline)
-                    Text(errorMessage)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                    Button("Retry") {
-                        viewModel.fetchSetlist(for: date)
-                    }
-                    .buttonStyle(.bordered)
-                }
-                .padding()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if viewModel.setlist.isEmpty {
-                Text("No setlist available for this date")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                LazyVStack(alignment: .leading, spacing: 8) {
-                    // Show header with date and venue info
-                    if let firstItem = viewModel.setlistItems.first {
-                        VStack(alignment: .leading, spacing: 8) {
-                            // Formatted readable date
-                            Text(DateUtilities.formatDateWithDayOfWeek(date))
-                                .font(.subheadline)
+            LazyVStack(alignment: .leading, spacing: 8) {
+                // Show header with date and venue info (from metadata)
+                if let metadata = viewModel.showMetadata {
+                    VStack(alignment: .leading, spacing: 8) {
+                        // Formatted readable date
+                        Text(DateUtilities.formatDateWithDayOfWeek(date))
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        // Venue name
+                        Text(metadata.venue)
+                            .font(.headline)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.primary)
+                            .padding(.top, 4)
+
+                        // City, State
+                        let stateText = metadata.state.isEmpty ? "" : ", \(metadata.state)"
+                        Text("\(metadata.city)\(stateText)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        // Phish.in data availability indicator
+                        HStack(spacing: 4) {
+                            Text("phish.in")
+                                .font(.caption2)
                                 .foregroundColor(.secondary)
 
-                            // Venue name
-                            Text(firstItem.venue)
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.primary)
-                                .padding(.top, 4)
-
-                            // City, State
-                            let stateText = firstItem.state != nil ? ", \(firstItem.state!)" : ""
-                            Text("\(firstItem.city)\(stateText)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-
-                            // Phish.in data availability indicator
-                            HStack(spacing: 4) {
-                                Text("phish.in")
+                            if viewModel.hasValidDurations {
+                                Text("✓")
                                     .font(.caption2)
-                                    .foregroundColor(.secondary)
-
-                                if viewModel.hasValidDurations {
-                                    Text("✓")
-                                        .font(.caption2)
-                                        .foregroundColor(.green)
-                                } else {
-                                    Text("✗")
-                                        .font(.caption2)
-                                        .foregroundColor(.red)
-                                }
+                                    .foregroundColor(.green)
+                            } else {
+                                Text("✗")
+                                    .font(.caption2)
+                                    .foregroundColor(.red)
                             }
-                            .padding(.top, 2)
                         }
-                        .padding(.bottom, 16)
+                        .padding(.top, 2)
                     }
-                    
-                    // Display setlist with individual songs and durations
-                    ForEach(cachedContent, id: \.id) { item in
-                        DetailedSetlistLineView(content: item.content)
-                    }
+                    .padding(.bottom, 16)
                 }
-                .padding(.horizontal)
-                .opacity(contentOpacity)
+
+                // Display setlist with individual songs and durations (if available)
+                ForEach(cachedContent, id: \.id) { item in
+                    DetailedSetlistLineView(content: item.content)
+                }
             }
+            .padding(.horizontal)
+            .opacity(contentOpacity)
         }
         .background(Color(.systemGroupedBackground))
         .onAppear {
             viewModel.fetchSetlist(for: date)
         }
-        .onChange(of: viewModel.setlistItems) { _, _ in
-            cachedContent = groupedSetlistContent()
+        .onChange(of: viewModel.showMetadata?.date) { _, _ in
+            // Fade in when metadata loads
             withAnimation(.easeIn(duration: 0.2)) {
                 contentOpacity = 1
             }
+        }
+        .onChange(of: viewModel.setlistItems) { _, _ in
+            cachedContent = groupedSetlistContent()
         }
         // set the navigation title to the current date
         .navigationTitle(date)
