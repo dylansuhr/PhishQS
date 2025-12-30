@@ -211,6 +211,9 @@ class TourCalendarViewModel: ObservableObject {
         return nil
     }
     
+    /// Detect venue runs (consecutive nights at same venue) for calendar display
+    /// Note: Similar logic exists in SetlistViewModel.calculateVenueRun()
+    /// If updating this calculation, check both implementations for consistency
     private func detectVenueRunSpans(from months: [CalendarMonth]) -> [VenueRunSpan] {
         var venueRuns: [VenueRunSpan] = []
         let calendar = Calendar.current

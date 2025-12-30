@@ -143,6 +143,8 @@ class SetlistViewModel: BaseViewModel {
     }
 
     /// Calculate venue run info (N1/N2/N3) from consecutive dates at the same venue
+    /// Note: Similar logic exists in TourCalendarViewModel.detectVenueRunSpans()
+    /// If updating this calculation, check both implementations for consistency
     private func calculateVenueRun(for date: String, venue: String, in tourDates: [TourDashboardDataClient.TourDashboardData.TourDate]) -> VenueRun? {
         // Find all consecutive dates at the same venue
         let sortedDates = tourDates.sorted { $0.date < $1.date }
