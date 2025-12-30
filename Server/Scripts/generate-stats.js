@@ -386,9 +386,41 @@ async function generateTourStatisticsFromControlFile() {
 }
 
 /**
- * Check if statistics update is needed by comparing latest show with existing statistics
+ * Count how many played shows currently have duration data available
+ * Reads from individual show files to get current state
  *
- * This is the key optimization: if the latest show hasn't changed, statistics can't change.
+ * @param {Object} controlFileData - Tour dashboard control data
+ * @returns {number} Number of shows with duration data
+ */
+function countShowsWithDurations(controlFileData) {
+    let count = 0;
+
+    for (const tourDate of controlFileData.currentTour.tourDates) {
+        if (tourDate.played && tourDate.showFile) {
+            const showFilePath = join(__dirname, '..', 'Data', tourDate.showFile);
+
+            if (existsSync(showFilePath)) {
+                try {
+                    const showData = JSON.parse(readFileSync(showFilePath, 'utf8'));
+                    if (showData.trackDurations && showData.trackDurations.length > 0) {
+                        count++;
+                    }
+                } catch {
+                    // Skip files that can't be read
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
+/**
+ * Check if statistics update is needed
+ *
+ * Two separate checks:
+ * 1. PRIMARY: New show detected - updates single source of truth
+ * 2. SECONDARY: Phish.in duration data changed - updates cosmetic features
  *
  * @param {Object} controlFileData - Tour dashboard control data
  * @returns {Promise<{shouldUpdate: boolean, reason: string}>}
@@ -420,17 +452,30 @@ async function checkIfStatisticsUpdateNeeded(controlFileData) {
             return { shouldUpdate: true, reason: 'statistics_format_upgrade_needed' };
         }
 
+        // PRIMARY CHECK: New show detected - critical path
         if (existingLatestShow !== currentLatestShow.date) {
             return {
                 shouldUpdate: true,
-                reason: `latest_show_changed (${existingLatestShow} → ${currentLatestShow.date})`
+                reason: `new_show_detected (${existingLatestShow} → ${currentLatestShow.date})`
             };
         }
 
-        // Latest show unchanged - no statistics update needed
+        // SECONDARY CHECK: Phish.in duration data availability changed
+        // This is separate from new show detection - duration data can arrive at any time
+        const existingDurationCount = existingStats.showsWithDurations || 0;
+        const currentDurationCount = countShowsWithDurations(controlFileData);
+
+        if (currentDurationCount !== existingDurationCount) {
+            return {
+                shouldUpdate: true,
+                reason: `duration_data_changed (${existingDurationCount} → ${currentDurationCount} shows with durations)`
+            };
+        }
+
+        // No updates needed
         return {
             shouldUpdate: false,
-            reason: `latest_show_unchanged (${currentLatestShow.date})`
+            reason: `no_changes (latest: ${currentLatestShow.date}, durations: ${currentDurationCount}/${controlFileData.currentTour.playedShows} shows)`
         };
 
     } catch (error) {
