@@ -10,6 +10,7 @@ struct TourDashboardView: View {
     @State private var animateCard1 = false
     @State private var animateCard2 = false
     @State private var animateCard3 = false
+    @State private var showTourNameInNav = false
 
     var body: some View {
         DashboardGrid {
@@ -17,12 +18,18 @@ struct TourDashboardView: View {
             if let statistics = latestSetlistViewModel.tourStatistics, statistics.hasData {
                 TourStatisticsHeaderView(
                     tourName: statistics.tourName,
-                    tourPosition: latestSetlistViewModel.tourPositionInfo
+                    tourPosition: latestSetlistViewModel.tourPositionInfo,
+                    onVisibilityChange: { isVisible in
+                        showTourNameInNav = !isVisible
+                    }
                 )
             } else if let tourPosition = latestSetlistViewModel.tourPositionInfo {
                 TourStatisticsHeaderView(
                     tourName: tourPosition.tourName,
-                    tourPosition: tourPosition
+                    tourPosition: tourPosition,
+                    onVisibilityChange: { isVisible in
+                        showTourNameInNav = !isVisible
+                    }
                 )
             }
 
@@ -63,7 +70,7 @@ struct TourDashboardView: View {
                 FloatingSearchButton(showingDateSearch: $showingDateSearch)
             }
         }
-        .navigationTitle("PhishTD")
+        .navigationTitle(showTourNameInNav ? currentTourName : "PhishTD")
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $showingDateSearch) {
             if showDateSearchFeature {
@@ -98,12 +105,22 @@ struct TourDashboardView: View {
         // Begin state-driven animation chain
         animateCard1 = true
     }
+
+    private var currentTourName: String {
+        if let statistics = latestSetlistViewModel.tourStatistics, let name = statistics.tourName {
+            return name
+        } else if let tourPosition = latestSetlistViewModel.tourPositionInfo {
+            return tourPosition.tourName
+        }
+        return "PhishTD"
+    }
 }
 
 /// Header view for tour statistics section showing tour name and progress
 struct TourStatisticsHeaderView: View {
     let tourName: String?
     let tourPosition: TourShowPosition?
+    var onVisibilityChange: ((Bool) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -121,6 +138,15 @@ struct TourStatisticsHeaderView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            GeometryReader { geometry in
+                Color.clear
+                    .onChange(of: geometry.frame(in: .global).minY) { _, newValue in
+                        // Header is "hidden" when it scrolls above the nav bar area (~100pt from top)
+                        onVisibilityChange?(newValue > 50)
+                    }
+            }
+        )
     }
 }
 

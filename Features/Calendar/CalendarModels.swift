@@ -17,9 +17,28 @@ struct CalendarMonth: Identifiable, Equatable {
     let month: Int
     let monthName: String
     var days: [CalendarDay]
-    
+
     var displayTitle: String {
         "\(monthName) \(year)"
+    }
+
+    /// Number of weeks this month spans in the calendar grid
+    var numberOfWeeks: Int {
+        guard let firstDay = days.first else { return 5 }
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: firstDay.date)
+        let firstDayOffset = weekday - 1 // 0 for Sunday, 6 for Saturday
+        let totalCells = firstDayOffset + days.count
+        return (totalCells + 6) / 7 // Ceiling division
+    }
+
+    /// Recommended height for this month's calendar view
+    var recommendedHeight: CGFloat {
+        switch numberOfWeeks {
+        case 4: return 270
+        case 5: return 320
+        default: return 370 // 6 weeks
+        }
     }
 }
 

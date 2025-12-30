@@ -26,7 +26,7 @@ struct TourCalendarView: View {
 
     var body: some View {
         ZStack {
-            VStack(spacing: 12) {
+            VStack(spacing: 8) {
                 // Month header
                 monthHeader
 
@@ -36,7 +36,8 @@ struct TourCalendarView: View {
                 // Calendar grid
                 calendarGrid
             }
-            .padding()
+            .padding(.horizontal)
+            .padding(.vertical, 8)
 
             // Spanning venue badges overlay - only show when ready
             if showBadges {
@@ -75,13 +76,13 @@ struct TourCalendarView: View {
                     .frame(maxWidth: .infinity)
             }
         }
-        .padding(.bottom, 4)
+        .padding(.bottom, 2)
     }
 
     // MARK: - Calendar Grid
 
     private var calendarGrid: some View {
-        LazyVGrid(columns: columns, spacing: 6) {
+        LazyVGrid(columns: columns, spacing: 4) {
             // Add empty cells for proper day alignment
             ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
                 Color.clear
