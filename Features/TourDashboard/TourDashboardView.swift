@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 // Modern dashboard-style home screen
 struct TourDashboardView: View {
@@ -11,6 +12,9 @@ struct TourDashboardView: View {
     @State private var animateCard2 = false
     @State private var animateCard3 = false
     @State private var showTourNameInNav = false
+
+    // Pre-warm haptic engine at dashboard level for all child components
+    private let sharedHapticGenerator = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
         DashboardGrid {
@@ -70,8 +74,21 @@ struct TourDashboardView: View {
                 FloatingSearchButton(showingDateSearch: $showingDateSearch)
             }
         }
-        .navigationTitle(showTourNameInNav ? currentTourName : "PhishTD")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                if showTourNameInNav {
+                    Text(currentTourName)
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                } else {
+                    Image("blue_phish_td_transparent")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 30)
+                }
+            }
+        }
         .sheet(isPresented: $showingDateSearch) {
             if showDateSearchFeature {
                 NavigationStack {
@@ -80,6 +97,9 @@ struct TourDashboardView: View {
             }
         }
         .onAppear {
+            // Pre-warm haptic engine immediately so first interaction is instant
+            sharedHapticGenerator.prepare()
+
             // State-driven animation chain - start immediately
             startAnimationSequence()
         }
