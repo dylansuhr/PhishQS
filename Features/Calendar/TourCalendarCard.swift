@@ -11,6 +11,9 @@ import UIKit
 struct TourCalendarCard: View {
     @StateObject private var viewModel = TourCalendarViewModel()
     @State private var selectedShowDate: String?
+
+    // Pre-warmed haptic generator to avoid first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
     
     var body: some View {
         DashboardCard {
@@ -52,10 +55,8 @@ struct TourCalendarCard: View {
                 }
             }
 
-            // Pre-warm singletons and view model on main thread so first date tap is instant
-            Task {
-                _ = SetlistViewModel()
-            }
+            // Pre-warm haptic engine so first tap is instant
+            hapticGenerator.prepare()
         }
         .sheet(isPresented: Binding(
             get: { selectedShowDate != nil },
@@ -81,9 +82,8 @@ struct TourCalendarCard: View {
         formatter.dateFormat = "yyyy-MM-dd"
         selectedShowDate = formatter.string(from: day.date)
 
-        // Haptic feedback
-        let impact = UIImpactFeedbackGenerator(style: .light)
-        impact.impactOccurred()
+        // Haptic feedback using pre-warmed generator
+        hapticGenerator.impactOccurred()
     }
     
     // MARK: - Header (Empty for now)
