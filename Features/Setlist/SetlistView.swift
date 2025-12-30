@@ -88,7 +88,7 @@ struct SetlistView: View {
                         DetailedSetlistLineView(content: item.content)
                     }
                 }
-                .padding()
+                .padding(.horizontal)
             }
         }
         .background(Color(.systemGroupedBackground))
