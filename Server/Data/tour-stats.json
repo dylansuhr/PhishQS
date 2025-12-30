@@ -32,6 +32,99 @@
       "formattedDuration": "24:12"
     },
     {
+      "id": "40701",
+      "songName": "A Wave of Hope",
+      "songId": null,
+      "durationSeconds": 1232,
+      "showDate": "2025-12-29",
+      "setNumber": "Set 2",
+      "venue": "Madison Square Garden",
+      "venueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "city": "New York",
+      "state": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "20:32"
+    },
+    {
+      "id": "40697",
+      "songName": "Fluffhead",
+      "songId": null,
+      "durationSeconds": 987,
+      "showDate": "2025-12-29",
+      "setNumber": "Set 1",
+      "venue": "Madison Square Garden",
+      "venueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "city": "New York",
+      "state": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "16:27"
+    },
+    {
+      "id": "40703",
+      "songName": "Golden Age",
+      "songId": null,
+      "durationSeconds": 890,
+      "showDate": "2025-12-29",
+      "setNumber": "Set 2",
+      "venue": "Madison Square Garden",
+      "venueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "city": "New York",
+      "state": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "14:50"
+    },
+    {
       "id": "40680",
       "songName": "Down with Disease",
       "songId": null,
@@ -94,6 +187,37 @@
       "formattedDuration": "13:46"
     },
     {
+      "id": "40692",
+      "songName": "The Curtain With",
+      "songId": null,
+      "durationSeconds": 803,
+      "showDate": "2025-12-29",
+      "setNumber": "Set 1",
+      "venue": "Madison Square Garden",
+      "venueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "city": "New York",
+      "state": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "13:23"
+    },
+    {
       "id": "40678",
       "songName": "Run Like an Antelope",
       "songId": null,
@@ -125,6 +249,37 @@
       "formattedDuration": "13:19"
     },
     {
+      "id": "40693",
+      "songName": "Bathtub Gin",
+      "songId": null,
+      "durationSeconds": 753,
+      "showDate": "2025-12-29",
+      "setNumber": "Set 1",
+      "venue": "Madison Square Garden",
+      "venueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 2,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "city": "New York",
+      "state": "NY",
+      "tourPosition": {
+        "showNumber": 2,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "formattedDuration": "12:33"
+    },
+    {
       "id": "40681",
       "songName": "Simple",
       "songId": null,
@@ -154,161 +309,6 @@
         "tourYear": "2025"
       },
       "formattedDuration": "12:21"
-    },
-    {
-      "id": "40679",
-      "songName": "Oblivion",
-      "songId": null,
-      "durationSeconds": 728,
-      "showDate": "2025-12-28",
-      "setNumber": "Set 2",
-      "venue": "Madison Square Garden",
-      "venueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "city": "New York",
-      "state": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "12:08"
-    },
-    {
-      "id": "40674",
-      "songName": "Punch You in the Eye",
-      "songId": null,
-      "durationSeconds": 674,
-      "showDate": "2025-12-28",
-      "setNumber": "Set 1",
-      "venue": "Madison Square Garden",
-      "venueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "city": "New York",
-      "state": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "11:14"
-    },
-    {
-      "id": "40670",
-      "songName": "AC/DC Bag",
-      "songId": null,
-      "durationSeconds": 605,
-      "showDate": "2025-12-28",
-      "setNumber": "Set 1",
-      "venue": "Madison Square Garden",
-      "venueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "city": "New York",
-      "state": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "10:05"
-    },
-    {
-      "id": "40671",
-      "songName": "Roggae",
-      "songId": null,
-      "durationSeconds": 597,
-      "showDate": "2025-12-28",
-      "setNumber": "Set 1",
-      "venue": "Madison Square Garden",
-      "venueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "city": "New York",
-      "state": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "9:57"
-    },
-    {
-      "id": "40686",
-      "songName": "Slave to the Traffic Light",
-      "songId": null,
-      "durationSeconds": 587,
-      "showDate": "2025-12-28",
-      "setNumber": "Encore",
-      "venue": "Madison Square Garden",
-      "venueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 1,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "city": "New York",
-      "state": "NY",
-      "tourPosition": {
-        "showNumber": 1,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "formattedDuration": "9:47"
     }
   ],
   "rarestSongs": [
@@ -1029,8 +1029,8 @@
   ],
   "tourName": "2025 NYE Run",
   "latestShowProcessed": "2025-12-29",
-  "generatedAt": "2025-12-30T14:05:53.368Z",
-  "showsWithDurations": 1,
+  "generatedAt": "2025-12-30T20:16:02.446Z",
+  "showsWithDurations": 2,
   "totalShows": 2,
   "showDurationAvailability": [
     {
@@ -1045,7 +1045,7 @@
       "venue": "Madison Square Garden",
       "city": "New York",
       "state": "NY",
-      "durationsAvailable": false
+      "durationsAvailable": true
     }
   ]
 }
