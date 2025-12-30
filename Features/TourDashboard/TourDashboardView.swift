@@ -85,7 +85,7 @@ struct TourDashboardView: View {
                     Image("blue_phish_td_transparent")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 30)
+                        .frame(height: 50)
                 }
             }
         }
