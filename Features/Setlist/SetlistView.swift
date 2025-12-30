@@ -45,6 +45,15 @@ struct SetlistView: View {
                             }
                         }
 
+                        // Tour position (e.g., "2025 NYE RUN 2/4")
+                        if let tourPosition = viewModel.tourPositionInfo,
+                           !tourPosition.shortDisplayText.isEmpty {
+                            Text(tourPosition.shortDisplayText)
+                                .font(.caption)
+                                .fontWeight(.medium)
+                                .foregroundColor(.secondary)
+                        }
+
                         // City, State
                         let stateText = metadata.state.isEmpty ? "" : ", \(metadata.state)"
                         Text("\(metadata.city)\(stateText)")
