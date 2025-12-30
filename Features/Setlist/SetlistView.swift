@@ -39,23 +39,25 @@ struct SetlistView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
 
-                        // Phish.in data availability indicator
-                        HStack(spacing: 4) {
-                            Text("phish.in")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
+                        // Phish.in data availability indicator (only show if setlist exists)
+                        if !viewModel.setlistItems.isEmpty {
+                            HStack(spacing: 4) {
+                                Text("phish.in")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
 
-                            if viewModel.hasValidDurations {
-                                Text("✓")
-                                    .font(.caption2)
-                                    .foregroundColor(.green)
-                            } else {
-                                Text("✗")
-                                    .font(.caption2)
-                                    .foregroundColor(.red)
+                                if viewModel.hasValidDurations {
+                                    Text("✓")
+                                        .font(.caption2)
+                                        .foregroundColor(.green)
+                                } else {
+                                    Text("✗")
+                                        .font(.caption2)
+                                        .foregroundColor(.red)
+                                }
                             }
+                            .padding(.top, 2)
                         }
-                        .padding(.top, 2)
                     }
                     .padding(.bottom, 16)
                 }
