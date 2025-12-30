@@ -18,6 +18,8 @@ class SetlistViewModel: BaseViewModel {
         let venue: String
         let city: String
         let state: String
+        let tourPosition: TourShowPosition?
+        let venueRun: VenueRun?
     }
 
     // MARK: - Initialization
@@ -43,13 +45,15 @@ class SetlistViewModel: BaseViewModel {
             setlistItems = enhanced.setlistItems
             setlist = StringFormatters.formatSetlist(enhanced.setlistItems)
 
-            // Update metadata from setlist
+            // Update metadata from setlist (preserve tour/venue run from metadata)
             if let firstItem = enhanced.setlistItems.first {
                 showMetadata = ShowMetadata(
                     date: date,
                     venue: firstItem.venue,
                     city: firstItem.city,
-                    state: firstItem.state ?? ""
+                    state: firstItem.state ?? "",
+                    tourPosition: enhanced.tourPosition ?? showMetadata?.tourPosition,
+                    venueRun: enhanced.venueRun ?? showMetadata?.venueRun
                 )
             }
             setLoading(false)
@@ -71,7 +75,9 @@ class SetlistViewModel: BaseViewModel {
                     date: date,
                     venue: firstItem.venue,
                     city: firstItem.city,
-                    state: firstItem.state ?? ""
+                    state: firstItem.state ?? "",
+                    tourPosition: enhanced.tourPosition ?? showMetadata?.tourPosition,
+                    venueRun: enhanced.venueRun ?? showMetadata?.venueRun
                 )
             }
             setLoading(false)
@@ -88,11 +94,22 @@ class SetlistViewModel: BaseViewModel {
 
             // Search in current tour dates
             if let tourDate = tourData.currentTour.tourDates.first(where: { $0.date == date }) {
+                let tourDates = tourData.currentTour.tourDates
+                let tourPosition = TourShowPosition(
+                    tourName: tourData.currentTour.name,
+                    showNumber: tourDate.showNumber,
+                    totalShows: tourDates.count,
+                    tourYear: String(date.prefix(4))
+                )
+                let venueRun = calculateVenueRun(for: date, venue: tourDate.venue, in: tourDates)
+
                 showMetadata = ShowMetadata(
                     date: date,
                     venue: tourDate.venue,
                     city: tourDate.city,
-                    state: tourDate.state
+                    state: tourDate.state,
+                    tourPosition: tourPosition,
+                    venueRun: venueRun
                 )
                 return
             }
@@ -100,11 +117,22 @@ class SetlistViewModel: BaseViewModel {
             // Search in future tours
             for futureTour in tourData.futureTours {
                 if let tourDate = futureTour.tourDates.first(where: { $0.date == date }) {
+                    let tourDates = futureTour.tourDates
+                    let tourPosition = TourShowPosition(
+                        tourName: futureTour.name,
+                        showNumber: tourDate.showNumber,
+                        totalShows: tourDates.count,
+                        tourYear: String(date.prefix(4))
+                    )
+                    let venueRun = calculateVenueRun(for: date, venue: tourDate.venue, in: tourDates)
+
                     showMetadata = ShowMetadata(
                         date: date,
                         venue: tourDate.venue,
                         city: tourDate.city,
-                        state: tourDate.state
+                        state: tourDate.state,
+                        tourPosition: tourPosition,
+                        venueRun: venueRun
                     )
                     return
                 }
@@ -112,6 +140,74 @@ class SetlistViewModel: BaseViewModel {
         } catch {
             // Silently fail - we'll try to get metadata from setlist
         }
+    }
+
+    /// Calculate venue run info (N1/N2/N3) from consecutive dates at the same venue
+    private func calculateVenueRun(for date: String, venue: String, in tourDates: [TourDashboardDataClient.TourDashboardData.TourDate]) -> VenueRun? {
+        // Find all consecutive dates at the same venue
+        let sortedDates = tourDates.sorted { $0.date < $1.date }
+
+        var runDates: [String] = []
+        var foundTargetDate = false
+
+        for tourDate in sortedDates {
+            if tourDate.venue == venue {
+                if runDates.isEmpty || isConsecutiveDate(runDates.last!, tourDate.date) {
+                    runDates.append(tourDate.date)
+                    if tourDate.date == date {
+                        foundTargetDate = true
+                    }
+                } else {
+                    // Break in consecutive dates - start new run
+                    if foundTargetDate {
+                        break // We already found our run
+                    }
+                    runDates = [tourDate.date]
+                    if tourDate.date == date {
+                        foundTargetDate = true
+                    }
+                }
+            } else if foundTargetDate {
+                break // Different venue after our run
+            } else if !runDates.isEmpty {
+                runDates = [] // Reset - different venue before finding target
+            }
+        }
+
+        guard foundTargetDate, runDates.count > 1 else {
+            return nil // Single night, no run to display
+        }
+
+        guard let nightNumber = runDates.firstIndex(of: date).map({ $0 + 1 }) else {
+            return nil
+        }
+
+        let city = tourDates.first(where: { $0.date == date })?.city ?? ""
+        let state = tourDates.first(where: { $0.date == date })?.state ?? ""
+
+        return VenueRun(
+            venue: venue,
+            city: city,
+            state: state,
+            nightNumber: nightNumber,
+            totalNights: runDates.count,
+            showDates: runDates
+        )
+    }
+
+    /// Check if two dates are consecutive (one day apart)
+    private func isConsecutiveDate(_ date1: String, _ date2: String) -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+
+        guard let d1 = formatter.date(from: date1),
+              let d2 = formatter.date(from: date2) else {
+            return false
+        }
+
+        let calendar = Calendar.current
+        let daysBetween = calendar.dateComponents([.day], from: d1, to: d2).day ?? 0
+        return daysBetween == 1
     }
     
     // Non-async wrapper for SwiftUI compatibility
@@ -131,12 +227,12 @@ class SetlistViewModel: BaseViewModel {
     
     /// Get venue run information (N1/N2/N3), if available
     var venueRunInfo: VenueRun? {
-        return enhancedSetlist?.venueRun
+        return enhancedSetlist?.venueRun ?? showMetadata?.venueRun
     }
-    
+
     /// Get tour position information (Show X/Y), if available
     var tourPositionInfo: TourShowPosition? {
-        return enhancedSetlist?.tourPosition
+        return enhancedSetlist?.tourPosition ?? showMetadata?.tourPosition
     }
     
     /// Get available recordings, if any
