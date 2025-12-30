@@ -172,7 +172,9 @@ export class RarestSongsCalculator extends BaseStatisticsCalculator {
             });
         }
         
-        return rarestSongs;
+        // Add +1 to gap to match Phish.net website convention
+        // API returns "shows since last played", website shows "X show gap" (includes the show)
+        return rarestSongs.map(song => ({ ...song, gap: song.gap + 1 }));
     }
     
     /**

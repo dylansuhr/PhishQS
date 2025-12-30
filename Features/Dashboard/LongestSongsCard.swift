@@ -10,9 +10,9 @@ import SwiftUI
 
 struct LongestSongsCard: View {
     let songs: [TrackDuration]
+    let showDurationAvailability: [ShowDurationAvailability]  // Single source of truth from statistics
     @State private var isExpanded: Bool = false
     @State private var showDataPopup: Bool = false
-    @State private var tourData: TourDashboardDataClient.TourDashboardData?
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -105,12 +105,10 @@ struct LongestSongsCard: View {
             .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
             .id("longestSongsCard")
             .sheet(isPresented: $showDataPopup) {
-                if let tourData = tourData {
-                    ShowDataAvailabilityPopup(tourData: tourData, isPresented: $showDataPopup)
-                }
-            }
-            .task {
-                await loadTourData()
+                ShowDataAvailabilityPopup(
+                    showDurationAvailability: showDurationAvailability,
+                    isPresented: $showDataPopup
+                )
             }
         }
     }
@@ -118,28 +116,8 @@ struct LongestSongsCard: View {
     // MARK: - Helper Properties
 
     private var dataCoverageText: String {
-        guard let tourData = tourData else {
-            return "loading..."
-        }
-
-        let playedShows = tourData.currentTour.tourDates.filter { $0.played }
-        let showsWithDurations = playedShows.filter { show in
-            tourData.updateTracking.individualShows[show.date]?.durationsAvailable ?? false
-        }
-
-        return "data from \(showsWithDurations.count)/\(playedShows.count) shows"
-    }
-
-    // MARK: - Helper Methods
-
-    private func loadTourData() async {
-        do {
-            let data = try await TourDashboardDataClient.shared.fetchCurrentTourData()
-            await MainActor.run {
-                self.tourData = data
-            }
-        } catch {
-            SwiftLogger.error("Failed to load tour data for LongestSongsCard: \(error)", category: .ui)
-        }
+        let withDurations = showDurationAvailability.filter { $0.durationsAvailable }.count
+        let total = showDurationAvailability.count
+        return "data from \(withDurations)/\(total) shows"
     }
 }

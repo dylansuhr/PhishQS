@@ -35,7 +35,7 @@ struct TourCalendarCard: View {
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    .frame(height: 350)
+                    .frame(height: 370) // Compact layout for 6-week months
                     .animation(.easeInOut(duration: 0.3), value: viewModel.currentMonthIndex)
                 } else if let error = viewModel.errorMessage {
                     errorView(error)

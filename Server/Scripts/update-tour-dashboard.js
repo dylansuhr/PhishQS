@@ -358,23 +358,38 @@ function calculateTourPosition(tourDates, latestShowDate, tourName) {
 
 /**
  * Find future tours that haven't started yet - with complete detailed structure
+ *
+ * Handles two cases:
+ * 1. Named tours from Phish.net (e.g., "2026 Mexico") - use as-is
+ * 2. "Not Part of a Tour" shows - group by venue and create synthetic tour entries
+ *    These will be replaced automatically when Phish.net assigns a real tour name
  */
 function findFutureTours(shows, currentTourName) {
     const today = new Date().toISOString().split('T')[0];
-    
+    const futureTours = [];
+
     // Group shows by tour
     const tourGroups = {};
+    const notPartOfTourShows = [];
+
     shows.forEach(show => {
         if (show.tourname && show.tourname !== currentTourName) {
-            if (!tourGroups[show.tourname]) {
-                tourGroups[show.tourname] = [];
+            if (show.tourname === 'Not Part of a Tour') {
+                // Collect these separately for venue-based grouping
+                if (show.showdate > today) {
+                    notPartOfTourShows.push(show);
+                }
+            } else {
+                // Regular named tour
+                if (!tourGroups[show.tourname]) {
+                    tourGroups[show.tourname] = [];
+                }
+                tourGroups[show.tourname].push(show);
             }
-            tourGroups[show.tourname].push(show);
         }
     });
-    
-    // Find tours where all shows are in the future and build detailed structure
-    const futureTours = [];
+
+    // Process named tours (existing logic)
     for (const [tourName, tourShows] of Object.entries(tourGroups)) {
         const allFuture = tourShows.every(show => show.showdate > today);
         if (allFuture && tourShows.length > 0) {
@@ -386,10 +401,54 @@ function findFutureTours(shows, currentTourName) {
             futureTours.push(completeTourData);
         }
     }
-    
+
+    // Process "Not Part of a Tour" shows - group by venue
+    if (notPartOfTourShows.length > 0) {
+        const venueGroups = {};
+        notPartOfTourShows.forEach(show => {
+            const venue = show.venue || 'Unknown Venue';
+            if (!venueGroups[venue]) {
+                venueGroups[venue] = [];
+            }
+            venueGroups[venue].push(show);
+        });
+
+        // Create synthetic tour entries for each venue
+        for (const [venue, venueShows] of Object.entries(venueGroups)) {
+            // Sort by date
+            venueShows.sort((a, b) => a.showdate.localeCompare(b.showdate));
+
+            // Use venue as the tour name (will be replaced when Phish.net assigns real name)
+            const syntheticTourName = venue;
+            const tourSlug = syntheticTourName.toLowerCase().replace(/\s+/g, '-');
+
+            const tourDates = venueShows.map((show, index) => ({
+                date: show.showdate,
+                venue: show.venue || 'Unknown Venue',
+                city: show.city || '',
+                state: show.state || '',
+                played: false,
+                showNumber: index + 1,
+                showFile: `tours/${tourSlug}/show-${show.showdate}.json`
+            }));
+
+            futureTours.push({
+                name: syntheticTourName,
+                year: venueShows[0]?.showyear || new Date().getFullYear().toString(),
+                totalShows: venueShows.length,
+                playedShows: 0,
+                startDate: venueShows[0]?.showdate || '',
+                endDate: venueShows[venueShows.length - 1]?.showdate || '',
+                tourDates: tourDates
+            });
+
+            LoggingService.info(`Created synthetic tour "${syntheticTourName}" with ${venueShows.length} shows`);
+        }
+    }
+
     // Sort future tours by start date
     futureTours.sort((a, b) => a.startDate.localeCompare(b.startDate));
-    
+
     return futureTours;
 }
 
@@ -450,13 +509,23 @@ function checkIfUpdateNeeded(existingData, newData) {
  * @param {boolean} updateTimestamp - Whether to update the lastUpdated timestamp (default: true)
  */
 function writeTourDashboard(data, updateReason, updateTimestamp = true) {
+    // Load existing data to preserve updateTracking field
+    const existingData = loadExistingData();
+
     const output = {
         ...data,
         metadata: {
-            lastUpdated: updateTimestamp ? new Date().toISOString() : loadExistingData()?.metadata?.lastUpdated || new Date().toISOString(),
+            lastUpdated: updateTimestamp ? new Date().toISOString() : existingData?.metadata?.lastUpdated || new Date().toISOString(),
             dataVersion: '1.0',
             updateReason: updateReason,
             nextShow: findNextShow(data.currentTour?.tourDates)
+        },
+        // Preserve updateTracking from existing data (managed by initialize-tour-shows.js)
+        updateTracking: existingData?.updateTracking || {
+            lastAPICheck: new Date().toISOString(),
+            latestShowFromAPI: data.latestShow?.date || '',
+            pendingDurationChecks: [],
+            individualShows: {}
         }
     };
 

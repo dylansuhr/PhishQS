@@ -261,8 +261,12 @@ async function initializeTourShows() {
         }
         
         // Step 6: Update control file with show file references and smart tracking
-        // Only update if there were actual changes to show files
-        const hadChanges = showsCreated > 0 || showsUpdated > 0;
+        const hadShowFileChanges = showsCreated > 0 || showsUpdated > 0;
+
+        // Check if tracking data changed (e.g., tour changed, different shows)
+        const existingShowDates = Object.keys(controlFileData.updateTracking?.individualShows || {}).sort();
+        const newShowDates = Object.keys(individualShowsTracking).sort();
+        const trackingChanged = JSON.stringify(existingShowDates) !== JSON.stringify(newShowDates);
 
         const updatedControlFile = {
             ...controlFileData,
@@ -271,8 +275,8 @@ async function initializeTourShows() {
                 tourDates: updatedTourDates
             },
             updateTracking: {
-                // Only update timestamp if we made changes, otherwise preserve existing
-                lastAPICheck: hadChanges
+                // Update timestamp if show files changed or tracking data changed
+                lastAPICheck: (hadShowFileChanges || trackingChanged)
                     ? new Date().toISOString()
                     : controlFileData.updateTracking?.lastAPICheck || new Date().toISOString(),
                 latestShowFromAPI: controlFileData.latestShow.date,
@@ -283,10 +287,14 @@ async function initializeTourShows() {
             }
         };
 
-        // Only write control file if there were changes
-        if (hadChanges) {
+        // Write control file if show files changed OR if tracking data changed (e.g., new tour)
+        if (hadShowFileChanges || trackingChanged) {
             writeFileSync(controlFilePath, JSON.stringify(updatedControlFile, null, 2));
-            LoggingService.success('Control file updated with show file references');
+            if (trackingChanged && !hadShowFileChanges) {
+                LoggingService.success('Control file updated (tour tracking data refreshed)');
+            } else {
+                LoggingService.success('Control file updated with show file references');
+            }
         } else {
             LoggingService.info('Control file unchanged - no show updates needed');
         }

@@ -334,12 +334,34 @@ async function generateTourStatisticsFromControlFile() {
         // Step 6: Save result to Server/Data directory (single source of truth)
         const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
 
+        // Calculate shows with duration data for metadata
+        const showsWithDurations = allTourShows.filter(show =>
+            show.trackDurations && show.trackDurations.length > 0
+        ).length;
+
+        // Build per-show duration availability (single source of truth for iOS info popup)
+        const showDurationAvailability = controlFileData.currentTour.tourDates
+            .filter(td => td.played)
+            .map(td => {
+                const showData = allTourShows.find(s => s.showDate === td.date);
+                return {
+                    date: td.date,
+                    venue: td.venue,
+                    city: td.city,
+                    state: td.state,
+                    durationsAvailable: showData?.trackDurations?.length > 0 || false
+                };
+            });
+
         // Add tracking information for future optimization checks
         const statisticsWithTracking = {
             ...enhancedTourStats,
             latestShowProcessed: controlFileData.latestShow.date,
             generatedAt: new Date().toISOString(),
-            tourName: tourName // Ensure tour name is preserved
+            tourName: tourName, // Ensure tour name is preserved
+            showsWithDurations: showsWithDurations,
+            totalShows: allTourShows.length,
+            showDurationAvailability: showDurationAvailability
         };
 
         const jsonData = JSON.stringify(statisticsWithTracking, null, 2);

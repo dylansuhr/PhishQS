@@ -14,7 +14,10 @@ struct TourStatisticsCards: View {
     var body: some View {
         if let stats = statistics, stats.hasData {
             VStack(alignment: .leading, spacing: 16) {
-                LongestSongsCard(songs: stats.longestSongs)
+                LongestSongsCard(
+                    songs: stats.longestSongs,
+                    showDurationAvailability: stats.showDurationAvailability ?? []
+                )
                 RarestSongsCard(songs: stats.rarestSongs)
                 MostPlayedSongsCard(songs: stats.mostPlayedSongs)
                 if let mostCommonSongs = stats.mostCommonSongsNotPlayed, !mostCommonSongs.isEmpty {
@@ -104,13 +107,32 @@ struct TourStatisticsCards: View {
             MostCommonSongNotPlayed(songId: 512, songName: "Golgi Apparatus", historicalPlayCount: 856, originalArtist: "Phish")
         ]
 
+        // Sample duration availability
+        let sampleAvailability = [
+            ShowDurationAvailability(
+                date: "2025-07-27",
+                venue: "Madison Square Garden",
+                city: "New York",
+                state: "NY",
+                durationsAvailable: true
+            ),
+            ShowDurationAvailability(
+                date: "2025-07-26",
+                venue: "Broadview Stage at SPAC",
+                city: "Saratoga Springs",
+                state: "NY",
+                durationsAvailable: true
+            )
+        ]
+
         TourStatisticsCards(
             statistics: TourSongStatistics(
                 longestSongs: sampleLongestSongs,
                 rarestSongs: sampleRarestSongs,
                 mostPlayedSongs: sampleMostPlayedSongs,
                 mostCommonSongsNotPlayed: sampleMostCommonSongsNotPlayed,
-                tourName: TourConfig.currentTourName
+                tourName: TourConfig.currentTourName,
+                showDurationAvailability: sampleAvailability
             )
         )
 

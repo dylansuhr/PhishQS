@@ -200,6 +200,27 @@ struct MostCommonSongNotPlayed: Codable, Identifiable {
     }
 }
 
+/// Per-show duration availability info (single source of truth from tour-statistics API)
+struct ShowDurationAvailability: Codable, Identifiable {
+    let date: String
+    let venue: String
+    let city: String
+    let state: String
+    let durationsAvailable: Bool
+
+    var id: String { date }
+
+    /// Formatted date for display
+    var formattedDate: String {
+        DateUtilities.formatDateForDisplay(date) ?? date
+    }
+
+    /// Full venue display text
+    var venueDisplayText: String {
+        "\(venue), \(city), \(state)"
+    }
+}
+
 /// Combined tour statistics for display
 struct TourSongStatistics: Codable {
     let longestSongs: [TrackDuration]        // Top 3 longest songs by duration
@@ -207,10 +228,21 @@ struct TourSongStatistics: Codable {
     let mostPlayedSongs: [MostPlayedSong]    // Top 3 most played songs by frequency
     let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed]? // Top 20 common songs not played
     let tourName: String?                    // Current tour name for context
+    let showDurationAvailability: [ShowDurationAvailability]? // Per-show duration data availability
 
     /// Check if statistics data is available
     var hasData: Bool {
         return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true)
+    }
+
+    /// Number of shows with duration data
+    var showsWithDurations: Int {
+        showDurationAvailability?.filter { $0.durationsAvailable }.count ?? 0
+    }
+
+    /// Total number of played shows
+    var totalPlayedShows: Int {
+        showDurationAvailability?.count ?? 0
     }
 }
 

@@ -8,6 +8,7 @@ struct SetlistView: View {
 
     // view model loads setlist data from API
     @StateObject private var viewModel = SetlistViewModel()
+    @State private var cachedContent: [SetlistContentItem] = []
 
     var body: some View {
         // build the full YYYY-MM-DD date string for API call
@@ -39,7 +40,7 @@ struct SetlistView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                VStack(alignment: .leading, spacing: 8) {
+                LazyVStack(alignment: .leading, spacing: 8) {
                     // Show header with date and venue info
                     if let firstItem = viewModel.setlistItems.first {
                         VStack(alignment: .leading, spacing: 8) {
@@ -89,7 +90,7 @@ struct SetlistView: View {
                     }
                     
                     // Display setlist with individual songs and durations
-                    ForEach(groupedSetlistContent(), id: \.id) { item in
+                    ForEach(cachedContent, id: \.id) { item in
                         DetailedSetlistLineView(content: item.content)
                     }
                 }
@@ -99,6 +100,9 @@ struct SetlistView: View {
         .background(Color(.systemGroupedBackground))
         .onAppear {
             viewModel.fetchSetlist(for: date)
+        }
+        .onChange(of: viewModel.setlistItems) { _, _ in
+            cachedContent = groupedSetlistContent()
         }
         // set the navigation title to the current date
         .navigationTitle(date)

@@ -3,12 +3,13 @@
 //  PhishQS
 //
 //  Popup showing which shows have song duration data available
+//  Uses single source of truth from tour-statistics API
 //
 
 import SwiftUI
 
 struct ShowDataAvailabilityPopup: View {
-    let tourData: TourDashboardDataClient.TourDashboardData
+    let showDurationAvailability: [ShowDurationAvailability]
     @Binding var isPresented: Bool
 
     var body: some View {
@@ -31,13 +32,10 @@ struct ShowDataAvailabilityPopup: View {
                 // Show list
                 ScrollView {
                     LazyVStack(spacing: 0) {
-                        ForEach(playedShows, id: \.date) { show in
-                            ShowAvailabilityRow(
-                                show: show,
-                                durationsAvailable: getDurationsAvailable(for: show.date)
-                            )
+                        ForEach(showDurationAvailability) { show in
+                            ShowAvailabilityRow(show: show)
 
-                            if show.date != playedShows.last?.date {
+                            if show.date != showDurationAvailability.last?.date {
                                 Divider()
                                     .padding(.leading, 16)
                             }
@@ -55,30 +53,19 @@ struct ShowDataAvailabilityPopup: View {
             }
         }
     }
-
-    // MARK: - Helper Properties
-
-    private var playedShows: [TourDashboardDataClient.TourDashboardData.TourDate] {
-        tourData.currentTour.tourDates.filter { $0.played }
-    }
-
-    private func getDurationsAvailable(for date: String) -> Bool {
-        return tourData.updateTracking.individualShows[date]?.durationsAvailable ?? false
-    }
 }
 
 struct ShowAvailabilityRow: View {
-    let show: TourDashboardDataClient.TourDashboardData.TourDate
-    let durationsAvailable: Bool
+    let show: ShowDurationAvailability
 
     var body: some View {
         HStack {
             VStack(alignment: .leading, spacing: 4) {
-                Text(formattedDate)
+                Text(show.formattedDate)
                     .font(.body)
                     .fontWeight(.medium)
 
-                Text("\(show.venue), \(show.city), \(show.state)")
+                Text(show.venueDisplayText)
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -86,100 +73,35 @@ struct ShowAvailabilityRow: View {
             Spacer()
 
             // Status indicator
-            Text(durationsAvailable ? "✓" : "✗")
+            Text(show.durationsAvailable ? "✓" : "✗")
                 .font(.title2)
-                .foregroundColor(durationsAvailable ? .green : .red)
+                .foregroundColor(show.durationsAvailable ? .green : .red)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
     }
-
-    private var formattedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-
-        guard let date = formatter.date(from: show.date) else {
-            return show.date
-        }
-
-        formatter.dateFormat = "MMM d, yyyy"
-        return formatter.string(from: date)
-    }
 }
 
 #Preview {
-    let sampleTourData = TourDashboardDataClient.TourDashboardData(
-        currentTour: TourDashboardDataClient.TourDashboardData.CurrentTour(
-            name: "2025 Late Summer Tour",
-            year: "2025",
-            totalShows: 8,
-            playedShows: 7,
-            startDate: "2025-09-12",
-            endDate: "2025-09-21",
-            tourDates: [
-                TourDashboardDataClient.TourDashboardData.TourDate(
-                    date: "2025-09-12",
-                    venue: "Highland Festival Grounds",
-                    city: "Louisville",
-                    state: "KY",
-                    played: true,
-                    showNumber: 1,
-                    showFile: "show1.json"
-                ),
-                TourDashboardDataClient.TourDashboardData.TourDate(
-                    date: "2025-09-13",
-                    venue: "Coca-Cola Amphitheater",
-                    city: "Birmingham",
-                    state: "AL",
-                    played: true,
-                    showNumber: 2,
-                    showFile: "show2.json"
-                )
-            ]
+    let sampleAvailability = [
+        ShowDurationAvailability(
+            date: "2025-12-28",
+            venue: "Madison Square Garden",
+            city: "New York",
+            state: "NY",
+            durationsAvailable: true
         ),
-        latestShow: TourDashboardDataClient.TourDashboardData.LatestShow(
-            date: "2025-09-13",
-            venue: "Test Venue",
-            city: "Test City",
-            state: "TS",
-            tourPosition: TourDashboardDataClient.TourDashboardData.TourPosition(
-                showNumber: 2,
-                totalShows: 8,
-                tourName: "2025 Late Summer Tour"
-            )
-        ),
-        futureTours: [],
-        metadata: TourDashboardDataClient.TourDashboardData.Metadata(
-            lastUpdated: "2025-09-21",
-            dataVersion: "1.0",
-            updateReason: "test",
-            nextShow: nil
-        ),
-        updateTracking: TourDashboardDataClient.TourDashboardData.UpdateTracking(
-            lastAPICheck: "2025-09-21",
-            latestShowFromAPI: "2025-09-13",
-            pendingDurationChecks: [],
-            individualShows: [
-                "2025-09-12": TourDashboardDataClient.TourDashboardData.ShowStatus(
-                    exists: true,
-                    lastUpdated: "2025-09-14",
-                    durationsAvailable: false,
-                    dataComplete: false,
-                    needsUpdate: true
-                ),
-                "2025-09-13": TourDashboardDataClient.TourDashboardData.ShowStatus(
-                    exists: true,
-                    lastUpdated: "2025-09-16",
-                    durationsAvailable: true,
-                    dataComplete: true,
-                    needsUpdate: false
-                )
-            ]
+        ShowDurationAvailability(
+            date: "2025-12-29",
+            venue: "Madison Square Garden",
+            city: "New York",
+            state: "NY",
+            durationsAvailable: false
         )
-    )
+    ]
 
     return ShowDataAvailabilityPopup(
-        tourData: sampleTourData,
+        showDurationAvailability: sampleAvailability,
         isPresented: .constant(true)
     )
 }

@@ -12,6 +12,8 @@ struct SpanningMarqueeBadge: View {
     let span: VenueRunSpan
     @ObservedObject var coordinateMap: CircleCoordinateMap
     let color: Color
+    let monthStartDate: Date  // First day of current month being displayed
+    let monthEndDate: Date    // Last day of current month being displayed
 
     var body: some View {
         // Check if coordinates are ready before rendering
@@ -54,9 +56,13 @@ struct SpanningMarqueeBadge: View {
     private func getRequiredDaysFromSpan() -> [Int] {
         let calendar = Calendar.current
         var days: [Int] = []
-        var current = span.startDate
 
-        while current <= span.endDate {
+        // Clamp span dates to current month
+        let effectiveStart = max(span.startDate, monthStartDate)
+        let effectiveEnd = min(span.endDate, monthEndDate)
+
+        var current = effectiveStart
+        while current <= effectiveEnd {
             let dayNumber = calendar.component(.day, from: current)
             days.append(dayNumber)
             current = calendar.date(byAdding: .day, value: 1, to: current) ?? current
@@ -80,15 +86,19 @@ struct SpanningMarqueeBadge: View {
     }
 
     private func groupDatesByWeek() -> [[Int]] {
-        // Extract day numbers from the span's dates
+        // Extract day numbers from the span's dates, clamped to current month
         let calendar = Calendar.current
         var datesByWeek: [[Int]] = []
         var currentWeekDates: [Int] = []
         var lastWeekday: Int? = nil
 
-        // Create date range from span
-        var current = span.startDate
-        while current <= span.endDate {
+        // Clamp span dates to current month
+        let effectiveStart = max(span.startDate, monthStartDate)
+        let effectiveEnd = min(span.endDate, monthEndDate)
+
+        // Create date range from clamped span
+        var current = effectiveStart
+        while current <= effectiveEnd {
             let dayNumber = calendar.component(.day, from: current)
             let weekday = calendar.component(.weekday, from: current)
 

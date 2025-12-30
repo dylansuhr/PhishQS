@@ -42,7 +42,7 @@ struct DayCell: View {
                 .font(.system(size: 15, weight: day.isShowDate ? .medium : .regular, design: .rounded))
                 .foregroundColor(textColor)
         }
-        .frame(width: 44, height: 44)
+        .frame(width: 40, height: 40)
         .contentShape(Rectangle())
         .background(
             GeometryReader { geometry in

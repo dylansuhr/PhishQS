@@ -81,11 +81,11 @@ struct TourCalendarView: View {
     // MARK: - Calendar Grid
 
     private var calendarGrid: some View {
-        LazyVGrid(columns: columns, spacing: 8) {
+        LazyVGrid(columns: columns, spacing: 6) {
             // Add empty cells for proper day alignment
             ForEach(0..<firstWeekdayOffset, id: \.self) { _ in
                 Color.clear
-                    .frame(height: 44)
+                    .frame(height: 40)
             }
 
             // Add day cells
@@ -118,12 +118,12 @@ struct TourCalendarView: View {
     // MARK: - Spanning Badges Overlay
 
     private var spanningBadgesOverlay: some View {
+        // Get month boundaries for filtering
+        let monthStart = month.days.first?.date ?? Date()
+        let monthEnd = month.days.last?.date ?? Date()
+
         // Filter spans that are relevant to this month
         let monthSpans = venueRunSpans.filter { span in
-            let _ = Calendar.current
-            let monthStart = month.days.first?.date ?? Date()
-            let monthEnd = month.days.last?.date ?? Date()
-
             // Include spans that intersect with this month
             return span.startDate <= monthEnd && span.endDate >= monthStart
         }
@@ -133,7 +133,9 @@ struct TourCalendarView: View {
                 SpanningMarqueeBadge(
                     span: span,
                     coordinateMap: coordinateMap,
-                    color: venueColor(for: span.venue)
+                    color: venueColor(for: span.venue),
+                    monthStartDate: monthStart,
+                    monthEndDate: monthEnd
                 )
                 .id("\(span.id)-\(badgeResetID)") // Force view recreation when reset ID changes
             }
