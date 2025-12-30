@@ -44,12 +44,6 @@ struct SetlistView: View {
                     // Show header with date and venue info
                     if let firstItem = viewModel.setlistItems.first {
                         VStack(alignment: .leading, spacing: 8) {
-                            // Large bold date
-                            Text(date)
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .foregroundColor(.primary)
-
                             // Formatted readable date
                             Text(DateUtilities.formatDateWithDayOfWeek(date))
                                 .font(.subheadline)
