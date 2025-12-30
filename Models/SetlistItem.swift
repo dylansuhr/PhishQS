@@ -8,7 +8,7 @@
 import Foundation
 
 // one row of setlist data from the showdate-level API call
-struct SetlistItem: Codable {
+struct SetlistItem: Codable, Equatable {
     let set: String           // set number or label (e.g. "1", "Encore")
     let song: String          // song name
     let songId: Int?          // optional songid for reliable cross-API matching
