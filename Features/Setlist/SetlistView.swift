@@ -17,7 +17,7 @@ struct SetlistView: View {
 
         ScrollView {
             Color.clear
-            LazyVStack(alignment: .leading, spacing: 8) {
+            LazyVStack(alignment: .leading, spacing: 4) {
                 // Show header with date and venue info (from metadata)
                 if let metadata = viewModel.showMetadata {
                     VStack(alignment: .leading, spacing: 6) {
@@ -75,7 +75,7 @@ struct SetlistView: View {
                     DetailedSetlistLineView(content: item.content)
                 }
             }
-            .padding(.horizontal)
+            .padding(.horizontal, 20)
             .opacity(contentOpacity)
         }
         .background(Color(.systemGroupedBackground))
