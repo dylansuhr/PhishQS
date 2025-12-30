@@ -7,14 +7,25 @@ struct TourDashboardView: View {
 
     @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
     @State private var showingDateSearch = false
-    @State private var animateCards = false
     @State private var animateCard1 = false
     @State private var animateCard2 = false
     @State private var animateCard3 = false
-    @State private var animateCard4 = false
 
     var body: some View {
         DashboardGrid {
+            // Tour Header at the very top
+            if let statistics = latestSetlistViewModel.tourStatistics, statistics.hasData {
+                TourStatisticsHeaderView(
+                    tourName: statistics.tourName,
+                    tourPosition: latestSetlistViewModel.tourPositionInfo
+                )
+            } else if let tourPosition = latestSetlistViewModel.tourPositionInfo {
+                TourStatisticsHeaderView(
+                    tourName: tourPosition.tourName,
+                    tourPosition: tourPosition
+                )
+            }
+
             // Latest Show Hero Card
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
@@ -30,21 +41,19 @@ struct TourDashboardView: View {
             // Tour Statistics Cards
             if let statistics = latestSetlistViewModel.tourStatistics, statistics.hasData {
                 DashboardSection {
-                    TourStatisticsHeaderView(
-                        tourName: statistics.tourName,
-                        tourPosition: latestSetlistViewModel.tourPositionInfo
-                    )
-                    .modifier(StateCardAnimationModifier(animate: $animateCard3))
-
                     TourStatisticsCards(statistics: statistics)
-                        .modifier(StateCardAnimationModifier(animate: $animateCard4))
+                        .modifier(StateCardAnimationModifier(animate: $animateCard3))
                 }
             } else if latestSetlistViewModel.isTourStatisticsLoading && latestSetlistViewModel.latestShow != nil {
                 // Show loading state for tour statistics while main content is already loaded
                 DashboardSection {
-                    TourStatisticsLoadingView(
-                        tourPosition: latestSetlistViewModel.tourPositionInfo
-                    )
+                    HStack {
+                        ProgressView()
+                            .scaleEffect(0.8)
+                        Text("Loading tour statistics...")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                     .modifier(StateCardAnimationModifier(animate: $animateCard3))
                 }
             }
@@ -83,14 +92,6 @@ struct TourDashboardView: View {
                 }
             }
         }
-        .onChange(of: animateCard3) { _, isAnimated in
-            if isAnimated {
-                // Card 3 completed, trigger card 4
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    animateCard4 = true
-                }
-            }
-        }
     }
 
     private func startAnimationSequence() {
@@ -105,23 +106,21 @@ struct TourStatisticsHeaderView: View {
     let tourPosition: TourShowPosition?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 4) {
             if let tourName = tourName {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("CURRENT TOUR")
-                        .font(.caption2)
-                        .foregroundColor(.appHeaderBlue)
-                        .textCase(.uppercase)
-                        .tracking(0.5)
+                Text("CURRENT TOUR")
+                    .font(.caption2)
+                    .foregroundColor(.appHeaderBlue)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
 
-                    Text(tourName)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.appHeaderBlue)
-                }
-                .padding(.bottom, 16)
+                Text(tourName)
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.appHeaderBlue)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -152,41 +151,6 @@ struct FloatingSearchButton: View {
             .padding(.bottom, 8)
         }
         .frame(maxWidth: .infinity)
-    }
-}
-
-/// Loading view for tour statistics
-struct TourStatisticsLoadingView: View {
-    let tourPosition: TourShowPosition?
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if let tourPosition = tourPosition {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("CURRENT TOUR")
-                        .font(.caption2)
-                        .foregroundColor(.appHeaderBlue)
-                        .textCase(.uppercase)
-                        .tracking(0.5)
-
-                    Text(tourPosition.tourName)
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .foregroundColor(.appHeaderBlue)
-                }
-                .padding(.bottom, 16)
-            }
-
-            // Loading indicator
-            HStack {
-                ProgressView()
-                    .scaleEffect(0.8)
-                Text("Loading tour statistics...")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            .padding(.top, 8)
-        }
     }
 }
 
