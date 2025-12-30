@@ -51,7 +51,11 @@ struct SetlistView: View {
                             Text(tourPosition.shortDisplayText)
                                 .font(.caption)
                                 .fontWeight(.medium)
-                                .foregroundColor(.secondary)
+                                .foregroundColor(.blue)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Color.blue.opacity(0.1))
+                                .cornerRadius(4)
                         }
 
                         // City, State
