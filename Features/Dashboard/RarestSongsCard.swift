@@ -7,10 +7,14 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct RarestSongsCard: View {
     let songs: [SongGapInfo]
     @State private var isExpanded: Bool = false
+
+    // Pre-warmed haptic generator to avoid first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -33,6 +37,7 @@ struct RarestSongsCard: View {
                         // Show More/Less button when there are more than 3 songs
                         if songs.count > 3 {
                             Button(action: {
+                                hapticGenerator.impactOccurred()
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     isExpanded.toggle()
 
@@ -70,6 +75,9 @@ struct RarestSongsCard: View {
                 }
             }
             .id("rarestSongsCard")
+            .onAppear {
+                hapticGenerator.prepare()
+            }
         }
     }
 }

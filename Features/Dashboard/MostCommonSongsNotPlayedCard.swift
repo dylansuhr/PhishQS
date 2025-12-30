@@ -7,11 +7,15 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct MostCommonSongsNotPlayedCard: View {
     let songs: [MostCommonSongNotPlayed]
     @State private var isExpanded: Bool = false
     @State private var shouldScrollToTop: Bool = false
+
+    // Pre-warmed haptic generator to avoid first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -34,6 +38,7 @@ struct MostCommonSongsNotPlayedCard: View {
                         // Show More/Less button when there are more than 5 songs
                         if songs.count > 5 {
                             Button(action: {
+                                hapticGenerator.impactOccurred()
                                 let wasExpanded = isExpanded
 
                                 withAnimation(.easeInOut(duration: 0.3)) {
@@ -61,6 +66,9 @@ struct MostCommonSongsNotPlayedCard: View {
                 }
             }
             .id("mostCommonNotPlayedCard")
+            .onAppear {
+                hapticGenerator.prepare()
+            }
             .onChange(of: shouldScrollToTop) { _, newValue in
                 if newValue && !isExpanded {
                     // Wait a moment for collapse animation to complete, then scroll

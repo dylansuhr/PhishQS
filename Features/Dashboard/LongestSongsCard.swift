@@ -7,12 +7,16 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct LongestSongsCard: View {
     let songs: [TrackDuration]
     let showDurationAvailability: [ShowDurationAvailability]  // Single source of truth from statistics
     @State private var isExpanded: Bool = false
     @State private var showDataPopup: Bool = false
+
+    // Pre-warmed haptic generator to avoid first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -63,6 +67,7 @@ struct LongestSongsCard: View {
                         // Show More/Less button when there are more than 3 songs
                         if songs.count > 3 {
                             Button(action: {
+                                hapticGenerator.impactOccurred()
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     isExpanded.toggle()
 
@@ -104,6 +109,9 @@ struct LongestSongsCard: View {
             .cornerRadius(12)
             .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
             .id("longestSongsCard")
+            .onAppear {
+                hapticGenerator.prepare()
+            }
             .sheet(isPresented: $showDataPopup) {
                 ShowDataAvailabilityPopup(
                     showDurationAvailability: showDurationAvailability,
