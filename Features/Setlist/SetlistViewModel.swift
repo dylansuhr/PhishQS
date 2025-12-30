@@ -35,8 +35,31 @@ class SetlistViewModel: BaseViewModel {
         // Fetch show metadata from tour dashboard (always available for tour dates)
         await fetchShowMetadata(for: date)
 
+        // First try to fetch from tour dashboard (has venueRun data for current tour shows)
         do {
-            // Fetch basic setlist (optimized - only setlist + durations)
+            let showData = try await tourDashboardClient.fetchShowData(for: date)
+            let enhanced = tourDashboardClient.convertToEnhancedSetlist(showData)
+            enhancedSetlist = enhanced
+            setlistItems = enhanced.setlistItems
+            setlist = StringFormatters.formatSetlist(enhanced.setlistItems)
+
+            // Update metadata from setlist
+            if let firstItem = enhanced.setlistItems.first {
+                showMetadata = ShowMetadata(
+                    date: date,
+                    venue: firstItem.venue,
+                    city: firstItem.city,
+                    state: firstItem.state ?? ""
+                )
+            }
+            setLoading(false)
+            return
+        } catch {
+            // Show file not found - fall back to basic API for historical shows
+        }
+
+        // Fallback: Fetch basic setlist (for historical shows not in tour data)
+        do {
             let enhanced = try await apiManager.fetchBasicSetlist(for: date)
             enhancedSetlist = enhanced
             setlistItems = enhanced.setlistItems
