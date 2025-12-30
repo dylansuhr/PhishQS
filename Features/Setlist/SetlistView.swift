@@ -20,7 +20,7 @@ struct SetlistView: View {
             LazyVStack(alignment: .leading, spacing: 8) {
                 // Show header with date and venue info (from metadata)
                 if let metadata = viewModel.showMetadata {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading, spacing: 6) {
                         // Formatted readable date
                         Text(DateUtilities.formatDateWithDayOfWeek(date))
                             .font(.subheadline)
@@ -28,10 +28,9 @@ struct SetlistView: View {
 
                         // Venue name
                         Text(metadata.venue)
-                            .font(.headline)
+                            .font(.title3)
                             .fontWeight(.semibold)
                             .foregroundColor(.primary)
-                            .padding(.top, 4)
 
                         // City, State
                         let stateText = metadata.state.isEmpty ? "" : ", \(metadata.state)"
@@ -56,10 +55,19 @@ struct SetlistView: View {
                                         .foregroundColor(.red)
                                 }
                             }
-                            .padding(.top, 2)
+                            .padding(.top, 4)
                         }
                     }
-                    .padding(.bottom, 16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(12)
+
+                    // Divider between header and setlist
+                    if !viewModel.setlistItems.isEmpty {
+                        Divider()
+                            .padding(.vertical, 8)
+                    }
                 }
 
                 // Display setlist with individual songs and durations (if available)
