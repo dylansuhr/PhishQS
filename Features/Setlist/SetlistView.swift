@@ -9,6 +9,7 @@ struct SetlistView: View {
     // view model loads setlist data from API
     @StateObject private var viewModel = SetlistViewModel()
     @State private var cachedContent: [SetlistContentItem] = []
+    @State private var contentOpacity: Double = 0
 
     var body: some View {
         // build the full YYYY-MM-DD date string for API call
@@ -16,10 +17,7 @@ struct SetlistView: View {
 
         ScrollView {
             Color.clear
-            if viewModel.isLoading {
-                ProgressView("Loading setlist...")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else if let errorMessage = viewModel.errorMessage {
+            if let errorMessage = viewModel.errorMessage {
                 VStack(spacing: 16) {
                     Text("Error loading setlist")
                         .font(.headline)
@@ -89,6 +87,7 @@ struct SetlistView: View {
                     }
                 }
                 .padding(.horizontal)
+                .opacity(contentOpacity)
             }
         }
         .background(Color(.systemGroupedBackground))
@@ -97,6 +96,9 @@ struct SetlistView: View {
         }
         .onChange(of: viewModel.setlistItems) { _, _ in
             cachedContent = groupedSetlistContent()
+            withAnimation(.easeIn(duration: 0.2)) {
+                contentOpacity = 1
+            }
         }
         // set the navigation title to the current date
         .navigationTitle(date)
