@@ -3,7 +3,7 @@
     "name": "2025 NYE Run",
     "year": "2025",
     "totalShows": 4,
-    "playedShows": 1,
+    "playedShows": 2,
     "startDate": "2025-12-28",
     "endDate": "2025-12-31",
     "tourDates": [
@@ -21,7 +21,7 @@
         "venue": "Madison Square Garden",
         "city": "New York",
         "state": "NY",
-        "played": false,
+        "played": true,
         "showNumber": 2,
         "showFile": "tours/2025-nye-run/show-2025-12-29.json"
       },
@@ -46,12 +46,12 @@
     ]
   },
   "latestShow": {
-    "date": "2025-12-28",
+    "date": "2025-12-29",
     "venue": "Madison Square Garden",
     "city": "New York",
     "state": "NY",
     "tourPosition": {
-      "showNumber": 1,
+      "showNumber": 2,
       "totalShows": 4,
       "tourName": "2025 NYE Run"
     }
@@ -105,27 +105,36 @@
     }
   ],
   "metadata": {
-    "lastUpdated": "2025-12-29T04:54:13.778Z",
+    "lastUpdated": "2025-12-30T04:44:52.828Z",
     "dataVersion": "1.0",
     "updateReason": "new_show",
     "nextShow": {
-      "date": "2025-12-29",
+      "date": "2025-12-30",
       "venue": "Madison Square Garden",
       "city": "New York",
       "state": "NY"
     }
   },
   "updateTracking": {
-    "lastAPICheck": "2025-12-29T20:16:45.936Z",
-    "latestShowFromAPI": "2025-12-28",
-    "pendingDurationChecks": [],
+    "lastAPICheck": "2025-12-30T04:44:53.475Z",
+    "latestShowFromAPI": "2025-12-29",
+    "pendingDurationChecks": [
+      "2025-12-29"
+    ],
     "individualShows": {
       "2025-12-28": {
         "exists": true,
-        "lastUpdated": "2025-12-29T20:16:45.936Z",
+        "lastUpdated": "2025-12-29T20:16:45.934Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
+      },
+      "2025-12-29": {
+        "exists": true,
+        "lastUpdated": "2025-12-30T04:44:53.475Z",
+        "durationsAvailable": false,
+        "dataComplete": false,
+        "needsUpdate": true
       }
     }
   }
