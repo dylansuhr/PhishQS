@@ -12,6 +12,7 @@ struct TourDashboardView: View {
     @State private var animateCard2 = false
     @State private var animateCard3 = false
     @State private var showTourNameInNav = false
+    @State private var animationWarmup = false  // Pre-warm animation system
 
     // Pre-warm haptic engine at dashboard level for all child components
     private let sharedHapticGenerator = UIImpactFeedbackGenerator(style: .light)
@@ -85,7 +86,7 @@ struct TourDashboardView: View {
                     Image("blue_phish_td_transparent")
                         .resizable()
                         .scaledToFit()
-                        .frame(height: 50)
+                        .frame(height: 40)
                 }
             }
         }
@@ -99,6 +100,11 @@ struct TourDashboardView: View {
         .onAppear {
             // Pre-warm haptic engine immediately so first interaction is instant
             sharedHapticGenerator.prepare()
+
+            // Pre-warm animation system with invisible animation
+            withAnimation(.easeInOut(duration: 0.01)) {
+                animationWarmup = true
+            }
 
             // State-driven animation chain - start immediately
             startAnimationSequence()
