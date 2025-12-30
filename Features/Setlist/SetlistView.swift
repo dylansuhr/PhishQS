@@ -26,11 +26,24 @@ struct SetlistView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
 
-                        // Venue name
-                        Text(metadata.venue)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.primary)
+                        // Venue name with run indicator
+                        HStack {
+                            Text(metadata.venue)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.primary)
+
+                            if let venueRun = viewModel.venueRunInfo {
+                                Text(venueRun.runDisplayText)
+                                    .font(.caption)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.blue)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color.blue.opacity(0.1))
+                                    .cornerRadius(4)
+                            }
+                        }
 
                         // City, State
                         let stateText = metadata.state.isEmpty ? "" : ", \(metadata.state)"
