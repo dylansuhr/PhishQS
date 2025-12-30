@@ -33,15 +33,10 @@ struct SetlistView: View {
                                 .fontWeight(.semibold)
                                 .foregroundColor(.primary)
 
+                            Spacer()
+
                             if let venueRun = viewModel.venueRunInfo {
-                                Text(venueRun.runDisplayText)
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(.blue)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(4)
+                                BadgeView(text: venueRun.runDisplayText, style: .blue)
                             }
                         }
 
@@ -50,19 +45,12 @@ struct SetlistView: View {
                            tourPosition.totalShows > 1 {
                             HStack {
                                 Text(tourPosition.tourName)
-                                    .font(.subheadline)
+                                    .font(.caption)
                                     .foregroundColor(.secondary)
 
                                 Spacer()
 
-                                Text("\(tourPosition.showNumber)/\(tourPosition.totalShows)")
-                                    .font(.caption)
-                                    .fontWeight(.medium)
-                                    .foregroundColor(.blue)
-                                    .padding(.horizontal, 6)
-                                    .padding(.vertical, 2)
-                                    .background(Color.blue.opacity(0.1))
-                                    .cornerRadius(4)
+                                BadgeView(text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", style: .blue)
                             }
                         }
 
