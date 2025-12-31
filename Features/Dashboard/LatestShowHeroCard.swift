@@ -32,14 +32,12 @@ struct LatestShowHeroCard: View {
                         if let firstItem = viewModel.setlistItems.first {
                             VStack(alignment: .leading, spacing: 6) {
                                 // Venue name with venue run badge
-                                HStack {
+                                HStack(spacing: 8) {
                                     Text(firstItem.venue)
                                         .font(.body)
                                         .fontWeight(.medium)
                                         .foregroundColor(.primary)
-                                    
-                                    Spacer()
-                                    
+
                                     if let venueRun = viewModel.venueRunInfo, !venueRun.runDisplayText.isEmpty {
                                         BadgeView(text: venueRun.runDisplayText, style: .blue)
                                     }
@@ -56,21 +54,8 @@ struct LatestShowHeroCard: View {
                                     }
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-                                    
+
                                     Spacer()
-                                }
-                                
-                                // Tour name with tour position badge
-                                if let tourPosition = viewModel.tourPositionInfo {
-                                    HStack {
-                                        Text(tourPosition.tourName)
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                        
-                                        Spacer()
-                                        
-                                        BadgeView(text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", style: .blue)
-                                    }
                                 }
                             }
                         }
@@ -78,6 +63,12 @@ struct LatestShowHeroCard: View {
                     
                     // Compact setlist display
                     CompactSetlistView(setlistItems: viewModel.setlistItems, viewModel: viewModel)
+
+                    // Setlist notes section
+                    if let setlistnotes = viewModel.enhancedSetlist?.setlistnotes,
+                       !setlistnotes.isEmpty {
+                        SetlistNotesView(notes: setlistnotes, style: .compact)
+                    }
                 }
             } else if viewModel.isLoading {
                 HStack {

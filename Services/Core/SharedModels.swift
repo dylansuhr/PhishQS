@@ -47,7 +47,8 @@ struct EnhancedSetlist: Codable {
     let tourPosition: TourShowPosition?
     let recordings: [Recording]
     let songGaps: [SongGapInfo]          // Gap information for each song in setlist
-    
+    let setlistnotes: String?            // HTML show notes from Phish.net
+
     /// Get duration for a specific song by position in setlist (preferred method)
     /// Uses position-based matching with name validation for accuracy with duplicate song names
     func getDuration(at position: Int) -> TrackDuration? {

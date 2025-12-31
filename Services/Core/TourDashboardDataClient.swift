@@ -130,7 +130,16 @@ class TourDashboardDataClient: ObservableObject {
             case setlistItems, trackDurations, songGaps, metadata
             // recordings intentionally omitted
         }
-        
+
+        /// Setlist notes for the entire show (extracted from first setlist item)
+        var setlistnotes: String? {
+            guard let notes = setlistItems.first?.setlistnotes?.trimmingCharacters(in: .whitespacesAndNewlines),
+                  !notes.isEmpty else {
+                return nil
+            }
+            return notes
+        }
+
         struct TourPositionData: Codable {
             let showNumber: Int
             let totalShows: Int
@@ -152,6 +161,7 @@ class TourDashboardDataClient: ObservableObject {
             let trans_mark: String?
             let set: String
             let position: Int
+            let setlistnotes: String?
         }
         
         struct TrackDurationData: Codable {
@@ -356,7 +366,8 @@ class TourDashboardDataClient: ObservableObject {
             venueRun: venueRun,
             tourPosition: tourPosition,
             recordings: [], // Not needed for Component A functionality
-            songGaps: [] // Not needed for Component A functionality
+            songGaps: [], // Not needed for Component A functionality
+            setlistnotes: showData.setlistnotes
         )
     }
 }

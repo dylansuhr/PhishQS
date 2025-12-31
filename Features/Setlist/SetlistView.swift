@@ -27,28 +27,24 @@ struct SetlistView: View {
                             .foregroundColor(.secondary)
 
                         // Venue name with run indicator
-                        HStack {
+                        HStack(spacing: 8) {
                             Text(metadata.venue)
                                 .font(.title3)
                                 .fontWeight(.semibold)
                                 .foregroundColor(.primary)
-
-                            Spacer()
 
                             if let venueRun = viewModel.venueRunInfo {
                                 BadgeView(text: venueRun.runDisplayText, style: .blue)
                             }
                         }
 
-                        // Tour position (e.g., "2025 NYE Run" left, "2/4" right)
+                        // Tour position (e.g., "2025 NYE Run 2/4")
                         if let tourPosition = viewModel.tourPositionInfo,
                            tourPosition.totalShows > 1 {
-                            HStack {
+                            HStack(spacing: 8) {
                                 Text(tourPosition.tourName)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-
-                                Spacer()
 
                                 BadgeView(text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", style: .blue)
                             }
@@ -84,17 +80,22 @@ struct SetlistView: View {
                     .padding()
                     .background(Color(.secondarySystemGroupedBackground))
                     .cornerRadius(12)
-
-                    // Divider between header and setlist
-                    if !viewModel.setlistItems.isEmpty {
-                        Divider()
-                            .padding(.vertical, 8)
-                    }
                 }
 
                 // Display setlist with individual songs and durations (if available)
-                ForEach(cachedContent, id: \.id) { item in
-                    DetailedSetlistLineView(content: item.content)
+                VStack(alignment: .leading, spacing: 4) {
+                    ForEach(cachedContent, id: \.id) { item in
+                        DetailedSetlistLineView(content: item.content)
+                            .padding(.horizontal, 12)
+                    }
+                }
+                .padding(.vertical, 12)
+
+                // Setlist notes section
+                if let setlistnotes = viewModel.enhancedSetlist?.setlistnotes,
+                   !setlistnotes.isEmpty {
+                    SetlistNotesView(notes: setlistnotes, style: .detailed)
+                        .padding(.top, 8)
                 }
             }
             .padding(.horizontal, 20)

@@ -152,16 +152,22 @@ struct TourStatisticsHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             if let tourName = tourName {
-                Text("CURRENT TOUR")
+                Text("TOUR")
                     .font(.caption2)
                     .foregroundColor(.appHeaderBlue)
                     .textCase(.uppercase)
                     .tracking(0.5)
 
-                Text(tourName)
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .foregroundColor(.appHeaderBlue)
+                HStack(alignment: .center, spacing: 8) {
+                    Text(tourName)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .foregroundColor(.appHeaderBlue)
+
+                    if let tourPosition = tourPosition {
+                        BadgeView(text: "\(tourPosition.showNumber)/\(tourPosition.totalShows)", style: .blue)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

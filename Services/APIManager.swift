@@ -117,7 +117,8 @@ class APIManager: ObservableObject {
             venueRun: nil,       // Not displayed in SetlistView
             tourPosition: nil,   // Not displayed in SetlistView
             recordings: [],      // Not displayed in SetlistView
-            songGaps: []         // Not displayed in SetlistView
+            songGaps: [],        // Not displayed in SetlistView
+            setlistnotes: nil    // Not available from direct API calls
         )
 
         // Cache for 2 hours
@@ -209,7 +210,8 @@ class APIManager: ObservableObject {
             venueRun: venueRun,
             tourPosition: tourPosition,
             recordings: recordings,
-            songGaps: songGaps
+            songGaps: songGaps,
+            setlistnotes: nil    // Not available from direct API calls
         )
         
         // Cache the enhanced setlist for 30 minutes

@@ -38,7 +38,7 @@ struct TourCalendarCard: View {
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                    .frame(height: 330)
+                    .frame(height: 350)
                 } else if let error = viewModel.errorMessage {
                     errorView(error)
                 } else {

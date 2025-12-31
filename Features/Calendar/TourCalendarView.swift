@@ -31,21 +31,18 @@ struct TourCalendarView: View {
                 monthHeader
                     .padding(.horizontal)
                     .padding(.top, 8)
+                    .padding(.bottom, 12)
 
-                // Week labels + calendar grid - centered in remaining space
-                VStack(spacing: 8) {
-                    Spacer(minLength: 0)
+                // Week day labels - fixed position below header
+                weekDayLabels
+                    .padding(.horizontal)
+                    .padding(.bottom, 8)
 
-                    // Week day labels
-                    weekDayLabels
+                // Calendar grid - fixed position below week labels
+                calendarGrid
+                    .padding(.horizontal)
 
-                    // Calendar grid
-                    calendarGrid
-
-                    Spacer(minLength: 0)
-                }
-                .padding(.horizontal)
-                .padding(.bottom, 8)
+                Spacer(minLength: 0)
             }
 
             // Spanning venue badges overlay - only show when ready
