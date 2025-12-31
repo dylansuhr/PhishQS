@@ -493,6 +493,42 @@
       "formattedHistoricalDate": "7/12/25"
     },
     {
+      "id": 139,
+      "songId": 139,
+      "songName": "Crosseyed and Painless",
+      "gap": 19,
+      "lastPlayed": "2025-07-18",
+      "timesPlayed": 73,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 3,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-30",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 3,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "United Center",
+      "historicalCity": "Chicago",
+      "historicalState": "IL",
+      "historicalLastPlayed": "2025-07-18",
+      "formattedHistoricalDate": "7/18/25"
+    },
+    {
       "id": 576,
       "songId": 576,
       "songName": "The Curtain With",
@@ -601,18 +637,18 @@
       "formattedHistoricalDate": "9/12/25"
     },
     {
-      "id": 48,
-      "songId": 48,
-      "songName": "Bathtub Gin",
-      "gap": 9,
-      "lastPlayed": "2025-09-13",
-      "timesPlayed": 322,
+      "id": 591,
+      "songId": 591,
+      "songName": "The Moma Dance",
+      "gap": 10,
+      "lastPlayed": "2025-09-12",
+      "timesPlayed": 214,
       "tourVenue": "Madison Square Garden",
       "tourVenueRun": {
         "venue": "Madison Square Garden",
         "city": "New York",
         "state": "NY",
-        "nightNumber": 2,
+        "nightNumber": 3,
         "totalNights": 4,
         "showDates": [
           "2025-12-28",
@@ -621,56 +657,20 @@
           "2025-12-31"
         ]
       },
-      "tourDate": "2025-12-29",
+      "tourDate": "2025-12-30",
       "tourCity": "New York",
       "tourState": "NY",
       "tourPosition": {
-        "showNumber": 2,
+        "showNumber": 3,
         "totalShows": 4,
         "tourName": "2025 NYE Run",
         "tourYear": "2025"
       },
-      "historicalVenue": "Coca-Cola Amphitheater",
-      "historicalCity": "Birmingham",
-      "historicalState": "AL",
-      "historicalLastPlayed": "2025-09-13",
-      "formattedHistoricalDate": "9/13/25"
-    },
-    {
-      "id": 393,
-      "songId": 393,
-      "songName": "Mountains in the Mist",
-      "gap": 9,
-      "lastPlayed": "2025-09-13",
-      "timesPlayed": 47,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 2,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-29",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Coca-Cola Amphitheater",
-      "historicalCity": "Birmingham",
-      "historicalState": "AL",
-      "historicalLastPlayed": "2025-09-13",
-      "formattedHistoricalDate": "9/13/25"
+      "historicalVenue": "Highland Festival Grounds at Kentucky Expo Center",
+      "historicalCity": "Louisville",
+      "historicalState": "KY",
+      "historicalLastPlayed": "2025-09-12",
+      "formattedHistoricalDate": "9/12/25"
     }
   ],
   "mostPlayedSongs": [
@@ -678,6 +678,12 @@
       "id": 104,
       "songId": 104,
       "songName": "Carini",
+      "playCount": 2
+    },
+    {
+      "id": 110,
+      "songId": 110,
+      "songName": "Chalk Dust Torture",
       "playCount": 2
     },
     {
@@ -699,9 +705,27 @@
       "playCount": 1
     },
     {
+      "id": 38,
+      "songId": 38,
+      "songName": "Axilla (Part Ii)",
+      "playCount": 1
+    },
+    {
+      "id": 45,
+      "songId": 45,
+      "songName": "Back On The Train",
+      "playCount": 1
+    },
+    {
       "id": 48,
       "songId": 48,
       "songName": "Bathtub Gin",
+      "playCount": 1
+    },
+    {
+      "id": 2570,
+      "songId": 2570,
+      "songName": "Blaze On",
       "playCount": 1
     },
     {
@@ -714,6 +738,18 @@
       "id": 113,
       "songId": 113,
       "songName": "Character Zero",
+      "playCount": 1
+    },
+    {
+      "id": 139,
+      "songId": 139,
+      "songName": "Crosseyed And Painless",
+      "playCount": 1
+    },
+    {
+      "id": 161,
+      "songId": 161,
+      "songName": "Divided Sky",
       "playCount": 1
     },
     {
@@ -741,6 +777,12 @@
       "playCount": 1
     },
     {
+      "id": 222,
+      "songId": 222,
+      "songName": "Ghost",
+      "playCount": 1
+    },
+    {
       "id": 867,
       "songId": 867,
       "songName": "Golden Age",
@@ -750,6 +792,12 @@
       "id": 237,
       "songId": 237,
       "songName": "Gotta Jibboo",
+      "playCount": 1
+    },
+    {
+      "id": 339,
+      "songId": 339,
+      "songName": "Light",
       "playCount": 1
     },
     {
@@ -801,6 +849,12 @@
       "playCount": 1
     },
     {
+      "id": 455,
+      "songId": 455,
+      "songName": "Reba",
+      "playCount": 1
+    },
+    {
       "id": 462,
       "songId": 462,
       "songName": "Rift",
@@ -810,6 +864,12 @@
       "id": 473,
       "songId": 473,
       "songName": "Roggae",
+      "playCount": 1
+    },
+    {
+      "id": 1102,
+      "songId": 1102,
+      "songName": "Ruby Waves",
       "playCount": 1
     },
     {
@@ -837,6 +897,12 @@
       "playCount": 1
     },
     {
+      "id": 529,
+      "songId": 529,
+      "songName": "Split Open And Melt",
+      "playCount": 1
+    },
+    {
       "id": 558,
       "songId": 558,
       "songName": "Taste",
@@ -861,15 +927,33 @@
       "playCount": 1
     },
     {
+      "id": 591,
+      "songId": 591,
+      "songName": "The Moma Dance",
+      "playCount": 1
+    },
+    {
       "id": 609,
       "songId": 609,
       "songName": "Theme From The Bottom",
       "playCount": 1
     },
     {
+      "id": 622,
+      "songId": 622,
+      "songName": "Tube",
+      "playCount": 1
+    },
+    {
       "id": 629,
       "songId": 629,
       "songName": "Twenty Years Later",
+      "playCount": 1
+    },
+    {
+      "id": 630,
+      "songId": 630,
+      "songName": "Twist",
       "playCount": 1
     },
     {
@@ -894,13 +978,6 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 110,
-      "songId": 110,
-      "songName": "Chalk Dust Torture",
-      "historicalPlayCount": 521,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 84,
       "songId": 84,
       "songName": "Bouncing Around The Room",
@@ -918,7 +995,7 @@
       "id": 108,
       "songId": 108,
       "songName": "Cavern",
-      "historicalPlayCount": 481,
+      "historicalPlayCount": 482,
       "originalArtist": "Phish"
     },
     {
@@ -943,24 +1020,10 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 161,
-      "songId": 161,
-      "songName": "Divided Sky",
-      "historicalPlayCount": 443,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 250,
       "songId": 250,
       "songName": "Harry Hood",
       "historicalPlayCount": 436,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 455,
-      "songId": 455,
-      "songName": "Reba",
-      "historicalPlayCount": 416,
       "originalArtist": "Phish"
     },
     {
@@ -999,13 +1062,6 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 529,
-      "songId": 529,
-      "songName": "Split Open And Melt",
-      "historicalPlayCount": 351,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 364,
       "songId": 364,
       "songName": "Maze",
@@ -1025,13 +1081,41 @@
       "songName": "Tweezer Reprise",
       "historicalPlayCount": 327,
       "originalArtist": "Phish"
+    },
+    {
+      "id": 345,
+      "songId": 345,
+      "songName": "Llama",
+      "historicalPlayCount": 325,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 696,
+      "songId": 696,
+      "songName": "Hold Your Head Up",
+      "historicalPlayCount": 312,
+      "originalArtist": "Argent"
+    },
+    {
+      "id": 483,
+      "songId": 483,
+      "songName": "Sample In A Jar",
+      "historicalPlayCount": 312,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 438,
+      "songId": 438,
+      "songName": "Poor Heart",
+      "historicalPlayCount": 310,
+      "originalArtist": "Phish"
     }
   ],
   "tourName": "2025 NYE Run",
-  "latestShowProcessed": "2025-12-29",
-  "generatedAt": "2025-12-30T20:16:02.446Z",
+  "latestShowProcessed": "2025-12-30",
+  "generatedAt": "2025-12-31T04:43:13.348Z",
   "showsWithDurations": 2,
-  "totalShows": 2,
+  "totalShows": 3,
   "showDurationAvailability": [
     {
       "date": "2025-12-28",
@@ -1046,6 +1130,13 @@
       "city": "New York",
       "state": "NY",
       "durationsAvailable": true
+    },
+    {
+      "date": "2025-12-30",
+      "venue": "Madison Square Garden",
+      "city": "New York",
+      "state": "NY",
+      "durationsAvailable": false
     }
   ]
 }
