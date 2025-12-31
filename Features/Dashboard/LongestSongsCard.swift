@@ -94,15 +94,14 @@ struct LongestSongsCard: View {
             .onAppear {
                 hapticGenerator.prepare()
             }
-            // TEMPORARILY DISABLED FOR TESTING - checking if .sheet causes first-tap delay
-            // .sheet(isPresented: $showDataPopup) {
-            //     LazySheetContent {
-            //         ShowDataAvailabilityPopup(
-            //             showDurationAvailability: showDurationAvailability,
-            //             isPresented: $showDataPopup
-            //         )
-            //     }
-            // }
+            .sheet(isPresented: $showDataPopup) {
+                LazySheetContent {
+                    ShowDataAvailabilityPopup(
+                        showDurationAvailability: showDurationAvailability,
+                        isPresented: $showDataPopup
+                    )
+                }
+            }
     }
 
     // MARK: - Helper Properties
