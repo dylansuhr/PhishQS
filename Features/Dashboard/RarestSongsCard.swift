@@ -13,8 +13,8 @@ struct RarestSongsCard: View {
     let songs: [SongGapInfo]
     @State private var isExpanded: Bool = false
 
-    // Pre-warmed haptic generator to avoid first-tap delay
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    // Pre-warmed haptic generator to mask first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -37,12 +37,18 @@ struct RarestSongsCard: View {
                         // Show More/Less button when there are more than 3 songs
                         if songs.count > 3 {
                             Button(action: {
+                                // Haptic first for immediate feedback
                                 hapticGenerator.impactOccurred()
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    isExpanded.toggle()
+
+                                // Defer state change to next run loop for snappier tap response
+                                let willCollapse = isExpanded
+                                DispatchQueue.main.async {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        isExpanded.toggle()
+                                    }
 
                                     // Auto-scroll to card when collapsing to prevent blank screen
-                                    if !isExpanded {
+                                    if willCollapse {
                                         // Calculate adaptive timing based on number of items being collapsed
                                         let itemsToCollapse = max(0, min(songs.count, 10) - 3)
                                         let baseDelay: Double = 0.2

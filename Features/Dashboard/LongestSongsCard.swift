@@ -15,12 +15,12 @@ struct LongestSongsCard: View {
     @State private var isExpanded: Bool = false
     @State private var showDataPopup: Bool = false
 
-    // Pre-warmed haptic generator to avoid first-tap delay
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    // Pre-warmed haptic generator to mask first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
-        ScrollViewReader { proxy in
-            VStack(alignment: .leading, spacing: 12) {
+        // TESTING: Removed ScrollViewReader to check if it causes first-tap delay
+        VStack(alignment: .leading, spacing: 12) {
                 // Custom header with data coverage info
                 VStack(alignment: .leading, spacing: 4) {
                     Text("LONGEST SONGS")
@@ -66,40 +66,23 @@ struct LongestSongsCard: View {
 
                         // Show More/Less button when there are more than 3 songs
                         if songs.count > 3 {
-                            Button(action: {
+                            HStack {
+                                Text(isExpanded ? "Show Less" : "Show More")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
+                            }
+                            .padding(.top, 8)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
                                 hapticGenerator.impactOccurred()
                                 withAnimation(.easeInOut(duration: 0.3)) {
                                     isExpanded.toggle()
-
-                                    // Auto-scroll to card when collapsing to prevent blank screen
-                                    if !isExpanded {
-                                        // Calculate adaptive timing based on number of items being collapsed
-                                        let itemsToCollapse = max(0, min(songs.count, 10) - 3)
-                                        let baseDelay: Double = 0.2
-                                        let itemDelay: Double = 0.005 // 5ms per item
-                                        let adaptiveDelay = baseDelay + (Double(itemsToCollapse) * itemDelay)
-                                        let maxDelay: Double = 0.6 // Cap at 600ms for very large lists
-                                        let finalDelay = min(adaptiveDelay, maxDelay)
-
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + finalDelay) {
-                                            withAnimation(.easeInOut(duration: 0.3)) {
-                                                proxy.scrollTo("longestSongsCard", anchor: .top)
-                                            }
-                                        }
-                                    }
-                                }
-                            }) {
-                                HStack {
-                                    Text(isExpanded ? "Show Less" : "Show More")
-                                        .font(.caption)
-                                        .foregroundColor(.blue)
-
-                                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                                        .font(.caption)
-                                        .foregroundColor(.blue)
                                 }
                             }
-                            .padding(.top, 8)
                         }
                     }
                 }
@@ -112,13 +95,15 @@ struct LongestSongsCard: View {
             .onAppear {
                 hapticGenerator.prepare()
             }
-            .sheet(isPresented: $showDataPopup) {
-                ShowDataAvailabilityPopup(
-                    showDurationAvailability: showDurationAvailability,
-                    isPresented: $showDataPopup
-                )
-            }
-        }
+            // TEMPORARILY DISABLED FOR TESTING - checking if .sheet causes first-tap delay
+            // .sheet(isPresented: $showDataPopup) {
+            //     LazySheetContent {
+            //         ShowDataAvailabilityPopup(
+            //             showDurationAvailability: showDurationAvailability,
+            //             isPresented: $showDataPopup
+            //         )
+            //     }
+            // }
     }
 
     // MARK: - Helper Properties

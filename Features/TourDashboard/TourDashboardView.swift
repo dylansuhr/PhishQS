@@ -82,6 +82,7 @@ struct TourDashboardView: View {
                     Text(currentTourName)
                         .font(.headline)
                         .fontWeight(.semibold)
+                        .foregroundColor(.appHeaderBlue)
                 } else {
                     Image("blue_phish_td_transparent")
                         .resizable()

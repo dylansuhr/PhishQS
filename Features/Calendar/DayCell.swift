@@ -32,7 +32,7 @@ struct DayCell: View {
                 .foregroundColor(day.isCurrentDay ? Color(red: 0.961, green: 0.286, blue: 0.153) : textColor)
                 .scaleEffect(day.isCurrentDay ? (isPulsing ? 1.15 : 1.0) : 1.0)
                 .animation(
-                    day.isCurrentDay ? .easeInOut(duration: 2.0).repeatForever(autoreverses: true) : nil,
+                    day.isCurrentDay ? .easeInOut(duration: 1.4).repeatForever(autoreverses: true) : nil,
                     value: isPulsing
                 )
                 .onAppear {

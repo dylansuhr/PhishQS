@@ -14,8 +14,8 @@ struct MostCommonSongsNotPlayedCard: View {
     @State private var isExpanded: Bool = false
     @State private var shouldScrollToTop: Bool = false
 
-    // Pre-warmed haptic generator to avoid first-tap delay
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    // Pre-warmed haptic generator to mask first-tap delay
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -38,15 +38,19 @@ struct MostCommonSongsNotPlayedCard: View {
                         // Show More/Less button when there are more than 5 songs
                         if songs.count > 5 {
                             Button(action: {
+                                // Haptic first for immediate feedback
                                 hapticGenerator.impactOccurred()
+
+                                // Defer state change to next run loop for snappier tap response
                                 let wasExpanded = isExpanded
+                                DispatchQueue.main.async {
+                                    withAnimation(.easeInOut(duration: 0.3)) {
+                                        isExpanded.toggle()
 
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    isExpanded.toggle()
-
-                                    // Trigger scroll when collapsing
-                                    if wasExpanded {
-                                        shouldScrollToTop = true
+                                        // Trigger scroll when collapsing
+                                        if wasExpanded {
+                                            shouldScrollToTop = true
+                                        }
                                     }
                                 }
                             }) {

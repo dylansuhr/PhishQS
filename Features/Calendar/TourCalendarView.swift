@@ -25,19 +25,28 @@ struct TourCalendarView: View {
     @State private var badgeResetID = UUID()
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 8) {
-                // Month header
+        ZStack(alignment: .top) {
+            VStack(spacing: 0) {
+                // Month header - fixed at top, consistent across all months
                 monthHeader
+                    .padding(.horizontal)
+                    .padding(.top, 8)
 
-                // Week day labels
-                weekDayLabels
+                // Week labels + calendar grid - centered in remaining space
+                VStack(spacing: 8) {
+                    Spacer(minLength: 0)
 
-                // Calendar grid
-                calendarGrid
+                    // Week day labels
+                    weekDayLabels
+
+                    // Calendar grid
+                    calendarGrid
+
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 8)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
 
             // Spanning venue badges overlay - only show when ready
             if showBadges {

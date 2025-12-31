@@ -17,13 +17,20 @@ struct SetlistItem: Codable, Equatable {
     let city: String          // city name
     let state: String?        // state/province name (e.g. "NY", "PA")
     let showdate: String      // full show date, e.g. "2025-01-28"
+    let permalink: String?    // URL slug for phish.net show page (e.g. "phish-december-29-2025-madison-square-garden-new-york-ny-usa")
 
     // match Swift property names to JSON keys
     enum CodingKeys: String, CodingKey {
         case set, song
         case songId = "songid"   // map to Phish.net API songid field
         case transMark = "trans_mark"
-        case venue, city, state, showdate
+        case venue, city, state, showdate, permalink
+    }
+
+    /// Full URL to the show page on phish.net
+    var phishNetURL: URL? {
+        guard let permalink = permalink else { return nil }
+        return URL(string: "https://phish.net/setlists/\(permalink).html")
     }
 }
 
