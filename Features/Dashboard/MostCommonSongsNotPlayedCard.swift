@@ -12,14 +12,12 @@ import UIKit
 struct MostCommonSongsNotPlayedCard: View {
     let songs: [MostCommonSongNotPlayed]
     @State private var isExpanded: Bool = false
-    @State private var shouldScrollToTop: Bool = false
 
     // Pre-warmed haptic generator to mask first-tap delay
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
-        ScrollViewReader { proxy in
-            MetricCard("Most Common Songs Not Played") {
+        MetricCard("Most Common Songs Not Played") {
                 if songs.isEmpty {
                     Text("All popular songs have been played")
                         .font(.caption)
@@ -37,53 +35,28 @@ struct MostCommonSongsNotPlayedCard: View {
 
                         // Show More/Less button when there are more than 5 songs
                         if songs.count > 5 {
-                            Button(action: {
-                                // Haptic first for immediate feedback
-                                hapticGenerator.impactOccurred()
+                            HStack {
+                                Text(isExpanded ? "Show Less" : "Show More")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
 
-                                // Defer state change to next run loop for snappier tap response
-                                let wasExpanded = isExpanded
-                                DispatchQueue.main.async {
-                                    withAnimation(.easeInOut(duration: 0.3)) {
-                                        isExpanded.toggle()
-
-                                        // Trigger scroll when collapsing
-                                        if wasExpanded {
-                                            shouldScrollToTop = true
-                                        }
-                                    }
-                                }
-                            }) {
-                                HStack {
-                                    Text(isExpanded ? "Show Less" : "Show More")
-                                        .font(.caption)
-                                        .foregroundColor(.blue)
-
-                                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                                        .font(.caption)
-                                        .foregroundColor(.blue)
-                                }
+                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                                    .font(.caption)
+                                    .foregroundColor(.blue)
                             }
                             .padding(.top, 8)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                hapticGenerator.impactOccurred()
+                                isExpanded.toggle()
+                            }
                         }
                     }
                 }
-            }
-            .id("mostCommonNotPlayedCard")
-            .onAppear {
-                hapticGenerator.prepare()
-            }
-            .onChange(of: shouldScrollToTop) { _, newValue in
-                if newValue && !isExpanded {
-                    // Wait a moment for collapse animation to complete, then scroll
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-                        withAnimation(.easeInOut(duration: 0.25)) {
-                            proxy.scrollTo("mostCommonNotPlayedCard", anchor: .top)
-                        }
-                        shouldScrollToTop = false
-                    }
-                }
-            }
+        }
+        .id("mostCommonNotPlayedCard")
+        .onAppear {
+            hapticGenerator.prepare()
         }
     }
 }

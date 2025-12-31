@@ -79,9 +79,8 @@ struct LongestSongsCard: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 hapticGenerator.impactOccurred()
-                                withAnimation(.easeInOut(duration: 0.3)) {
-                                    isExpanded.toggle()
-                                }
+                                // TESTING: No animation
+                                isExpanded.toggle()
                             }
                         }
                     }
