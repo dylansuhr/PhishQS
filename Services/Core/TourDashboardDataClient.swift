@@ -304,7 +304,8 @@ class TourDashboardDataClient: ObservableObject {
                 city: showData.city,
                 state: showData.state,
                 showdate: showData.showDate,
-                permalink: nil
+                permalink: nil,
+                setlistnotes: item.setlistnotes
             )
         }
         

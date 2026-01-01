@@ -110,6 +110,9 @@ class APIManager: ObservableObject {
             }
         }
 
+        // Extract setlistnotes from first setlist item (same for all items in a show)
+        let setlistnotes = setlistItems.first?.setlistnotes
+
         let enhancedSetlist = EnhancedSetlist(
             showDate: date,
             setlistItems: setlistItems,
@@ -118,7 +121,7 @@ class APIManager: ObservableObject {
             tourPosition: nil,   // Not displayed in SetlistView
             recordings: [],      // Not displayed in SetlistView
             songGaps: [],        // Not displayed in SetlistView
-            setlistnotes: nil    // Not available from direct API calls
+            setlistnotes: setlistnotes
         )
 
         // Cache for 2 hours
@@ -202,7 +205,10 @@ class APIManager: ObservableObject {
         
         // Await gap data task
         songGaps = await gapDataTask
-        
+
+        // Extract setlistnotes from first setlist item (same for all items in a show)
+        let setlistnotes = setlistItems.first?.setlistnotes
+
         let enhancedSetlist = EnhancedSetlist(
             showDate: date,
             setlistItems: setlistItems,
@@ -211,7 +217,7 @@ class APIManager: ObservableObject {
             tourPosition: tourPosition,
             recordings: recordings,
             songGaps: songGaps,
-            setlistnotes: nil    // Not available from direct API calls
+            setlistnotes: setlistnotes
         )
         
         // Cache the enhanced setlist for 30 minutes

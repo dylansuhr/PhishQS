@@ -1,6 +1,6 @@
 # Add Setlistnotes to Historical API Calls
 
-## Status: Pending
+## Status: Complete
 
 ## Overview
 Currently, setlistnotes only display for current tour shows (loaded from pre-computed JSON files). Historical shows fetched via direct API calls have `setlistnotes: nil`.
