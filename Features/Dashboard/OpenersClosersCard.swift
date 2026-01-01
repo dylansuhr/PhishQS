@@ -15,7 +15,7 @@ struct OpenersClosersCard: View {
     @State private var isExpanded: Bool = false
     @State private var animationWarmup = false
 
-    private let threshold = 3  // Songs per column when collapsed
+    private let threshold = 5  // Songs per column when collapsed
 
     // Visible tabs: always show 1, 2, e; dynamically show 3 if data exists
     private var visibleTabs: [String] {
