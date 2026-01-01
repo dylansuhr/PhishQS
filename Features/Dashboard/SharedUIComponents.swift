@@ -346,29 +346,21 @@ struct RarestSongRowModular: View {
 
 /// Specialized row for most played songs (simplified: only song name and count)
 struct MostPlayedSongRowModular: View {
-    let position: Int
     let song: MostPlayedSong
-    
+
     var body: some View {
-        HStack(spacing: 12) {
-            // Position number
-            Text("\(position)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.green)
-                .frame(width: 30, alignment: .center)
-            
-            // Song name only
+        HStack(spacing: 8) {
+            // Song name
             Text(song.songName)
                 .font(.body)
                 .fontWeight(.medium)
                 .foregroundColor(.primary)
                 .fixedSize(horizontal: false, vertical: true)
                 .layoutPriority(1)
-            
+
             Spacer(minLength: 8)
-            
-            // Play count only
+
+            // Play count
             Text("\(song.playCount)")
                 .font(.callout)
                 .fontWeight(.semibold)
@@ -427,11 +419,11 @@ struct MostPlayedSongRowModular: View {
             )
             RarestSongRowModular(position: 1, song: sampleRarest)
             
-            // Sample most played song  
+            // Sample most played song
             let sampleMostPlayed = MostPlayedSong(
                 songId: 473, songName: "You Enjoy Myself", playCount: 8
             )
-            MostPlayedSongRowModular(position: 1, song: sampleMostPlayed)
+            MostPlayedSongRowModular(song: sampleMostPlayed)
         }
         .padding()
         .background(Color(.systemGray6))

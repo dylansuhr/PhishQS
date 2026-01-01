@@ -19,20 +19,27 @@ struct MostPlayedSongsCard: View {
                         .foregroundColor(.secondary)
                         .italic()
                 } else {
-                    ScrollView {
-                        LazyVStack(alignment: .leading, spacing: 8) {
-                            ForEach(Array(songs.enumerated()), id: \.offset) { index, song in
-                                MostPlayedSongRowModular(position: index + 1, song: song)
+                    VStack(alignment: .leading, spacing: 8) {
+                        // Unique songs count indicator
+                        Text("\(songs.count) unique songs")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
 
-                                if index < songs.count - 1 {
-                                    Divider()
+                        ScrollView {
+                            LazyVStack(alignment: .leading, spacing: 8) {
+                                ForEach(Array(songs.enumerated()), id: \.offset) { index, song in
+                                    MostPlayedSongRowModular(song: song)
+
+                                    if index < songs.count - 1 {
+                                        Divider()
+                                    }
                                 }
                             }
+                            .padding(.vertical, 4)
+                            .padding(.trailing, 20)
                         }
-                        .padding(.vertical, 4)
-                        .padding(.trailing, 20)
+                        .frame(height: 380)
                     }
-                    .frame(height: 400)
                 }
         }
     }
