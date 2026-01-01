@@ -24,6 +24,7 @@ import { RarestSongsCalculator } from './StatisticsCalculators/RarestSongsCalcul
 import { MostPlayedSongsCalculator } from './StatisticsCalculators/MostPlayedSongsCalculator.js';
 import { MostCommonSongsNotPlayedCalculator } from './StatisticsCalculators/MostCommonSongsNotPlayedCalculator.js';
 import { SetSongStatsCalculator } from './StatisticsCalculators/SetSongStatsCalculator.js';
+import { OpenersClosersCalculator } from './StatisticsCalculators/OpenersClosersCalculator.js';
 
 /**
  * Registry for managing statistics calculators
@@ -106,6 +107,17 @@ export class StatisticsRegistry {
             resultType: 'SetSongStats',
             enabled: true,
             priority: 5
+        });
+
+        // Openers, Closers, & Encores Calculator
+        this.registerCalculator('openersClosers', {
+            name: 'Openers, Closers, & Encores',
+            description: 'Tracks set openers, closers, and encore songs with play counts',
+            dataSource: 'Phish.net setlist data',
+            calculatorClass: OpenersClosersCalculator,
+            resultType: 'OpenersClosersStats',
+            enabled: true,
+            priority: 6
         });
     }
     

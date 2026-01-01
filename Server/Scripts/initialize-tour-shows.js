@@ -279,7 +279,7 @@ async function initializeTourShows() {
                 lastAPICheck: (hadShowFileChanges || trackingChanged)
                     ? new Date().toISOString()
                     : controlFileData.updateTracking?.lastAPICheck || new Date().toISOString(),
-                latestShowFromAPI: controlFileData.latestShow.date,
+                latestShowFromAPI: controlFileData.latestShow?.date || '',
                 pendingDurationChecks: Object.keys(individualShowsTracking).filter(date =>
                     individualShowsTracking[date].needsUpdate
                 ),

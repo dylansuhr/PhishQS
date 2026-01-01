@@ -238,33 +238,26 @@ async function fetchFutureYears(apiClient, startYear, yearsAhead = 3) {
 
 /**
  * Determine the current tour based on the latest played show
- * NOTE: This is a fallback function - main determination should use setlist data
+ *
+ * IMPORTANT: The current tour should ONLY change when a show from a new tour
+ * is actually played. We never fall back to upcoming tours - if no shows are
+ * played in this dataset, return null to trigger historical search.
  */
 function determineCurrentTour(shows) {
-    // This function is used as fallback when we already have show data
-    // For proper determination, use determineCurrentTourFromHistory which checks setlists
-    
-    // For this fallback, use strict date comparison (< not <=) to avoid timezone issues
+    // Use strict date comparison (< not <=) to avoid timezone issues
     const today = new Date().toISOString().split('T')[0];
     const playedShows = shows.filter(show => show.showdate < today);
-    
+
     if (playedShows.length === 0) {
-        // No shows played yet, find first upcoming tour
-        const upcomingShows = shows.filter(show => show.showdate > today);
-        if (upcomingShows.length > 0) {
-            upcomingShows.sort((a, b) => a.showdate.localeCompare(b.showdate));
-            return {
-                currentTourName: upcomingShows[0].tourname,
-                latestShow: null
-            };
-        }
+        // No shows played in this dataset - return null to trigger historical search
+        // The current tour should only be based on played shows, not upcoming ones
         return { currentTourName: null, latestShow: null };
     }
-    
+
     // Sort by date descending to get latest
     playedShows.sort((a, b) => b.showdate.localeCompare(a.showdate));
     const latestShow = playedShows[0];
-    
+
     return {
         currentTourName: latestShow.tourname,
         latestShow: {

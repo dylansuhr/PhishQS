@@ -22,6 +22,9 @@ struct TourStatisticsCards: View {
                     SongsPerSetCard(setSongStats: setSongStats)
                 }
                 RarestSongsCard(songs: stats.rarestSongs)
+                if let openersClosers = stats.openersClosers, !openersClosers.isEmpty {
+                    OpenersClosersCard(openersClosers: openersClosers)
+                }
                 if let mostCommonSongs = stats.mostCommonSongsNotPlayed, !mostCommonSongs.isEmpty {
                     MostCommonSongsNotPlayedCard(songs: mostCommonSongs)
                 }
@@ -128,6 +131,32 @@ struct TourStatisticsCards: View {
             )
         ]
 
+        // Sample openers, closers, and encores
+        let sampleOpenersClosers: OpenersClosersStats = [
+            "1_opener": [
+                PositionSong(songName: "Carini", songId: 100, count: 5),
+                PositionSong(songName: "AC/DC Bag", songId: 101, count: 4),
+                PositionSong(songName: "Buried Alive", songId: 102, count: 3)
+            ],
+            "1_closer": [
+                PositionSong(songName: "Reba", songId: 200, count: 4),
+                PositionSong(songName: "Stash", songId: 201, count: 3)
+            ],
+            "2_opener": [
+                PositionSong(songName: "Down with Disease", songId: 300, count: 6),
+                PositionSong(songName: "Simple", songId: 301, count: 3)
+            ],
+            "2_closer": [
+                PositionSong(songName: "You Enjoy Myself", songId: 400, count: 5),
+                PositionSong(songName: "Slave to the Traffic Light", songId: 401, count: 4)
+            ],
+            "e_all": [
+                PositionSong(songName: "Character Zero", songId: 500, count: 8),
+                PositionSong(songName: "First Tube", songId: 501, count: 6),
+                PositionSong(songName: "Julius", songId: 502, count: 4)
+            ]
+        ]
+
         TourStatisticsCards(
             statistics: TourSongStatistics(
                 longestSongs: sampleLongestSongs,
@@ -148,6 +177,7 @@ struct TourStatisticsCards: View {
                         max: SetSongExtreme(count: 3, shows: [SetSongShow(date: "2025-12-30", venue: "MSG", city: "New York", state: "NY", venueRun: "N3")])
                     )
                 ],
+                openersClosers: sampleOpenersClosers,
                 tourName: TourConfig.currentTourName,
                 showDurationAvailability: sampleAvailability
             )

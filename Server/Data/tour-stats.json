@@ -313,6 +313,42 @@
   ],
   "rarestSongs": [
     {
+      "id": 531,
+      "songId": 531,
+      "songName": "Spock's Brain",
+      "gap": 238,
+      "lastPlayed": "2019-07-14",
+      "timesPlayed": 12,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 4,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-31",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 4,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Alpine Valley Music Theatre",
+      "historicalCity": "East Troy",
+      "historicalState": "WI",
+      "historicalLastPlayed": "2019-07-14",
+      "formattedHistoricalDate": "7/14/19"
+    },
+    {
       "id": 513,
       "songId": 513,
       "songName": "Sleep",
@@ -383,6 +419,42 @@
       "historicalState": "AL",
       "historicalLastPlayed": "2022-05-27",
       "formattedHistoricalDate": "5/27/22"
+    },
+    {
+      "id": 35,
+      "songId": 35,
+      "songName": "Auld Lang Syne",
+      "gap": 47,
+      "lastPlayed": "2024-12-31",
+      "timesPlayed": 30,
+      "tourVenue": "Madison Square Garden",
+      "tourVenueRun": {
+        "venue": "Madison Square Garden",
+        "city": "New York",
+        "state": "NY",
+        "nightNumber": 4,
+        "totalNights": 4,
+        "showDates": [
+          "2025-12-28",
+          "2025-12-29",
+          "2025-12-30",
+          "2025-12-31"
+        ]
+      },
+      "tourDate": "2025-12-31",
+      "tourCity": "New York",
+      "tourState": "NY",
+      "tourPosition": {
+        "showNumber": 4,
+        "totalShows": 4,
+        "tourName": "2025 NYE Run",
+        "tourYear": "2025"
+      },
+      "historicalVenue": "Madison Square Garden",
+      "historicalCity": "New York",
+      "historicalState": "NY",
+      "historicalLastPlayed": "2024-12-31",
+      "formattedHistoricalDate": "12/31/24"
     },
     {
       "id": 2797,
@@ -565,18 +637,18 @@
       "formattedHistoricalDate": "7/16/25"
     },
     {
-      "id": 113,
-      "songId": 113,
-      "songName": "Character Zero",
-      "gap": 10,
+      "id": 215,
+      "songId": 215,
+      "songName": "Free",
+      "gap": 11,
       "lastPlayed": "2025-09-12",
-      "timesPlayed": 263,
+      "timesPlayed": 240,
       "tourVenue": "Madison Square Garden",
       "tourVenueRun": {
         "venue": "Madison Square Garden",
         "city": "New York",
         "state": "NY",
-        "nightNumber": 2,
+        "nightNumber": 4,
         "totalNights": 4,
         "showDates": [
           "2025-12-28",
@@ -585,83 +657,11 @@
           "2025-12-31"
         ]
       },
-      "tourDate": "2025-12-29",
+      "tourDate": "2025-12-31",
       "tourCity": "New York",
       "tourState": "NY",
       "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Highland Festival Grounds at Kentucky Expo Center",
-      "historicalCity": "Louisville",
-      "historicalState": "KY",
-      "historicalLastPlayed": "2025-09-12",
-      "formattedHistoricalDate": "9/12/25"
-    },
-    {
-      "id": 2944,
-      "songId": 2944,
-      "songName": "Evolve",
-      "gap": 10,
-      "lastPlayed": "2025-09-12",
-      "timesPlayed": 30,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 2,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-29",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 2,
-        "totalShows": 4,
-        "tourName": "2025 NYE Run",
-        "tourYear": "2025"
-      },
-      "historicalVenue": "Highland Festival Grounds at Kentucky Expo Center",
-      "historicalCity": "Louisville",
-      "historicalState": "KY",
-      "historicalLastPlayed": "2025-09-12",
-      "formattedHistoricalDate": "9/12/25"
-    },
-    {
-      "id": 591,
-      "songId": 591,
-      "songName": "The Moma Dance",
-      "gap": 10,
-      "lastPlayed": "2025-09-12",
-      "timesPlayed": 214,
-      "tourVenue": "Madison Square Garden",
-      "tourVenueRun": {
-        "venue": "Madison Square Garden",
-        "city": "New York",
-        "state": "NY",
-        "nightNumber": 3,
-        "totalNights": 4,
-        "showDates": [
-          "2025-12-28",
-          "2025-12-29",
-          "2025-12-30",
-          "2025-12-31"
-        ]
-      },
-      "tourDate": "2025-12-30",
-      "tourCity": "New York",
-      "tourState": "NY",
-      "tourPosition": {
-        "showNumber": 3,
+        "showNumber": 4,
         "totalShows": 4,
         "tourName": "2025 NYE Run",
         "tourYear": "2025"
@@ -693,6 +693,12 @@
       "playCount": 2
     },
     {
+      "id": 2845,
+      "songId": 2845,
+      "songName": "A Life Beyond The Dream",
+      "playCount": 1
+    },
+    {
       "id": 2946,
       "songId": 2946,
       "songName": "A Wave Of Hope",
@@ -702,6 +708,18 @@
       "id": 8,
       "songId": 8,
       "songName": "Ac/dc Bag",
+      "playCount": 1
+    },
+    {
+      "id": 21,
+      "songId": 21,
+      "songName": "Also Sprach Zarathustra",
+      "playCount": 1
+    },
+    {
+      "id": 35,
+      "songId": 35,
+      "songName": "Auld Lang Syne",
       "playCount": 1
     },
     {
@@ -723,9 +741,21 @@
       "playCount": 1
     },
     {
+      "id": 65,
+      "songId": 65,
+      "songName": "Birds Of A Feather",
+      "playCount": 1
+    },
+    {
       "id": 2570,
       "songId": 2570,
       "songName": "Blaze On",
+      "playCount": 1
+    },
+    {
+      "id": 84,
+      "songId": 84,
+      "songName": "Bouncing Around The Room",
       "playCount": 1
     },
     {
@@ -744,6 +774,12 @@
       "id": 113,
       "songId": 113,
       "songName": "Character Zero",
+      "playCount": 1
+    },
+    {
+      "id": 3209,
+      "songId": 3209,
+      "songName": "Cream",
       "playCount": 1
     },
     {
@@ -795,6 +831,18 @@
       "playCount": 1
     },
     {
+      "id": 215,
+      "songId": 215,
+      "songName": "Free",
+      "playCount": 1
+    },
+    {
+      "id": 2418,
+      "songId": 2418,
+      "songName": "Fuego",
+      "playCount": 1
+    },
+    {
       "id": 222,
       "songId": 222,
       "songName": "Ghost",
@@ -813,6 +861,30 @@
       "playCount": 1
     },
     {
+      "id": 250,
+      "songId": 250,
+      "songName": "Harry Hood",
+      "playCount": 1
+    },
+    {
+      "id": 307,
+      "songId": 307,
+      "songName": "It's Ice",
+      "playCount": 1
+    },
+    {
+      "id": 323,
+      "songId": 323,
+      "songName": "Kill Devil Falls",
+      "playCount": 1
+    },
+    {
+      "id": 3100,
+      "songId": 3100,
+      "songName": "Life Saving Gun",
+      "playCount": 1
+    },
+    {
       "id": 339,
       "songId": 339,
       "songName": "Light",
@@ -825,9 +897,27 @@
       "playCount": 1
     },
     {
+      "id": 3075,
+      "songId": 3075,
+      "songName": "Monsters",
+      "playCount": 1
+    },
+    {
+      "id": 2639,
+      "songId": 2639,
+      "songName": "More",
+      "playCount": 1
+    },
+    {
       "id": 393,
       "songId": 393,
       "songName": "Mountains In The Mist",
+      "playCount": 1
+    },
+    {
+      "id": 397,
+      "songId": 397,
+      "songName": "My Friend, My Friend",
       "playCount": 1
     },
     {
@@ -837,9 +927,21 @@
       "playCount": 1
     },
     {
+      "id": 2572,
+      "songId": 2572,
+      "songName": "No Men In No Man's Land",
+      "playCount": 1
+    },
+    {
       "id": 3076,
       "songId": 3076,
       "songName": "Oblivion",
+      "playCount": 1
+    },
+    {
+      "id": 437,
+      "songId": 437,
+      "songName": "Piper",
       "playCount": 1
     },
     {
@@ -897,9 +999,27 @@
       "playCount": 1
     },
     {
+      "id": 485,
+      "songId": 485,
+      "songName": "Sand",
+      "playCount": 1
+    },
+    {
+      "id": 2796,
+      "songId": 2796,
+      "songName": "Say It To Me S.a.n.t.o.s.",
+      "playCount": 1
+    },
+    {
       "id": 2803,
       "songId": 2803,
       "songName": "Sigma Oasis",
+      "playCount": 1
+    },
+    {
+      "id": 3210,
+      "songId": 3210,
+      "songName": "Sincere",
       "playCount": 1
     },
     {
@@ -918,6 +1038,18 @@
       "id": 529,
       "songId": 529,
       "songName": "Split Open And Melt",
+      "playCount": 1
+    },
+    {
+      "id": 531,
+      "songId": 531,
+      "songName": "Spock's Brain",
+      "playCount": 1
+    },
+    {
+      "id": 538,
+      "songId": 538,
+      "songName": "Stash",
       "playCount": 1
     },
     {
@@ -963,6 +1095,18 @@
       "playCount": 1
     },
     {
+      "id": 627,
+      "songId": 627,
+      "songName": "Tweezer",
+      "playCount": 1
+    },
+    {
+      "id": 628,
+      "songId": 628,
+      "songName": "Tweezer Reprise",
+      "playCount": 1
+    },
+    {
       "id": 629,
       "songId": 629,
       "songName": "Twenty Years Later",
@@ -975,9 +1119,21 @@
       "playCount": 1
     },
     {
+      "id": 649,
+      "songId": 649,
+      "songName": "Waste",
+      "playCount": 1
+    },
+    {
       "id": 653,
       "songId": 653,
       "songName": "Weekapaug Groove",
+      "playCount": 1
+    },
+    {
+      "id": 3139,
+      "songId": 3139,
+      "songName": "What's Going Through Your Mind",
       "playCount": 1
     },
     {
@@ -985,23 +1141,15 @@
       "songId": 683,
       "songName": "Wolfman's Brother",
       "playCount": 1
-    }
-  ],
-  "mostCommonSongsNotPlayed": [
+    },
     {
       "id": 690,
       "songId": 690,
       "songName": "You Enjoy Myself",
-      "historicalPlayCount": 622,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 84,
-      "songId": 84,
-      "songName": "Bouncing Around The Room",
-      "historicalPlayCount": 495,
-      "originalArtist": "Phish"
-    },
+      "playCount": 1
+    }
+  ],
+  "mostCommonSongsNotPlayed": [
     {
       "id": 234,
       "songId": 234,
@@ -1017,31 +1165,10 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 538,
-      "songId": 538,
-      "songName": "Stash",
-      "historicalPlayCount": 458,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 545,
       "songId": 545,
       "songName": "Suzy Greenberg",
       "historicalPlayCount": 453,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 250,
-      "songId": 250,
-      "songName": "Harry Hood",
-      "historicalPlayCount": 436,
-      "originalArtist": "Phish"
-    },
-    {
-      "id": 627,
-      "songId": 627,
-      "songName": "Tweezer",
-      "historicalPlayCount": 413,
       "originalArtist": "Phish"
     },
     {
@@ -1087,13 +1214,6 @@
       "originalArtist": "Phish"
     },
     {
-      "id": 628,
-      "songId": 628,
-      "songName": "Tweezer Reprise",
-      "historicalPlayCount": 327,
-      "originalArtist": "Phish"
-    },
-    {
       "id": 345,
       "songId": 345,
       "songName": "Llama",
@@ -1127,6 +1247,48 @@
       "songName": "Wilson",
       "historicalPlayCount": 303,
       "originalArtist": "Phish"
+    },
+    {
+      "id": 195,
+      "songId": 195,
+      "songName": "Fee",
+      "historicalPlayCount": 288,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 276,
+      "songId": 276,
+      "songName": "I Didn't Know",
+      "historicalPlayCount": 264,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 403,
+      "songId": 403,
+      "songName": "My Sweet One",
+      "historicalPlayCount": 253,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 318,
+      "songId": 318,
+      "songName": "Julius",
+      "historicalPlayCount": 239,
+      "originalArtist": "Phish"
+    },
+    {
+      "id": 220,
+      "songId": 220,
+      "songName": "Funky Bitch",
+      "historicalPlayCount": 236,
+      "originalArtist": "Son Seals"
+    },
+    {
+      "id": 686,
+      "songId": 686,
+      "songName": "Ya Mar",
+      "historicalPlayCount": 236,
+      "originalArtist": "Cyril Ferguson"
     }
   ],
   "setSongStats": {
@@ -1158,28 +1320,14 @@
         ]
       },
       "max": {
-        "count": 10,
+        "count": 11,
         "shows": [
           {
-            "date": "2025-12-28",
+            "date": "2025-12-31",
             "venue": "Madison Square Garden",
             "city": "New York",
             "state": "NY",
-            "venueRun": "N1"
-          },
-          {
-            "date": "2025-12-29",
-            "venue": "Madison Square Garden",
-            "city": "New York",
-            "state": "NY",
-            "venueRun": "N2"
-          },
-          {
-            "date": "2025-12-30",
-            "venue": "Madison Square Garden",
-            "city": "New York",
-            "state": "NY",
-            "venueRun": "N3"
+            "venueRun": "N4"
           }
         ]
       }
@@ -1208,6 +1356,13 @@
             "city": "New York",
             "state": "NY",
             "venueRun": "N3"
+          },
+          {
+            "date": "2025-12-31",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N4"
           }
         ]
       },
@@ -1234,6 +1389,39 @@
             "city": "New York",
             "state": "NY",
             "venueRun": "N3"
+          },
+          {
+            "date": "2025-12-31",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N4"
+          }
+        ]
+      }
+    },
+    "3": {
+      "min": {
+        "count": 6,
+        "shows": [
+          {
+            "date": "2025-12-31",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N4"
+          }
+        ]
+      },
+      "max": {
+        "count": 6,
+        "shows": [
+          {
+            "date": "2025-12-31",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N4"
           }
         ]
       }
@@ -1259,24 +1447,165 @@
         ]
       },
       "max": {
-        "count": 2,
+        "count": 3,
         "shows": [
           {
-            "date": "2025-12-29",
+            "date": "2025-12-31",
             "venue": "Madison Square Garden",
             "city": "New York",
             "state": "NY",
-            "venueRun": "N2"
+            "venueRun": "N4"
           }
         ]
       }
     }
   },
+  "openersClosers": {
+    "1_opener": [
+      {
+        "songName": "Buried Alive",
+        "songId": 96,
+        "count": 1
+      },
+      {
+        "songName": "Carini",
+        "songId": 104,
+        "count": 1
+      },
+      {
+        "songName": "Chalk Dust Torture",
+        "songId": 110,
+        "count": 1
+      },
+      {
+        "songName": "Free",
+        "songId": 215,
+        "count": 1
+      }
+    ],
+    "1_closer": [
+      {
+        "songName": "Fluffhead",
+        "songId": 208,
+        "count": 1
+      },
+      {
+        "songName": "Life Saving Gun",
+        "songId": 3100,
+        "count": 1
+      },
+      {
+        "songName": "Run Like An Antelope",
+        "songId": 478,
+        "count": 1
+      },
+      {
+        "songName": "Split Open And Melt",
+        "songId": 529,
+        "count": 1
+      }
+    ],
+    "2_opener": [
+      {
+        "songName": "Ghost",
+        "songId": 222,
+        "count": 1
+      },
+      {
+        "songName": "Mike's Song",
+        "songId": 381,
+        "count": 1
+      },
+      {
+        "songName": "Oblivion",
+        "songId": 3076,
+        "count": 1
+      },
+      {
+        "songName": "Sand",
+        "songId": 485,
+        "count": 1
+      }
+    ],
+    "2_closer": [
+      {
+        "songName": "Character Zero",
+        "songId": 113,
+        "count": 1
+      },
+      {
+        "songName": "Cream",
+        "songId": 3209,
+        "count": 1
+      },
+      {
+        "songName": "Everything's Right",
+        "songId": 2656,
+        "count": 1
+      },
+      {
+        "songName": "First Tube",
+        "songId": 202,
+        "count": 1
+      }
+    ],
+    "e_all": [
+      {
+        "songName": "Drift While You're Sleeping",
+        "songId": 2829,
+        "count": 1
+      },
+      {
+        "songName": "Possum",
+        "songId": 440,
+        "count": 1
+      },
+      {
+        "songName": "Sincere",
+        "songId": 3210,
+        "count": 1
+      },
+      {
+        "songName": "Slave To The Traffic Light",
+        "songId": 512,
+        "count": 1
+      },
+      {
+        "songName": "Spock's Brain",
+        "songId": 531,
+        "count": 1
+      },
+      {
+        "songName": "The Lizards",
+        "songId": 586,
+        "count": 1
+      },
+      {
+        "songName": "Tweezer Reprise",
+        "songId": 628,
+        "count": 1
+      }
+    ],
+    "3_opener": [
+      {
+        "songName": "Harry Hood",
+        "songId": 250,
+        "count": 1
+      }
+    ],
+    "3_closer": [
+      {
+        "songName": "Say It To Me S.a.n.t.o.s.",
+        "songId": 2796,
+        "count": 1
+      }
+    ]
+  },
   "tourName": "2025 NYE Run",
-  "latestShowProcessed": "2025-12-30",
-  "generatedAt": "2026-01-01T02:03:03.579Z",
+  "latestShowProcessed": "2025-12-31",
+  "generatedAt": "2026-01-01T13:09:54.439Z",
   "showsWithDurations": 3,
-  "totalShows": 3,
+  "totalShows": 4,
   "showDurationAvailability": [
     {
       "date": "2025-12-28",
@@ -1298,6 +1627,13 @@
       "city": "New York",
       "state": "NY",
       "durationsAvailable": true
+    },
+    {
+      "date": "2025-12-31",
+      "venue": "Madison Square Garden",
+      "city": "New York",
+      "state": "NY",
+      "durationsAvailable": false
     }
   ]
 }

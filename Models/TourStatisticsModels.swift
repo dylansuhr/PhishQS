@@ -200,6 +200,21 @@ struct MostCommonSongNotPlayed: Codable, Identifiable {
     }
 }
 
+// MARK: - Openers, Closers, & Encores Models
+
+/// Song with play count for opener/closer/encore positions
+struct PositionSong: Codable, Identifiable {
+    let songName: String
+    let songId: Int?
+    let count: Int
+
+    var id: String { "\(songId ?? 0)-\(songName)" }
+}
+
+/// Statistics for openers, closers, and encores
+/// Keys: "1_opener", "1_closer", "2_opener", "2_closer", "e_all", "e2_all", etc.
+typealias OpenersClosersStats = [String: [PositionSong]]
+
 // MARK: - Set Song Statistics Models
 
 /// Show data for set song statistics
@@ -269,12 +284,13 @@ struct TourSongStatistics: Codable {
     let mostPlayedSongs: [MostPlayedSong]    // Top 3 most played songs by frequency
     let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed]? // Top 20 common songs not played
     let setSongStats: [String: SetSongStats]? // Songs per set statistics keyed by set type ("1", "2", "e")
+    let openersClosers: OpenersClosersStats? // Openers, closers, and encore songs with play counts
     let tourName: String?                    // Current tour name for context
     let showDurationAvailability: [ShowDurationAvailability]? // Per-show duration data availability
 
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true)
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true) || !(openersClosers?.isEmpty ?? true)
     }
 
     /// Number of shows with duration data
