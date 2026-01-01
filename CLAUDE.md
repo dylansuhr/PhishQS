@@ -71,7 +71,7 @@ xcodebuild clean                   # Clean build artifacts
 ```
 
 **Requirements:**
-- iOS target requires iOS 16.0+ and Xcode 15+
+- iOS target requires iOS 17.0+ and Xcode 15+
 - UI tests are located in `Tests/PhishQSUITests/`
 - Test files: `PhishQSTests` and `PhishQSUITests` targets
 - Node.js 18+ required for server components
