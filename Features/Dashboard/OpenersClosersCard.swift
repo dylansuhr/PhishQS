@@ -190,7 +190,7 @@ private struct SongListColumn: View {
                         Divider()
                             .padding(.vertical, 2)
                     }
-                    SongRow(position: index + 1, song: song)
+                    SongRow(song: song)
                 }
 
                 // Show More/Less button
@@ -252,7 +252,7 @@ private struct EncoreColumn: View {
                 if index > 0 {
                     Divider()
                 }
-                SongRow(position: index + 1, song: song)
+                SongRow(song: song)
             }
 
             // Show More/Less button
@@ -285,18 +285,10 @@ private struct EncoreColumn: View {
 // MARK: - Song Row
 
 private struct SongRow: View {
-    let position: Int
     let song: PositionSong
 
     var body: some View {
         HStack(spacing: 8) {
-            // Position
-            Text("\(position)")
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.indigo)
-                .frame(width: 20, alignment: .center)
-
             // Song name
             Text(song.songName)
                 .font(.caption)
@@ -308,7 +300,7 @@ private struct SongRow: View {
             Spacer()
 
             // Play count
-            Text("\(song.count)x")
+            Text("\(song.count)")
                 .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.indigo)
