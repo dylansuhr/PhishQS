@@ -25,7 +25,7 @@ struct MostPlayedSongsCard: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
 
-                        HStack(spacing: 0) {
+                        ZStack(alignment: .bottom) {
                             ScrollView {
                                 LazyVStack(alignment: .leading, spacing: 8) {
                                     ForEach(Array(songs.enumerated()), id: \.offset) { index, song in
@@ -39,12 +39,14 @@ struct MostPlayedSongsCard: View {
                                 .padding(.vertical, 4)
                             }
 
-                            // Always-visible scroll track indicator
-                            Rectangle()
-                                .fill(Color.gray.opacity(0.2))
-                                .frame(width: 4)
-                                .cornerRadius(2)
-                                .padding(.vertical, 4)
+                            // Gradient fade to indicate scrollable content
+                            LinearGradient(
+                                colors: [.white.opacity(0), .white],
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                            .frame(height: 30)
+                            .allowsHitTesting(false)
                         }
                         .frame(height: 380)
                     }
