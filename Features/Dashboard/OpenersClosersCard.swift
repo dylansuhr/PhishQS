@@ -18,30 +18,28 @@ struct OpenersClosersCard: View {
     @State private var closersExpanded: Bool = false
     @State private var encoresExpanded: Bool = false
 
-    // Visible tabs based on available data
+    // Visible tabs: always show 1, 2, e; dynamically show 3 if data exists
+    // Matches SongsPerSetCard logic
     private var visibleTabs: [String] {
-        var tabs: [String] = []
+        let alwaysShow = ["1", "2", "e"]
+        let dynamic = ["3"]  // Set 3 only shown if data exists
+        let allOrdered = ["1", "2", "3", "e"]
+        let available = Set(openersClosers.keys.map { key -> String in
+            // Extract set identifier from keys like "1_opener", "2_closer", "3_opener", "e_all"
+            let prefix = key.split(separator: "_").first.map(String.init) ?? ""
+            return prefix
+        })
 
-        // Always show Set 1 and Set 2 tabs if we have opener/closer data
-        if openersClosers.keys.contains(where: { $0.hasPrefix("1_") }) {
-            tabs.append("1")
+        return allOrdered.filter { key in
+            alwaysShow.contains(key) || (dynamic.contains(key) && available.contains(key))
         }
-        if openersClosers.keys.contains(where: { $0.hasPrefix("2_") }) {
-            tabs.append("2")
-        }
-
-        // Show Encores tab if we have any encore data (e_all, e2_all, etc.)
-        if openersClosers.keys.contains(where: { $0.hasPrefix("e") }) {
-            tabs.append("e")
-        }
-
-        return tabs
     }
 
     private func tabLabel(for tab: String) -> String {
         switch tab {
         case "1": return "Set 1"
         case "2": return "Set 2"
+        case "3": return "Set 3"
         case "e": return "Encores"
         default: return tab
         }
