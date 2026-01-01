@@ -12,11 +12,13 @@ import UIKit
 struct RarestSongsCard: View {
     let songs: [SongGapInfo]
     @State private var isExpanded: Bool = false
+    @State private var animationWarmup = false  // Pre-warm animation system
 
     // Pre-warmed haptic generator to mask first-tap delay
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
+        ScrollViewReader { proxy in
         MetricCard("Biggest Song Gaps") {
                 if songs.isEmpty {
                     Text("No gap data available")
@@ -48,15 +50,31 @@ struct RarestSongsCard: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 hapticGenerator.impactOccurred()
+                                let willCollapse = isExpanded
                                 isExpanded.toggle()
+
+                                // Scroll on next run loop so state has propagated
+                                if willCollapse {
+                                    DispatchQueue.main.async {
+                                        withAnimation(.easeOut(duration: 0.4)) {
+                                            proxy.scrollTo("rarestSongsCard", anchor: .top)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+                    .animation(.easeOut(duration: 0.4), value: isExpanded)
                 }
         }
         .id("rarestSongsCard")
         .onAppear {
             hapticGenerator.prepare()
+            // Pre-warm animation system in same view context
+            withAnimation(.easeInOut(duration: 0.01)) {
+                animationWarmup.toggle()
+            }
+        }
         }
     }
 }

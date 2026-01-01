@@ -12,11 +12,13 @@ import UIKit
 struct MostCommonSongsNotPlayedCard: View {
     let songs: [MostCommonSongNotPlayed]
     @State private var isExpanded: Bool = false
+    @State private var animationWarmup = false  // Pre-warm animation system
 
     // Pre-warmed haptic generator to mask first-tap delay
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
+        ScrollViewReader { proxy in
         MetricCard("Most Common Songs Not Played") {
                 if songs.isEmpty {
                     Text("All popular songs have been played")
@@ -48,15 +50,31 @@ struct MostCommonSongsNotPlayedCard: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 hapticGenerator.impactOccurred()
+                                let willCollapse = isExpanded
                                 isExpanded.toggle()
+
+                                // Scroll on next run loop so state has propagated
+                                if willCollapse {
+                                    DispatchQueue.main.async {
+                                        withAnimation(.easeOut(duration: 0.4)) {
+                                            proxy.scrollTo("mostCommonNotPlayedCard", anchor: .top)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+                    .animation(.easeOut(duration: 0.4), value: isExpanded)
                 }
         }
         .id("mostCommonNotPlayedCard")
         .onAppear {
             hapticGenerator.prepare()
+            // Pre-warm animation system in same view context
+            withAnimation(.easeInOut(duration: 0.01)) {
+                animationWarmup.toggle()
+            }
+        }
         }
     }
 }

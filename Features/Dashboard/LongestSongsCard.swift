@@ -14,12 +14,13 @@ struct LongestSongsCard: View {
     let showDurationAvailability: [ShowDurationAvailability]  // Single source of truth from statistics
     @State private var isExpanded: Bool = false
     @State private var showDataPopup: Bool = false
+    @State private var animationWarmup = false  // Pre-warm animation system
 
     // Pre-warmed haptic generator to mask first-tap delay
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
-        // TESTING: Removed ScrollViewReader to check if it causes first-tap delay
+        ScrollViewReader { proxy in
         VStack(alignment: .leading, spacing: 12) {
                 // Custom header with data coverage info
                 VStack(alignment: .leading, spacing: 4) {
@@ -79,11 +80,21 @@ struct LongestSongsCard: View {
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 hapticGenerator.impactOccurred()
-                                // TESTING: No animation
+                                let willCollapse = isExpanded
                                 isExpanded.toggle()
+
+                                // Scroll on next run loop so state has propagated
+                                if willCollapse {
+                                    DispatchQueue.main.async {
+                                        withAnimation(.easeOut(duration: 0.4)) {
+                                            proxy.scrollTo("longestSongsCard", anchor: .top)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+                    .animation(.easeOut(duration: 0.4), value: isExpanded)
                 }
             }
             .padding(16)
@@ -93,6 +104,10 @@ struct LongestSongsCard: View {
             .id("longestSongsCard")
             .onAppear {
                 hapticGenerator.prepare()
+                // Pre-warm animation system in same view context
+                withAnimation(.easeInOut(duration: 0.01)) {
+                    animationWarmup.toggle()
+                }
             }
             .sheet(isPresented: $showDataPopup) {
                 LazySheetContent {
@@ -102,6 +117,7 @@ struct LongestSongsCard: View {
                     )
                 }
             }
+        }
     }
 
     // MARK: - Helper Properties
