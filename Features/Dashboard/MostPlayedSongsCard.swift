@@ -11,6 +11,8 @@ import SwiftUI
 struct MostPlayedSongsCard: View {
     let songs: [MostPlayedSong]
 
+    @State private var isAtBottom = false
+
     var body: some View {
         MetricCard("All Songs Played") {
                 if songs.isEmpty {
@@ -35,18 +37,28 @@ struct MostPlayedSongsCard: View {
                                             Divider()
                                         }
                                     }
+
+                                    // Bottom detector
+                                    GeometryReader { geo in
+                                        Color.clear
+                                            .onAppear { isAtBottom = true }
+                                            .onDisappear { isAtBottom = false }
+                                    }
+                                    .frame(height: 1)
                                 }
                                 .padding(.vertical, 4)
                             }
 
                             // Gradient fade to indicate scrollable content
-                            LinearGradient(
-                                colors: [.white.opacity(0), .white],
-                                startPoint: .top,
-                                endPoint: .bottom
-                            )
-                            .frame(height: 30)
-                            .allowsHitTesting(false)
+                            if !isAtBottom {
+                                LinearGradient(
+                                    colors: [.white.opacity(0), .white],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                                .frame(height: 30)
+                                .allowsHitTesting(false)
+                            }
                         }
                         .frame(height: 380)
                     }
