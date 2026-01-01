@@ -38,6 +38,7 @@ struct MostPlayedSongsCard: View {
                             .padding(.vertical, 4)
                             .padding(.trailing, 20)
                         }
+                        .scrollIndicators(.visible)
                         .frame(height: 380)
                     }
                 }
