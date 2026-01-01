@@ -179,7 +179,8 @@ struct TourStatisticsCards: View {
                 ],
                 openersClosers: sampleOpenersClosers,
                 tourName: TourConfig.currentTourName,
-                showDurationAvailability: sampleAvailability
+                showDurationAvailability: sampleAvailability,
+                youtubeVideos: nil
             )
         )
 

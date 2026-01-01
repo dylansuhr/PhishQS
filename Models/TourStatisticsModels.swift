@@ -287,6 +287,7 @@ struct TourSongStatistics: Codable {
     let openersClosers: OpenersClosersStats? // Openers, closers, and encore songs with play counts
     let tourName: String?                    // Current tour name for context
     let showDurationAvailability: [ShowDurationAvailability]? // Per-show duration data availability
+    let youtubeVideos: [YouTubeVideo]?       // YouTube videos from Phish channel for tour date range
 
     /// Check if statistics data is available
     var hasData: Bool {

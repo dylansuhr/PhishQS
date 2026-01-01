@@ -25,6 +25,7 @@ import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
 import { HistoricalDataEnhancer } from '../Services/HistoricalDataEnhancer.js';
 import { PhishNetTourService } from '../Services/PhishNetTourService.js';
 import { DataCollectionService } from '../Services/DataCollectionService.js';
+import { YouTubeService } from '../Services/YouTubeService.js';
 import StatisticsConfig from '../Config/StatisticsConfig.js';
 import LoggingService from '../Services/LoggingService.js';
 
@@ -236,17 +237,21 @@ async function generateTourStatisticsFromControlFile() {
         const controlFileData = JSON.parse(readFileSync(controlFilePath, 'utf8'));
         const tourName = controlFileData.currentTour.name;
 
-        // OPTIMIZATION: Early exit if statistics don't need updating
-        LoggingService.info('Checking if statistics update is needed...');
-        const updateCheck = await checkIfStatisticsUpdateNeeded(controlFileData);
-        if (!updateCheck.shouldUpdate) {
-            console.timeEnd('🎯 Total Generation Time');
-            LoggingService.info(`Statistics update not needed: ${updateCheck.reason}`);
-            LoggingService.success('Early exit - no processing required');
-            return;
+        // OPTIMIZATION: Early exit if statistics don't need updating (unless --force)
+        const forceRegenerate = process.argv.includes('--force');
+        if (forceRegenerate) {
+            LoggingService.info('Force regeneration requested, skipping update check...');
+        } else {
+            LoggingService.info('Checking if statistics update is needed...');
+            const updateCheck = await checkIfStatisticsUpdateNeeded(controlFileData);
+            if (!updateCheck.shouldUpdate) {
+                console.timeEnd('🎯 Total Generation Time');
+                LoggingService.info(`Statistics update not needed: ${updateCheck.reason}`);
+                LoggingService.success('Early exit - no processing required');
+                return;
+            }
+            LoggingService.info(`Statistics update needed: ${updateCheck.reason}`);
         }
-
-        LoggingService.info(`Statistics update needed: ${updateCheck.reason}`);
         
         LoggingService.info(`Tour identified from control file: ${tourName}`);
         LoggingService.info(`Tour shows: ${controlFileData.currentTour.playedShows} played of ${controlFileData.currentTour.totalShows} total`);
@@ -331,7 +336,16 @@ async function generateTourStatisticsFromControlFile() {
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 6: Save result to Server/Data directory (single source of truth)
+        // Step 6: Fetch YouTube videos for the tour date range
+        // Use today's date as end date since videos are uploaded AFTER shows happen
+        LoggingService.info('Fetching YouTube videos for tour...');
+        const youtubeService = new YouTubeService();
+        const tourDates = controlFileData.currentTour.tourDates;
+        const tourStartDate = tourDates[0]?.date;
+        const today = new Date().toISOString().split('T')[0];
+        const youtubeVideos = await youtubeService.fetchTourVideos(tourStartDate, today);
+
+        // Step 7: Save result to Server/Data directory (single source of truth)
         const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
 
         // Calculate shows with duration data for metadata
@@ -361,7 +375,8 @@ async function generateTourStatisticsFromControlFile() {
             tourName: tourName, // Ensure tour name is preserved
             showsWithDurations: showsWithDurations,
             totalShows: allTourShows.length,
-            showDurationAvailability: showDurationAvailability
+            showDurationAvailability: showDurationAvailability,
+            youtubeVideos: youtubeVideos
         };
 
         const jsonData = JSON.stringify(statisticsWithTracking, null, 2);
@@ -375,6 +390,7 @@ async function generateTourStatisticsFromControlFile() {
         LoggingService.info(`   Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
         LoggingService.info(`   Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
         LoggingService.info(`   Common not played: ${enhancedTourStats.mostCommonSongsNotPlayed?.length || 0} (from ${comprehensiveSongs.length} total Phish songs)`);
+        LoggingService.info(`   YouTube videos: ${youtubeVideos.length}`);
         LoggingService.info(`Data Source: Control file + individual show files (0 API calls for tour data)`);
         LoggingService.info(`Shows processed: ${allTourShows.length} enhanced setlists from control file`);
         

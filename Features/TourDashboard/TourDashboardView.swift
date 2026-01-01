@@ -8,6 +8,8 @@ struct TourDashboardView: View {
 
     @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
     @State private var showingDateSearch = false
+    @State private var showingPhishNet = false
+    @State private var showingYouTube = false
     @State private var animateCard1 = false
     @State private var animateCard2 = false
     @State private var animateCard3 = false
@@ -42,6 +44,52 @@ struct TourDashboardView: View {
             DashboardSection {
                 LatestShowHeroCard(viewModel: latestSetlistViewModel)
                     .modifier(StateCardAnimationModifier(animate: $animateCard1))
+            }
+
+            // Quick Links (Phish.net + YouTube)
+            DashboardSection {
+                HStack(spacing: 12) {
+                    // Phish.net card - links to latest show
+                    Button {
+                        if latestSetlistViewModel.setlistItems.first?.phishNetURL != nil {
+                            showingPhishNet = true
+                        }
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image("phish_net_icon_logo")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 40)
+                            Text("Latest Show")
+                                .font(.caption)
+                                .foregroundColor(.appHeaderBlue)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .cornerRadius(12)
+                    }
+
+                    // YouTube card - tour videos
+                    Button {
+                        showingYouTube = true
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image("you_tube")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 40)
+                            Text("Tour Videos")
+                                .font(.caption)
+                                .foregroundColor(.appHeaderBlue)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .cornerRadius(12)
+                    }
+                }
+                .modifier(StateCardAnimationModifier(animate: $animateCard1))
             }
 
             // Tour Calendar (Component D)
@@ -97,6 +145,15 @@ struct TourDashboardView: View {
                     YearListView()
                 }
             }
+        }
+        .sheet(isPresented: $showingPhishNet) {
+            if let url = latestSetlistViewModel.setlistItems.first?.phishNetURL {
+                SafariView(url: url)
+                    .ignoresSafeArea()
+            }
+        }
+        .sheet(isPresented: $showingYouTube) {
+            TourVideosSheet(videos: latestSetlistViewModel.tourStatistics?.youtubeVideos ?? [])
         }
         .onAppear {
             // Pre-warm haptic engine immediately so first interaction is instant
