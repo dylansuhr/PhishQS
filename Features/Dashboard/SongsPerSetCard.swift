@@ -3,20 +3,40 @@
 //  PhishQS
 //
 //  Card displaying songs per set statistics - min/max songs for each set type
+//  Features tabbed navigation and collapsible tie lists
 //
 
 import SwiftUI
+import UIKit
 
 struct SongsPerSetCard: View {
     let setSongStats: [String: SetSongStats]
 
-    // Ordered set keys for display
-    private var orderedSetKeys: [String] {
-        let order = ["1", "2", "3", "e", "e2", "e3"]
-        return setSongStats.keys.sorted { key1, key2 in
-            let index1 = order.firstIndex(of: key1) ?? 999
-            let index2 = order.firstIndex(of: key2) ?? 999
-            return index1 < index2
+    @State private var selectedSetKey: String = "1"
+    @State private var minExpanded: Bool = false
+    @State private var maxExpanded: Bool = false
+
+    // Visible tabs: always show 1, 2, e; dynamically show 3, e2, e3 if data exists
+    private var visibleSetKeys: [String] {
+        let alwaysShow = ["1", "2", "e"]
+        let dynamic = ["3", "e2", "e3"]
+        let allOrdered = ["1", "2", "3", "e", "e2", "e3"]
+        let available = Set(setSongStats.keys)
+
+        return allOrdered.filter { key in
+            alwaysShow.contains(key) || (dynamic.contains(key) && available.contains(key))
+        }
+    }
+
+    private func tabLabel(for key: String) -> String {
+        switch key.lowercased() {
+        case "1": return "Set 1"
+        case "2": return "Set 2"
+        case "3": return "Set 3"
+        case "e": return "Encore"
+        case "e2": return "Enc 2"
+        case "e3": return "Enc 3"
+        default: return "Set \(key)"
         }
     }
 
@@ -36,16 +56,46 @@ struct SongsPerSetCard: View {
                     .foregroundColor(.secondary)
                     .italic()
             } else {
-                VStack(alignment: .leading, spacing: 16) {
-                    ForEach(orderedSetKeys, id: \.self) { setKey in
-                        if let stats = setSongStats[setKey] {
-                            SetTypeSection(setKey: setKey, stats: stats)
-
-                            if setKey != orderedSetKeys.last {
-                                Divider()
-                            }
-                        }
+                // Tab picker
+                Picker("Set", selection: $selectedSetKey) {
+                    ForEach(visibleSetKeys, id: \.self) { key in
+                        Text(tabLabel(for: key)).tag(key)
                     }
+                }
+                .pickerStyle(.segmented)
+                .onChange(of: selectedSetKey) { _, _ in
+                    // Reset expand states when switching tabs
+                    minExpanded = false
+                    maxExpanded = false
+                }
+
+                // Content for selected set
+                if let stats = setSongStats[selectedSetKey] {
+                    HStack(alignment: .top, spacing: 16) {
+                        ExtremeColumn(
+                            label: "Shortest",
+                            count: stats.min.count,
+                            shows: stats.min.shows,
+                            isExpanded: $minExpanded
+                        )
+
+                        ExtremeColumn(
+                            label: "Longest",
+                            count: stats.max.count,
+                            shows: stats.max.shows,
+                            isExpanded: $maxExpanded
+                        )
+                    }
+                    .animation(.easeOut(duration: 0.4), value: minExpanded)
+                    .animation(.easeOut(duration: 0.4), value: maxExpanded)
+                } else {
+                    // No data for selected set (shouldn't happen for always-show tabs, but handle gracefully)
+                    Text("No data available for this set")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .italic()
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.vertical, 20)
                 }
             }
         }
@@ -56,56 +106,31 @@ struct SongsPerSetCard: View {
     }
 }
 
-// MARK: - Set Type Section
-
-private struct SetTypeSection: View {
-    let setKey: String
-    let stats: SetSongStats
-
-    private var setDisplayName: String {
-        switch setKey.lowercased() {
-        case "1": return "Set 1"
-        case "2": return "Set 2"
-        case "3": return "Set 3"
-        case "e": return "Encore"
-        case "e2": return "Encore 2"
-        case "e3": return "Encore 3"
-        default: return "Set \(setKey)"
-        }
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Set label
-            Text(setDisplayName.uppercased())
-                .font(.caption)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-
-            // Min and Max side by side
-            HStack(alignment: .top, spacing: 16) {
-                ExtremeColumn(
-                    label: "Shortest",
-                    count: stats.min.count,
-                    shows: stats.min.shows
-                )
-
-                ExtremeColumn(
-                    label: "Longest",
-                    count: stats.max.count,
-                    shows: stats.max.shows
-                )
-            }
-        }
-    }
-}
-
 // MARK: - Extreme Column (Shortest/Longest)
 
 private struct ExtremeColumn: View {
     let label: String
     let count: Int
     let shows: [SetSongShow]
+    @Binding var isExpanded: Bool
+
+    private let threshold = 2
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
+
+    private var displayedShows: [SetSongShow] {
+        if isExpanded || shows.count <= threshold {
+            return shows
+        }
+        return Array(shows.prefix(threshold))
+    }
+
+    private var hasMoreShows: Bool {
+        shows.count > threshold
+    }
+
+    private var remainingCount: Int {
+        shows.count - threshold
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -120,13 +145,37 @@ private struct ExtremeColumn: View {
                 .fontWeight(.bold)
                 .foregroundColor(.indigo)
 
-            // Shows (handle ties)
-            ForEach(Array(shows.enumerated()), id: \.offset) { index, show in
+            // Shows (with collapsible behavior)
+            ForEach(Array(displayedShows.enumerated()), id: \.offset) { index, show in
                 if index > 0 {
                     Divider()
                         .padding(.vertical, 2)
                 }
                 ShowInfoView(show: show)
+            }
+
+            // Show More/Less button
+            if hasMoreShows {
+                HStack {
+                    Text(isExpanded ? "Show Less" : "+ \(remainingCount) more")
+                        .font(.caption)
+                        .foregroundColor(.blue)
+
+                    if isExpanded {
+                        Image(systemName: "chevron.up")
+                            .font(.caption)
+                            .foregroundColor(.blue)
+                    }
+                }
+                .padding(.top, 4)
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    hapticGenerator.impactOccurred()
+                    isExpanded.toggle()
+                }
+                .onAppear {
+                    hapticGenerator.prepare()
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -165,11 +214,14 @@ private struct ShowInfoView: View {
 #Preview {
     ScrollView {
         VStack(spacing: 16) {
-            // Sample data
+            // Sample data with ties
             SongsPerSetCard(setSongStats: [
                 "1": SetSongStats(
                     min: SetSongExtreme(count: 7, shows: [
-                        SetSongShow(date: "2025-12-29", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N2")
+                        SetSongShow(date: "2025-12-29", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N2"),
+                        SetSongShow(date: "2025-12-28", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N1"),
+                        SetSongShow(date: "2025-12-30", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N3"),
+                        SetSongShow(date: "2025-09-01", venue: "Dick's Sporting Goods Park", city: "Commerce City", state: "CO", venueRun: "N1")
                     ]),
                     max: SetSongExtreme(count: 11, shows: [
                         SetSongShow(date: "2025-09-13", venue: "Dick's Sporting Goods Park", city: "Commerce City", state: "CO", venueRun: nil)
@@ -181,6 +233,14 @@ private struct ShowInfoView: View {
                     ]),
                     max: SetSongExtreme(count: 12, shows: [
                         SetSongShow(date: "2025-12-30", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N3")
+                    ])
+                ),
+                "3": SetSongStats(
+                    min: SetSongExtreme(count: 5, shows: [
+                        SetSongShow(date: "2025-12-31", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N4")
+                    ]),
+                    max: SetSongExtreme(count: 5, shows: [
+                        SetSongShow(date: "2025-12-31", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N4")
                     ])
                 ),
                 "e": SetSongStats(
