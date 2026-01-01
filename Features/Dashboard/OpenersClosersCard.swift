@@ -140,7 +140,8 @@ struct OpenersClosersCard: View {
                             itemCount: maxItemCount,
                             threshold: threshold,
                             cardId: "openersClosersCard",
-                            proxy: proxy
+                            proxy: proxy,
+                            scrollOnCollapse: false
                         )
                     }
                     .animation(.easeOut(duration: 0.4), value: isExpanded)

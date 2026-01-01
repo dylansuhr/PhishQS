@@ -101,7 +101,8 @@ struct SongsPerSetCard: View {
                                 itemCount: maxItemCount,
                                 threshold: threshold,
                                 cardId: "songsPerSetCard",
-                                proxy: proxy
+                                proxy: proxy,
+                                scrollOnCollapse: false
                             )
                         }
                         .animation(.easeOut(duration: 0.4), value: isExpanded)

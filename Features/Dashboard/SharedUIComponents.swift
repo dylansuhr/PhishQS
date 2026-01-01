@@ -11,13 +11,14 @@ import UIKit
 // MARK: - Expandable Card Button
 
 /// Reusable Show More/Less button for expandable cards with smooth animations
-/// Handles haptic feedback, expand/collapse toggle, and scroll-to-top on collapse
+/// Handles haptic feedback, expand/collapse toggle, and optional scroll-to-top on collapse
 struct ExpandableCardButton: View {
     @Binding var isExpanded: Bool
     let itemCount: Int
     let threshold: Int
     let cardId: String
     let proxy: ScrollViewProxy
+    let scrollOnCollapse: Bool
 
     // Pre-warmed haptic generator
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
@@ -27,13 +28,15 @@ struct ExpandableCardButton: View {
         itemCount: Int,
         threshold: Int = 3,
         cardId: String,
-        proxy: ScrollViewProxy
+        proxy: ScrollViewProxy,
+        scrollOnCollapse: Bool = true
     ) {
         self._isExpanded = isExpanded
         self.itemCount = itemCount
         self.threshold = threshold
         self.cardId = cardId
         self.proxy = proxy
+        self.scrollOnCollapse = scrollOnCollapse
     }
 
     var body: some View {
@@ -54,8 +57,8 @@ struct ExpandableCardButton: View {
                 let willCollapse = isExpanded
                 isExpanded.toggle()
 
-                // Scroll on next run loop so state has propagated
-                if willCollapse {
+                // Scroll on next run loop so state has propagated (if enabled)
+                if willCollapse && scrollOnCollapse {
                     DispatchQueue.main.async {
                         withAnimation(.easeOut(duration: 0.4)) {
                             proxy.scrollTo(cardId, anchor: .top)
