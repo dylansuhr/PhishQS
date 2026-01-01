@@ -199,11 +199,12 @@ export class VenueRun {
  * Mirrors Swift TourSongStatistics struct
  */
 export class TourSongStatistics {
-    constructor(longestSongs, rarestSongs, mostPlayedSongs, tourName, mostCommonSongsNotPlayed = []) {
+    constructor(longestSongs, rarestSongs, mostPlayedSongs, tourName, mostCommonSongsNotPlayed = [], setSongStats = {}) {
         this.longestSongs = longestSongs;
         this.rarestSongs = rarestSongs;
         this.mostPlayedSongs = mostPlayedSongs;
         this.mostCommonSongsNotPlayed = mostCommonSongsNotPlayed;
+        this.setSongStats = setSongStats;
         this.tourName = tourName;
     }
 
@@ -211,6 +212,7 @@ export class TourSongStatistics {
         return this.longestSongs.length > 0 ||
                this.rarestSongs.length > 0 ||
                this.mostPlayedSongs.length > 0 ||
-               this.mostCommonSongsNotPlayed.length > 0;
+               this.mostCommonSongsNotPlayed.length > 0 ||
+               Object.keys(this.setSongStats).length > 0;
     }
 }

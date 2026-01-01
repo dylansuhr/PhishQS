@@ -999,7 +999,7 @@
       "id": 84,
       "songId": 84,
       "songName": "Bouncing Around The Room",
-      "historicalPlayCount": 494,
+      "historicalPlayCount": 495,
       "originalArtist": "Phish"
     },
     {
@@ -1020,7 +1020,7 @@
       "id": 538,
       "songId": 538,
       "songName": "Stash",
-      "historicalPlayCount": 457,
+      "historicalPlayCount": 458,
       "originalArtist": "Phish"
     },
     {
@@ -1129,9 +1129,152 @@
       "originalArtist": "Phish"
     }
   ],
+  "setSongStats": {
+    "1": {
+      "min": {
+        "count": 10,
+        "shows": [
+          {
+            "date": "2025-12-28",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N1"
+          },
+          {
+            "date": "2025-12-29",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N2"
+          },
+          {
+            "date": "2025-12-30",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N3"
+          }
+        ]
+      },
+      "max": {
+        "count": 10,
+        "shows": [
+          {
+            "date": "2025-12-28",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N1"
+          },
+          {
+            "date": "2025-12-29",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N2"
+          },
+          {
+            "date": "2025-12-30",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N3"
+          }
+        ]
+      }
+    },
+    "2": {
+      "min": {
+        "count": 7,
+        "shows": [
+          {
+            "date": "2025-12-28",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N1"
+          },
+          {
+            "date": "2025-12-29",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N2"
+          },
+          {
+            "date": "2025-12-30",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N3"
+          }
+        ]
+      },
+      "max": {
+        "count": 7,
+        "shows": [
+          {
+            "date": "2025-12-28",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N1"
+          },
+          {
+            "date": "2025-12-29",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N2"
+          },
+          {
+            "date": "2025-12-30",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N3"
+          }
+        ]
+      }
+    },
+    "e": {
+      "min": {
+        "count": 1,
+        "shows": [
+          {
+            "date": "2025-12-28",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N1"
+          },
+          {
+            "date": "2025-12-30",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N3"
+          }
+        ]
+      },
+      "max": {
+        "count": 2,
+        "shows": [
+          {
+            "date": "2025-12-29",
+            "venue": "Madison Square Garden",
+            "city": "New York",
+            "state": "NY",
+            "venueRun": "N2"
+          }
+        ]
+      }
+    }
+  },
   "tourName": "2025 NYE Run",
   "latestShowProcessed": "2025-12-30",
-  "generatedAt": "2025-12-31T20:15:36.517Z",
+  "generatedAt": "2026-01-01T02:03:03.579Z",
   "showsWithDurations": 3,
   "totalShows": 3,
   "showDurationAvailability": [

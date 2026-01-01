@@ -74,6 +74,7 @@ export class TourStatisticsService {
         const rarestSongs = calculatorResults.rarestSongs || [];
         const mostPlayedSongs = calculatorResults.mostPlayedSongs || [];
         const mostCommonSongsNotPlayed = calculatorResults.mostCommonSongsNotPlayed || [];
+        const setSongStats = calculatorResults.setSongStats || {};
 
         // Log summary
         LoggingService.stats.results({
@@ -88,7 +89,8 @@ export class TourStatisticsService {
             rarestSongs,
             mostPlayedSongs,
             tourName,
-            mostCommonSongsNotPlayed
+            mostCommonSongsNotPlayed,
+            setSongStats
         );
     }
     

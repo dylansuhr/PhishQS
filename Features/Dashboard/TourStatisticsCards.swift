@@ -18,6 +18,9 @@ struct TourStatisticsCards: View {
                     songs: stats.longestSongs,
                     showDurationAvailability: stats.showDurationAvailability ?? []
                 )
+                if let setSongStats = stats.setSongStats, !setSongStats.isEmpty {
+                    SongsPerSetCard(setSongStats: setSongStats)
+                }
                 RarestSongsCard(songs: stats.rarestSongs)
                 if let mostCommonSongs = stats.mostCommonSongsNotPlayed, !mostCommonSongs.isEmpty {
                     MostCommonSongsNotPlayedCard(songs: mostCommonSongs)
@@ -131,6 +134,20 @@ struct TourStatisticsCards: View {
                 rarestSongs: sampleRarestSongs,
                 mostPlayedSongs: sampleMostPlayedSongs,
                 mostCommonSongsNotPlayed: sampleMostCommonSongsNotPlayed,
+                setSongStats: [
+                    "1": SetSongStats(
+                        min: SetSongExtreme(count: 8, shows: [SetSongShow(date: "2025-12-28", venue: "MSG", city: "New York", state: "NY", venueRun: "N1")]),
+                        max: SetSongExtreme(count: 11, shows: [SetSongShow(date: "2025-12-30", venue: "MSG", city: "New York", state: "NY", venueRun: "N3")])
+                    ),
+                    "2": SetSongStats(
+                        min: SetSongExtreme(count: 7, shows: [SetSongShow(date: "2025-12-29", venue: "MSG", city: "New York", state: "NY", venueRun: "N2")]),
+                        max: SetSongExtreme(count: 9, shows: [SetSongShow(date: "2025-12-28", venue: "MSG", city: "New York", state: "NY", venueRun: "N1")])
+                    ),
+                    "e": SetSongStats(
+                        min: SetSongExtreme(count: 1, shows: [SetSongShow(date: "2025-12-28", venue: "MSG", city: "New York", state: "NY", venueRun: "N1")]),
+                        max: SetSongExtreme(count: 3, shows: [SetSongShow(date: "2025-12-30", venue: "MSG", city: "New York", state: "NY", venueRun: "N3")])
+                    )
+                ],
                 tourName: TourConfig.currentTourName,
                 showDurationAvailability: sampleAvailability
             )

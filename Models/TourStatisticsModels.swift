@@ -200,6 +200,47 @@ struct MostCommonSongNotPlayed: Codable, Identifiable {
     }
 }
 
+// MARK: - Set Song Statistics Models
+
+/// Show data for set song statistics
+struct SetSongShow: Codable {
+    let date: String
+    let venue: String
+    let city: String
+    let state: String
+    let venueRun: String?  // "N1", "N2", etc. or nil for single night
+
+    /// Formatted date for display
+    var formattedDate: String {
+        DateUtilities.formatDateForDisplay(date) ?? date
+    }
+
+    /// Venue display text with run info
+    var venueDisplayText: String {
+        if let run = venueRun {
+            return "\(venue), \(run)"
+        }
+        return venue
+    }
+
+    /// City and state display text
+    var cityStateText: String {
+        "\(city), \(state)"
+    }
+}
+
+/// Min or max extreme for a set type
+struct SetSongExtreme: Codable {
+    let count: Int
+    let shows: [SetSongShow]
+}
+
+/// Statistics for a single set type (min and max)
+struct SetSongStats: Codable {
+    let min: SetSongExtreme
+    let max: SetSongExtreme
+}
+
 /// Per-show duration availability info (single source of truth from tour-statistics API)
 struct ShowDurationAvailability: Codable, Identifiable {
     let date: String
@@ -227,12 +268,13 @@ struct TourSongStatistics: Codable {
     let rarestSongs: [SongGapInfo]           // Top 3 rarest songs by gap
     let mostPlayedSongs: [MostPlayedSong]    // Top 3 most played songs by frequency
     let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed]? // Top 20 common songs not played
+    let setSongStats: [String: SetSongStats]? // Songs per set statistics keyed by set type ("1", "2", "e")
     let tourName: String?                    // Current tour name for context
     let showDurationAvailability: [ShowDurationAvailability]? // Per-show duration data availability
 
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true)
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true)
     }
 
     /// Number of shows with duration data

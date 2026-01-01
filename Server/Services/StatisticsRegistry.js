@@ -23,6 +23,7 @@ import { LongestSongsCalculator } from './StatisticsCalculators/LongestSongsCalc
 import { RarestSongsCalculator } from './StatisticsCalculators/RarestSongsCalculator.js';
 import { MostPlayedSongsCalculator } from './StatisticsCalculators/MostPlayedSongsCalculator.js';
 import { MostCommonSongsNotPlayedCalculator } from './StatisticsCalculators/MostCommonSongsNotPlayedCalculator.js';
+import { SetSongStatsCalculator } from './StatisticsCalculators/SetSongStatsCalculator.js';
 
 /**
  * Registry for managing statistics calculators
@@ -94,6 +95,17 @@ export class StatisticsRegistry {
             resultType: 'MostCommonSongNotPlayed',
             enabled: true,
             priority: 4
+        });
+
+        // Set Song Stats Calculator
+        this.registerCalculator('setSongStats', {
+            name: 'Songs Per Set',
+            description: 'Identifies shows with most/fewest songs per set type',
+            dataSource: 'Phish.net setlist data',
+            calculatorClass: SetSongStatsCalculator,
+            resultType: 'SetSongStats',
+            enabled: true,
+            priority: 5
         });
     }
     
