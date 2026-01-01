@@ -6,6 +6,69 @@
 //
 
 import SwiftUI
+import UIKit
+
+// MARK: - Expandable Card Button
+
+/// Reusable Show More/Less button for expandable cards with smooth animations
+/// Handles haptic feedback, expand/collapse toggle, and scroll-to-top on collapse
+struct ExpandableCardButton: View {
+    @Binding var isExpanded: Bool
+    let itemCount: Int
+    let threshold: Int
+    let cardId: String
+    let proxy: ScrollViewProxy
+
+    // Pre-warmed haptic generator
+    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
+
+    init(
+        isExpanded: Binding<Bool>,
+        itemCount: Int,
+        threshold: Int = 3,
+        cardId: String,
+        proxy: ScrollViewProxy
+    ) {
+        self._isExpanded = isExpanded
+        self.itemCount = itemCount
+        self.threshold = threshold
+        self.cardId = cardId
+        self.proxy = proxy
+    }
+
+    var body: some View {
+        if itemCount > threshold {
+            HStack {
+                Text(isExpanded ? "Show Less" : "Show More")
+                    .font(.caption)
+                    .foregroundColor(.blue)
+
+                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                    .font(.caption)
+                    .foregroundColor(.blue)
+            }
+            .padding(.top, 8)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                hapticGenerator.impactOccurred()
+                let willCollapse = isExpanded
+                isExpanded.toggle()
+
+                // Scroll on next run loop so state has propagated
+                if willCollapse {
+                    DispatchQueue.main.async {
+                        withAnimation(.easeOut(duration: 0.4)) {
+                            proxy.scrollTo(cardId, anchor: .top)
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                hapticGenerator.prepare()
+            }
+        }
+    }
+}
 
 // MARK: - Badge Component
 

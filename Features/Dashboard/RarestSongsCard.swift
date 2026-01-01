@@ -7,15 +7,11 @@
 //
 
 import SwiftUI
-import UIKit
 
 struct RarestSongsCard: View {
     let songs: [SongGapInfo]
     @State private var isExpanded: Bool = false
     @State private var animationWarmup = false  // Pre-warm animation system
-
-    // Pre-warmed haptic generator to mask first-tap delay
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -35,41 +31,19 @@ struct RarestSongsCard: View {
                             }
                         }
 
-                        // Show More/Less button when there are more than 3 songs
-                        if songs.count > 3 {
-                            HStack {
-                                Text(isExpanded ? "Show Less" : "Show More")
-                                    .font(.caption)
-                                    .foregroundColor(.blue)
-
-                                Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
-                                    .font(.caption)
-                                    .foregroundColor(.blue)
-                            }
-                            .padding(.top, 8)
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                hapticGenerator.impactOccurred()
-                                let willCollapse = isExpanded
-                                isExpanded.toggle()
-
-                                // Scroll on next run loop so state has propagated
-                                if willCollapse {
-                                    DispatchQueue.main.async {
-                                        withAnimation(.easeOut(duration: 0.4)) {
-                                            proxy.scrollTo("rarestSongsCard", anchor: .top)
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        ExpandableCardButton(
+                            isExpanded: $isExpanded,
+                            itemCount: songs.count,
+                            threshold: 3,
+                            cardId: "rarestSongsCard",
+                            proxy: proxy
+                        )
                     }
                     .animation(.easeOut(duration: 0.4), value: isExpanded)
                 }
         }
         .id("rarestSongsCard")
         .onAppear {
-            hapticGenerator.prepare()
             // Pre-warm animation system in same view context
             withAnimation(.easeInOut(duration: 0.01)) {
                 animationWarmup.toggle()
