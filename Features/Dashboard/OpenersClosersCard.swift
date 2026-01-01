@@ -3,29 +3,26 @@
 //  PhishQS
 //
 //  Card displaying openers, closers, and encore statistics
-//  Features tabbed navigation for Set 1, Set 2, and Encores
-//  Follows SongsPerSetCard pattern
+//  Features tabbed navigation and shared expandable card button
 //
 
 import SwiftUI
-import UIKit
 
 struct OpenersClosersCard: View {
     let openersClosers: OpenersClosersStats
 
-    @State private var selectedTab: String = "1"  // "1", "2", "e"
-    @State private var openersExpanded: Bool = false
-    @State private var closersExpanded: Bool = false
-    @State private var encoresExpanded: Bool = false
+    @State private var selectedTab: String = "1"  // "1", "2", "3", "e"
+    @State private var isExpanded: Bool = false
+    @State private var animationWarmup = false
+
+    private let threshold = 3  // Songs per column when collapsed
 
     // Visible tabs: always show 1, 2, e; dynamically show 3 if data exists
-    // Matches SongsPerSetCard logic
     private var visibleTabs: [String] {
         let alwaysShow = ["1", "2", "e"]
-        let dynamic = ["3"]  // Set 3 only shown if data exists
+        let dynamic = ["3"]
         let allOrdered = ["1", "2", "3", "e"]
         let available = Set(openersClosers.keys.map { key -> String in
-            // Extract set identifier from keys like "1_opener", "2_closer", "3_opener", "e_all"
             let prefix = key.split(separator: "_").first.map(String.init) ?? ""
             return prefix
         })
@@ -66,7 +63,6 @@ struct OpenersClosersCard: View {
             }
         }
 
-        // Sort by count descending, then alphabetically
         return allEncores.sorted { a, b in
             if a.count != b.count {
                 return a.count > b.count
@@ -75,72 +71,93 @@ struct OpenersClosersCard: View {
         }
     }
 
+    // Calculate max items for expand button logic
+    private var maxItemCount: Int {
+        if selectedTab == "e" {
+            return encoreSongs.count
+        }
+        return max(openers.count, closers.count)
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header
-            Text("OPENERS, CLOSERS, & ENCORES")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .textCase(.uppercase)
-                .tracking(0.5)
-
-            if openersClosers.isEmpty {
-                Text("No data available")
-                    .font(.caption)
+        ScrollViewReader { proxy in
+            VStack(alignment: .leading, spacing: 12) {
+                // Header
+                Text("OPENERS, CLOSERS, & ENCORES")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .foregroundColor(.secondary)
-                    .italic()
-            } else {
-                // Tab picker
-                Picker("Tab", selection: $selectedTab) {
-                    ForEach(visibleTabs, id: \.self) { tab in
-                        Text(tabLabel(for: tab)).tag(tab)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .onChange(of: selectedTab) { _, _ in
-                    // Reset expand states when switching tabs
-                    openersExpanded = false
-                    closersExpanded = false
-                    encoresExpanded = false
-                }
+                    .textCase(.uppercase)
+                    .tracking(0.5)
 
-                // Content based on selected tab
-                if selectedTab == "e" {
-                    // Encores: single column list
-                    EncoreColumn(
-                        songs: encoreSongs,
-                        isExpanded: $encoresExpanded
-                    )
-                    .animation(.easeOut(duration: 0.4), value: encoresExpanded)
+                if openersClosers.isEmpty {
+                    Text("No data available")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .italic()
                 } else {
-                    // Set 1 or Set 2: side-by-side openers and closers
-                    HStack(alignment: .top, spacing: 16) {
-                        SongListColumn(
-                            label: "Openers",
-                            songs: openers,
-                            isExpanded: $openersExpanded
-                        )
+                    // Tab picker
+                    Picker("Tab", selection: $selectedTab) {
+                        ForEach(visibleTabs, id: \.self) { tab in
+                            Text(tabLabel(for: tab)).tag(tab)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: selectedTab) { _, _ in
+                        isExpanded = false
+                    }
 
-                        SongListColumn(
-                            label: "Closers",
-                            songs: closers,
-                            isExpanded: $closersExpanded
+                    // Content based on selected tab
+                    VStack(alignment: .leading, spacing: 8) {
+                        if selectedTab == "e" {
+                            // Encores: single column list
+                            EncoreColumn(
+                                songs: encoreSongs,
+                                isExpanded: isExpanded,
+                                threshold: threshold
+                            )
+                        } else {
+                            // Set 1, 2, or 3: side-by-side openers and closers
+                            HStack(alignment: .top, spacing: 16) {
+                                SongListColumn(
+                                    label: "Openers",
+                                    songs: openers,
+                                    isExpanded: isExpanded,
+                                    threshold: threshold
+                                )
+
+                                SongListColumn(
+                                    label: "Closers",
+                                    songs: closers,
+                                    isExpanded: isExpanded,
+                                    threshold: threshold
+                                )
+                            }
+                        }
+
+                        ExpandableCardButton(
+                            isExpanded: $isExpanded,
+                            itemCount: maxItemCount,
+                            threshold: threshold,
+                            cardId: "openersClosersCard",
+                            proxy: proxy
                         )
                     }
-                    .animation(.easeOut(duration: 0.4), value: openersExpanded)
-                    .animation(.easeOut(duration: 0.4), value: closersExpanded)
+                    .animation(.easeOut(duration: 0.4), value: isExpanded)
                 }
             }
-        }
-        .padding(16)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
-        .onAppear {
-            // Initialize to first available tab if current selection has no data
-            if !visibleTabs.contains(selectedTab), let firstTab = visibleTabs.first {
-                selectedTab = firstTab
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+            .id("openersClosersCard")
+            .onAppear {
+                if !visibleTabs.contains(selectedTab), let firstTab = visibleTabs.first {
+                    selectedTab = firstTab
+                }
+                withAnimation(.easeInOut(duration: 0.01)) {
+                    animationWarmup.toggle()
+                }
             }
         }
     }
@@ -151,24 +168,14 @@ struct OpenersClosersCard: View {
 private struct SongListColumn: View {
     let label: String
     let songs: [PositionSong]
-    @Binding var isExpanded: Bool
-
-    private let threshold = 3
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
+    let isExpanded: Bool
+    let threshold: Int
 
     private var displayedSongs: [PositionSong] {
         if isExpanded || songs.count <= threshold {
             return songs
         }
         return Array(songs.prefix(threshold))
-    }
-
-    private var hasMoreSongs: Bool {
-        songs.count > threshold
-    }
-
-    private var remainingCount: Int {
-        songs.count - threshold
     }
 
     var body: some View {
@@ -192,30 +199,6 @@ private struct SongListColumn: View {
                     }
                     SongRow(song: song)
                 }
-
-                // Show More/Less button
-                if hasMoreSongs {
-                    HStack {
-                        Text(isExpanded ? "Show Less" : "+ \(remainingCount) more")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-
-                        if isExpanded {
-                            Image(systemName: "chevron.up")
-                                .font(.caption)
-                                .foregroundColor(.blue)
-                        }
-                    }
-                    .padding(.top, 4)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        hapticGenerator.impactOccurred()
-                        isExpanded.toggle()
-                    }
-                    .onAppear {
-                        hapticGenerator.prepare()
-                    }
-                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -226,24 +209,14 @@ private struct SongListColumn: View {
 
 private struct EncoreColumn: View {
     let songs: [PositionSong]
-    @Binding var isExpanded: Bool
-
-    private let threshold = 3
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
+    let isExpanded: Bool
+    let threshold: Int
 
     private var displayedSongs: [PositionSong] {
         if isExpanded || songs.count <= threshold {
             return songs
         }
         return Array(songs.prefix(threshold))
-    }
-
-    private var hasMoreSongs: Bool {
-        songs.count > threshold
-    }
-
-    private var remainingCount: Int {
-        songs.count - threshold
     }
 
     var body: some View {
@@ -253,30 +226,6 @@ private struct EncoreColumn: View {
                     Divider()
                 }
                 SongRow(song: song)
-            }
-
-            // Show More/Less button
-            if hasMoreSongs {
-                HStack {
-                    Text(isExpanded ? "Show Less" : "+ \(remainingCount) more")
-                        .font(.caption)
-                        .foregroundColor(.blue)
-
-                    if isExpanded {
-                        Image(systemName: "chevron.up")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding(.top, 4)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    hapticGenerator.impactOccurred()
-                    isExpanded.toggle()
-                }
-                .onAppear {
-                    hapticGenerator.prepare()
-                }
             }
         }
     }

@@ -3,18 +3,19 @@
 //  PhishQS
 //
 //  Card displaying songs per set statistics - min/max songs for each set type
-//  Features tabbed navigation and collapsible tie lists
+//  Features tabbed navigation and shared expandable card button
 //
 
 import SwiftUI
-import UIKit
 
 struct SongsPerSetCard: View {
     let setSongStats: [String: SetSongStats]
 
     @State private var selectedSetKey: String = "1"
-    @State private var minExpanded: Bool = false
-    @State private var maxExpanded: Bool = false
+    @State private var isExpanded: Bool = false
+    @State private var animationWarmup = false
+
+    private let threshold = 2  // Shows per column when collapsed
 
     // Visible tabs: always show 1, 2, e; dynamically show 3, e2, e3 if data exists
     private var visibleSetKeys: [String] {
@@ -40,69 +41,91 @@ struct SongsPerSetCard: View {
         }
     }
 
+    // Calculate max items across both columns for expand button logic
+    private var maxItemCount: Int {
+        guard let stats = setSongStats[selectedSetKey] else { return 0 }
+        return max(stats.min.shows.count, stats.max.shows.count)
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            // Header
-            Text("SONGS PER SET")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .textCase(.uppercase)
-                .tracking(0.5)
-
-            if setSongStats.isEmpty {
-                Text("No set data available")
-                    .font(.caption)
+        ScrollViewReader { proxy in
+            VStack(alignment: .leading, spacing: 12) {
+                // Header
+                Text("SONGS PER SET")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
                     .foregroundColor(.secondary)
-                    .italic()
-            } else {
-                // Tab picker
-                Picker("Set", selection: $selectedSetKey) {
-                    ForEach(visibleSetKeys, id: \.self) { key in
-                        Text(tabLabel(for: key)).tag(key)
-                    }
-                }
-                .pickerStyle(.segmented)
-                .onChange(of: selectedSetKey) { _, _ in
-                    // Reset expand states when switching tabs
-                    minExpanded = false
-                    maxExpanded = false
-                }
+                    .textCase(.uppercase)
+                    .tracking(0.5)
 
-                // Content for selected set
-                if let stats = setSongStats[selectedSetKey] {
-                    HStack(alignment: .top, spacing: 16) {
-                        ExtremeColumn(
-                            label: "Shortest",
-                            count: stats.min.count,
-                            shows: stats.min.shows,
-                            isExpanded: $minExpanded
-                        )
-
-                        ExtremeColumn(
-                            label: "Longest",
-                            count: stats.max.count,
-                            shows: stats.max.shows,
-                            isExpanded: $maxExpanded
-                        )
-                    }
-                    .animation(.easeOut(duration: 0.4), value: minExpanded)
-                    .animation(.easeOut(duration: 0.4), value: maxExpanded)
-                } else {
-                    // No data for selected set (shouldn't happen for always-show tabs, but handle gracefully)
-                    Text("No data available for this set")
+                if setSongStats.isEmpty {
+                    Text("No set data available")
                         .font(.caption)
                         .foregroundColor(.secondary)
                         .italic()
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.vertical, 20)
+                } else {
+                    // Tab picker
+                    Picker("Set", selection: $selectedSetKey) {
+                        ForEach(visibleSetKeys, id: \.self) { key in
+                            Text(tabLabel(for: key)).tag(key)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                    .onChange(of: selectedSetKey) { _, _ in
+                        isExpanded = false
+                    }
+
+                    // Content for selected set
+                    if let stats = setSongStats[selectedSetKey] {
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack(alignment: .top, spacing: 16) {
+                                ExtremeColumn(
+                                    label: "Shortest",
+                                    count: stats.min.count,
+                                    shows: stats.min.shows,
+                                    isExpanded: isExpanded,
+                                    threshold: threshold
+                                )
+
+                                ExtremeColumn(
+                                    label: "Longest",
+                                    count: stats.max.count,
+                                    shows: stats.max.shows,
+                                    isExpanded: isExpanded,
+                                    threshold: threshold
+                                )
+                            }
+
+                            ExpandableCardButton(
+                                isExpanded: $isExpanded,
+                                itemCount: maxItemCount,
+                                threshold: threshold,
+                                cardId: "songsPerSetCard",
+                                proxy: proxy
+                            )
+                        }
+                        .animation(.easeOut(duration: 0.4), value: isExpanded)
+                    } else {
+                        Text("No data available for this set")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .italic()
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .padding(.vertical, 20)
+                    }
+                }
+            }
+            .padding(16)
+            .background(Color.white)
+            .cornerRadius(12)
+            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+            .id("songsPerSetCard")
+            .onAppear {
+                withAnimation(.easeInOut(duration: 0.01)) {
+                    animationWarmup.toggle()
                 }
             }
         }
-        .padding(16)
-        .background(Color.white)
-        .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
     }
 }
 
@@ -112,24 +135,14 @@ private struct ExtremeColumn: View {
     let label: String
     let count: Int
     let shows: [SetSongShow]
-    @Binding var isExpanded: Bool
-
-    private let threshold = 2
-    private let hapticGenerator = UIImpactFeedbackGenerator(style: .medium)
+    let isExpanded: Bool
+    let threshold: Int
 
     private var displayedShows: [SetSongShow] {
         if isExpanded || shows.count <= threshold {
             return shows
         }
         return Array(shows.prefix(threshold))
-    }
-
-    private var hasMoreShows: Bool {
-        shows.count > threshold
-    }
-
-    private var remainingCount: Int {
-        shows.count - threshold
     }
 
     var body: some View {
@@ -145,37 +158,13 @@ private struct ExtremeColumn: View {
                 .fontWeight(.bold)
                 .foregroundColor(.indigo)
 
-            // Shows (with collapsible behavior)
+            // Shows
             ForEach(Array(displayedShows.enumerated()), id: \.offset) { index, show in
                 if index > 0 {
                     Divider()
                         .padding(.vertical, 2)
                 }
                 ShowInfoView(show: show)
-            }
-
-            // Show More/Less button
-            if hasMoreShows {
-                HStack {
-                    Text(isExpanded ? "Show Less" : "+ \(remainingCount) more")
-                        .font(.caption)
-                        .foregroundColor(.blue)
-
-                    if isExpanded {
-                        Image(systemName: "chevron.up")
-                            .font(.caption)
-                            .foregroundColor(.blue)
-                    }
-                }
-                .padding(.top, 4)
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    hapticGenerator.impactOccurred()
-                    isExpanded.toggle()
-                }
-                .onAppear {
-                    hapticGenerator.prepare()
-                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
