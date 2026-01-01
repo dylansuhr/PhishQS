@@ -7,6 +7,20 @@
 
 import SwiftUI
 import UIKit
+import SafariServices
+
+// MARK: - Safari View
+
+/// Wrapper for SFSafariViewController to open URLs in-app
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: Context) {}
+}
 
 // MARK: - Expandable Card Button
 

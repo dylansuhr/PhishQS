@@ -10,6 +10,7 @@ struct SetlistView: View {
     @StateObject private var viewModel = SetlistViewModel()
     @State private var cachedContent: [SetlistContentItem] = []
     @State private var contentOpacity: Double = 0
+    @State private var showingPhishNet = false
 
     var body: some View {
         // build the full YYYY-MM-DD date string for API call
@@ -97,6 +98,23 @@ struct SetlistView: View {
                     SetlistNotesView(notes: setlistnotes, style: .detailed)
                         .padding(.top, 8)
                 }
+
+                // Phish.net link card
+                if viewModel.setlistItems.first?.phishNetURL != nil {
+                    Button {
+                        showingPhishNet = true
+                    } label: {
+                        Image("phish_net_logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(height: 40)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color(.secondarySystemGroupedBackground))
+                    .cornerRadius(12)
+                    .padding(.top, 8)
+                }
             }
             .padding(.horizontal, 20)
             .opacity(contentOpacity)
@@ -132,6 +150,12 @@ struct SetlistView: View {
         }
         // set the navigation title to the current date
         .navigationTitle(date)
+        .sheet(isPresented: $showingPhishNet) {
+            if let url = viewModel.setlistItems.first?.phishNetURL {
+                SafariView(url: url)
+                    .ignoresSafeArea()
+            }
+        }
     }
     
     // MARK: - Helper Methods

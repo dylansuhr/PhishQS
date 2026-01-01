@@ -162,6 +162,7 @@ class TourDashboardDataClient: ObservableObject {
             let set: String
             let position: Int
             let setlistnotes: String?
+            let permalink: String?
         }
         
         struct TrackDurationData: Codable {
@@ -304,7 +305,7 @@ class TourDashboardDataClient: ObservableObject {
                 city: showData.city,
                 state: showData.state,
                 showdate: showData.showDate,
-                permalink: nil,
+                permalink: item.permalink,
                 setlistnotes: item.setlistnotes
             )
         }

@@ -31,6 +31,10 @@ struct SetlistItem: Codable, Equatable {
     /// Full URL to the show page on phish.net
     var phishNetURL: URL? {
         guard let permalink = permalink else { return nil }
+        // Handle both full URL (from local data) and slug (from API)
+        if permalink.hasPrefix("http") {
+            return URL(string: permalink)
+        }
         return URL(string: "https://phish.net/setlists/\(permalink).html")
     }
 }
