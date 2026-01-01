@@ -25,20 +25,27 @@ struct MostPlayedSongsCard: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
 
-                        ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 8) {
-                                ForEach(Array(songs.enumerated()), id: \.offset) { index, song in
-                                    MostPlayedSongRowModular(song: song)
+                        HStack(spacing: 0) {
+                            ScrollView {
+                                LazyVStack(alignment: .leading, spacing: 8) {
+                                    ForEach(Array(songs.enumerated()), id: \.offset) { index, song in
+                                        MostPlayedSongRowModular(song: song)
 
-                                    if index < songs.count - 1 {
-                                        Divider()
+                                        if index < songs.count - 1 {
+                                            Divider()
+                                        }
                                     }
                                 }
+                                .padding(.vertical, 4)
                             }
-                            .padding(.vertical, 4)
-                            .padding(.trailing, 20)
+
+                            // Always-visible scroll track indicator
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(width: 4)
+                                .cornerRadius(2)
+                                .padding(.vertical, 4)
                         }
-                        .scrollIndicators(.visible)
                         .frame(height: 380)
                     }
                 }
