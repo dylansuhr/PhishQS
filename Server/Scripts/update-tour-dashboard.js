@@ -411,9 +411,11 @@ function findFutureTours(shows, currentTourName) {
             // Sort by date
             venueShows.sort((a, b) => a.showdate.localeCompare(b.showdate));
 
-            // Use venue as the tour name (will be replaced when Phish.net assigns real name)
-            const syntheticTourName = venue;
-            const tourSlug = syntheticTourName.toLowerCase().replace(/\s+/g, '-');
+            // Use year + venue as the tour name (will be replaced when Phish.net assigns real name)
+            // Year is from first show, in case a residency spans multiple years
+            const firstShowYear = venueShows[0]?.showdate?.substring(0, 4) || new Date().getFullYear().toString();
+            const syntheticTourName = `${firstShowYear} ${venue}`;
+            const tourSlug = venue.toLowerCase().replace(/\s+/g, '-'); // Keep slug as just venue for cleaner paths
 
             const tourDates = venueShows.map((show, index) => ({
                 date: show.showdate,

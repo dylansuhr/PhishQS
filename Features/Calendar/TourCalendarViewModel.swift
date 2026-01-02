@@ -189,6 +189,10 @@ class TourCalendarViewModel: ObservableObject {
         }
     }
     
+    // MARK: - Unused (Night Run UI removed from calendar)
+    // This function calculates venueRun for ShowInfo but the calendar UI
+    // no longer displays this value. Kept for potential future use.
+    // The only venue run display is via detectVenueRunSpans() for spanning badges.
     private func calculateVenueRun(for index: Int, in tourDates: [TourDashboardDataClient.TourDashboardData.TourDate]) -> String? {
         let currentVenue = tourDates[index].venue
         

@@ -142,76 +142,37 @@ class SetlistViewModel: BaseViewModel {
         }
     }
 
-    /// Calculate venue run info (N1/N2/N3) from consecutive dates at the same venue
-    /// Note: Similar logic exists in TourCalendarViewModel.detectVenueRunSpans()
-    /// If updating this calculation, check both implementations for consistency
+    /// Calculate venue run info (N1/N2/N3) for all shows at the same venue within a tour
+    /// Residencies like Sphere or Baker's Dozen have gaps between nights but are still
+    /// counted as a single run (e.g., "N1 of 9" through "N9 of 9")
     private func calculateVenueRun(for date: String, venue: String, in tourDates: [TourDashboardDataClient.TourDashboardData.TourDate]) -> VenueRun? {
-        // Find all consecutive dates at the same venue
+        // Find ALL shows at this venue (not just consecutive)
         let sortedDates = tourDates.sorted { $0.date < $1.date }
+        let venueShows = sortedDates.filter { $0.venue == venue }
 
-        var runDates: [String] = []
-        var foundTargetDate = false
+        // Single night at venue - no run to display
+        guard venueShows.count > 1 else { return nil }
 
-        for tourDate in sortedDates {
-            if tourDate.venue == venue {
-                if runDates.isEmpty || isConsecutiveDate(runDates.last!, tourDate.date) {
-                    runDates.append(tourDate.date)
-                    if tourDate.date == date {
-                        foundTargetDate = true
-                    }
-                } else {
-                    // Break in consecutive dates - start new run
-                    if foundTargetDate {
-                        break // We already found our run
-                    }
-                    runDates = [tourDate.date]
-                    if tourDate.date == date {
-                        foundTargetDate = true
-                    }
-                }
-            } else if foundTargetDate {
-                break // Different venue after our run
-            } else if !runDates.isEmpty {
-                runDates = [] // Reset - different venue before finding target
-            }
-        }
-
-        guard foundTargetDate, runDates.count > 1 else {
-            return nil // Single night, no run to display
-        }
-
-        guard let nightNumber = runDates.firstIndex(of: date).map({ $0 + 1 }) else {
+        // Find this show's position in the venue run
+        guard let position = venueShows.firstIndex(where: { $0.date == date }) else {
             return nil
         }
 
-        let city = tourDates.first(where: { $0.date == date })?.city ?? ""
-        let state = tourDates.first(where: { $0.date == date })?.state ?? ""
+        let nightNumber = position + 1
+        let showDates = venueShows.map { $0.date }
+        let city = venueShows.first?.city ?? ""
+        let state = venueShows.first?.state ?? ""
 
         return VenueRun(
             venue: venue,
             city: city,
             state: state,
             nightNumber: nightNumber,
-            totalNights: runDates.count,
-            showDates: runDates
+            totalNights: venueShows.count,
+            showDates: showDates
         )
     }
 
-    /// Check if two dates are consecutive (one day apart)
-    private func isConsecutiveDate(_ date1: String, _ date2: String) -> Bool {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-
-        guard let d1 = formatter.date(from: date1),
-              let d2 = formatter.date(from: date2) else {
-            return false
-        }
-
-        let calendar = Calendar.current
-        let daysBetween = calendar.dateComponents([.day], from: d1, to: d2).day ?? 0
-        return daysBetween == 1
-    }
-    
     // Non-async wrapper for SwiftUI compatibility
     func fetchSetlist(for date: String) {
         Task {
