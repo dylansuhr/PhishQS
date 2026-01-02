@@ -1603,7 +1603,7 @@
   },
   "tourName": "2025 NYE Run",
   "latestShowProcessed": "2025-12-31",
-  "generatedAt": "2026-01-01T21:56:03.397Z",
+  "generatedAt": "2026-01-01T23:53:06.313Z",
   "showsWithDurations": 3,
   "totalShows": 4,
   "showDurationAvailability": [
@@ -1643,7 +1643,7 @@
       "thumbnailUrl": "https://i.ytimg.com/vi/5LnaNXHCXlw/hqdefault.jpg",
       "publishedAt": "2026-01-01T03:03:57Z",
       "duration": "PT13M24S",
-      "viewCount": 23587
+      "viewCount": 24275
     },
     {
       "videoId": "xzMQO9nFFnk",
@@ -1651,7 +1651,7 @@
       "thumbnailUrl": "https://i.ytimg.com/vi/xzMQO9nFFnk/hqdefault.jpg",
       "publishedAt": "2026-01-01T02:27:05Z",
       "duration": "PT29M55S",
-      "viewCount": 4793
+      "viewCount": 5196
     },
     {
       "videoId": "ES_twzVmAjM",
@@ -1659,7 +1659,7 @@
       "thumbnailUrl": "https://i.ytimg.com/vi/ES_twzVmAjM/hqdefault.jpg",
       "publishedAt": "2026-01-01T01:09:05Z",
       "duration": "PT11M6S",
-      "viewCount": 27009
+      "viewCount": 27452
     },
     {
       "videoId": "BCiMILWKY14",
@@ -1667,7 +1667,7 @@
       "thumbnailUrl": "https://i.ytimg.com/vi/BCiMILWKY14/hqdefault.jpg",
       "publishedAt": "2025-12-30T20:13:16Z",
       "duration": "PT20M3S",
-      "viewCount": 14922
+      "viewCount": 15093
     },
     {
       "videoId": "oPuRd-CXpZk",
@@ -1675,7 +1675,7 @@
       "thumbnailUrl": "https://i.ytimg.com/vi/oPuRd-CXpZk/hqdefault.jpg",
       "publishedAt": "2025-12-29T22:06:55Z",
       "duration": "PT26M22S",
-      "viewCount": 31841
+      "viewCount": 32162
     }
   ]
 }

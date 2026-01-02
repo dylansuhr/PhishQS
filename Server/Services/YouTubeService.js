@@ -65,14 +65,30 @@ export class YouTubeService {
                 return [];
             }
 
-            LoggingService.info(`Found ${searchResults.length} videos, fetching details...`);
+            // Filter out live streams - only include regular uploaded videos
+            // liveBroadcastContent: 'none' = uploaded video, 'live' = currently live, 'upcoming' = scheduled
+            const uploadedVideos = searchResults.filter(item =>
+                item.snippet.liveBroadcastContent === 'none'
+            );
+
+            const liveCount = searchResults.length - uploadedVideos.length;
+            if (liveCount > 0) {
+                LoggingService.info(`Filtered out ${liveCount} live stream(s)`);
+            }
+
+            if (uploadedVideos.length === 0) {
+                LoggingService.info('No uploaded videos found (only live streams in date range)');
+                return [];
+            }
+
+            LoggingService.info(`Found ${uploadedVideos.length} uploaded videos, fetching details...`);
 
             // Step 2: Get video details (duration, view count)
-            const videoIds = searchResults.map(item => item.id.videoId).join(',');
+            const videoIds = uploadedVideos.map(item => item.id.videoId).join(',');
             const videoDetails = await this.getVideoDetails(videoIds);
 
             // Step 3: Combine search results with details
-            const videos = searchResults.map(item => {
+            const videos = uploadedVideos.map(item => {
                 const details = videoDetails.find(d => d.id === item.id.videoId);
                 return new YouTubeVideo(
                     item.id.videoId,

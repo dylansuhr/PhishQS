@@ -11,7 +11,6 @@ struct TourVideosSheet: View {
     let videos: [YouTubeVideo]
     @Environment(\.dismiss) private var dismiss
     @State private var selectedVideo: YouTubeVideo?
-    @State private var showingActionSheet = false
     @State private var showingSafari = false
 
     var body: some View {
@@ -40,7 +39,15 @@ struct TourVideosSheet: View {
                                 VideoCard(video: video)
                                     .onTapGesture {
                                         selectedVideo = video
-                                        showingActionSheet = true
+                                        if let appURL = video.youtubeAppURL {
+                                            UIApplication.shared.open(appURL) { success in
+                                                if !success {
+                                                    showingSafari = true
+                                                }
+                                            }
+                                        } else {
+                                            showingSafari = true
+                                        }
                                     }
                             }
                         }
@@ -50,37 +57,18 @@ struct TourVideosSheet: View {
                 }
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle("Tour Videos")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .principal) {
+                    Image("you_tube")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 24)
+                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
-                }
-            }
-            .confirmationDialog(
-                selectedVideo?.title ?? "Open Video",
-                isPresented: $showingActionSheet,
-                titleVisibility: .visible
-            ) {
-                Button("Open in YouTube") {
-                    if let video = selectedVideo, let url = video.youtubeAppURL {
-                        UIApplication.shared.open(url) { success in
-                            if !success {
-                                // YouTube app not installed, fall back to web
-                                showingSafari = true
-                            }
-                        }
-                    }
-                }
-
-                Button("Watch Here") {
-                    showingSafari = true
-                }
-
-                Button("Cancel", role: .cancel) {
-                    selectedVideo = nil
                 }
             }
             .sheet(isPresented: $showingSafari) {
