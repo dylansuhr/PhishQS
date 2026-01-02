@@ -9,11 +9,15 @@ import SwiftUI
 import UIKit
 
 struct TourCalendarCard: View {
-    @StateObject private var viewModel = TourCalendarViewModel()
+    @ObservedObject var viewModel: TourCalendarViewModel
     @State private var selectedShowDate: String?
 
     // Pre-warmed haptic generator to avoid first-tap delay
     private let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+
+    init(viewModel: TourCalendarViewModel) {
+        self.viewModel = viewModel
+    }
     
     var body: some View {
         DashboardCard {
@@ -151,7 +155,7 @@ struct TourCalendarCard: View {
 
 #Preview("Tour Calendar Card") {
     ScrollView {
-        TourCalendarCard()
+        TourCalendarCard(viewModel: TourCalendarViewModel())
             .padding()
     }
     .background(Color(.systemGroupedBackground))

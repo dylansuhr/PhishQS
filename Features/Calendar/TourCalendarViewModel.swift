@@ -21,10 +21,10 @@ class TourCalendarViewModel: ObservableObject {
     @Published var venueRunSpans: [VenueRunSpan] = []
     @Published var showBadges: Bool = false // Move badge state to ViewModel level
     
-    // MARK: - Private Properties
-    
+    // MARK: - Tour Data Properties
+
     private var currentTourData: TourDashboardDataClient.TourDashboardData.CurrentTour?
-    private var futureTourData: [TourDashboardDataClient.TourDashboardData.FutureTour] = []
+    @Published private(set) var futureTourData: [TourDashboardDataClient.TourDashboardData.FutureTour] = []
     
     // MARK: - Dependencies
     
@@ -49,8 +49,34 @@ class TourCalendarViewModel: ObservableObject {
     var canNavigateForward: Bool {
         currentMonthIndex < calendarMonths.count - 1
     }
-    
-    
+
+    /// All tours (current + future) for display in ToursCard
+    var allTours: [TourDisplayInfo] {
+        var tours: [TourDisplayInfo] = []
+
+        // Add current tour first
+        if let current = currentTourData {
+            tours.append(TourDisplayInfo(
+                name: current.name,
+                totalShows: current.totalShows,
+                startDate: current.startDate,
+                venue: current.tourDates.first?.venue ?? current.name
+            ))
+        }
+
+        // Add future tours
+        for future in futureTourData {
+            tours.append(TourDisplayInfo(
+                name: future.name,
+                totalShows: future.totalShows,
+                startDate: future.startDate,
+                venue: future.tourDates.first?.venue ?? future.name
+            ))
+        }
+
+        return tours
+    }
+
     // MARK: - Initialization
     
     init() {
@@ -307,19 +333,19 @@ class TourCalendarViewModel: ObservableObject {
     private func setCurrentMonthToToday() {
         let today = Date()
         let calendar = Calendar.current
-        
+
         // Find the month that contains today's date
         for (index, month) in calendarMonths.enumerated() {
             let hasToday = month.days.contains { day in
                 calendar.isDate(day.date, inSameDayAs: today)
             }
-            
+
             if hasToday {
                 currentMonthIndex = index
                 return
             }
         }
-        
+
         // Fallback: find current month by year/month components (in case current month was added but doesn't contain exact today date)
         let currentComponents = calendar.dateComponents([.year, .month], from: today)
         for (index, month) in calendarMonths.enumerated() {
@@ -328,9 +354,36 @@ class TourCalendarViewModel: ObservableObject {
                 return
             }
         }
-        
+
         // Final fallback: default to last month if current month somehow not found
         currentMonthIndex = max(0, calendarMonths.count - 1)
+    }
+
+    // MARK: - Navigation
+
+    /// Navigate to the month containing a specific date
+    /// Returns true if navigation occurred, false if already on that month or date not found
+    @discardableResult
+    func navigateToMonth(containing dateString: String) -> Bool {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+
+        guard let targetDate = dateFormatter.date(from: dateString) else { return false }
+
+        let calendar = Calendar.current
+        let targetComponents = calendar.dateComponents([.year, .month], from: targetDate)
+
+        for (index, month) in calendarMonths.enumerated() {
+            if month.year == targetComponents.year && month.month == targetComponents.month {
+                // Already on this month - no navigation needed
+                if currentMonthIndex == index {
+                    return false
+                }
+                currentMonthIndex = index
+                return true
+            }
+        }
+        return false
     }
 }
 
