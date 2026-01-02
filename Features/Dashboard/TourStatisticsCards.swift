@@ -25,6 +25,9 @@ struct TourStatisticsCards: View {
                 if let openersClosers = stats.openersClosers, !openersClosers.isEmpty {
                     OpenersClosersCard(openersClosers: openersClosers)
                 }
+                if let repeats = stats.repeats, !repeats.shows.isEmpty {
+                    RepeatsGraphCard(repeats: repeats)
+                }
                 if let mostCommonSongs = stats.mostCommonSongsNotPlayed, !mostCommonSongs.isEmpty {
                     MostCommonSongsNotPlayedCard(songs: mostCommonSongs)
                 }
@@ -178,6 +181,18 @@ struct TourStatisticsCards: View {
                     )
                 ],
                 openersClosers: sampleOpenersClosers,
+                repeats: RepeatsStats(
+                    shows: [
+                        RepeatShowData(date: "2025-12-28", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N1", totalSongs: 18, repeats: 0, repeatPercentage: 0, averageGap: 15.2, showNumber: 1, totalTourShows: 4),
+                        RepeatShowData(date: "2025-12-29", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N2", totalSongs: 19, repeats: 0, repeatPercentage: 0, averageGap: 18.9, showNumber: 2, totalTourShows: 4),
+                        RepeatShowData(date: "2025-12-30", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N3", totalSongs: 18, repeats: 0, repeatPercentage: 0, averageGap: 16.4, showNumber: 3, totalTourShows: 4),
+                        RepeatShowData(date: "2025-12-31", venue: "Madison Square Garden", city: "New York", state: "NY", venueRun: "N4", totalSongs: 27, repeats: 0, repeatPercentage: 0, averageGap: 17.4, showNumber: 4, totalTourShows: 4)
+                    ],
+                    hasRepeats: false,
+                    maxPercentage: 0,
+                    maxAverageGap: 18.9,
+                    totalShows: 4
+                ),
                 tourName: TourConfig.currentTourName,
                 showDurationAvailability: sampleAvailability,
                 youtubeVideos: nil

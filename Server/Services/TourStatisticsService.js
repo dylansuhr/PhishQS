@@ -76,6 +76,7 @@ export class TourStatisticsService {
         const mostCommonSongsNotPlayed = calculatorResults.mostCommonSongsNotPlayed || [];
         const setSongStats = calculatorResults.setSongStats || {};
         const openersClosers = calculatorResults.openersClosers || {};
+        const repeats = calculatorResults.repeats || { shows: [], hasRepeats: false, maxPercentage: 0, totalShows: 0 };
 
         // Log summary
         LoggingService.stats.results({
@@ -92,7 +93,8 @@ export class TourStatisticsService {
             tourName,
             mostCommonSongsNotPlayed,
             setSongStats,
-            openersClosers
+            openersClosers,
+            repeats
         );
     }
     

@@ -10,7 +10,9 @@
     "initialize-tour-shows": "node Server/Scripts/initialize-tour-shows.js",
     "initialize-remaining-shows": "node Server/Scripts/quick-initialize-remaining-shows.js",
     "update-youtube-videos": "node Server/Scripts/update-youtube-videos.js",
-    "deploy": "npx vercel --prod --yes"
+    "deploy": "npx vercel --prod --yes",
+    "test-mode": "node Server/Scripts/test-mode.js",
+    "prod-mode": "node Server/Scripts/prod-mode.js"
   },
   "dependencies": {
     "dotenv": "^17.2.2",

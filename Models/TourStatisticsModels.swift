@@ -256,6 +256,71 @@ struct SetSongStats: Codable {
     let max: SetSongExtreme
 }
 
+// MARK: - Repeats & Gap Statistics Models
+
+/// Data for a single show in the repeats/gap graph
+struct RepeatShowData: Codable, Identifiable {
+    let date: String
+    let venue: String
+    let city: String
+    let state: String
+    let venueRun: String?  // "N1", "N2", etc. or nil for single night
+    let totalSongs: Int
+    let repeats: Int
+    let repeatPercentage: Double
+    let averageGap: Double       // Average gap across all songs with gaps (excludes debuts)
+    let showNumber: Int?         // Show number in tour (e.g., 14)
+    let totalTourShows: Int?     // Total shows in tour (e.g., 23)
+
+    var id: String { date }
+
+    /// Formatted date for display (e.g., "December 28, 2025")
+    var formattedDate: String {
+        DateUtilities.formatDateForDisplay(date) ?? date
+    }
+
+    /// Venue display text with run info (e.g., "Madison Square Garden, N1")
+    var venueDisplayText: String {
+        if let run = venueRun {
+            return "\(venue), \(run)"
+        }
+        return venue
+    }
+
+    /// City and state display text (e.g., "New York, NY")
+    var cityStateText: String {
+        if state.isEmpty {
+            return city
+        }
+        return "\(city), \(state)"
+    }
+
+    /// Formatted repeat percentage (e.g., "36.4%")
+    var repeatPercentageText: String {
+        String(format: "%.1f%%", repeatPercentage)
+    }
+
+    /// Formatted average gap (e.g., "17.4")
+    var averageGapText: String {
+        String(format: "%.1f", averageGap)
+    }
+
+    /// Tour position text (e.g., "14/23")
+    var tourPositionText: String? {
+        guard let showNum = showNumber, let total = totalTourShows else { return nil }
+        return "\(showNum)/\(total)"
+    }
+}
+
+/// Container for all repeats and gap statistics
+struct RepeatsStats: Codable {
+    let shows: [RepeatShowData]
+    let hasRepeats: Bool
+    let maxPercentage: Double
+    let maxAverageGap: Double   // Max average gap across all shows (for Y-axis scaling)
+    let totalShows: Int
+}
+
 /// Per-show duration availability info (single source of truth from tour-statistics API)
 struct ShowDurationAvailability: Codable, Identifiable {
     let date: String
@@ -285,13 +350,14 @@ struct TourSongStatistics: Codable {
     let mostCommonSongsNotPlayed: [MostCommonSongNotPlayed]? // Top 20 common songs not played
     let setSongStats: [String: SetSongStats]? // Songs per set statistics keyed by set type ("1", "2", "e")
     let openersClosers: OpenersClosersStats? // Openers, closers, and encore songs with play counts
+    let repeats: RepeatsStats?               // Per-show repeat percentages for graph
     let tourName: String?                    // Current tour name for context
     let showDurationAvailability: [ShowDurationAvailability]? // Per-show duration data availability
     let youtubeVideos: [YouTubeVideo]?       // YouTube videos from Phish channel for tour date range
 
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true) || !(openersClosers?.isEmpty ?? true)
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true) || !(openersClosers?.isEmpty ?? true) || !(repeats?.shows.isEmpty ?? true)
     }
 
     /// Number of shows with duration data

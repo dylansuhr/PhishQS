@@ -25,6 +25,7 @@ import { MostPlayedSongsCalculator } from './StatisticsCalculators/MostPlayedSon
 import { MostCommonSongsNotPlayedCalculator } from './StatisticsCalculators/MostCommonSongsNotPlayedCalculator.js';
 import { SetSongStatsCalculator } from './StatisticsCalculators/SetSongStatsCalculator.js';
 import { OpenersClosersCalculator } from './StatisticsCalculators/OpenersClosersCalculator.js';
+import { RepeatsCalculator } from './StatisticsCalculators/RepeatsCalculator.js';
 
 /**
  * Registry for managing statistics calculators
@@ -118,6 +119,17 @@ export class StatisticsRegistry {
             resultType: 'OpenersClosersStats',
             enabled: true,
             priority: 6
+        });
+
+        // Repeats Calculator
+        this.registerCalculator('repeats', {
+            name: 'Repeats',
+            description: 'Tracks song repeats across the tour with per-show percentage',
+            dataSource: 'Phish.net setlist data',
+            calculatorClass: RepeatsCalculator,
+            resultType: 'RepeatsStats',
+            enabled: true,
+            priority: 7
         });
     }
     
