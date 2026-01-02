@@ -1661,9 +1661,74 @@
     "maxAverageGap": 17.8,
     "totalShows": 4
   },
+  "debuts": {
+    "songs": [
+      {
+        "id": 3209,
+        "songId": 3209,
+        "songName": "Cream",
+        "footnote": "Phish debut.",
+        "showDate": "2025-12-31",
+        "venue": "Madison Square Garden",
+        "venueRun": {
+          "venue": "Madison Square Garden",
+          "city": "New York",
+          "state": "NY",
+          "nightNumber": 4,
+          "totalNights": 4,
+          "showDates": [
+            "2025-12-28",
+            "2025-12-29",
+            "2025-12-30",
+            "2025-12-31"
+          ]
+        },
+        "city": "New York",
+        "state": "NY",
+        "tourPosition": {
+          "showNumber": 4,
+          "totalShows": 4,
+          "tourName": "2025 NYE Run",
+          "tourYear": "2025"
+        },
+        "originalArtist": "Prince and the New Power Generation"
+      },
+      {
+        "id": 3210,
+        "songId": 3210,
+        "songName": "Sincere",
+        "footnote": "Phish debut.",
+        "showDate": "2025-12-31",
+        "venue": "Madison Square Garden",
+        "venueRun": {
+          "venue": "Madison Square Garden",
+          "city": "New York",
+          "state": "NY",
+          "nightNumber": 4,
+          "totalNights": 4,
+          "showDates": [
+            "2025-12-28",
+            "2025-12-29",
+            "2025-12-30",
+            "2025-12-31"
+          ]
+        },
+        "city": "New York",
+        "state": "NY",
+        "tourPosition": {
+          "showNumber": 4,
+          "totalShows": 4,
+          "tourName": "2025 NYE Run",
+          "tourYear": "2025"
+        },
+        "originalArtist": "The Buffalo Bills"
+      }
+    ],
+    "latestShowDate": "2025-12-31"
+  },
   "tourName": "2025 NYE Run",
   "latestShowProcessed": "2025-12-31",
-  "generatedAt": "2026-01-02T21:56:57.910Z",
+  "generatedAt": "2026-01-03T00:29:37.539Z",
   "showsWithDurations": 4,
   "totalShows": 4,
   "showDurationAvailability": [

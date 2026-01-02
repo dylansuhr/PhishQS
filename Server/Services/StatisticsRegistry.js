@@ -26,6 +26,7 @@ import { MostCommonSongsNotPlayedCalculator } from './StatisticsCalculators/Most
 import { SetSongStatsCalculator } from './StatisticsCalculators/SetSongStatsCalculator.js';
 import { OpenersClosersCalculator } from './StatisticsCalculators/OpenersClosersCalculator.js';
 import { RepeatsCalculator } from './StatisticsCalculators/RepeatsCalculator.js';
+import { DebutsCalculator } from './StatisticsCalculators/DebutsCalculator.js';
 
 /**
  * Registry for managing statistics calculators
@@ -65,8 +66,19 @@ export class StatisticsRegistry {
             enabled: true,
             priority: 1 // Display order priority
         });
-        
-        // Rarest Songs Calculator  
+
+        // Tour Debuts Calculator
+        this.registerCalculator('debuts', {
+            name: 'Tour Debuts',
+            description: 'Identifies songs debuted during the current tour',
+            dataSource: 'Phish.net setlist footnotes',
+            calculatorClass: DebutsCalculator,
+            resultType: 'DebutsStats',
+            enabled: true,
+            priority: 1.5 // Between longestSongs and rarestSongs
+        });
+
+        // Rarest Songs Calculator
         this.registerCalculator('rarestSongs', {
             name: 'Rarest Songs',
             description: 'Identifies songs with highest gaps (shows since last played)',

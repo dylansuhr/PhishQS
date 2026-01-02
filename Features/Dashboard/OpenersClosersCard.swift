@@ -37,7 +37,7 @@ struct OpenersClosersCard: View {
         case "1": return "Set 1"
         case "2": return "Set 2"
         case "3": return "Set 3"
-        case "e": return "Encores"
+        case "e": return "Encore"
         default: return tab
         }
     }

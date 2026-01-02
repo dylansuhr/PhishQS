@@ -21,6 +21,9 @@ struct TourStatisticsCards: View {
                 if let setSongStats = stats.setSongStats, !setSongStats.isEmpty {
                     SongsPerSetCard(setSongStats: setSongStats)
                 }
+                if let debuts = stats.debuts {
+                    DebutsCard(debuts: debuts)
+                }
                 RarestSongsCard(songs: stats.rarestSongs)
                 if let openersClosers = stats.openersClosers, !openersClosers.isEmpty {
                     OpenersClosersCard(openersClosers: openersClosers)
@@ -160,6 +163,20 @@ struct TourStatisticsCards: View {
             ]
         ]
 
+        // Sample debuts
+        let sampleDebuts = DebutsStats(
+            songs: [
+                DebutInfo(
+                    id: 999, songId: 999, songName: "Brand New Song",
+                    footnote: "Phish debut.", showDate: "2025-07-27",
+                    venue: "Madison Square Garden", venueRun: sampleVenueRun,
+                    city: "New York", state: "NY", tourPosition: sampleTourPosition,
+                    originalArtist: "Some Artist"
+                )
+            ],
+            latestShowDate: "2025-07-27"
+        )
+
         TourStatisticsCards(
             statistics: TourSongStatistics(
                 longestSongs: sampleLongestSongs,
@@ -193,6 +210,7 @@ struct TourStatisticsCards: View {
                     maxAverageGap: 18.9,
                     totalShows: 4
                 ),
+                debuts: sampleDebuts,
                 tourName: TourConfig.currentTourName,
                 showDurationAvailability: sampleAvailability,
                 youtubeVideos: nil

@@ -321,6 +321,64 @@ struct RepeatsStats: Codable {
     let totalShows: Int
 }
 
+// MARK: - Tour Debuts Models
+
+/// Debut song information for tour statistics
+/// Represents a song that was played for the first time ever during the current tour
+struct DebutInfo: Codable, Identifiable {
+    let id: Int                  // Use songId as unique identifier
+    let songId: Int              // Phish.net songid
+    let songName: String         // Song name
+    let footnote: String         // Original footnote (e.g., "Phish debut.")
+    let showDate: String         // Date of debut performance
+    let venue: String?           // Venue where debut occurred
+    let venueRun: VenueRun?      // Venue run info if multi-night
+    let city: String?            // City of debut
+    let state: String?           // State of debut
+    let tourPosition: TourShowPosition? // Position within tour
+    let originalArtist: String?  // Original artist (for covers)
+
+    /// Formatted show date for display
+    var formattedDate: String {
+        DateUtilities.formatDateForDisplay(showDate) ?? showDate
+    }
+
+    /// Venue display text with run info
+    var venueDisplayText: String? {
+        guard let venue = venue else { return nil }
+        if let venueRun = venueRun, venueRun.totalNights > 1 {
+            return "\(venue), N\(venueRun.nightNumber)"
+        }
+        return venue
+    }
+
+    /// City and state display text
+    var cityStateText: String? {
+        guard let city = city else { return nil }
+        if let state = state {
+            return "\(city), \(state)"
+        }
+        return city
+    }
+
+    /// Whether this is a cover song (original artist is not Phish)
+    var isCover: Bool {
+        guard let artist = originalArtist else { return false }
+        return artist != "Phish"
+    }
+
+    /// Display text for the original artist
+    var artistDisplayText: String? {
+        return originalArtist
+    }
+}
+
+/// Container for tour debuts statistics
+struct DebutsStats: Codable {
+    let songs: [DebutInfo]       // Array of debut songs (sorted by date, most recent first)
+    let latestShowDate: String?  // Latest show date for empty state display
+}
+
 /// Per-show duration availability info (single source of truth from tour-statistics API)
 struct ShowDurationAvailability: Codable, Identifiable {
     let date: String
@@ -351,13 +409,14 @@ struct TourSongStatistics: Codable {
     let setSongStats: [String: SetSongStats]? // Songs per set statistics keyed by set type ("1", "2", "e")
     let openersClosers: OpenersClosersStats? // Openers, closers, and encore songs with play counts
     let repeats: RepeatsStats?               // Per-show repeat percentages for graph
+    let debuts: DebutsStats?                 // Songs debuted during current tour
     let tourName: String?                    // Current tour name for context
     let showDurationAvailability: [ShowDurationAvailability]? // Per-show duration data availability
     let youtubeVideos: [YouTubeVideo]?       // YouTube videos from Phish channel for tour date range
 
     /// Check if statistics data is available
     var hasData: Bool {
-        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true) || !(openersClosers?.isEmpty ?? true) || !(repeats?.shows.isEmpty ?? true)
+        return !longestSongs.isEmpty || !rarestSongs.isEmpty || !mostPlayedSongs.isEmpty || !(mostCommonSongsNotPlayed?.isEmpty ?? true) || !(setSongStats?.isEmpty ?? true) || !(openersClosers?.isEmpty ?? true) || !(repeats?.shows.isEmpty ?? true) || !(debuts?.songs.isEmpty ?? true)
     }
 
     /// Number of shows with duration data
