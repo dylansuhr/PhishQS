@@ -45,7 +45,12 @@ jobs:
       env:
         PHISH_NET_API_KEY: ${{ secrets.PHISH_NET_API_KEY }}
       run: npm run generate-stats
-    
+
+    - name: Update YouTube videos
+      env:
+        YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+      run: npm run update-youtube-videos
+
     - name: Check for data changes
       id: verify
       run: |

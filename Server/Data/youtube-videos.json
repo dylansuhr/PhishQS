@@ -1,0 +1,48 @@
+{
+  "tourName": "2025 NYE Run",
+  "tourStartDate": "2025-12-28",
+  "fetchedAt": "2026-01-02T15:00:54.004Z",
+  "videoCount": 5,
+  "videos": [
+    {
+      "videoId": "5LnaNXHCXlw",
+      "title": "Live from New York, NY 12/31/2025 Set II Opener",
+      "thumbnailUrl": "https://i.ytimg.com/vi/5LnaNXHCXlw/hqdefault.jpg",
+      "publishedAt": "2026-01-01T03:03:57Z",
+      "duration": "PT13M24S",
+      "viewCount": 27310
+    },
+    {
+      "videoId": "xzMQO9nFFnk",
+      "title": "Phish - 12/30/2025 - Ruby Waves → Light (4K HDR) New York, NY",
+      "thumbnailUrl": "https://i.ytimg.com/vi/xzMQO9nFFnk/hqdefault.jpg",
+      "publishedAt": "2026-01-01T02:27:05Z",
+      "duration": "PT29M55S",
+      "viewCount": 6803
+    },
+    {
+      "videoId": "ES_twzVmAjM",
+      "title": "Live from New York, NY 12/31/2025 Set I Opener",
+      "thumbnailUrl": "https://i.ytimg.com/vi/ES_twzVmAjM/hqdefault.jpg",
+      "publishedAt": "2026-01-01T01:09:05Z",
+      "duration": "PT11M6S",
+      "viewCount": 29242
+    },
+    {
+      "videoId": "BCiMILWKY14",
+      "title": "Phish - 12/29/2025 - A Wave of Hope (4K HDR) New York, NY",
+      "thumbnailUrl": "https://i.ytimg.com/vi/BCiMILWKY14/hqdefault.jpg",
+      "publishedAt": "2025-12-30T20:13:16Z",
+      "duration": "PT20M3S",
+      "viewCount": 15879
+    },
+    {
+      "videoId": "oPuRd-CXpZk",
+      "title": "Phish - 12/28/2025 - Theme From The Bottom (4K HDR) New York, NY",
+      "thumbnailUrl": "https://i.ytimg.com/vi/oPuRd-CXpZk/hqdefault.jpg",
+      "publishedAt": "2025-12-29T22:06:55Z",
+      "duration": "PT26M22S",
+      "viewCount": 33512
+    }
+  ]
+}

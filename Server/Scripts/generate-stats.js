@@ -25,7 +25,7 @@ import { EnhancedSetlistService } from '../Services/EnhancedSetlistService.js';
 import { HistoricalDataEnhancer } from '../Services/HistoricalDataEnhancer.js';
 import { PhishNetTourService } from '../Services/PhishNetTourService.js';
 import { DataCollectionService } from '../Services/DataCollectionService.js';
-import { YouTubeService } from '../Services/YouTubeService.js';
+// YouTubeService removed - YouTube updates handled by update-youtube-videos.js
 import StatisticsConfig from '../Config/StatisticsConfig.js';
 import LoggingService from '../Services/LoggingService.js';
 
@@ -336,16 +336,8 @@ async function generateTourStatisticsFromControlFile() {
         const historicalEnhancer = new HistoricalDataEnhancer(enhancedService.phishNetClient);
         const enhancedTourStats = await historicalEnhancer.enhanceStatistics(tourStats);
         
-        // Step 6: Fetch YouTube videos for the tour date range
-        // Use today's date as end date since videos are uploaded AFTER shows happen
-        LoggingService.info('Fetching YouTube videos for tour...');
-        const youtubeService = new YouTubeService();
-        const tourDates = controlFileData.currentTour.tourDates;
-        const tourStartDate = tourDates[0]?.date;
-        const today = new Date().toISOString().split('T')[0];
-        const youtubeVideos = await youtubeService.fetchTourVideos(tourStartDate, today);
-
-        // Step 7: Save result to Server/Data directory (single source of truth)
+        // Step 6: Save result to Server/Data directory (single source of truth)
+        // Note: YouTube videos are handled separately by update-youtube-videos.js
         const outputPath = join(__dirname, '..', 'Data', 'tour-stats.json');
 
         // Calculate shows with duration data for metadata
@@ -368,6 +360,7 @@ async function generateTourStatisticsFromControlFile() {
             });
 
         // Add tracking information for future optimization checks
+        // Note: youtubeVideos excluded - handled by update-youtube-videos.js
         const statisticsWithTracking = {
             ...enhancedTourStats,
             latestShowProcessed: controlFileData.latestShow.date,
@@ -375,8 +368,7 @@ async function generateTourStatisticsFromControlFile() {
             tourName: tourName, // Ensure tour name is preserved
             showsWithDurations: showsWithDurations,
             totalShows: allTourShows.length,
-            showDurationAvailability: showDurationAvailability,
-            youtubeVideos: youtubeVideos
+            showDurationAvailability: showDurationAvailability
         };
 
         const jsonData = JSON.stringify(statisticsWithTracking, null, 2);
@@ -390,7 +382,6 @@ async function generateTourStatisticsFromControlFile() {
         LoggingService.info(`   Rarest songs: ${enhancedTourStats.rarestSongs.length} (${StatisticsConfig.getHistoricalEnhancementConfig('rarestSongs').enhanceTopN} enhanced with historical data)`);
         LoggingService.info(`   Most played: ${enhancedTourStats.mostPlayedSongs.length}`);
         LoggingService.info(`   Common not played: ${enhancedTourStats.mostCommonSongsNotPlayed?.length || 0} (from ${comprehensiveSongs.length} total Phish songs)`);
-        LoggingService.info(`   YouTube videos: ${youtubeVideos.length}`);
         LoggingService.info(`Data Source: Control file + individual show files (0 API calls for tour data)`);
         LoggingService.info(`Shows processed: ${allTourShows.length} enhanced setlists from control file`);
         
