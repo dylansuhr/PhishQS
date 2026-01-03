@@ -24,7 +24,7 @@ struct ToursCard: View {
         // Only show if there are tours
         if !tours.isEmpty {
             VStack(alignment: .leading, spacing: 12) {
-                Text("TOURS")
+                Text("TOUR DATES")
                     .font(.caption2)
                     .fontWeight(.semibold)
                     .foregroundStyle(.secondary)
