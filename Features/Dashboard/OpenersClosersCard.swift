@@ -187,6 +187,7 @@ private struct SongListColumn: View {
                 .fontWeight(.semibold)
                 .foregroundColor(.indigo)
                 .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom, 4)
 
             if songs.isEmpty {
                 Text("No data")
