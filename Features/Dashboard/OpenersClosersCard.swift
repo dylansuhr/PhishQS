@@ -183,9 +183,10 @@ private struct SongListColumn: View {
         VStack(alignment: .leading, spacing: 4) {
             // Column label
             Text(label)
-                .font(.caption2)
+                .font(.caption)
                 .fontWeight(.semibold)
                 .foregroundColor(.indigo)
+                .frame(maxWidth: .infinity, alignment: .center)
 
             if songs.isEmpty {
                 Text("No data")
