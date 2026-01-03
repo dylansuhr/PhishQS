@@ -77,24 +77,55 @@ struct SongsPerSetCard: View {
 
                     // Content for selected set
                     if let stats = setSongStats[selectedSetKey] {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack(alignment: .top, spacing: 16) {
-                                ExtremeColumn(
-                                    label: "Shortest",
-                                    count: stats.min.count,
-                                    shows: stats.min.shows,
-                                    isExpanded: isExpanded,
-                                    threshold: threshold
-                                )
+                        VStack(alignment: .leading, spacing: 0) {
+                            // Header row: Labels
+                            HStack(spacing: 0) {
+                                Text("Shortest")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                                ExtremeColumn(
-                                    label: "Longest",
-                                    count: stats.max.count,
-                                    shows: stats.max.shows,
-                                    isExpanded: isExpanded,
-                                    threshold: threshold
-                                )
+                                Divider()
+                                    .frame(height: 16)
+
+                                Text("Longest")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.leading, 12)
                             }
+                            .padding(.bottom, 4)
+
+                            // Count row
+                            HStack(spacing: 0) {
+                                Text("\(stats.min.count) \(stats.min.count == 1 ? "song" : "songs")")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.indigo)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                                Divider()
+                                    .frame(height: 24)
+
+                                Text("\(stats.max.count) \(stats.max.count == 1 ? "song" : "songs")")
+                                    .font(.title3)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.indigo)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.leading, 12)
+                            }
+
+                            // Full-width divider under counts
+                            Divider()
+                                .padding(.vertical, 8)
+
+                            // Shows grid
+                            ShowsGridView(
+                                minShows: stats.min.shows,
+                                maxShows: stats.max.shows,
+                                isExpanded: isExpanded,
+                                threshold: threshold
+                            )
 
                             ExpandableCardButton(
                                 isExpanded: $isExpanded,
@@ -130,45 +161,67 @@ struct SongsPerSetCard: View {
     }
 }
 
-// MARK: - Extreme Column (Shortest/Longest)
+// MARK: - Shows Grid View
 
-private struct ExtremeColumn: View {
-    let label: String
-    let count: Int
-    let shows: [SetSongShow]
+private struct ShowsGridView: View {
+    let minShows: [SetSongShow]
+    let maxShows: [SetSongShow]
     let isExpanded: Bool
     let threshold: Int
 
-    private var displayedShows: [SetSongShow] {
-        if isExpanded || shows.count <= threshold {
-            return shows
+    private var displayedMinShows: [SetSongShow] {
+        if isExpanded || minShows.count <= threshold {
+            return minShows
         }
-        return Array(shows.prefix(threshold))
+        return Array(minShows.prefix(threshold))
+    }
+
+    private var displayedMaxShows: [SetSongShow] {
+        if isExpanded || maxShows.count <= threshold {
+            return maxShows
+        }
+        return Array(maxShows.prefix(threshold))
+    }
+
+    private var maxRowCount: Int {
+        max(displayedMinShows.count, displayedMaxShows.count)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            // Label
-            Text(label)
-                .font(.caption2)
-                .foregroundColor(.secondary)
-
-            // Count
-            Text("\(count) \(count == 1 ? "song" : "songs")")
-                .font(.title3)
-                .fontWeight(.bold)
-                .foregroundColor(.indigo)
-
-            // Shows
-            ForEach(Array(displayedShows.enumerated()), id: \.offset) { index, show in
+        VStack(spacing: 0) {
+            ForEach(0..<maxRowCount, id: \.self) { index in
+                // Row divider (except before first row)
                 if index > 0 {
                     Divider()
-                        .padding(.vertical, 2)
+                        .padding(.vertical, 8)
                 }
-                ShowInfoView(show: show)
+
+                // Row content
+                HStack(alignment: .top, spacing: 0) {
+                    // Left column (min/shortest)
+                    if index < displayedMinShows.count {
+                        ShowInfoView(show: displayedMinShows[index])
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        Spacer()
+                            .frame(maxWidth: .infinity)
+                    }
+
+                    // Vertical divider
+                    Divider()
+                        .padding(.horizontal, 6)
+
+                    // Right column (max/longest)
+                    if index < displayedMaxShows.count {
+                        ShowInfoView(show: displayedMaxShows[index])
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        Spacer()
+                            .frame(maxWidth: .infinity)
+                    }
+                }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
