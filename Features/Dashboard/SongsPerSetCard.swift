@@ -233,7 +233,7 @@ private struct ShowInfoView: View {
             // Date
             Text(show.formattedDate)
                 .font(.caption2)
-                .foregroundColor(.secondary)
+                .foregroundColor(.primary)
 
             // Venue with run
             Text(show.venueDisplayText)
