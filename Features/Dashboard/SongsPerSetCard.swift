@@ -83,7 +83,7 @@ struct SongsPerSetCard: View {
                                 Text("Shortest")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .frame(maxWidth: .infinity, alignment: .center)
 
                                 Divider()
                                     .frame(height: 16)
@@ -91,8 +91,7 @@ struct SongsPerSetCard: View {
                                 Text("Longest")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.leading, 12)
+                                    .frame(maxWidth: .infinity, alignment: .center)
                             }
                             .padding(.bottom, 4)
 
@@ -102,7 +101,7 @@ struct SongsPerSetCard: View {
                                     .font(.title3)
                                     .fontWeight(.bold)
                                     .foregroundColor(.indigo)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .frame(maxWidth: .infinity, alignment: .center)
 
                                 Divider()
                                     .frame(height: 24)
@@ -111,8 +110,7 @@ struct SongsPerSetCard: View {
                                     .font(.title3)
                                     .fontWeight(.bold)
                                     .foregroundColor(.indigo)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.leading, 12)
+                                    .frame(maxWidth: .infinity, alignment: .center)
                             }
 
                             // Full-width divider under counts
