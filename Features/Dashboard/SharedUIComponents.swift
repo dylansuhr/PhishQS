@@ -323,7 +323,8 @@ struct LongestSongRowModular: View {
 struct RarestSongRowModular: View {
     let position: Int
     let song: SongGapInfo
-    
+    var onDateTapped: ((String) -> Void)?
+
     var body: some View {
         TourStatisticsRowBase(position: position, item: song, positionColor: .orange) {
             VStack(alignment: .trailing, spacing: 2) {
@@ -339,17 +340,27 @@ struct RarestSongRowModular: View {
                         .fontWeight(.semibold)
                         .foregroundColor(.orange)
                 }
-                
-                // Last played date (the date that created this gap)
+
+                // Last played date (tappable link to that show)
                 if song.gap > 0 {
                     if let historicalDate = song.historicalLastPlayed {
-                        Text(historicalDate)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                        Button {
+                            onDateTapped?(historicalDate)
+                        } label: {
+                            Text(historicalDate)
+                                .font(.caption2)
+                                .foregroundColor(.blue)
+                        }
+                        .buttonStyle(.plain)
                     } else if let lastPlayed = song.lastPlayed {
-                        Text(lastPlayed)
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                        Button {
+                            onDateTapped?(lastPlayed)
+                        } label: {
+                            Text(lastPlayed)
+                                .font(.caption2)
+                                .foregroundColor(.blue)
+                        }
+                        .buttonStyle(.plain)
                     } else {
                         Text("Never played")
                             .font(.caption2)
