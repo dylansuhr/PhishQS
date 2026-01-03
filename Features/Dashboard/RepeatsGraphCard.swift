@@ -76,6 +76,8 @@ struct RepeatsGraphCard: View {
                     selectedShowDetail(show, highlightMetric: .repeats)
                 }
                 repeatsChart
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
             } else {
                 // No repeats message
                 noRepeatsMessage
@@ -91,6 +93,8 @@ struct RepeatsGraphCard: View {
                 selectedShowDetail(show, highlightMetric: .gap)
             }
             gapChart
+                .padding(.top, 12)
+                .padding(.bottom, 8)
         }
     }
 
