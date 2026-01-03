@@ -16,10 +16,11 @@ import { BaseStatisticsCalculator } from './BaseStatisticsCalculator.js';
  * Song with play count for a position (opener/closer/encore)
  */
 export class PositionSong {
-    constructor(songName, songId, count) {
+    constructor(songName, songId, count, dates = []) {
         this.songName = songName;
         this.songId = songId;
         this.count = count;
+        this.dates = dates;  // Array of date strings (YYYY-MM-DD)
     }
 }
 
@@ -47,7 +48,7 @@ export class OpenersClosersCalculator extends BaseStatisticsCalculator {
     /**
      * Add a song to a position's count
      */
-    addSongToPosition(dataContainer, positionKey, item) {
+    addSongToPosition(dataContainer, positionKey, item, showDate) {
         const { positionCounts } = dataContainer;
 
         if (!positionCounts.has(positionKey)) {
@@ -62,13 +63,15 @@ export class OpenersClosersCalculator extends BaseStatisticsCalculator {
             songMap.set(songKey, {
                 songName: item.song,
                 songId: existing.songId || item.songid,
-                count: existing.count + 1
+                count: existing.count + 1,
+                dates: [...existing.dates, showDate]
             });
         } else {
             songMap.set(songKey, {
                 songName: item.song,
                 songId: item.songid,
-                count: 1
+                count: 1,
+                dates: [showDate]
             });
         }
     }
@@ -99,7 +102,7 @@ export class OpenersClosersCalculator extends BaseStatisticsCalculator {
             if (setKey.startsWith('e')) {
                 // Encore: track ALL songs
                 items.forEach(item => {
-                    this.addSongToPosition(dataContainer, `${setKey}_all`, item);
+                    this.addSongToPosition(dataContainer, `${setKey}_all`, item, show.showDate);
                 });
                 this.log(`🎤 ${show.showDate} Encore ${setKey}: ${items.length} songs`);
             } else {
@@ -107,8 +110,8 @@ export class OpenersClosersCalculator extends BaseStatisticsCalculator {
                 const opener = items[0];
                 const closer = items[items.length - 1];
 
-                this.addSongToPosition(dataContainer, `${setKey}_opener`, opener);
-                this.addSongToPosition(dataContainer, `${setKey}_closer`, closer);
+                this.addSongToPosition(dataContainer, `${setKey}_opener`, opener, show.showDate);
+                this.addSongToPosition(dataContainer, `${setKey}_closer`, closer, show.showDate);
 
                 this.log(`🎵 ${show.showDate} Set ${setKey}: Opener "${opener.song}", Closer "${closer.song}"`);
             }
@@ -134,7 +137,8 @@ export class OpenersClosersCalculator extends BaseStatisticsCalculator {
                 .map(info => new PositionSong(
                     BaseStatisticsCalculator.capitalizeWords(info.songName),
                     info.songId,
-                    info.count
+                    info.count,
+                    info.dates.sort()  // Sort dates chronologically
                 ))
                 .sort((a, b) => {
                     // Sort by count descending, then alphabetically

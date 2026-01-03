@@ -52,6 +52,17 @@ struct DateUtilities {
             .map { String(format: "%02d", $0) }
     }
     
+    /// Format a date string in short format (e.g., "2025-12-28" → "12/28/25")
+    static func formatDateShort(_ dateString: String) -> String {
+        guard let parsed = parseShowDate(dateString) else { return dateString }
+
+        let month = Int(parsed.month) ?? 0
+        let day = Int(parsed.day) ?? 0
+        let shortYear = String(parsed.year.suffix(2))
+
+        return "\(month)/\(day)/\(shortYear)"
+    }
+
     /// Format a date string for display (e.g., "2025-01-28" → "January 28, 2025")
     static func formatDateForDisplay(_ dateString: String) -> String {
         guard let parsed = parseShowDate(dateString) else { return dateString }

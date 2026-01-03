@@ -238,18 +238,27 @@ private struct SongRow: View {
     let song: PositionSong
 
     var body: some View {
-        HStack(spacing: 8) {
-            // Song name
-            Text(song.songName)
-                .font(.caption)
-                .fontWeight(.medium)
-                .foregroundColor(.primary)
-                .lineLimit(2)
-                .fixedSize(horizontal: false, vertical: true)
+        HStack(alignment: .center, spacing: 8) {
+            // Song name + dates (left side)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(song.songName)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundColor(.primary)
+                    .lineLimit(2)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                // Dates below song name
+                if let formattedDates = song.formattedDates {
+                    Text(formattedDates)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
 
             Spacer()
 
-            // Play count
+            // Play count (vertically centered)
             Text("\(song.count)")
                 .font(.caption)
                 .fontWeight(.semibold)
@@ -266,33 +275,28 @@ private struct SongRow: View {
             // Sample data
             OpenersClosersCard(openersClosers: [
                 "1_opener": [
-                    PositionSong(songName: "Carini", songId: 100, count: 5),
-                    PositionSong(songName: "AC/DC Bag", songId: 101, count: 4),
-                    PositionSong(songName: "Buried Alive", songId: 102, count: 3),
-                    PositionSong(songName: "Mike's Song", songId: 103, count: 2),
-                    PositionSong(songName: "Tweezer", songId: 104, count: 1)
+                    PositionSong(songName: "Carini", songId: 100, count: 2, dates: ["2025-12-28", "2025-12-30"]),
+                    PositionSong(songName: "AC/DC Bag", songId: 101, count: 1, dates: ["2025-12-29"]),
+                    PositionSong(songName: "Buried Alive", songId: 102, count: 1, dates: ["2025-12-31"])
                 ],
                 "1_closer": [
-                    PositionSong(songName: "Reba", songId: 200, count: 4),
-                    PositionSong(songName: "Stash", songId: 201, count: 3),
-                    PositionSong(songName: "Divided Sky", songId: 202, count: 2)
+                    PositionSong(songName: "Reba", songId: 200, count: 2, dates: ["2025-12-28", "2025-12-31"]),
+                    PositionSong(songName: "Stash", songId: 201, count: 1, dates: ["2025-12-29"]),
+                    PositionSong(songName: "Divided Sky", songId: 202, count: 1, dates: ["2025-12-30"])
                 ],
                 "2_opener": [
-                    PositionSong(songName: "Down with Disease", songId: 300, count: 6),
-                    PositionSong(songName: "Simple", songId: 301, count: 3)
+                    PositionSong(songName: "Down with Disease", songId: 300, count: 3, dates: ["2025-12-28", "2025-12-29", "2025-12-31"]),
+                    PositionSong(songName: "Simple", songId: 301, count: 1, dates: ["2025-12-30"])
                 ],
                 "2_closer": [
-                    PositionSong(songName: "You Enjoy Myself", songId: 400, count: 5),
-                    PositionSong(songName: "Slave to the Traffic Light", songId: 401, count: 4),
-                    PositionSong(songName: "Harry Hood", songId: 402, count: 3),
-                    PositionSong(songName: "Run Like an Antelope", songId: 403, count: 2)
+                    PositionSong(songName: "You Enjoy Myself", songId: 400, count: 2, dates: ["2025-12-28", "2025-12-30"]),
+                    PositionSong(songName: "Slave to the Traffic Light", songId: 401, count: 1, dates: ["2025-12-29"]),
+                    PositionSong(songName: "Harry Hood", songId: 402, count: 1, dates: ["2025-12-31"])
                 ],
                 "e_all": [
-                    PositionSong(songName: "Character Zero", songId: 500, count: 8),
-                    PositionSong(songName: "First Tube", songId: 501, count: 6),
-                    PositionSong(songName: "Julius", songId: 502, count: 4),
-                    PositionSong(songName: "Possum", songId: 503, count: 3),
-                    PositionSong(songName: "Golgi Apparatus", songId: 504, count: 2)
+                    PositionSong(songName: "Character Zero", songId: 500, count: 2, dates: ["2025-12-28", "2025-12-31"]),
+                    PositionSong(songName: "First Tube", songId: 501, count: 1, dates: ["2025-12-29"]),
+                    PositionSong(songName: "Julius", songId: 502, count: 1, dates: ["2025-12-30"])
                 ]
             ])
 

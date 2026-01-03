@@ -1465,139 +1465,214 @@
       {
         "songName": "Buried Alive",
         "songId": 96,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-28"
+        ]
       },
       {
         "songName": "Carini",
         "songId": 104,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-29"
+        ]
       },
       {
         "songName": "Chalk Dust Torture",
         "songId": 110,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-30"
+        ]
       },
       {
         "songName": "Free",
         "songId": 215,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       }
     ],
     "1_closer": [
       {
         "songName": "Fluffhead",
         "songId": 208,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-29"
+        ]
       },
       {
         "songName": "Life Saving Gun",
         "songId": 3100,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       },
       {
         "songName": "Run Like An Antelope",
         "songId": 478,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-28"
+        ]
       },
       {
         "songName": "Split Open And Melt",
         "songId": 529,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-30"
+        ]
       }
     ],
     "2_opener": [
       {
         "songName": "Ghost",
         "songId": 222,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-30"
+        ]
       },
       {
         "songName": "Mike's Song",
         "songId": 381,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-29"
+        ]
       },
       {
         "songName": "Oblivion",
         "songId": 3076,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-28"
+        ]
       },
       {
         "songName": "Sand",
         "songId": 485,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       }
     ],
     "2_closer": [
       {
         "songName": "Character Zero",
         "songId": 113,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-29"
+        ]
       },
       {
         "songName": "Cream",
         "songId": 3209,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       },
       {
         "songName": "Everything's Right",
         "songId": 2656,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-28"
+        ]
       },
       {
         "songName": "First Tube",
         "songId": 202,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-30"
+        ]
       }
     ],
     "e_all": [
       {
         "songName": "Drift While You're Sleeping",
         "songId": 2829,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-30"
+        ]
       },
       {
         "songName": "Possum",
         "songId": 440,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-29"
+        ]
       },
       {
         "songName": "Sincere",
         "songId": 3210,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       },
       {
         "songName": "Slave To The Traffic Light",
         "songId": 512,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-28"
+        ]
       },
       {
         "songName": "Spock's Brain",
         "songId": 531,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       },
       {
         "songName": "The Lizards",
         "songId": 586,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-29"
+        ]
       },
       {
         "songName": "Tweezer Reprise",
         "songId": 628,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       }
     ],
     "3_opener": [
       {
         "songName": "Harry Hood",
         "songId": 250,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       }
     ],
     "3_closer": [
       {
         "songName": "Say It To Me S.a.n.t.o.s.",
         "songId": 2796,
-        "count": 1
+        "count": 1,
+        "dates": [
+          "2025-12-31"
+        ]
       }
     ]
   },
@@ -1728,7 +1803,7 @@
   },
   "tourName": "2025 NYE Run",
   "latestShowProcessed": "2025-12-31",
-  "generatedAt": "2026-01-03T00:29:37.539Z",
+  "generatedAt": "2026-01-03T01:55:40.100Z",
   "showsWithDurations": 4,
   "totalShows": 4,
   "showDurationAvailability": [

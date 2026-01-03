@@ -207,8 +207,17 @@ struct PositionSong: Codable, Identifiable {
     let songName: String
     let songId: Int?
     let count: Int
+    let dates: [String]?  // Array of dates (YYYY-MM-DD format)
 
     var id: String { "\(songId ?? 0)-\(songName)" }
+
+    /// Formatted dates for display (comma-separated short format)
+    var formattedDates: String? {
+        guard let dates = dates, !dates.isEmpty else { return nil }
+        return dates
+            .map { DateUtilities.formatDateShort($0) }
+            .joined(separator: ", ")
+    }
 }
 
 /// Statistics for openers, closers, and encores
