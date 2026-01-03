@@ -17,7 +17,7 @@ struct DashboardGrid<Content: View>: View {
     
     var body: some View {
         ScrollView {
-            LazyVStack(spacing: 20) {
+            VStack(spacing: 20) {
                 content
             }
             .padding()

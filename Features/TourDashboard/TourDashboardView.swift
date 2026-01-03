@@ -7,7 +7,7 @@ struct TourDashboardView: View {
     private let showDateSearchFeature = false
 
     @EnvironmentObject var latestSetlistViewModel: LatestSetlistViewModel
-    @StateObject private var calendarViewModel = TourCalendarViewModel()
+    @ObservedObject var calendarViewModel: TourCalendarViewModel
     @State private var showingDateSearch = false
     @State private var showingPhishNet = false
     @State private var showingYouTube = false
@@ -91,19 +91,6 @@ struct TourDashboardView: View {
                     }
                 }
                 .modifier(StateCardAnimationModifier(animate: $animateCard1))
-            }
-
-            // Tours Card (current + future tours above calendar)
-            if !calendarViewModel.allTours.isEmpty {
-                DashboardSection {
-                    ToursCard(
-                        tours: calendarViewModel.allTours,
-                        onTourTapped: { startDate in
-                            calendarViewModel.navigateToMonth(containing: startDate)
-                        }
-                    )
-                    .modifier(StateCardAnimationModifier(animate: $animateCard2))
-                }
             }
 
             // Tour Calendar (Component D)
@@ -328,7 +315,7 @@ struct StateCardAnimationModifier: ViewModifier {
 
 #Preview {
     NavigationStack {
-        TourDashboardView()
+        TourDashboardView(calendarViewModel: TourCalendarViewModel())
             .environmentObject(LatestSetlistViewModel())
     }
 }

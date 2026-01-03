@@ -11,6 +11,7 @@ import SwiftUI
 struct SmartLaunchView: View {
     @StateObject private var launchState = LaunchStateManager.shared
     @StateObject private var dashboardData = LatestSetlistViewModel()
+    @StateObject private var calendarViewModel = TourCalendarViewModel()
     @State private var showBrandedLoading = true
     @State private var minimumLoadTimeElapsed = false
     @State private var hasInitialized = false
@@ -24,12 +25,12 @@ struct SmartLaunchView: View {
         // Show branded loading based on launch type and data state
         switch launchState.launchType {
         case .coldStart:
-            // On cold start, show until both minimum time elapsed AND data loaded
-            return !minimumLoadTimeElapsed || dashboardData.isLoading
+            // On cold start, show until both minimum time elapsed AND all data loaded
+            return !minimumLoadTimeElapsed || dashboardData.isLoading || calendarViewModel.isLoading
 
         case .warmStart:
             // On warm start, only show if actually loading and no cached data
-            return dashboardData.isLoading && !dashboardData.hasCachedData()
+            return (dashboardData.isLoading && !dashboardData.hasCachedData()) || calendarViewModel.isLoading
 
         case .backgroundReturn:
             // Never show on quick background return
@@ -42,7 +43,7 @@ struct SmartLaunchView: View {
             // Dashboard wrapped in NavigationStack (instant appearance when ready)
             if !shouldShowBrandedLoading {
                 NavigationStack {
-                    TourDashboardView()
+                    TourDashboardView(calendarViewModel: calendarViewModel)
                         .environmentObject(dashboardData)
                 }
             }
@@ -59,7 +60,10 @@ struct SmartLaunchView: View {
                 hasInitialized = true
             }
         }
-        .onChange(of: dashboardData.isLoading) { _, isLoading in
+        .onChange(of: dashboardData.isLoading) { _, _ in
+            checkTransitionConditions()
+        }
+        .onChange(of: calendarViewModel.isLoading) { _, _ in
             checkTransitionConditions()
         }
         .onChange(of: minimumLoadTimeElapsed) { _, _ in
@@ -104,8 +108,11 @@ struct SmartLaunchView: View {
             hideStatusBar = false
         }
 
-        // Start loading data
+        // Start loading data (both in parallel)
         dashboardData.loadInitialData()
+        Task {
+            await calendarViewModel.loadTourCalendar()
+        }
     }
 
     private func checkTransitionConditions() {
@@ -113,12 +120,12 @@ struct SmartLaunchView: View {
         let shouldTransition: Bool = {
             switch launchState.launchType {
             case .coldStart:
-                // Transition when minimum time passed AND data loaded
-                return minimumLoadTimeElapsed && !dashboardData.isLoading
+                // Transition when minimum time passed AND all data loaded
+                return minimumLoadTimeElapsed && !dashboardData.isLoading && !calendarViewModel.isLoading
 
             case .warmStart:
-                // Transition when data loaded or cached data available
-                return !dashboardData.isLoading || dashboardData.hasCachedData()
+                // Transition when all data loaded or cached data available
+                return (!dashboardData.isLoading || dashboardData.hasCachedData()) && !calendarViewModel.isLoading
 
             case .backgroundReturn:
                 // Always transition immediately

@@ -8,6 +8,53 @@
 import SwiftUI
 import UIKit
 
+// MARK: - Tour Display Models
+
+/// Unified tour info for display (works for both current and future tours)
+struct TourDisplayInfo: Identifiable {
+    let id = UUID()
+    let name: String
+    let totalShows: Int
+    let startDate: String
+    let venue: String  // First venue for color matching
+}
+
+/// Individual tour row with colored background
+struct TourRow: View {
+    let tour: TourDisplayInfo
+
+    private var rowColor: Color {
+        venueColor(for: tour.venue)
+    }
+
+    private var showCountText: String {
+        tour.totalShows == 1 ? "1 show" : "\(tour.totalShows) shows"
+    }
+
+    var body: some View {
+        HStack {
+            Text(tour.name)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.white)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+
+            Spacer()
+
+            Text(showCountText)
+                .font(.caption)
+                .foregroundStyle(.white.opacity(0.9))
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
+        .background(rowColor)
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+    }
+}
+
+// MARK: - Tour Calendar Card
+
 struct TourCalendarCard: View {
     @ObservedObject var viewModel: TourCalendarViewModel
     @State private var selectedShowDate: String?
@@ -24,7 +71,19 @@ struct TourCalendarCard: View {
             VStack(spacing: 16) {
                 // Header with navigation
                 calendarHeader
-                
+
+                // Tour bars
+                if !viewModel.allTours.isEmpty {
+                    VStack(spacing: 8) {
+                        ForEach(viewModel.allTours) { tour in
+                            TourRow(tour: tour)
+                                .onTapGesture {
+                                    viewModel.navigateToMonth(containing: tour.startDate)
+                                }
+                        }
+                    }
+                }
+
                 // Calendar content
                 if viewModel.isLoading {
                     loadingView
@@ -105,7 +164,7 @@ struct TourCalendarCard: View {
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
-        .frame(height: 300)
+        .frame(height: 350)
         .frame(maxWidth: .infinity)
     }
     
@@ -130,23 +189,23 @@ struct TourCalendarCard: View {
             .font(.caption)
             .foregroundColor(.blue)
         }
-        .frame(height: 300)
+        .frame(height: 350)
         .frame(maxWidth: .infinity)
     }
-    
+
     // MARK: - Empty View
-    
+
     private var emptyView: some View {
         VStack(spacing: 12) {
             Image(systemName: "calendar")
                 .font(.title)
                 .foregroundColor(.gray)
-            
+
             Text("No tour dates available")
                 .font(.caption)
                 .foregroundColor(.secondary)
         }
-        .frame(height: 300)
+        .frame(height: 350)
         .frame(maxWidth: .infinity)
     }
 }

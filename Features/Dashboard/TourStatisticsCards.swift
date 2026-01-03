@@ -140,26 +140,26 @@ struct TourStatisticsCards: View {
         // Sample openers, closers, and encores
         let sampleOpenersClosers: OpenersClosersStats = [
             "1_opener": [
-                PositionSong(songName: "Carini", songId: 100, count: 5),
-                PositionSong(songName: "AC/DC Bag", songId: 101, count: 4),
-                PositionSong(songName: "Buried Alive", songId: 102, count: 3)
+                PositionSong(songName: "Carini", songId: 100, count: 5, dates: nil),
+                PositionSong(songName: "AC/DC Bag", songId: 101, count: 4, dates: nil),
+                PositionSong(songName: "Buried Alive", songId: 102, count: 3, dates: nil)
             ],
             "1_closer": [
-                PositionSong(songName: "Reba", songId: 200, count: 4),
-                PositionSong(songName: "Stash", songId: 201, count: 3)
+                PositionSong(songName: "Reba", songId: 200, count: 4, dates: nil),
+                PositionSong(songName: "Stash", songId: 201, count: 3, dates: nil)
             ],
             "2_opener": [
-                PositionSong(songName: "Down with Disease", songId: 300, count: 6),
-                PositionSong(songName: "Simple", songId: 301, count: 3)
+                PositionSong(songName: "Down with Disease", songId: 300, count: 6, dates: nil),
+                PositionSong(songName: "Simple", songId: 301, count: 3, dates: nil)
             ],
             "2_closer": [
-                PositionSong(songName: "You Enjoy Myself", songId: 400, count: 5),
-                PositionSong(songName: "Slave to the Traffic Light", songId: 401, count: 4)
+                PositionSong(songName: "You Enjoy Myself", songId: 400, count: 5, dates: nil),
+                PositionSong(songName: "Slave to the Traffic Light", songId: 401, count: 4, dates: nil)
             ],
             "e_all": [
-                PositionSong(songName: "Character Zero", songId: 500, count: 8),
-                PositionSong(songName: "First Tube", songId: 501, count: 6),
-                PositionSong(songName: "Julius", songId: 502, count: 4)
+                PositionSong(songName: "Character Zero", songId: 500, count: 8, dates: nil),
+                PositionSong(songName: "First Tube", songId: 501, count: 6, dates: nil),
+                PositionSong(songName: "Julius", songId: 502, count: 4, dates: nil)
             ]
         ]
 
