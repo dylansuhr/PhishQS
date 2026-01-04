@@ -27,26 +27,32 @@ struct DetailedSetlistLineView: View {
                 .padding(.top, 16)
 
         case .song(let name, let duration, let transitionMark, let durationColor, let footnoteIndices):
-            HStack {
-                HStack(spacing: 2) {
-                    Text(name)
+            HStack(alignment: .lastTextBaseline) {
+                // Song name with footnotes and transition mark as single flowing text
+                let songText: Text = {
+                    var result = Text(name)
                         .font(.body)
                         .foregroundColor(.primary)
 
-                    // Footnote superscripts
+                    // Add footnote superscripts
                     if let indices = footnoteIndices, !indices.isEmpty {
-                        Text(indices.map { "[\($0)]" }.joined())
+                        result = result + Text(indices.map { "[\($0)]" }.joined())
                             .font(.system(size: 10))
                             .foregroundColor(.secondary)
                             .baselineOffset(6)
                     }
 
+                    // Add transition mark
                     if let transitionMark = transitionMark, !transitionMark.isEmpty {
-                        Text(transitionMark)
+                        result = result + Text(transitionMark)
                             .font(.body)
                             .foregroundColor(.secondary)
                     }
-                }
+
+                    return result
+                }()
+
+                songText
 
                 Spacer()
 
