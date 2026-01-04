@@ -423,9 +423,9 @@ struct MostPlayedSongRowModular: View {
             )
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
         .cornerRadius(12)
-        
+
         // Modular row samples
         VStack(spacing: 12) {
             // Sample longest song
@@ -454,9 +454,9 @@ struct MostPlayedSongRowModular: View {
             MostPlayedSongRowModular(song: sampleMostPlayed)
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
         .cornerRadius(12)
-        
+
         Spacer()
     }
     .padding()

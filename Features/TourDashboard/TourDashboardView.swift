@@ -262,7 +262,7 @@ struct FloatingSearchButton: View {
                 }
                 .frame(width: 70, height: 70)
                 .background(.ultraThinMaterial, in: Circle())
-                .shadow(color: .black.opacity(0.15), radius: 10, x: 0, y: 4)
+                .shadow(color: .cardShadow, radius: 10, x: 0, y: 4)
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 8)

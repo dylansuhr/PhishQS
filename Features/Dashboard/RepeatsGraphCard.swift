@@ -55,9 +55,9 @@ struct RepeatsGraphCard: View {
             }
         }
         .padding(16)
-        .background(Color.white)
+        .background(Color.cardBackground)
         .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+        .shadow(color: .cardShadow, radius: 3, x: 0, y: 2)
         .onAppear {
             if !hasInitialized {
                 selectedShow = repeats.shows.last
@@ -273,7 +273,7 @@ struct RepeatsGraphCard: View {
             }
         }
         .padding(12)
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
         .cornerRadius(8)
     }
 
@@ -384,7 +384,7 @@ struct RepeatsGraphCard: View {
         )
         .padding()
     }
-    .background(Color(.systemGray6))
+    .background(Color.pageBackground)
 }
 
 #Preview("No Repeats") {
@@ -405,5 +405,5 @@ struct RepeatsGraphCard: View {
         )
         .padding()
     }
-    .background(Color(.systemGray6))
+    .background(Color.pageBackground)
 }

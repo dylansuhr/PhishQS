@@ -14,11 +14,11 @@ struct PhishBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
         if let radius = cornerRadius {
             content
-                .background(Color(.systemGray6))
+                .background(Color.pageBackground)
                 .cornerRadius(radius)
         } else {
             content
-                .background(Color(.systemGray6))
+                .background(Color.pageBackground)
         }
     }
 }

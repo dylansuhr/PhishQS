@@ -146,9 +146,9 @@ struct SongsPerSetCard: View {
                 }
             }
             .padding(16)
-            .background(Color.white)
+            .background(Color.cardBackground)
             .cornerRadius(12)
-            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+            .shadow(color: .cardShadow, radius: 3, x: 0, y: 2)
             .id("songsPerSetCard")
             .onAppear {
                 withAnimation(.easeInOut(duration: 0.01)) {
@@ -299,6 +299,6 @@ private struct ShowInfoView: View {
             SongsPerSetCard(setSongStats: [:])
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
     }
 }

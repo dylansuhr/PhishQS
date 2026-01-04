@@ -22,7 +22,7 @@ struct DashboardGrid<Content: View>: View {
             }
             .padding()
         }
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
     }
 }
 

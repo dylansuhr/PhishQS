@@ -74,9 +74,9 @@ struct LongestSongsCard: View {
                 }
             }
             .padding(16)
-            .background(Color.white)
+            .background(Color.cardBackground)
             .cornerRadius(12)
-            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+            .shadow(color: .cardShadow, radius: 3, x: 0, y: 2)
             .id("longestSongsCard")
             .onAppear {
                 // Pre-warm animation system in same view context

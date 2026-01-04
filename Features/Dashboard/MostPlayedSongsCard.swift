@@ -52,7 +52,7 @@ struct MostPlayedSongsCard: View {
                             // Gradient fade to indicate scrollable content
                             if !isAtBottom {
                                 LinearGradient(
-                                    colors: [.white.opacity(0), .white],
+                                    colors: [Color.cardBackground.opacity(0), Color.cardBackground],
                                     startPoint: .top,
                                     endPoint: .bottom
                                 )

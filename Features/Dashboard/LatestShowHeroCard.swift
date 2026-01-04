@@ -226,5 +226,5 @@ struct CompactSetlistView: View {
 #Preview {
     LatestShowHeroCard(viewModel: LatestSetlistViewModel())
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
 }

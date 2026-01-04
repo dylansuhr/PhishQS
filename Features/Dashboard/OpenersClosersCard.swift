@@ -148,9 +148,9 @@ struct OpenersClosersCard: View {
                 }
             }
             .padding(16)
-            .background(Color.white)
+            .background(Color.cardBackground)
             .cornerRadius(12)
-            .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+            .shadow(color: .cardShadow, radius: 3, x: 0, y: 2)
             .id("openersClosersCard")
             .onAppear {
                 if !visibleTabs.contains(selectedTab), let firstTab = visibleTabs.first {
@@ -307,6 +307,6 @@ private struct SongRow: View {
             OpenersClosersCard(openersClosers: [:])
         }
         .padding()
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
     }
 }

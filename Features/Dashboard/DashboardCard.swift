@@ -29,9 +29,9 @@ struct DashboardCard<Content: View>: View {
             content
         }
         .padding(16)
-        .background(Color.white)
+        .background(Color.cardBackground)
         .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+        .shadow(color: .cardShadow, radius: 3, x: 0, y: 2)
     }
 }
 
@@ -48,9 +48,9 @@ struct HeroCard<Content: View>: View {
             content
         }
         .padding(20)
-        .background(Color.white)
+        .background(Color.cardBackground)
         .cornerRadius(16)
-        .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+        .shadow(color: .heroCardShadow, radius: 6, x: 0, y: 3)
     }
 }
 
@@ -76,9 +76,9 @@ struct MetricCard<Content: View>: View {
             content
         }
         .padding(16)
-        .background(Color.white)
+        .background(Color.cardBackground)
         .cornerRadius(12)
-        .shadow(color: .black.opacity(0.05), radius: 3, x: 0, y: 2)
+        .shadow(color: .cardShadow, radius: 3, x: 0, y: 2)
     }
 }
 
@@ -127,5 +127,5 @@ struct MetricCard<Content: View>: View {
         Spacer()
     }
     .padding()
-    .background(Color(.systemGray6))
+    .background(Color.pageBackground)
 }

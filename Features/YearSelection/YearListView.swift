@@ -14,7 +14,7 @@ struct YearListView: View {
                     .padding(.vertical, 8)
             }
         }
-        .background(Color(.systemGray6))
+        .background(Color.pageBackground)
         .onAppear {
             // load the list of valid Phish touring years
             viewModel.fetchYears()

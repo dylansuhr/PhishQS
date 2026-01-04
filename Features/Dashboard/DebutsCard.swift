@@ -180,5 +180,5 @@ struct DebutRowModular: View {
         Spacer()
     }
     .padding()
-    .background(Color(.systemGray6))
+    .background(Color.pageBackground)
 }
