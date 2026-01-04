@@ -174,7 +174,12 @@ struct TourStatisticsCards: View {
                     originalArtist: "Some Artist"
                 )
             ],
-            latestShowDate: "2025-07-27"
+            latestShowDate: "2025-07-27",
+            latestShowVenue: "Madison Square Garden",
+            latestShowCity: "New York",
+            latestShowState: "NY",
+            latestShowVenueRun: sampleVenueRun,
+            latestShowTourPosition: sampleTourPosition
         )
 
         TourStatisticsCards(

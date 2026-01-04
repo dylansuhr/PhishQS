@@ -386,6 +386,41 @@ struct DebutInfo: Codable, Identifiable {
 struct DebutsStats: Codable {
     let songs: [DebutInfo]       // Array of debut songs (sorted by date, most recent first)
     let latestShowDate: String?  // Latest show date for empty state display
+    let latestShowVenue: String? // Venue name for empty state display
+    let latestShowCity: String?  // City for empty state display
+    let latestShowState: String? // State for empty state display
+    let latestShowVenueRun: VenueRun? // Venue run info for empty state display
+    let latestShowTourPosition: TourShowPosition? // Tour position for empty state display
+
+    /// Tour position text (e.g., "show 1 of 4")
+    var tourPositionText: String? {
+        guard let pos = latestShowTourPosition else { return nil }
+        return "show \(pos.showNumber) of \(pos.totalShows)"
+    }
+
+    /// Formatted latest show date for display
+    var formattedLatestShowDate: String? {
+        guard let date = latestShowDate else { return nil }
+        return DateUtilities.formatDateForDisplay(date)
+    }
+
+    /// Venue display text with night number if multi-night run
+    var latestShowVenueDisplayText: String? {
+        guard let venue = latestShowVenue else { return nil }
+        if let venueRun = latestShowVenueRun, venueRun.totalNights > 1 {
+            return "\(venue), N\(venueRun.nightNumber)"
+        }
+        return venue
+    }
+
+    /// City and state display text
+    var latestShowCityStateText: String? {
+        guard let city = latestShowCity else { return nil }
+        if let state = latestShowState, !state.isEmpty {
+            return "\(city), \(state)"
+        }
+        return city
+    }
 }
 
 /// Per-show duration availability info (single source of truth from tour-statistics API)

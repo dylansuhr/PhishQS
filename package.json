@@ -12,7 +12,8 @@
     "update-youtube-videos": "node Server/Scripts/update-youtube-videos.js",
     "deploy": "npx vercel --prod --yes",
     "test-mode": "node Server/Scripts/test-mode.js",
-    "prod-mode": "node Server/Scripts/prod-mode.js"
+    "prod-mode": "node Server/Scripts/prod-mode.js",
+    "simulate-new-tour": "node Server/Scripts/simulate-new-tour.js"
   },
   "dependencies": {
     "dotenv": "^17.2.2",

@@ -63,6 +63,11 @@ export class DebutsCalculator extends BaseStatisticsCalculator {
         return {
             debuts: [],
             latestShowDate: null,
+            latestShowVenue: null,
+            latestShowCity: null,
+            latestShowState: null,
+            latestShowVenueRun: null,
+            latestShowTourPosition: null,
             artistLookup: artistLookup
         };
     }
@@ -71,9 +76,17 @@ export class DebutsCalculator extends BaseStatisticsCalculator {
      * Process a single show and check for debut songs
      */
     processShow(show, dataContainer) {
-        // Track latest show date for empty state display
+        // Track latest show info for empty state display
         if (!dataContainer.latestShowDate || show.showDate > dataContainer.latestShowDate) {
             dataContainer.latestShowDate = show.showDate;
+
+            // Get venue info from first setlist item (Phish.net source)
+            const firstItem = show.setlistItems?.[0];
+            dataContainer.latestShowVenue = firstItem?.venue || show.venue;
+            dataContainer.latestShowCity = firstItem?.city || show.showVenueInfo?.city || show.venueRun?.city;
+            dataContainer.latestShowState = firstItem?.state || show.showVenueInfo?.state || show.venueRun?.state;
+            dataContainer.latestShowVenueRun = show.venueRun;
+            dataContainer.latestShowTourPosition = show.tourPosition;
         }
 
         if (!show.setlistItems || !Array.isArray(show.setlistItems)) {
@@ -120,17 +133,33 @@ export class DebutsCalculator extends BaseStatisticsCalculator {
     }
 
     /**
-     * Generate final results - object with songs array and latest show date
+     * Generate final results - object with songs array and latest show info
      */
     generateResults(dataContainer, tourName, context = {}) {
-        const { debuts, latestShowDate } = dataContainer;
+        const {
+            debuts,
+            latestShowDate,
+            latestShowVenue,
+            latestShowCity,
+            latestShowState,
+            latestShowVenueRun,
+            latestShowTourPosition
+        } = dataContainer;
+
+        // Build result with latest show info for empty state display
+        const buildResult = (songs) => ({
+            songs,
+            latestShowDate,
+            latestShowVenue,
+            latestShowCity,
+            latestShowState,
+            latestShowVenueRun,
+            latestShowTourPosition
+        });
 
         if (debuts.length === 0) {
             this.log(`📊 No debuts found in ${tourName}`);
-            return {
-                songs: [],
-                latestShowDate: latestShowDate
-            };
+            return buildResult([]);
         }
 
         // Sort by date (most recent first), then by song name for ties
@@ -146,10 +175,7 @@ export class DebutsCalculator extends BaseStatisticsCalculator {
             this.log(`   ${index + 1}. ${debut.songName} (${debut.showDate})`);
         });
 
-        return {
-            songs: sortedDebuts,
-            latestShowDate: latestShowDate
-        };
+        return buildResult(sortedDebuts);
     }
 
     /**
@@ -162,7 +188,12 @@ export class DebutsCalculator extends BaseStatisticsCalculator {
             this.log(`⚠️  ${this.calculatorType}: Invalid input, returning empty results`);
             return {
                 songs: [],
-                latestShowDate: null
+                latestShowDate: null,
+                latestShowVenue: null,
+                latestShowCity: null,
+                latestShowState: null,
+                latestShowVenueRun: null,
+                latestShowTourPosition: null
             };
         }
 

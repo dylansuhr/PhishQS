@@ -17,11 +17,12 @@ struct DebutsCard: View {
         ScrollViewReader { proxy in
             MetricCard("Tour Debuts") {
                 if debuts.songs.isEmpty {
-                    // Empty state with latest show date
+                    // Empty state
                     Text(emptyStateText)
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundColor(.secondary)
                         .italic()
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     VStack(alignment: .leading, spacing: 8) {
                         ForEach(Array(debuts.songs.prefix(isExpanded ? 10 : 3).enumerated()), id: \.offset) { index, debut in
@@ -53,9 +54,8 @@ struct DebutsCard: View {
     }
 
     private var emptyStateText: String {
-        if let date = debuts.latestShowDate {
-            let formatted = DateUtilities.formatDateForDisplay(date)
-            return "No debuts through \(formatted)"
+        if let positionText = debuts.tourPositionText {
+            return "No debuts through \(positionText)"
         }
         return "No debuts yet this tour"
     }
@@ -164,7 +164,12 @@ struct DebutRowModular: View {
                     originalArtist: "Phish"
                 )
             ],
-            latestShowDate: "2025-12-31"
+            latestShowDate: "2025-12-31",
+            latestShowVenue: "Madison Square Garden",
+            latestShowCity: "New York",
+            latestShowState: "NY",
+            latestShowVenueRun: VenueRun(venue: "Madison Square Garden", city: "New York", state: "NY", nightNumber: 4, totalNights: 4, showDates: ["2025-12-28", "2025-12-29", "2025-12-30", "2025-12-31"]),
+            latestShowTourPosition: TourShowPosition(tourName: "2025 NYE Run", showNumber: 4, totalShows: 4, tourYear: "2025")
         )
 
         DebutsCard(debuts: sampleDebuts)
@@ -172,7 +177,12 @@ struct DebutRowModular: View {
         // Empty state
         let emptyDebuts = DebutsStats(
             songs: [],
-            latestShowDate: "2025-07-20"
+            latestShowDate: "2025-07-20",
+            latestShowVenue: "Saratoga Performing Arts Center",
+            latestShowCity: "Saratoga Springs",
+            latestShowState: "NY",
+            latestShowVenueRun: VenueRun(venue: "Saratoga Performing Arts Center", city: "Saratoga Springs", state: "NY", nightNumber: 2, totalNights: 2, showDates: ["2025-07-19", "2025-07-20"]),
+            latestShowTourPosition: TourShowPosition(tourName: "2025 Summer", showNumber: 10, totalShows: 23, tourYear: "2025")
         )
 
         DebutsCard(debuts: emptyDebuts)
