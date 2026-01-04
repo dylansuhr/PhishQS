@@ -161,7 +161,16 @@ struct RepeatsGraphCard: View {
         .chartYScale(domain: 0...(calculateRepeatsYAxisMax()))
         .frame(height: 180)
         .chartOverlay { proxy in
-            chartOverlayGesture(proxy: proxy)
+            GeometryReader { geometry in
+                Color.clear
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                updateSelection(at: value.location, proxy: proxy, geometry: geometry)
+                            }
+                    )
+            }
         }
     }
 
@@ -211,27 +220,16 @@ struct RepeatsGraphCard: View {
         .chartYScale(domain: 0...(calculateGapYAxisMax()))
         .frame(height: 180)
         .chartOverlay { proxy in
-            chartOverlayGesture(proxy: proxy)
-        }
-    }
-
-    // MARK: - Chart Overlay Gesture
-
-    private func chartOverlayGesture(proxy: ChartProxy) -> some View {
-        GeometryReader { geometry in
-            Rectangle()
-                .fill(.clear)
-                .contentShape(Rectangle())
-                .gesture(
-                    DragGesture(minimumDistance: 10)
-                        .onChanged { value in
-                            updateSelection(at: value.location, proxy: proxy, geometry: geometry)
-                        }
-                        .onEnded { _ in }
-                )
-                .onTapGesture { location in
-                    updateSelection(at: location, proxy: proxy, geometry: geometry)
-                }
+            GeometryReader { geometry in
+                Color.clear
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(minimumDistance: 0)
+                            .onChanged { value in
+                                updateSelection(at: value.location, proxy: proxy, geometry: geometry)
+                            }
+                    )
+            }
         }
     }
 
