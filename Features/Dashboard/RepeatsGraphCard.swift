@@ -223,7 +223,7 @@ struct RepeatsGraphCard: View {
                 .fill(.clear)
                 .contentShape(Rectangle())
                 .gesture(
-                    DragGesture(minimumDistance: 0)
+                    DragGesture(minimumDistance: 10)
                         .onChanged { value in
                             updateSelection(at: value.location, proxy: proxy, geometry: geometry)
                         }
