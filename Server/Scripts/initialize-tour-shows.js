@@ -41,6 +41,39 @@ const CONFIG = {
 };
 
 /**
+ * Normalize footnotes for a show's setlist items
+ *
+ * Creates deduplicated footnote indices and a legend at the show level.
+ * Identical footnotes share the same number (e.g., two "Phish debut." songs both get [1]).
+ *
+ * @param {Array} setlistItems - Array of setlist items with footnote strings
+ * @returns {{normalizedItems: Array, footnoteLegend: Array}}
+ */
+function normalizeFootnotes(setlistItems) {
+    const footnoteMap = new Map(); // footnote text -> index
+    let nextIndex = 1;
+
+    const normalizedItems = setlistItems.map(item => {
+        const footnote = (item.footnote || '').trim();
+        if (!footnote) {
+            return { ...item, footnoteIndices: [] };
+        }
+
+        if (!footnoteMap.has(footnote)) {
+            footnoteMap.set(footnote, nextIndex++);
+        }
+
+        return { ...item, footnoteIndices: [footnoteMap.get(footnote)] };
+    });
+
+    const footnoteLegend = Array.from(footnoteMap.entries())
+        .map(([text, index]) => ({ index, text }))
+        .sort((a, b) => a.index - b.index);
+
+    return { normalizedItems, footnoteLegend };
+}
+
+/**
  * Check if a show file needs updating by comparing existing content with new data
  *
  * This optimization prevents unnecessary file rewrites when show data hasn't changed.
@@ -187,6 +220,9 @@ async function initializeTourShows() {
                     const showFileName = `show-${tourDate.date}.json`;
                     const showFilePath = join(tourShowsDir, showFileName);
 
+                    // Normalize footnotes for the setlist
+                    const { normalizedItems, footnoteLegend } = normalizeFootnotes(enhancedSetlist.setlistItems);
+
                     const showFileData = {
                         showDate: enhancedSetlist.showDate,
                         venue: tourDate.venue,
@@ -194,8 +230,9 @@ async function initializeTourShows() {
                         state: tourDate.state,
                         tourPosition: enhancedSetlist.tourPosition,
                         venueRun: enhancedSetlist.venueRun,
-                        setlistItems: enhancedSetlist.setlistItems,
+                        setlistItems: normalizedItems,
                         trackDurations: enhancedSetlist.trackDurations,
+                        footnoteLegend: footnoteLegend,
                         songGaps: enhancedSetlist.songGaps,
                         recordings: enhancedSetlist.recordings || [],
                         metadata: {

@@ -64,6 +64,13 @@ struct LatestShowHeroCard: View {
                     // Compact setlist display
                     CompactSetlistView(setlistItems: viewModel.setlistItems, viewModel: viewModel)
 
+                    // Footnote legend
+                    if let legend = viewModel.enhancedSetlist?.footnoteLegend, !legend.isEmpty {
+                        Divider()
+                            .padding(.vertical, 4)
+                        FootnoteLegendView(legend: legend, style: .compact)
+                    }
+
                     // Setlist notes section
                     if let setlistnotes = viewModel.enhancedSetlist?.setlistnotes,
                        !setlistnotes.isEmpty {
@@ -135,35 +142,46 @@ struct CompactSetlistView: View {
     private func CompactSetSongsView(_ setItems: [SetlistItem], startPosition: Int) -> some View {
         let attributedText = createAttributedSetText(setItems, startPosition: startPosition)
         Text(attributedText)
-            .font(.caption)
+            .font(.footnote)
     }
     
     /// Create AttributedString with colors (simplified from main setlist view)
     private func createAttributedSetText(_ setItems: [SetlistItem], startPosition: Int) -> AttributedString {
         var result = AttributedString()
-        
+
         for (index, item) in setItems.enumerated() {
             let songPosition = startPosition + index
-            
+
             // Add colored song name
             var songText = AttributedString(item.song)
             let songColor = viewModel.colorForSong(at: songPosition, expectedName: item.song) ?? .primary
             songText.foregroundColor = songColor
             result += songText
-            
+
+            // Add footnote superscripts if present
+            if let indices = item.footnoteIndices, !indices.isEmpty {
+                for footnoteIndex in indices {
+                    var superscript = AttributedString("[\(footnoteIndex)]")
+                    superscript.foregroundColor = .secondary
+                    superscript.font = .system(size: 9)
+                    superscript.baselineOffset = 5
+                    result += superscript
+                }
+            }
+
             // Add transition mark
             if let transMark = item.transMark, !transMark.isEmpty {
                 var transitionText = AttributedString(transMark)
                 transitionText.foregroundColor = .primary
                 result += transitionText
             }
-            
+
             // Add space between songs (except last)
             if index < setItems.count - 1 {
                 result += AttributedString(" ")
             }
         }
-        
+
         return result
     }
     

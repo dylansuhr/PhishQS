@@ -23,6 +23,33 @@ const CONFIG = {
     PHISH_NET_API_KEY: apiConfig.defaultApiKey,
 };
 
+/**
+ * Normalize footnotes for a show's setlist items
+ */
+function normalizeFootnotes(setlistItems) {
+    const footnoteMap = new Map();
+    let nextIndex = 1;
+
+    const normalizedItems = setlistItems.map(item => {
+        const footnote = (item.footnote || '').trim();
+        if (!footnote) {
+            return { ...item, footnoteIndices: [] };
+        }
+
+        if (!footnoteMap.has(footnote)) {
+            footnoteMap.set(footnote, nextIndex++);
+        }
+
+        return { ...item, footnoteIndices: [footnoteMap.get(footnote)] };
+    });
+
+    const footnoteLegend = Array.from(footnoteMap.entries())
+        .map(([text, index]) => ({ index, text }))
+        .sort((a, b) => a.index - b.index);
+
+    return { normalizedItems, footnoteLegend };
+}
+
 async function initializeRemainingShows() {
     try {
         LoggingService.start('Initializing remaining show files for single source architecture...');
@@ -67,7 +94,10 @@ async function initializeRemainingShows() {
                 
                 const showFileName = `show-${tourDate.date}.json`;
                 const showFilePath = join(tourShowsDir, showFileName);
-                
+
+                // Normalize footnotes
+                const { normalizedItems, footnoteLegend } = normalizeFootnotes(enhancedSetlist.setlistItems);
+
                 const showFileData = {
                     showDate: enhancedSetlist.showDate,
                     venue: tourDate.venue,
@@ -75,8 +105,9 @@ async function initializeRemainingShows() {
                     state: tourDate.state,
                     tourPosition: enhancedSetlist.tourPosition,
                     venueRun: enhancedSetlist.venueRun,
-                    setlistItems: enhancedSetlist.setlistItems,
+                    setlistItems: normalizedItems,
                     trackDurations: enhancedSetlist.trackDurations,
+                    footnoteLegend: footnoteLegend,
                     songGaps: enhancedSetlist.songGaps,
                     recordings: enhancedSetlist.recordings || [],
                     metadata: {

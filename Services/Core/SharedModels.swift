@@ -36,6 +36,76 @@ import Foundation
 
 // TourSongStatistics model moved to Models/TourStatisticsModels.swift
 
+// MARK: - Footnote Models
+
+/// A single footnote legend item for setlist display
+struct FootnoteLegendItem: Codable, Equatable {
+    let index: Int
+    let text: String
+}
+
+/// Utility for normalizing footnotes from raw setlist data
+enum FootnoteNormalizer {
+    /// Normalize footnotes for a setlist, deduplicating identical footnotes
+    /// - Parameter setlistItems: Array of SetlistItem with raw footnote strings
+    /// - Returns: Tuple of (updated items with footnoteIndices, legend array)
+    static func normalize(_ setlistItems: [SetlistItem]) -> (items: [SetlistItem], legend: [FootnoteLegendItem]) {
+        var footnoteMap: [String: Int] = [:]
+        var nextIndex = 1
+
+        let normalizedItems = setlistItems.map { item -> SetlistItem in
+            let footnote = (item.footnote ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+
+            guard !footnote.isEmpty else {
+                return SetlistItem(
+                    set: item.set,
+                    song: item.song,
+                    songId: item.songId,
+                    transMark: item.transMark,
+                    venue: item.venue,
+                    city: item.city,
+                    state: item.state,
+                    showdate: item.showdate,
+                    permalink: item.permalink,
+                    setlistnotes: item.setlistnotes,
+                    footnote: item.footnote,
+                    footnoteIndices: []
+                )
+            }
+
+            let index: Int
+            if let existingIndex = footnoteMap[footnote] {
+                index = existingIndex
+            } else {
+                index = nextIndex
+                footnoteMap[footnote] = index
+                nextIndex += 1
+            }
+
+            return SetlistItem(
+                set: item.set,
+                song: item.song,
+                songId: item.songId,
+                transMark: item.transMark,
+                venue: item.venue,
+                city: item.city,
+                state: item.state,
+                showdate: item.showdate,
+                permalink: item.permalink,
+                setlistnotes: item.setlistnotes,
+                footnote: item.footnote,
+                footnoteIndices: [index]
+            )
+        }
+
+        let legend = footnoteMap
+            .sorted { $0.value < $1.value }
+            .map { FootnoteLegendItem(index: $0.value, text: $0.key) }
+
+        return (normalizedItems, legend)
+    }
+}
+
 // MARK: - Enhanced Data Models
 
 /// Enhanced setlist combining data from multiple APIs
@@ -48,6 +118,7 @@ struct EnhancedSetlist: Codable {
     let recordings: [Recording]
     let songGaps: [SongGapInfo]          // Gap information for each song in setlist
     let setlistnotes: String?            // HTML show notes from Phish.net
+    let footnoteLegend: [FootnoteLegendItem]? // Normalized footnotes for this show
 
     /// Get duration for a specific song by position in setlist (preferred method)
     /// Uses position-based matching with name validation for accuracy with duplicate song names

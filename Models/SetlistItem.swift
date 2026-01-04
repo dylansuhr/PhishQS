@@ -19,6 +19,8 @@ struct SetlistItem: Codable, Equatable {
     let showdate: String      // full show date, e.g. "2025-01-28"
     let permalink: String?    // URL slug for phish.net show page (e.g. "phish-december-29-2025-madison-square-garden-new-york-ny-usa")
     let setlistnotes: String? // HTML show notes (same for all items in a show)
+    let footnote: String?     // original footnote text (e.g. "Phish debut.", "Unfinished.")
+    let footnoteIndices: [Int]? // normalized footnote indices for display (e.g. [1])
 
     // match Swift property names to JSON keys
     enum CodingKeys: String, CodingKey {
@@ -26,6 +28,7 @@ struct SetlistItem: Codable, Equatable {
         case songId = "songid"   // map to Phish.net API songid field
         case transMark = "trans_mark"
         case venue, city, state, showdate, permalink, setlistnotes
+        case footnote, footnoteIndices
     }
 
     /// Full URL to the show page on phish.net

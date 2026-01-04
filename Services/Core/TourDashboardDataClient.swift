@@ -122,12 +122,13 @@ class TourDashboardDataClient: ObservableObject {
         let setlistItems: [SetlistItemData]
         let trackDurations: [TrackDurationData]
         let songGaps: [SongGapData]
+        let footnoteLegend: [FootnoteLegendItem]?
         let metadata: ShowMetadata
-        
+
         // Custom coding keys to ignore recordings field
         enum CodingKeys: String, CodingKey {
             case showDate, venue, city, state, tourPosition, venueRun
-            case setlistItems, trackDurations, songGaps, metadata
+            case setlistItems, trackDurations, songGaps, footnoteLegend, metadata
             // recordings intentionally omitted
         }
 
@@ -163,6 +164,13 @@ class TourDashboardDataClient: ObservableObject {
             let position: Int
             let setlistnotes: String?
             let permalink: String?
+            let footnote: String?
+            let footnoteIndices: [Int]?
+        }
+
+        struct FootnoteLegendItem: Codable {
+            let index: Int
+            let text: String
         }
         
         struct TrackDurationData: Codable {
@@ -306,8 +314,15 @@ class TourDashboardDataClient: ObservableObject {
                 state: showData.state,
                 showdate: showData.showDate,
                 permalink: item.permalink,
-                setlistnotes: item.setlistnotes
+                setlistnotes: item.setlistnotes,
+                footnote: item.footnote,
+                footnoteIndices: item.footnoteIndices
             )
+        }
+
+        // Convert footnote legend
+        let footnoteLegend = showData.footnoteLegend?.map { item in
+            FootnoteLegendItem(index: item.index, text: item.text)
         }
         
         // Convert track durations
@@ -369,7 +384,8 @@ class TourDashboardDataClient: ObservableObject {
             tourPosition: tourPosition,
             recordings: [], // Not needed for Component A functionality
             songGaps: [], // Not needed for Component A functionality
-            setlistnotes: showData.setlistnotes
+            setlistnotes: showData.setlistnotes,
+            footnoteLegend: footnoteLegend
         )
     }
 }

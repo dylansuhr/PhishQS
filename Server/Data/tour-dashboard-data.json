@@ -202,34 +202,34 @@
     "nextShow": null
   },
   "updateTracking": {
-    "lastAPICheck": "2026-01-02T04:48:02.848Z",
+    "lastAPICheck": "2026-01-04T00:04:27.907Z",
     "latestShowFromAPI": "2025-12-31",
     "pendingDurationChecks": [],
     "individualShows": {
       "2025-12-28": {
         "exists": true,
-        "lastUpdated": "2025-12-29T18:55:14.097Z",
+        "lastUpdated": "2026-01-04T00:04:27.906Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
       },
       "2025-12-29": {
         "exists": true,
-        "lastUpdated": "2025-12-30T20:15:55.935Z",
+        "lastUpdated": "2026-01-04T00:04:27.907Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
       },
       "2025-12-30": {
         "exists": true,
-        "lastUpdated": "2025-12-31T20:15:34.246Z",
+        "lastUpdated": "2026-01-04T00:04:27.907Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false
       },
       "2025-12-31": {
         "exists": true,
-        "lastUpdated": "2026-01-02T04:48:02.848Z",
+        "lastUpdated": "2026-01-04T00:04:27.907Z",
         "durationsAvailable": true,
         "dataComplete": true,
         "needsUpdate": false

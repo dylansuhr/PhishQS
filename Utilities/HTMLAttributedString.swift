@@ -55,18 +55,18 @@ struct SetlistNotesView: View {
     var body: some View {
         switch style {
         case .compact:
-            // Hero card: songs are .caption, so notes are .caption2
+            // Hero card: songs are .footnote, so notes are .caption
             VStack(alignment: .leading, spacing: 4) {
                 Divider()
                     .padding(.vertical, 4)
 
                 Text("Notes")
-                    .font(.caption2)
+                    .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundColor(.secondary)
 
                 Text(displayText)
-                    .font(.caption2)
+                    .font(.caption)
                     .foregroundColor(.secondary)
             }
 
@@ -86,6 +86,40 @@ struct SetlistNotesView: View {
             .padding()
             .background(Color(.secondarySystemGroupedBackground))
             .cornerRadius(12)
+        }
+    }
+}
+
+/// A view that displays the footnote legend at the bottom of setlists
+struct FootnoteLegendView: View {
+    let legend: [FootnoteLegendItem]
+    let style: LegendStyle
+
+    enum LegendStyle {
+        case compact   // For LatestSetlistView (hero card)
+        case detailed  // For SetlistView (sheet)
+    }
+
+    var body: some View {
+        switch style {
+        case .compact:
+            VStack(alignment: .leading, spacing: 2) {
+                ForEach(legend, id: \.index) { item in
+                    Text("[\(item.index)] \(item.text)")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+        case .detailed:
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(legend, id: \.index) { item in
+                    Text("[\(item.index)] \(item.text)")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 }

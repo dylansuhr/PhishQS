@@ -30,9 +30,9 @@
       "showyear": "2025",
       "uniqueid": 514494,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 110,
       "position": 1,
@@ -60,7 +60,8 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -69,9 +70,9 @@
       "showyear": "2025",
       "uniqueid": 514495,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 591,
       "position": 2,
@@ -99,7 +100,10 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": [
+        1
+      ]
     },
     {
       "showid": 1758048029,
@@ -108,9 +112,9 @@
       "showyear": "2025",
       "uniqueid": 514496,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 110,
       "position": 3,
@@ -138,7 +142,8 @@
       "trans_mark": ", ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -147,9 +152,9 @@
       "showyear": "2025",
       "uniqueid": 514500,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 45,
       "position": 4,
@@ -177,7 +182,8 @@
       "trans_mark": ", ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -186,9 +192,9 @@
       "showyear": "2025",
       "uniqueid": 514501,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 38,
       "position": 5,
@@ -216,7 +222,8 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -225,9 +232,9 @@
       "showyear": "2025",
       "uniqueid": 514502,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 161,
       "position": 6,
@@ -255,7 +262,8 @@
       "trans_mark": ", ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -264,9 +272,9 @@
       "showyear": "2025",
       "uniqueid": 514503,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 2570,
       "position": 7,
@@ -294,7 +302,8 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -303,9 +312,9 @@
       "showyear": "2025",
       "uniqueid": 514504,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 622,
       "position": 8,
@@ -333,7 +342,8 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -342,9 +352,9 @@
       "showyear": "2025",
       "uniqueid": 514505,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 455,
       "position": 9,
@@ -372,7 +382,10 @@
       "trans_mark": ", ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": [
+        2
+      ]
     },
     {
       "showid": 1758048029,
@@ -381,9 +394,9 @@
       "showyear": "2025",
       "uniqueid": 514506,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 529,
       "position": 10,
@@ -395,7 +408,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 3,
+      "gap": 2,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -411,7 +424,8 @@
       "trans_mark": "",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -420,9 +434,9 @@
       "showyear": "2025",
       "uniqueid": 514517,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 222,
       "position": 11,
@@ -434,7 +448,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 3,
+      "gap": 2,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -450,7 +464,8 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -459,21 +474,21 @@
       "showyear": "2025",
       "uniqueid": 514518,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 1102,
       "position": 12,
       "transition": 2,
-      "footnote": "",
+      "footnote": "Unfinished.",
       "set": "2",
       "isjam": 0,
       "isreprise": 0,
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 5,
+      "gap": 4,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -489,7 +504,10 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": [
+        1
+      ]
     },
     {
       "showid": 1758048029,
@@ -498,9 +516,9 @@
       "showyear": "2025",
       "uniqueid": 514519,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 339,
       "position": 13,
@@ -512,7 +530,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 6,
+      "gap": 5,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -528,7 +546,8 @@
       "trans_mark": " > ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -537,9 +556,9 @@
       "showyear": "2025",
       "uniqueid": 514520,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 139,
       "position": 14,
@@ -551,7 +570,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 18,
+      "gap": 17,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -567,7 +586,8 @@
       "trans_mark": " -> ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -576,9 +596,9 @@
       "showyear": "2025",
       "uniqueid": 514521,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 630,
       "position": 15,
@@ -590,7 +610,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 8,
+      "gap": 7,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -606,7 +626,8 @@
       "trans_mark": ", ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -615,9 +636,9 @@
       "showyear": "2025",
       "uniqueid": 514522,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 108,
       "position": 16,
@@ -629,7 +650,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 8,
+      "gap": 7,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -645,7 +666,8 @@
       "trans_mark": ", ",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -654,9 +676,9 @@
       "showyear": "2025",
       "uniqueid": 514523,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 202,
       "position": 17,
@@ -668,7 +690,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 3,
+      "gap": 2,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -684,7 +706,8 @@
       "trans_mark": "",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     },
     {
       "showid": 1758048029,
@@ -693,9 +716,9 @@
       "showyear": "2025",
       "uniqueid": 514524,
       "meta": "",
-      "reviews": 8,
+      "reviews": 9,
       "exclude": 0,
-      "setlistnotes": "<p>The Moma Dance was unfinished. Reba did not contain the whistling ending.</p>\r\n",
+      "setlistnotes": "<p>The Moma Dance and Ruby Waves were unfinished. Reba did not contain the whistling ending. Page teased Oye Coma Va in Twist.</p>\r\n",
       "soundcheck": "",
       "songid": 2829,
       "position": 18,
@@ -707,7 +730,7 @@
       "isjamchart": 0,
       "jamchart_description": "",
       "tracktime": "",
-      "gap": 7,
+      "gap": 6,
       "tourid": 215,
       "tourname": "2025 NYE Run",
       "tourwhen": "2025 NYE",
@@ -723,7 +746,8 @@
       "trans_mark": "",
       "artistid": 1,
       "artist_slug": "phish",
-      "artist_name": "Phish"
+      "artist_name": "Phish",
+      "footnoteIndices": []
     }
   ],
   "trackDurations": [
@@ -908,6 +932,16 @@
       "venueRun": null
     }
   ],
+  "footnoteLegend": [
+    {
+      "index": 1,
+      "text": "Unfinished."
+    },
+    {
+      "index": 2,
+      "text": "No whistling."
+    }
+  ],
   "songGaps": [
     {
       "songId": 110,
@@ -1038,7 +1072,7 @@
     {
       "songId": 529,
       "songName": "Split Open and Melt",
-      "gap": 3,
+      "gap": 2,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1052,7 +1086,7 @@
     {
       "songId": 222,
       "songName": "Ghost",
-      "gap": 3,
+      "gap": 2,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1066,7 +1100,7 @@
     {
       "songId": 1102,
       "songName": "Ruby Waves",
-      "gap": 5,
+      "gap": 4,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1080,7 +1114,7 @@
     {
       "songId": 339,
       "songName": "Light",
-      "gap": 6,
+      "gap": 5,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1094,7 +1128,7 @@
     {
       "songId": 139,
       "songName": "Crosseyed and Painless",
-      "gap": 18,
+      "gap": 17,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1108,7 +1142,7 @@
     {
       "songId": 630,
       "songName": "Twist",
-      "gap": 8,
+      "gap": 7,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1122,7 +1156,7 @@
     {
       "songId": 108,
       "songName": "Cavern",
-      "gap": 8,
+      "gap": 7,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1136,7 +1170,7 @@
     {
       "songId": 202,
       "songName": "First Tube",
-      "gap": 3,
+      "gap": 2,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1150,7 +1184,7 @@
     {
       "songId": 2829,
       "songName": "Drift While You're Sleeping",
-      "gap": 7,
+      "gap": 6,
       "lastPlayed": "",
       "timesPlayed": 0,
       "tourVenue": null,
@@ -1175,7 +1209,7 @@
   "metadata": {
     "setlistSource": "phishnet",
     "durationsSource": "phishin",
-    "lastUpdated": "2025-12-31T20:15:34.246Z",
+    "lastUpdated": "2026-01-04T00:04:27.907Z",
     "dataComplete": true,
     "hasSetlistData": true,
     "hasDurationData": true,

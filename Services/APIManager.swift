@@ -113,15 +113,19 @@ class APIManager: ObservableObject {
         // Extract setlistnotes from first setlist item (same for all items in a show)
         let setlistnotes = setlistItems.first?.setlistnotes
 
+        // Normalize footnotes for display
+        let (normalizedItems, footnoteLegend) = FootnoteNormalizer.normalize(setlistItems)
+
         let enhancedSetlist = EnhancedSetlist(
             showDate: date,
-            setlistItems: setlistItems,
+            setlistItems: normalizedItems,
             trackDurations: trackDurations,
             venueRun: nil,       // Not displayed in SetlistView
             tourPosition: nil,   // Not displayed in SetlistView
             recordings: [],      // Not displayed in SetlistView
             songGaps: [],        // Not displayed in SetlistView
-            setlistnotes: setlistnotes
+            setlistnotes: setlistnotes,
+            footnoteLegend: footnoteLegend.isEmpty ? nil : footnoteLegend
         )
 
         // Cache for 2 hours
@@ -209,15 +213,19 @@ class APIManager: ObservableObject {
         // Extract setlistnotes from first setlist item (same for all items in a show)
         let setlistnotes = setlistItems.first?.setlistnotes
 
+        // Normalize footnotes for display
+        let (normalizedItems, footnoteLegend) = FootnoteNormalizer.normalize(setlistItems)
+
         let enhancedSetlist = EnhancedSetlist(
             showDate: date,
-            setlistItems: setlistItems,
+            setlistItems: normalizedItems,
             trackDurations: trackDurations,
             venueRun: venueRun,
             tourPosition: tourPosition,
             recordings: recordings,
             songGaps: songGaps,
-            setlistnotes: setlistnotes
+            setlistnotes: setlistnotes,
+            footnoteLegend: footnoteLegend.isEmpty ? nil : footnoteLegend
         )
         
         // Cache the enhanced setlist for 30 minutes

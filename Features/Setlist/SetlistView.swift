@@ -92,6 +92,13 @@ struct SetlistView: View {
                 }
                 .padding(.vertical, 12)
 
+                // Footnote legend section
+                if let legend = viewModel.enhancedSetlist?.footnoteLegend, !legend.isEmpty {
+                    FootnoteLegendView(legend: legend, style: .detailed)
+                        .padding(.horizontal, 12)
+                        .padding(.top, 8)
+                }
+
                 // Setlist notes section
                 if let setlistnotes = viewModel.enhancedSetlist?.setlistnotes,
                    !setlistnotes.isEmpty {
@@ -187,7 +194,7 @@ struct SetlistView: View {
 
             content.append(SetlistContentItem(
                 id: "song_\(itemIndex)_\(cleanSongName)",
-                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark, durationColor: nil)
+                content: .song(name: cleanSongName, duration: duration, transitionMark: transitionMark, durationColor: nil, footnoteIndices: setlistItem.footnoteIndices)
             ))
             
             itemIndex += 1

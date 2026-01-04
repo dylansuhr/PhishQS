@@ -86,23 +86,30 @@ struct LatestSetlistView: View {
         let groupedBySet = Dictionary(grouping: viewModel.setlistItems) { $0.set }
         let setOrder = ["1", "2", "3", "E", "ENCORE"]
         let setsWithPositions = calculateSetPositions(groupedBySet: groupedBySet, setOrder: setOrder)
-        
+
         ForEach(setsWithPositions, id: \.setKey) { setData in
             // Set header
             Text(formatSetName(setData.setKey))
                 .font(.headline)
                 .fontWeight(.semibold)
                 .foregroundColor(.blue)
-            
+
             // Songs in this set
             createSetSongsView(setData.items, startPosition: setData.startPosition)
-            
+
             // Add spacing between sets (but not after the last set)
             let isLastSet = setData.setKey.uppercased() == "E" || setData.setKey.uppercased() == "ENCORE"
             if !isLastSet {
                 Text("")
                     .font(.caption2)
             }
+        }
+
+        // Footnote legend at bottom
+        if let legend = viewModel.enhancedSetlist?.footnoteLegend, !legend.isEmpty {
+            Divider()
+                .padding(.vertical, 4)
+            FootnoteLegendView(legend: legend, style: .compact)
         }
     }
     
@@ -117,29 +124,40 @@ struct LatestSetlistView: View {
     /// Create AttributedString for a set's songs with proper colors and transitions
     private func createAttributedSetText(_ setItems: [SetlistItem], startPosition: Int) -> AttributedString {
         var result = AttributedString()
-        
+
         for (index, item) in setItems.enumerated() {
             let songPosition = startPosition + index
-            
+
             // Add colored song name
             var songText = AttributedString(item.song)
             let songColor = viewModel.colorForSong(at: songPosition, expectedName: item.song) ?? .primary
             songText.foregroundColor = songColor
             result += songText
-            
+
+            // Add footnote superscripts if present
+            if let indices = item.footnoteIndices, !indices.isEmpty {
+                for footnoteIndex in indices {
+                    var superscript = AttributedString("[\(footnoteIndex)]")
+                    superscript.foregroundColor = .secondary
+                    superscript.font = .system(size: 8)
+                    superscript.baselineOffset = 4
+                    result += superscript
+                }
+            }
+
             // Add transition mark in black if it exists
             if let transMark = item.transMark, !transMark.isEmpty {
                 var transitionText = AttributedString(transMark)
                 transitionText.foregroundColor = .primary
                 result += transitionText
             }
-            
+
             // Add space between songs (except last)
             if index < setItems.count - 1 {
                 result += AttributedString(" ")
             }
         }
-        
+
         return result
     }
     
