@@ -92,7 +92,7 @@ export class YouTubeService {
                 const details = videoDetails.find(d => d.id === item.id.videoId);
                 return new YouTubeVideo(
                     item.id.videoId,
-                    item.snippet.title,
+                    this.decodeHtmlEntities(item.snippet.title),
                     this.getBestThumbnail(item.snippet.thumbnails),
                     item.snippet.publishedAt,
                     details?.contentDetails?.duration || 'PT0S',
@@ -170,6 +170,20 @@ export class YouTubeService {
         if (thumbnails.medium) return thumbnails.medium.url;
         if (thumbnails.default) return thumbnails.default.url;
         return '';
+    }
+
+    /**
+     * Decode HTML entities in text (e.g., &#39; to ')
+     */
+    decodeHtmlEntities(text) {
+        const entities = {
+            '&#39;': "'",
+            '&quot;': '"',
+            '&lt;': '<',
+            '&gt;': '>',
+            '&amp;': '&'
+        };
+        return text.replace(/&#?\w+;/g, match => entities[match] || match);
     }
 }
 
