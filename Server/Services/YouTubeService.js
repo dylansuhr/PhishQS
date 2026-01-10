@@ -41,10 +41,11 @@ export class YouTubeService {
      *
      * @param {string} startDate - Tour start date (YYYY-MM-DD)
      * @param {string} endDate - Tour end date (YYYY-MM-DD)
+     * @param {Set<string>} validShowDates - Set of valid tour dates (YYYY-MM-DD)
      * @param {number} maxResults - Maximum videos to return (default 50)
      * @returns {Promise<YouTubeVideo[]>}
      */
-    async fetchTourVideos(startDate, endDate, maxResults = 50) {
+    async fetchTourVideos(startDate, endDate, validShowDates, maxResults = 50) {
         if (!this.apiKey) {
             LoggingService.warn('YouTube API key not configured - skipping video fetch');
             return [];
@@ -81,14 +82,29 @@ export class YouTubeService {
                 return [];
             }
 
-            LoggingService.info(`Found ${uploadedVideos.length} uploaded videos, fetching details...`);
+            // Filter by show date - only include videos matching tour schedule
+            const tourVideos = uploadedVideos.filter(item =>
+                this.isValidTourVideo(item.snippet.title, validShowDates)
+            );
+
+            const filteredCount = uploadedVideos.length - tourVideos.length;
+            if (filteredCount > 0) {
+                LoggingService.info(`Filtered ${filteredCount} video(s) not matching tour dates`);
+            }
+
+            if (tourVideos.length === 0) {
+                LoggingService.info('No videos match current tour dates');
+                return [];
+            }
+
+            LoggingService.info(`Found ${tourVideos.length} videos matching tour dates, fetching details...`);
 
             // Step 2: Get video details (duration, view count)
-            const videoIds = uploadedVideos.map(item => item.id.videoId).join(',');
+            const videoIds = tourVideos.map(item => item.id.videoId).join(',');
             const videoDetails = await this.getVideoDetails(videoIds);
 
             // Step 3: Combine search results with details
-            const videos = uploadedVideos.map(item => {
+            const videos = tourVideos.map(item => {
                 const details = videoDetails.find(d => d.id === item.id.videoId);
                 return new YouTubeVideo(
                     item.id.videoId,
@@ -184,6 +200,116 @@ export class YouTubeService {
             '&amp;': '&'
         };
         return text.replace(/&#?\w+;/g, match => entities[match] || match);
+    }
+
+    /**
+     * Extract show date from video title
+     * Supports multiple date formats: MM/DD/YYYY, YYYY-MM-DD, month names, NYE
+     * @param {string} title - Video title
+     * @returns {string|null} Date in YYYY-MM-DD format, or null if no date found
+     */
+    extractDateFromTitle(title) {
+        // Pattern 1: Slash format (MM/DD/YYYY or M/D/YYYY)
+        const slashPattern = /(\d{1,2})\/(\d{1,2})\/(\d{4})/;
+        const slashMatch = title.match(slashPattern);
+        if (slashMatch) {
+            const month = parseInt(slashMatch[1], 10);
+            const day = parseInt(slashMatch[2], 10);
+            const year = parseInt(slashMatch[3], 10);
+
+            // Validate date components
+            if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && year >= 1983) {
+                const date = new Date(year, month - 1, day);
+                // Verify date is valid (handles Feb 30 etc.)
+                if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
+                    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // Pattern 2: ISO format (YYYY-MM-DD)
+        const isoPattern = /(\d{4})-(\d{2})-(\d{2})/;
+        const isoMatch = title.match(isoPattern);
+        if (isoMatch) {
+            const year = parseInt(isoMatch[1], 10);
+            const month = parseInt(isoMatch[2], 10);
+            const day = parseInt(isoMatch[3], 10);
+
+            if (month >= 1 && month <= 12 && day >= 1 && day <= 31 && year >= 1983) {
+                const date = new Date(year, month - 1, day);
+                if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
+                    return isoMatch[0]; // Already in YYYY-MM-DD format
+                }
+            }
+        }
+
+        // Pattern 3: Month name format (December 31, 2025 or Dec 31 2025)
+        const monthNames = {
+            'january': 1, 'jan': 1,
+            'february': 2, 'feb': 2,
+            'march': 3, 'mar': 3,
+            'april': 4, 'apr': 4,
+            'may': 5,
+            'june': 6, 'jun': 6,
+            'july': 7, 'jul': 7,
+            'august': 8, 'aug': 8,
+            'september': 9, 'sep': 9, 'sept': 9,
+            'october': 10, 'oct': 10,
+            'november': 11, 'nov': 11,
+            'december': 12, 'dec': 12
+        };
+
+        const monthPattern = /(january|february|march|april|may|june|july|august|september|october|november|december|jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)\s+(\d{1,2}),?\s+(\d{4})/i;
+        const monthMatch = title.match(monthPattern);
+        if (monthMatch) {
+            const monthName = monthMatch[1].toLowerCase();
+            const month = monthNames[monthName];
+            const day = parseInt(monthMatch[2], 10);
+            const year = parseInt(monthMatch[3], 10);
+
+            if (month && day >= 1 && day <= 31 && year >= 1983) {
+                const date = new Date(year, month - 1, day);
+                if (date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day) {
+                    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                }
+            }
+        }
+
+        // Pattern 4: Special cases (New Year's Eve or NYE)
+        const nyePattern = /(?:new year'?s? eve|nye)\s+(\d{4})/i;
+        const nyeMatch = title.match(nyePattern);
+        if (nyeMatch) {
+            const year = parseInt(nyeMatch[1], 10);
+            if (year >= 1983) {
+                return `${year}-12-31`;
+            }
+        }
+
+        // No date found
+        return null;
+    }
+
+    /**
+     * Check if video title contains a date in the tour schedule
+     * @param {string} title - Video title
+     * @param {Set<string>} validShowDates - Set of valid tour dates (YYYY-MM-DD)
+     * @returns {boolean} True if video should be included
+     */
+    isValidTourVideo(title, validShowDates) {
+        const parsedDate = this.extractDateFromTitle(title);
+
+        if (!parsedDate) {
+            LoggingService.warn(`No date found in title: "${title}"`);
+            return false;
+        }
+
+        const isValid = validShowDates.has(parsedDate);
+
+        if (!isValid) {
+            LoggingService.info(`Date ${parsedDate} not in tour schedule - filtering out: "${title}"`);
+        }
+
+        return isValid;
     }
 }
 

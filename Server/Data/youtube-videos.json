@@ -1,48 +1,7 @@
 {
   "tourName": "2025 NYE Run",
   "tourStartDate": "2025-12-28",
-  "fetchedAt": "2026-01-08T04:46:02.656Z",
-  "videoCount": 5,
-  "videos": [
-    {
-      "videoId": "GbD0AK_y9zY",
-      "title": "JEMP Records Presents: Phish New Year's Eve 1993 Live At Worcester Centrum",
-      "thumbnailUrl": "https://i.ytimg.com/vi/GbD0AK_y9zY/hqdefault.jpg",
-      "publishedAt": "2026-01-07T21:13:29Z",
-      "duration": "PT30S",
-      "viewCount": 5781
-    },
-    {
-      "videoId": "In3FMYG4eZ8",
-      "title": "Phish - 12/31/2025 - It's Ice Cream: Harry Hood → 2001 → Tweezer (4K HDR)",
-      "thumbnailUrl": "https://i.ytimg.com/vi/In3FMYG4eZ8/hqdefault.jpg",
-      "publishedAt": "2026-01-04T23:44:07Z",
-      "duration": "PT54M58S",
-      "viewCount": 44739
-    },
-    {
-      "videoId": "xzMQO9nFFnk",
-      "title": "Phish - 12/30/2025 - Ruby Waves → Light (4K HDR) New York, NY",
-      "thumbnailUrl": "https://i.ytimg.com/vi/xzMQO9nFFnk/hqdefault.jpg",
-      "publishedAt": "2026-01-01T02:27:05Z",
-      "duration": "PT29M55S",
-      "viewCount": 13105
-    },
-    {
-      "videoId": "BCiMILWKY14",
-      "title": "Phish - 12/29/2025 - A Wave of Hope (4K HDR) New York, NY",
-      "thumbnailUrl": "https://i.ytimg.com/vi/BCiMILWKY14/hqdefault.jpg",
-      "publishedAt": "2025-12-30T20:13:16Z",
-      "duration": "PT20M3S",
-      "viewCount": 20890
-    },
-    {
-      "videoId": "oPuRd-CXpZk",
-      "title": "Phish - 12/28/2025 - Theme From The Bottom (4K HDR) New York, NY",
-      "thumbnailUrl": "https://i.ytimg.com/vi/oPuRd-CXpZk/hqdefault.jpg",
-      "publishedAt": "2025-12-29T22:06:55Z",
-      "duration": "PT26M22S",
-      "viewCount": 41592
-    }
-  ]
+  "fetchedAt": "2026-01-10T19:16:36.603Z",
+  "videoCount": 0,
+  "videos": []
 }

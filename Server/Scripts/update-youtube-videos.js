@@ -48,12 +48,16 @@ async function updateYouTubeVideos() {
         const tourName = controlData.currentTour.name;
         const today = new Date().toISOString().split('T')[0];
 
+        // Extract valid show dates for filtering
+        const validShowDates = new Set(tourDates.map(show => show.date));
+
         LoggingService.info(`Current tour: ${tourName}`);
         LoggingService.info(`Date range: ${tourStartDate} to ${today}`);
+        LoggingService.info(`Valid show dates: ${Array.from(validShowDates).join(', ')}`);
 
-        // Fetch YouTube videos
+        // Fetch YouTube videos with show date filtering
         const youtubeService = new YouTubeService();
-        const videos = await youtubeService.fetchTourVideos(tourStartDate, today);
+        const videos = await youtubeService.fetchTourVideos(tourStartDate, today, validShowDates);
 
         LoggingService.info(`Fetched ${videos.length} videos from YouTube API`);
 
