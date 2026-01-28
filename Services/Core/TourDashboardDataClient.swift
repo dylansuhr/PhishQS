@@ -17,12 +17,14 @@ class TourDashboardDataClient: ObservableObject {
     // MARK: - Configuration
     
     private let baseURL: String = {
-        #if DEBUG
-        return "http://localhost:3000/api"
+        #if DEV
+        // return "https://phish-qs-dev.vercel.app/api"
+        return "https://phish-qs.vercel.app/api"
         #else
         return "https://phish-qs.vercel.app/api"
         #endif
     }()
+    
     private let session = URLSession.shared
     
     // MARK: - Request Deduplication

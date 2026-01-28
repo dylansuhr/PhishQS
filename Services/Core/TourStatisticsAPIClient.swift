@@ -24,8 +24,9 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
     
     /// Base URL for the Vercel serverless functions
     internal let baseURL: String = {
-        #if DEBUG
-        return "http://localhost:3000"
+        #if DEV
+        // return "https://phish-qs-dev.vercel.app"
+        return "https://phish-qs.vercel.app"
         #else
         return "https://phish-qs.vercel.app"
         #endif
@@ -87,7 +88,14 @@ class TourStatisticsAPIClient: TourStatisticsProviderProtocol {
         }
         
         SwiftLogger.info("TourStatisticsAPIClient: Fetching tour statistics from: \(url)", category: .api)
-        SwiftLogger.info("TourStatisticsAPIClient: Environment - \(baseURL.contains("localhost") ? "Development" : "Production")", category: .api)
+        
+        //SwiftLogger.info("TourStatisticsAPIClient: Environment - \(baseURL.contains("localhost") ? "Development" : "Production")", category: .api)
+        
+        #if DEV
+        SwiftLogger.info("TourStatisticsAPIClient: Environment - Dev", category: .api)
+        #else
+        SwiftLogger.info("TourStatisticsAPIClient: Environment - Prod", category: .api)
+        #endif
         
         // Create request with cache headers and user agent
         var request = URLRequest(url: url)
